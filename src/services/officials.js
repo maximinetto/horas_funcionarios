@@ -1,17 +1,24 @@
+import { DateTime } from "luxon";
 import { operations } from "persistence/officials";
 import removeKeyIfValueDoesNotDefined from "utils/removeKeyIfValueDoesNotDefined";
 
 const service = {
   get: async ({ type, contract, year } = {}) => {
+    const date = DateTime.local(year, 12, 31, 23, 59, 59);
     const where = {
       type,
       contract,
-      year,
+      dateOfEntry: {
+        gte: new Date(`${year}-01-01`),
+        lte: date.toJSDate(),
+      },
     };
 
     removeKeyIfValueDoesNotDefined(where);
 
-    return await operations.get(where);
+    const officials = await operations.get(where);
+
+    return officials;
   },
   create: async ({
     recordNumber,
