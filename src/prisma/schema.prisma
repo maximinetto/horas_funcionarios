@@ -1,0 +1,102 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("OFFICIALS_SCHEDULES_DB_URL")
+}
+
+model Official {
+  id       Int    @id @default(autoincrement())
+  recordNumber Int @unique
+  firstName     String @db.VarChar(255)
+  lastName      String @db.VarChar(255)
+  position     String @db.VarChar(255)
+  contract Contract
+  type TypeOfOfficials
+  dateOfEntry DateTime @db.Date
+  chargeNumber Int
+  balanceTAS HourlyBalanceTAS?
+  balanceTeacher HourlyBalanceTeacher?
+  calculationTAS CalculationTAS?
+  calculationTeacher CalculationTeacher?
+  @@map("officials")
+}
+
+model HourlyBalanceTAS {
+  id String @id @default(uuid())
+  year Int
+  working Decimal
+  nonWorking Decimal
+  simple Decimal
+  officialId Int
+  official Official @relation(fields: [officialId], references: [id])
+  @@map("hourly_balance_tas")
+}
+
+model HourlyBalanceTeacher {
+  id String @id @default(uuid())
+  year Int
+  balance Decimal
+  officialId Int
+  official Official @relation(fields: [officialId], references: [id])
+  @@map("hourly_balance_teacher")
+}
+
+model CalculationTAS {
+  id String @id @default(uuid())
+  year Int
+  month Month
+  surplusBusiness Decimal
+  surplusNonWorking Decimal
+  surplusSimple Decimal
+  discount Decimal
+  workingOvertime Decimal
+  workingNightOvertime Decimal
+  nonWorkingOvertime Decimal
+  nonWorkingNightOvertime Decimal
+  compensatedNightOvertime Decimal
+  observations String? @db.Text
+  officialId Int
+  official Official @relation(fields: [officialId], references: [id])
+}
+
+model CalculationTeacher {
+  id String @id @default(uuid())
+  year Int
+  month Month
+  surplus Decimal
+  discount Decimal
+  observations String? @db.Text
+  officialId Int
+  official Official @relation(fields: [officialId], references: [id])
+}
+
+enum Contract {
+  PERMANENT
+  TEMPORARY
+}
+
+enum TypeOfOfficials {
+  TEACHER
+  NOT_TEACHER
+}
+
+enum Month {
+  JANUARY
+  FEBUARY
+  MARCH
+  APRIL
+  MAY
+  JUNE
+  JULY
+  AUGUST
+  SEPTEMBER
+  OCTUBER
+  NOVEMBER
+  DECEMBER
+}
