@@ -5,7 +5,7 @@ import {
   deleteOfficial,
 } from "controllers/officials";
 import { router } from "dependencies";
-import { schemas } from "validation/schemas/officials/get";
+import { schemas } from "validation/schemas/officials";
 import middleware, { exists } from "validation/middlewares/validation";
 
 const entity = "official";
