@@ -1,6 +1,6 @@
 export default class NotExistsError extends Error {
-  constructor(message) {
-    super(message);
+  constructor(message, ...args) {
+    super(message, ...args);
     this.name = "NotExistsError";
   }
 }

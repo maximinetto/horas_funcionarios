@@ -1,6 +1,12 @@
 import database from "persistence/persistence.config";
 
 export const operations = {
+  getOne: (id) =>
+    database.official.findUnique({
+      where: {
+        id,
+      },
+    }),
   get: (params) => {
     return database.official.findMany({
       where: params,
