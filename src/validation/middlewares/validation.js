@@ -1,3 +1,5 @@
+import _get from "lodash/get";
+import _merge from "lodash/merge";
 import { asyncHandler } from "dependencies";
 import NotExistsError from "errors/NotExistsError";
 import persistence from "persistence/persistence.config";
@@ -16,14 +18,35 @@ export default function middleware(schema, property = "body") {
   });
 }
 
-export const exists = ({ key, entity, property = "params" }) =>
+export const exists = ({
+  key,
+  entity,
+  property = "params",
+  find = undefined,
+  relatedKey = undefined,
+}) =>
   asyncHandler(async (req, res, next) => {
-    const value = req[property][key];
+    let value = getValue(key, req, property, find);
+
+    if (typeof value === "undefined") {
+      throw new NotExistsError(`${key} does not exists`);
+    }
+
+    if (typeof value === "boolean" && value === false) {
+      return next();
+    }
+
     try {
-      const exists = await valueExistsInPersistence({ value, key, entity });
+      const exists = await valueExistsInPersistence({
+        value,
+        key,
+        entity,
+        relatedKey,
+      });
       if (exists) {
         next();
       } else {
+        value = Array.isArray(value) ? ` [${value}]` : value;
         res
           .status(422)
           .json({
@@ -57,23 +80,51 @@ export const exists = ({ key, entity, property = "params" }) =>
     }
   });
 
-const valueExistsInPersistence = ({ value, key, entity }) => {
+const valueExistsInPersistence = ({ value, key, entity, relatedKey }) => {
   const exists = Object.keys(persistence).find((k) => k === entity);
   if (!exists) {
     throw new NotExistsError(`${entity} does not exists`);
   }
 
-  return persistence[entity].findUnique({
-    where: { [key]: value },
-    select: {
-      [key]: true,
-    },
-  });
+  const keyToFind = relatedKey ?? key;
+
+  if (!Array.isArray(value)) {
+    return persistence[entity].findUnique({
+      where: { [keyToFind]: value },
+      select: {
+        [keyToFind]: true,
+      },
+    });
+  }
+
+  return persistence[entity]
+    .findMany({
+      where: { [keyToFind]: { in: value } },
+      select: {
+        [keyToFind]: true,
+      },
+    })
+    .then((result) => {
+      return result.length === value.length;
+    });
 };
 
 function callToNextHandler(value, req, next) {
-  req.value = { ...req.value, ...value };
+  if (req.value == null && Array.isArray(value)) {
+    req.value = [];
+  }
+  req.value = _merge(req.value, value);
   next();
+}
+
+function getValue(key, req, property, find) {
+  const obj = _get(req, property);
+
+  if (find === undefined) {
+    return _get(obj, key);
+  }
+
+  return find(key, obj);
 }
 
 function throwErrorWhenDataIsNotValid(error, res) {

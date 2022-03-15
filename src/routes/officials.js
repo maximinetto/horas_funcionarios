@@ -4,11 +4,13 @@ import {
   updateOfficial,
   deleteOfficial,
 } from "controllers/officials";
-import { router } from "dependencies";
+import { createRouter } from "dependencies";
 import { schemas } from "validation/schemas/officials";
 import middleware, { exists } from "validation/middlewares/validation";
 
 const entity = "official";
+
+const router = createRouter();
 
 router.get("/", getOfficials);
 router.post("/", middleware(schemas.create), createOfficials);

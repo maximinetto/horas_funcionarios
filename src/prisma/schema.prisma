@@ -11,69 +11,84 @@ datasource db {
 }
 
 model Official {
-  id       Int    @id @default(autoincrement())
-  recordNumber Int @unique
-  firstName     String @db.VarChar(255)
-  lastName      String @db.VarChar(255)
-  position     String @db.VarChar(255)
-  contract Contract
-  type TypeOfOfficials
-  dateOfEntry DateTime @db.Date
-  chargeNumber Int
-  balanceTAS HourlyBalanceTAS?
-  balanceTeacher HourlyBalanceTeacher?
-  calculationTAS CalculationTAS?
-  calculationTeacher CalculationTeacher?
+  id                 Int                   @id @default(autoincrement())
+  recordNumber       Int                   @unique @map("record_number")
+  firstName          String                @db.VarChar(255) @map("first_name")
+  lastName           String                @db.VarChar(255) @map("last_name")
+  position           String                @db.VarChar(255)
+  contract           Contract
+  type               TypeOfOfficials
+  dateOfEntry        DateTime              @db.Date @map("date_of_entry")
+  chargeNumber       Int                   @map("charge_number")
+  balanceTAS         HourlyBalanceTAS?
+  balanceTeacher     HourlyBalanceTeacher?
+  calculation Calculation[]
+ 
   @@map("officials")
 }
 
 model HourlyBalanceTAS {
-  id String @id @default(uuid())
-  year Int
-  working Decimal
-  nonWorking Decimal
-  simple Decimal
-  officialId Int
-  official Official @relation(fields: [officialId], references: [id])
+  id         String   @id @default(uuid())
+  year       Int
+  yearBalance Int     @map("year_balance")
+  working    Int
+  nonWorking Int      @map("non_working")
+  simple     Int
+  officialId Int      @unique @map("official_id")
+  official   Official @relation(fields: [officialId], references: [id])
+
   @@map("hourly_balance_tas")
 }
 
 model HourlyBalanceTeacher {
-  id String @id @default(uuid())
-  year Int
-  balance Decimal
-  officialId Int
-  official Official @relation(fields: [officialId], references: [id])
+  id         String   @id @default(uuid())
+  year       Int
+  yearBalance Int     @map("year_balance")
+  balance    Int
+  officialId Int      @unique @map("official_id")
+  official   Official @relation(fields: [officialId], references: [id])
+
   @@map("hourly_balance_teacher")
 }
 
+model Calculation {
+  id           String   @id @default(uuid())
+  year         Int
+  month        Month
+  officialId   Int      @map("official_id")
+  official     Official @relation(fields: [officialId], references: [id])
+  observations String?  @db.Text
+  calculationTAS CalculationTAS?
+  calculationTeacher CalculationTeacher?
+
+  @@map("calculation")
+}
+
 model CalculationTAS {
-  id String @id @default(uuid())
-  year Int
-  month Month
-  surplusBusiness Decimal
-  surplusNonWorking Decimal
-  surplusSimple Decimal
-  discount Decimal
-  workingOvertime Decimal
-  workingNightOvertime Decimal
-  nonWorkingOvertime Decimal
-  nonWorkingNightOvertime Decimal
-  compensatedNightOvertime Decimal
-  observations String? @db.Text
-  officialId Int
-  official Official @relation(fields: [officialId], references: [id])
+  id                       String      @id @default(uuid())
+  surplusBusiness          Int         @map("surplus_business")
+  surplusNonWorking        Int         @map("surplus_non_working")
+  surplusSimple            Int         @map("surplus_simple")
+  discount                 Int
+  workingOvertime          Int         @map("working_overtime")
+  workingNightOvertime     Int         @map("working_night_overtime")
+  nonWorkingOvertime       Int         @map("non_working_overtime")
+  nonWorkingNightOvertime  Int         @map("non_working_night_overtime")
+  compensatedNightOvertime Int         @map("compensated_night_overtime")
+  calculationId            String       @unique @map("calculation_id")
+  calculation              Calculation  @relation(fields: [calculationId], references: [id])
+
+  @@map("calculation_tas")
 }
 
 model CalculationTeacher {
-  id String @id @default(uuid())
-  year Int
-  month Month
-  surplus Decimal
-  discount Decimal
-  observations String? @db.Text
-  officialId Int
-  official Official @relation(fields: [officialId], references: [id])
+  id           String   @id @default(uuid())
+  surplus      Int
+  discount     Int
+  calculationId            String       @unique @map("calculation_id")
+  calculation              Calculation  @relation(fields: [calculationId], references: [id])
+  
+  @@map("calculation_teacher")
 }
 
 enum Contract {
