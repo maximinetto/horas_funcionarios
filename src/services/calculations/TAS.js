@@ -1,11 +1,11 @@
-import { CalculateForTas } from "./calculations/classes";
+import CalculateForTas from "services/calculations/classes/CalculateForTAS";
 
 /*
     - Consultar la tabla de empleados y obtener el tipo de empleado de cada id
     - Si el empleado es de tipo TAS y me pasan un registro de horas de tipo Docencia, entonces debo lanzar una excepción que diga que no es posible insertar un registro de horas diferente el tipo de empleado.
    */
 /* Debo traer los datos de la tabla saldos y horarios
-       Para ello debo buscar desde el primer id del empleado y el año y mes
+       Para ello debo buscar desde el primer id del empleado y el año
        en el cual aún le quedan horas sin que lleguen a cero todas las columnas (suma horas es mayor a cero) hasta la fecha actual
        Si no encuentro nada, entonces debo partir de la fecha actual con el saldo inicial igual a cero
        Si encuentro algo, entonces debo partir la suma desde el primer año en el que aún le quedan horas 
@@ -17,7 +17,6 @@ import { CalculateForTas } from "./calculations/classes";
     hasta mes actual de dicho año
     - Si no encuentro nada, entonces debo insertar un/os registro/s partiendo del mes que no tiene registro asociado al empleado 
       y debo ponerle el saldo inicial igual a cero a todos las columnas
-    - Si se encuentran todos los meses entonces no debo hacer nada
     - Si el/los meses que pasan ya existen en el sistema entonces debo actualizar el/los registro/s con los nuevos valores (saldos y horas)
     */
 /*

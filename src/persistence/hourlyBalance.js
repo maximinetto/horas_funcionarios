@@ -6,10 +6,21 @@ export const operations = {
       where: params,
     });
   },
-  getTAS: (params) => {
+  getTAS: (params, options) => {
     return database.hourlyBalanceTAS.findMany({
       where: params,
+      ...options,
     });
+  },
+  getBalance: ({ officialId, year }) => {
+    return database.$queryRaw`SELECT * FROM hourly_balance_tas 
+      WHERE official_id = ${officialId} AND year_balance = ${year} and 
+      year >= (SELECT min(year) FROM hourly_balance_tas 
+      WHERE official_id = ${officialId} AND year_balance = ${year} AND 
+        (SELECT SUM(simple, working, non_working)
+        FROM hourly_balance_tas
+        WHERE official_id = ${officialId} AND year_balance = ${year})
+      > 0)`;
   },
   getOneTeacher: (params) => {
     return database.hourlyBalanceTeacher.findUnique({
