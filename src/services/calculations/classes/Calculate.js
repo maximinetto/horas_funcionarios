@@ -5,7 +5,7 @@ import { operations } from "persistence/calculations";
 import { resetDateFromFirstDay } from "utils/date";
 import { getNumberByMonth } from "utils/mapMonths";
 
-class Calculation {
+export default class Calculate {
   constructor({ actualDate, calculations, year, officialId }) {
     const idIsPresent = (calculation) => calculation.id != null;
 
@@ -103,27 +103,5 @@ class Calculation {
       const month = getNumberByMonth(calculation.month);
       return month >= firstMonth && month <= lastMonth;
     });
-  }
-}
-
-export class CalculateForTas extends Calculation {
-  constructor({ actualDate, calculations, year, officialId }) {
-    super({ actualDate, calculations, year, officialId });
-  }
-
-  async calculate() {
-    await this.validate();
-  }
-
-  async withId(officialId, calculations) {}
-
-  async withoutId(officialId, calculations) {}
-
-  selectOptions() {
-    return {
-      include: {
-        calculationTAS: true,
-      },
-    };
   }
 }
