@@ -13,14 +13,16 @@ export const operations = {
     });
   },
   getBalance: ({ officialId, year }) => {
-    return database.$queryRaw`SELECT * FROM hourly_balance_tas 
-      WHERE official_id = ${officialId} AND year_balance = ${year} and 
-      year >= (SELECT min(year) FROM hourly_balance_tas 
+    return database.$queryRaw`SELECT id, year, year_balance as yearBalance, working, non_working, simple, 
+      official_id as officialId 
+      FROM hourly_balance_tas 
       WHERE official_id = ${officialId} AND year_balance = ${year} AND 
-        (SELECT SUM(simple, working, non_working)
-        FROM hourly_balance_tas
-        WHERE official_id = ${officialId} AND year_balance = ${year})
-      > 0)`;
+      year >= (SELECT min(year) FROM hourly_balance_tas 
+        WHERE official_id = ${officialId} AND year_balance = ${year} AND 
+          (SELECT SUM(simple, working, non_working)
+          FROM hourly_balance_tas
+          WHERE official_id = ${officialId} AND year_balance = ${year})
+        > 0)`;
   },
   getOneTeacher: (params) => {
     return database.hourlyBalanceTeacher.findUnique({

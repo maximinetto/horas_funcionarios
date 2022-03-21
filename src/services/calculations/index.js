@@ -1,6 +1,6 @@
 import { TypeOfOfficials } from "@prisma/client";
 import { operations } from "persistence/officials";
-import calculateForTAS from "./calculations_teacher";
+import calculateForTAS from "services/calculations/TAS";
 
 export async function calculate({
   calculations,
