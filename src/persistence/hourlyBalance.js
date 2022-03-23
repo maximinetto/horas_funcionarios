@@ -22,7 +22,8 @@ export const operations = {
           (SELECT SUM(simple, working, non_working)
           FROM hourly_balance_tas
           WHERE official_id = ${officialId} AND year_balance = ${year})
-        > 0)`;
+        > 0)
+      ORDER BY year ASC, year_balance ASC`;
   },
   getOneTeacher: (params) => {
     return database.hourlyBalanceTeacher.findUnique({
