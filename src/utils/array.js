@@ -1,5 +1,18 @@
 import ArrayIsEmptyError from "errors/ArrayIsEmptyError";
 
+export const isFirstValue = (index) => index === 0;
+export const previousValue = (array, index) => {
+  if (array == null || !Array.isArray(array)) {
+    throw new Error("array must be an array");
+  }
+
+  if (index < 0 || index >= array.length) {
+    return null;
+  }
+
+  return array[index - 1];
+};
+
 export const executeIfExistsOrThrow = (array, callback) => {
   if (array == null || !Array.isArray(array)) {
     throw new Error("array must be an array");
