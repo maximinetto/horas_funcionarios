@@ -1,11 +1,10 @@
 import { instance as Hours } from "./typeOfHours";
 
 export default class YearsCalculator {
-  constructor({ lastBalances, hoursActualYear, totalDiscount, currentYear }) {
+  constructor({ lastBalances, hoursActualYear, totalDiscount }) {
     this.lastBalances = [...lastBalances];
     this.hoursActualYear = [...hoursActualYear];
     this.totalDiscount = totalDiscount;
-    this.currentYear = currentYear;
     this.calculatedHours = [];
   }
 
@@ -21,6 +20,11 @@ export default class YearsCalculator {
         hours: [simple, working, nonWorking],
       });
     }
+
+    return {
+      calculatedHours: [...this.calculatedHours],
+      calculatedHoursSanitized: this.calculatedHoursSanitized(),
+    };
   }
 
   calculateTypesOfHours({ year, hours }) {
@@ -33,6 +37,17 @@ export default class YearsCalculator {
       const sum = this.sumHours(hour, previousHours);
       this.storeHours({ typeOfHour, year, value: sum });
     });
+  }
+
+  calculatedHoursSanitized() {
+    const { calculatedHours } = this;
+    return calculatedHours.map((calculatedHour) => ({
+      ...calculatedHour,
+      hours: calculatedHour.hours.map(({ typeOfHour, value }) => ({
+        typeOfHour,
+        value: value >= 0 ? value : 0,
+      })),
+    }));
   }
 
   sumHours(hour, accumulatedHours) {

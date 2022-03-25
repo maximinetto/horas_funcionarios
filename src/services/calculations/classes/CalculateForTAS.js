@@ -1,7 +1,9 @@
+import _keyBy from "lodash/keyBy";
 import Calculate from "services/calculations/classes/Calculate";
 import { operations } from "persistence/hourlyBalance";
 import YearsCalculator from "./YearsCalculator";
 import { instance as Hours } from "./typeOfHours";
+import { arrayToObject } from "utils/array";
 
 export default class CalculateForTas extends Calculate {
   constructor({ actualDate, calculations, year, officialId }) {
@@ -9,7 +11,7 @@ export default class CalculateForTas extends Calculate {
   }
 
   async calculate() {
-    const { officialId, year } = this;
+    const { officialId, year, calculations } = this;
     await this.validate();
 
     const lastBalances = await operations.getBalance({ officialId, year });
@@ -31,17 +33,43 @@ export default class CalculateForTas extends Calculate {
       return { typeOfHour, value: hour.value };
     });
 
-    const balancesPerYearCalculator = new YearsCalculator({
-      lastBalances,
-      hoursActualYear: sortedHours,
-      totalDiscount,
-      actualYear: year,
+    const sortedHoursToObj = _keyBy(sortedHours, "typeOfHour");
+    Object.entries(sortedHoursToObj).forEach(([key, value]) => {
+      sortedHoursToObj[key] = value.value;
     });
 
-    balancesPerYearCalculator.calculate();
-    const balances = balancesPerYearCalculator.calculatedHours;
+    const sortedHoursWithYear = {
+      year,
+      ...sortedHoursToObj,
+    };
 
-    this.mutateInPersistence(balances, totalDiscount);
+    const balancesPerYearCalculator = new YearsCalculator({
+      lastBalances,
+      hoursActualYear: sortedHoursWithYear,
+      totalDiscount,
+    });
+
+    const {
+      calculatedHours: balances,
+      calculatedHoursSanitized: balancesSanitized,
+    } = await balancesPerYearCalculator.calculate();
+
+    this.mutateInPersistence({
+      balances: balancesSanitized,
+      totalDiscount,
+      totalBalance,
+    });
+
+    return {
+      calculations,
+      totalBalance,
+      workingHours,
+      nonWorkingHours,
+      simpleHours,
+      totalDiscount,
+      balances,
+      balancesSanitized,
+    };
   }
 
   async calculatePerMonth(lastBalances) {
@@ -59,9 +87,9 @@ export default class CalculateForTas extends Calculate {
     ]);
   }
 
-  mutateInPersistence(balances) {
+  mutateInPersistence({ balances, totalDiscount, totalBalance }) {
     const { calculations, officialId, year } = this;
-    balances.map(({ hours }) => ({ hours }));
+    balances.map(({ hours, year }) => ({ hours }));
   }
 
   getTotalBalance(lastBalances) {
