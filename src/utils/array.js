@@ -1,3 +1,4 @@
+import _keyBy from "lodash/keyBy";
 import ArrayIsEmptyError from "errors/ArrayIsEmptyError";
 
 export const isFirstValue = (index) => index === 0;
@@ -55,3 +56,7 @@ function checkConditions(from, dest, predicate) {
     throw new Error("predicate must be a function");
   }
 }
+
+export const arrayToObject = (array, key) => {
+  return _keyBy(array, key);
+};
