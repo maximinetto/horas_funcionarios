@@ -1,3 +1,4 @@
+import { operations } from "persistence/calculations";
 import CalculateForTas from "services/calculations/classes/CalculateForTAS";
 
 /*
@@ -50,16 +51,16 @@ import CalculateForTas from "services/calculations/classes/CalculateForTAS";
   */
 export default async function calculateForTAS({
   year,
-  officialId,
+  official,
   calculations,
   actualDate,
 }) {
-  const calculate = new CalculateForTas({
+  const calculate = new CalculateForTas(operations);
+
+  return calculate.calculate({
     year,
-    officialId,
+    official,
     calculations,
     actualDate,
   });
-
-  calculate.calculate();
 }

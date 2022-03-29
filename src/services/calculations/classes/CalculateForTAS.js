@@ -3,18 +3,19 @@ import Calculate from "services/calculations/classes/Calculate";
 import { operations } from "persistence/hourlyBalance";
 import YearsCalculator from "./YearsCalculator";
 import { instance as Hours } from "./typeOfHours";
-import { arrayToObject } from "utils/array";
 
 export default class CalculateForTas extends Calculate {
-  constructor({ actualDate, calculations, year, officialId }) {
-    super({ actualDate, calculations, year, officialId });
+  constructor(calculationRepository) {
+    super(calculationRepository);
   }
 
-  async calculate() {
-    const { officialId, year, calculations } = this;
-    await this.validate();
-
-    const lastBalances = await operations.getBalance({ officialId, year });
+  async calculate({ actualDate, calculations, year, official }) {
+    super.calculate({ actualDate, calculations, year, official });
+    const { calculatePerMonth, calculationRepository } = this;
+    const lastBalances = await calculationRepository.getBalance({
+      officialId: official.id,
+      year,
+    });
 
     const [
       totalBalance,
@@ -22,7 +23,7 @@ export default class CalculateForTas extends Calculate {
       nonWorkingHours,
       simpleHours,
       totalDiscount,
-    ] = await this.calculatePerMonth(lastBalances);
+    ] = await calculatePerMonth(lastBalances);
 
     const hours = [workingHours, nonWorkingHours, simpleHours];
 
