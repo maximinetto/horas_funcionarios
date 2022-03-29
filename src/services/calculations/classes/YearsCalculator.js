@@ -1,42 +1,74 @@
 import { instance as Hours } from "./typeOfHours";
 
 export default class YearsCalculator {
-  constructor({ lastBalances, hoursActualYear, totalDiscount }) {
-    this.lastBalances = [...lastBalances];
-    this.hoursActualYear = [...hoursActualYear];
-    this.totalDiscount = totalDiscount;
+  constructor() {
+    this.lastBalances = [];
+    this.hoursActualYear = [];
+    this.totalDiscount = 0;
     this.calculatedHours = [];
   }
 
-  async calculate() {
-    const { lastBalances, hoursActualYear } = this;
+  async calculate({
+    lastBalances: _lastBalances,
+    hoursActualYear: _hoursActualYear,
+    totalDiscount: _totalDiscount,
+  }) {
+    const { store, calculateTypesOfHours, calculatedHoursSanitized } = this;
+
+    const { calculatedHours, hoursActualYear, lastBalances } = store({
+      lastBalances: _lastBalances,
+      hoursActualYear: _hoursActualYear,
+      totalDiscount: _totalDiscount,
+    });
+
     const balances = [...lastBalances, ...hoursActualYear];
 
     for (const balance of balances) {
       const { simple, working, nonWorking, year } = balance;
 
-      this.calculateTypesOfHours({
+      calculateTypesOfHours({
         year,
         hours: [simple, working, nonWorking],
       });
     }
 
     return {
-      calculatedHours: [...this.calculatedHours],
-      calculatedHoursSanitized: this.calculatedHoursSanitized(),
+      calculatedHours: [...calculatedHours],
+      calculatedHoursSanitized: calculatedHoursSanitized(),
     };
   }
 
   calculateTypesOfHours({ year, hours }) {
+    const { sumHours, storeHours } = this;
     hours.forEach((hour, index) => {
       const typeOfHour = Hours.getTypeOfHourByIndex(index);
       const previousHours = this.getPreviousHours({
         currentYear: year,
         typeOfHour,
       });
-      const sum = this.sumHours(hour, previousHours);
-      this.storeHours({ typeOfHour, year, value: sum });
+      const sum = sumHours(hour, previousHours);
+      storeHours({ typeOfHour, year, value: sum });
     });
+  }
+
+  store({
+    lastBalances: _lastBalances,
+    hoursActualYear: _hoursActualYear,
+    totalDiscount: _totalDiscount,
+  }) {
+    const { lastBalances, hoursActualYear, calculatedHours, totalDiscount } =
+      this;
+
+    lastBalances = [..._lastBalances];
+    hoursActualYear = [..._hoursActualYear];
+    totalDiscount = _totalDiscount || 0;
+
+    return {
+      lastBalances,
+      hoursActualYear,
+      calculatedHours,
+      totalDiscount,
+    };
   }
 
   calculatedHoursSanitized() {

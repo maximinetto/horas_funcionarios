@@ -4,8 +4,7 @@ module.exports = {
     node: true,
     jest: true,
   },
-  extends: ["google", "prettier", "plugin:prettier/recommended"],
-  plugins: ["prettier"],
+  extends: ["plugin:prettier/recommended", "google", "prettier"],
   parserOptions: {
     ecmaVersion: "latest",
     sourceType: "module",

@@ -1,8 +1,10 @@
 import Joi from "joi";
+import { timeToSeconds } from "utils/time";
 
 const time = Joi.string()
   .regex(/^([0-9]+)\:([0-5]\d)$/)
-  .default("00:00");
+  .default("00:00")
+  .cast(timeToSeconds);
 
 const base = {
   id: Joi.string().uuid({ version: "uuidv4" }),
@@ -23,7 +25,7 @@ const tas = {
   compensatedNightOvertime: time,
 };
 
-const theacher = {
+const teacher = {
   surplus: time,
   discount: time,
 };
@@ -32,7 +34,7 @@ export const schemas = {
   create: Joi.object({
     calculations: Joi.array().items(
       { ...base, ...tas },
-      { ...base, ...theacher }
+      { ...base, ...teacher }
     ),
   }),
   year: Joi.number().integer().min(2000).required(),

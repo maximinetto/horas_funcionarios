@@ -10,7 +10,8 @@
     "dev": "dotenv -e .env.development npm run watch",
     "watch": "webpack --watch --mode development",
     "lint": "npm run lint:fix",
-    "lint:fix": "eslint  src --fix",
+    "lint:fix": "eslint  . --fix",
+    "format": "prettier --write .",
     "migrate:dev": "dotenv -e .env.development -- npx prisma migrate dev --name init",
     "migrate:test": "dotenv -e .env.test -- npx prisma migrate dev --name test-init"
   },

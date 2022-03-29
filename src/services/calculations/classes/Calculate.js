@@ -3,31 +3,39 @@ import { DateTime } from "luxon";
 import _xor from "lodash/xor";
 import _differenceBy from "lodash/differenceBy";
 import InvalidValueError from "errors/InvalidValueError";
-import { operations } from "persistence/calculations";
 import { resetDateFromFirstDay } from "utils/date";
 import { getNumberByMonth } from "utils/mapMonths";
 
 const idIsPresent = (calculation) => calculation.id != null;
 export default class Calculate {
-  constructor({ actualDate, calculations, year, officialId }) {
-    this.calculations = calculations;
-    this.actualDate = actualDate;
-    this.year = year;
-    this.officialId = officialId;
+  constructor(calculationRepository) {
+    this.calculationRepository = calculationRepository;
   }
 
   async validate() {
-    if (!this.calculations || !Array.isArray(this.calculations)) {
+    const {
+      calculations,
+      year,
+      official,
+      calculationRepository,
+      calculationIsAfterOfDateOfEntry,
+      getSmallestCalculation,
+      mergeCalculations,
+      allMonthsHaveHours,
+      selectOptions,
+    } = this;
+
+    if (!calculations || !Array.isArray(calculations)) {
       throw new Error("calculations must be an array");
     }
 
-    const slowestCalculation = this.getSmallestCalculation(this.calculations);
+    const slowestCalculation = getSmallestCalculation(calculations);
 
     if (
-      !this.calculationIsAfterOfDateOfEntry(
-        this.year,
+      !calculationIsAfterOfDateOfEntry(
+        year,
         slowestCalculation,
-        this.actualDate
+        official.dateOfEntry
       )
     ) {
       throw new InvalidValueError(
@@ -35,19 +43,35 @@ export default class Calculate {
       );
     }
 
-    const calculationsFromPersistence = await operations.get(
+    const calculationsFromPersistence = await calculationRepository.get(
       {
-        officialId: this.officialId,
-        year: this.year,
+        officialId: official.id,
+        year: year,
       },
-      this.selectOptions
+      selectOptions
     );
 
-    this.calculations = this.mergeCalculations(calculationsFromPersistence);
+    calculations = mergeCalculations(calculationsFromPersistence);
 
-    if (!this.allMonthsHaveHours(this.calculations)) {
+    if (!allMonthsHaveHours(calculations)) {
       throw new InvalidValueError("All months must have hours");
     }
+  }
+
+  async calculate({
+    actualDate: _actualDate,
+    calculations: _calculations,
+    year: _year,
+    official: _official,
+  }) {
+    const { validate, store } = this;
+    store({
+      calculations: _calculations,
+      year: _year,
+      official: _official,
+      actualDate: _actualDate,
+    });
+    validate();
   }
 
   mergeCalculations(calculationsFromPersistence = []) {
@@ -111,24 +135,30 @@ export default class Calculate {
   }
 
   getSmallestCalculation(calculations) {
+    const { sortLowestToHighest } = this;
+
     if (calculations.length === 0) {
       return null;
     }
 
-    return calculations.sort(this.sortLowestToHighest);
+    return calculations.sort(sortLowestToHighest)[0];
   }
 
   getBiggestCalculation = (calculations) => {
+    const { sortLowestToHighest } = this;
     if (calculations.length === 0) {
       return null;
     }
 
-    return calculations.sort((a, b) => this.sortLowestToHighest(a, b) * -1);
+    return calculations.sort((a, b) => sortLowestToHighest(a, b) * -1)[
+      calculations.length - 1
+    ];
   };
 
   allMonthsHaveHours(calculations) {
+    const { getBiggestCalculation } = this;
     const firstMonth = getNumberByMonth(Month.JANUARY);
-    const lastMonth = this.actualDate.getMonth() + 1;
+    const lastMonth = getBiggestCalculation(calculations).month;
 
     return calculations.every((calculation) => {
       const month = getNumberByMonth(calculation.month);
@@ -151,4 +181,19 @@ export default class Calculate {
 
   calculationsWithoutId = (calculations = []) =>
     calculations.filter((calculation) => !idIsPresent(calculation));
+
+  store({ calculations, year, official, actualDate }) {
+    this.calculations = calculations;
+    this.actualDate = actualDate;
+    this.year = year;
+    this.official = official;
+
+    return {
+      calculations,
+      year,
+      official,
+      actualDate,
+      selectOptions: this.selectOptions,
+    };
+  }
 }
