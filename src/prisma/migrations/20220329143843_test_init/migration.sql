@@ -19,9 +19,9 @@ CREATE TABLE `hourly_balance_tas` (
     `id` VARCHAR(191) NOT NULL,
     `year` INTEGER NOT NULL,
     `year_balance` INTEGER NOT NULL,
-    `working` INTEGER NOT NULL,
-    `non_working` INTEGER NOT NULL,
-    `simple` INTEGER NOT NULL,
+    `working` BIGINT NOT NULL,
+    `non_working` BIGINT NOT NULL,
+    `simple` BIGINT NOT NULL,
     `official_id` INTEGER NOT NULL,
 
     UNIQUE INDEX `hourly_balance_tas_official_id_key`(`official_id`),
@@ -33,7 +33,7 @@ CREATE TABLE `hourly_balance_teacher` (
     `id` VARCHAR(191) NOT NULL,
     `year` INTEGER NOT NULL,
     `year_balance` INTEGER NOT NULL,
-    `balance` INTEGER NOT NULL,
+    `balance` BIGINT NOT NULL,
     `official_id` INTEGER NOT NULL,
 
     UNIQUE INDEX `hourly_balance_teacher_official_id_key`(`official_id`),
@@ -54,15 +54,15 @@ CREATE TABLE `calculation` (
 -- CreateTable
 CREATE TABLE `calculation_tas` (
     `id` VARCHAR(191) NOT NULL,
-    `surplus_business` INTEGER NOT NULL,
-    `surplus_non_working` INTEGER NOT NULL,
-    `surplus_simple` INTEGER NOT NULL,
-    `discount` INTEGER NOT NULL,
-    `working_overtime` INTEGER NOT NULL,
-    `working_night_overtime` INTEGER NOT NULL,
-    `non_working_overtime` INTEGER NOT NULL,
-    `non_working_night_overtime` INTEGER NOT NULL,
-    `compensated_night_overtime` INTEGER NOT NULL,
+    `surplus_business` BIGINT NOT NULL,
+    `surplus_non_working` BIGINT NOT NULL,
+    `surplus_simple` BIGINT NOT NULL,
+    `discount` BIGINT NOT NULL,
+    `working_overtime` BIGINT NOT NULL,
+    `working_night_overtime` BIGINT NOT NULL,
+    `non_working_overtime` BIGINT NOT NULL,
+    `non_working_night_overtime` BIGINT NOT NULL,
+    `compensated_night_overtime` BIGINT NOT NULL,
     `calculation_id` VARCHAR(191) NOT NULL,
 
     UNIQUE INDEX `calculation_tas_calculation_id_key`(`calculation_id`),
@@ -72,8 +72,8 @@ CREATE TABLE `calculation_tas` (
 -- CreateTable
 CREATE TABLE `calculation_teacher` (
     `id` VARCHAR(191) NOT NULL,
-    `surplus` INTEGER NOT NULL,
-    `discount` INTEGER NOT NULL,
+    `surplus` BIGINT NOT NULL,
+    `discount` BIGINT NOT NULL,
     `calculation_id` VARCHAR(191) NOT NULL,
 
     UNIQUE INDEX `calculation_teacher_calculation_id_key`(`calculation_id`),

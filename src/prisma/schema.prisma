@@ -31,9 +31,9 @@ model HourlyBalanceTAS {
   id         String   @id @default(uuid())
   year       Int
   yearBalance Int     @map("year_balance")
-  working    Int
-  nonWorking Int      @map("non_working")
-  simple     Int
+  working    BigInt
+  nonWorking BigInt      @map("non_working")
+  simple     BigInt
   officialId Int      @unique @map("official_id")
   official   Official @relation(fields: [officialId], references: [id])
 
@@ -44,7 +44,7 @@ model HourlyBalanceTeacher {
   id         String   @id @default(uuid())
   year       Int
   yearBalance Int     @map("year_balance")
-  balance    Int
+  balance    BigInt
   officialId Int      @unique @map("official_id")
   official   Official @relation(fields: [officialId], references: [id])
 
@@ -66,15 +66,15 @@ model Calculation {
 
 model CalculationTAS {
   id                       String      @id @default(uuid())
-  surplusBusiness          Int         @map("surplus_business")
-  surplusNonWorking        Int         @map("surplus_non_working")
-  surplusSimple            Int         @map("surplus_simple")
-  discount                 Int
-  workingOvertime          Int         @map("working_overtime")
-  workingNightOvertime     Int         @map("working_night_overtime")
-  nonWorkingOvertime       Int         @map("non_working_overtime")
-  nonWorkingNightOvertime  Int         @map("non_working_night_overtime")
-  compensatedNightOvertime Int         @map("compensated_night_overtime")
+  surplusBusiness          BigInt         @map("surplus_business")
+  surplusNonWorking        BigInt         @map("surplus_non_working")
+  surplusSimple            BigInt         @map("surplus_simple")
+  discount                 BigInt
+  workingOvertime          BigInt         @map("working_overtime")
+  workingNightOvertime     BigInt         @map("working_night_overtime")
+  nonWorkingOvertime       BigInt         @map("non_working_overtime")
+  nonWorkingNightOvertime  BigInt         @map("non_working_night_overtime")
+  compensatedNightOvertime BigInt         @map("compensated_night_overtime")
   calculationId            String       @unique @map("calculation_id")
   calculation              Calculation  @relation(fields: [calculationId], references: [id])
 
@@ -83,8 +83,8 @@ model CalculationTAS {
 
 model CalculationTeacher {
   id           String   @id @default(uuid())
-  surplus      Int
-  discount     Int
+  surplus      BigInt
+  discount     BigInt
   calculationId            String       @unique @map("calculation_id")
   calculation              Calculation  @relation(fields: [calculationId], references: [id])
   
@@ -103,7 +103,7 @@ enum TypeOfOfficials {
 
 enum Month {
   JANUARY
-  FEBUARY
+  FEBRUARY
   MARCH
   APRIL
   MAY
@@ -111,7 +111,7 @@ enum Month {
   JULY
   AUGUST
   SEPTEMBER
-  OCTUBER
+  OCTOBER
   NOVEMBER
   DECEMBER
 }

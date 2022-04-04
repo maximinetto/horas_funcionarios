@@ -1,18 +1,20 @@
 import { Month } from "@prisma/client";
-import { DateTime } from "luxon";
-import _xor from "lodash/xor";
-import _differenceBy from "lodash/differenceBy";
 import InvalidValueError from "errors/InvalidValueError";
+import _cloneDeep from "lodash/cloneDeep";
+import _differenceBy from "lodash/differenceBy";
+import _xor from "lodash/xor";
+import { DateTime } from "luxon";
 import { resetDateFromFirstDay } from "utils/date";
-import { getNumberByMonth } from "utils/mapMonths";
+import { getMonthByNumber, getNumberByMonth } from "utils/mapMonths";
 
 const idIsPresent = (calculation) => calculation.id != null;
 export default class Calculate {
   constructor(calculationRepository) {
     this.calculationRepository = calculationRepository;
+    this.calculate.bind(this);
   }
 
-  async validate() {
+  validate = async () => {
     const {
       calculations,
       year,
@@ -51,14 +53,14 @@ export default class Calculate {
       selectOptions
     );
 
-    calculations = mergeCalculations(calculationsFromPersistence);
+    this.calculations = mergeCalculations(calculationsFromPersistence);
 
-    if (!allMonthsHaveHours(calculations)) {
+    if (!allMonthsHaveHours(this.calculations)) {
       throw new InvalidValueError("All months must have hours");
     }
-  }
+  };
 
-  async calculate({
+  calculate({
     actualDate: _actualDate,
     calculations: _calculations,
     year: _year,
@@ -71,11 +73,11 @@ export default class Calculate {
       official: _official,
       actualDate: _actualDate,
     });
-    validate();
+    return validate();
   }
 
-  mergeCalculations(calculationsFromPersistence = []) {
-    const { calculations } = this;
+  mergeCalculations = (calculationsFromPersistence = []) => {
+    const { calculations, sortLowestToHighest } = this;
     const symmetricDifference = _xor(
       calculations,
       calculationsFromPersistence,
@@ -110,19 +112,24 @@ export default class Calculate {
     return [
       ...symmetricDifference,
       ...differenceCalculationsFromPersistence,
-    ].sort((a, b) => a.month - b.month);
-  }
+    ].sort(sortLowestToHighest);
+  };
 
   calculationIsAfterOfDateOfEntry(year, calculation, dateOfEntry) {
     if (!calculation || !dateOfEntry) {
       throw new Error("calculation and dateOfEntry must be defined");
     }
 
+    const month =
+      Number(calculation.month) instanceof Number
+        ? calculation.month
+        : getNumberByMonth(calculation.month);
+
     return (
       DateTime.fromObject(
         resetDateFromFirstDay({
           year,
-          month: calculation.month,
+          month,
         })
       ).toMillis() >=
       DateTime.fromObject(
@@ -134,15 +141,15 @@ export default class Calculate {
     );
   }
 
-  getSmallestCalculation(calculations) {
+  getSmallestCalculation = (calculations) => {
     const { sortLowestToHighest } = this;
 
     if (calculations.length === 0) {
       return null;
     }
 
-    return calculations.sort(sortLowestToHighest)[0];
-  }
+    return _cloneDeep(calculations).sort(sortLowestToHighest)[0];
+  };
 
   getBiggestCalculation = (calculations) => {
     const { sortLowestToHighest } = this;
@@ -150,29 +157,33 @@ export default class Calculate {
       return null;
     }
 
-    return calculations.sort((a, b) => sortLowestToHighest(a, b) * -1)[
-      calculations.length - 1
-    ];
+    return calculations
+      .slice()
+      .sort((a, b) => sortLowestToHighest(a, b) * -1)[0];
   };
 
-  allMonthsHaveHours(calculations) {
+  allMonthsHaveHours = (calculations) => {
     const { getBiggestCalculation } = this;
     const firstMonth = getNumberByMonth(Month.JANUARY);
-    const lastMonth = getBiggestCalculation(calculations).month;
-
+    const lastMonthName = getBiggestCalculation(calculations).month;
+    const lastMonthNumber = getNumberByMonth(lastMonthName);
     return calculations.every((calculation) => {
       const month = getNumberByMonth(calculation.month);
-      return month >= firstMonth && month <= lastMonth;
+      const isBetween = month >= firstMonth && month <= lastMonthNumber;
+      return isBetween;
     });
-  }
+  };
 
   sortLowestToHighest = (a, b) => {
+    const monthA = getNumberByMonth(a.month);
+    const monthB = getNumberByMonth(b.month);
+
     return (
       DateTime.fromObject(
-        resetDateFromFirstDay({ year: a.year, month: a.month })
+        resetDateFromFirstDay({ year: a.year, month: monthA })
       ).toMillis() -
       DateTime.fromObject(
-        resetDateFromFirstDay({ year: b.year, month: b.month })
+        resetDateFromFirstDay({ year: b.year, month: monthB })
       ).toMillis()
     );
   };
@@ -182,8 +193,8 @@ export default class Calculate {
   calculationsWithoutId = (calculations = []) =>
     calculations.filter((calculation) => !idIsPresent(calculation));
 
-  store({ calculations, year, official, actualDate }) {
-    this.calculations = calculations;
+  store = ({ calculations, year, official, actualDate }) => {
+    this.calculations = this.calculationsWithMonthLikeString(calculations);
     this.actualDate = actualDate;
     this.year = year;
     this.official = official;
@@ -195,5 +206,14 @@ export default class Calculate {
       actualDate,
       selectOptions: this.selectOptions,
     };
-  }
+  };
+
+  calculationsWithMonthLikeString = (calculations = []) =>
+    calculations.map((calculation) => ({
+      ...calculation,
+      month:
+        typeof calculation.month === "number"
+          ? getMonthByNumber(calculation.month)
+          : calculation.month,
+    }));
 }

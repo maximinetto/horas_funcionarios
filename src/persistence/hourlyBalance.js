@@ -13,7 +13,7 @@ export const operations = {
     });
   },
   getBalance: ({ officialId, year }) => {
-    return database.$queryRaw`SELECT id, year, year_balance as yearBalance, working, non_working, simple, 
+    return database.$queryRaw`SELECT id, year, year_balance as yearBalance, working, non_working as nonWorking, simple, 
       official_id as officialId 
       FROM hourly_balance_tas 
       WHERE official_id = ${officialId} AND year_balance = ${year} AND 
@@ -23,7 +23,17 @@ export const operations = {
           FROM hourly_balance_tas
           WHERE official_id = ${officialId} AND year_balance = ${year})
         > 0)
-      ORDER BY year ASC, year_balance ASC`;
+      ORDER BY year ASC, year_balance ASC`.then((balances) =>
+      balances.map((balance) => ({
+        ...balance,
+        year: Number(balance.year),
+        yearBalance: Number(balance.yearBalance),
+        working: BigInt(balance.working),
+        nonWorking: BigInt(balance.nonWorking),
+        simple: BigInt(balance.simple),
+        officialId: Number(balance.officialId),
+      }))
+    );
   },
   getOneTeacher: (params) => {
     return database.hourlyBalanceTeacher.findUnique({

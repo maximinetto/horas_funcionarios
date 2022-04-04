@@ -1,5 +1,5 @@
 const { Month } = require("@prisma/client");
-const Months = new Map(12);
+const Months = new Map();
 months();
 
 function months() {
@@ -12,7 +12,7 @@ function months() {
 }
 
 export function getMonthByNumber(number) {
-  if (!(typeof number === "number" && typeof number === "string")) {
+  if (!(typeof number === "number" || typeof number === "string")) {
     throw new Error("The number must be a number or string");
   }
 
@@ -21,10 +21,20 @@ export function getMonthByNumber(number) {
 }
 
 export function getNumberByMonth(month) {
-  if (!typeof month === "string") {
+  if (month == null || !(typeof month === "string")) {
     throw new Error("The month must be a string");
   }
 
-  const currentMonth = Months.values().find((m) => m.month === month);
+  const months = Array.from(Months);
+
+  const monthName = month.toUpperCase();
+
+  const result = months.find(([, m]) => m.month === monthName);
+  if (!result) {
+    throw new Error("The month must be a valid month");
+  }
+
+  const [, currentMonth] = result;
+
   return currentMonth.number;
 }
