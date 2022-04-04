@@ -8,20 +8,20 @@ export default class YearsCalculator {
     this.calculatedHours = [];
   }
 
-  async calculate({
-    lastBalances: _lastBalances,
-    hoursActualYear: _hoursActualYear,
-    totalDiscount: _totalDiscount,
-  }) {
+  async calculate({ lastBalances, hoursActualYear, totalDiscount }) {
     const { store, calculateTypesOfHours, calculatedHoursSanitized } = this;
 
-    const { calculatedHours, hoursActualYear, lastBalances } = store({
-      lastBalances: _lastBalances,
+    const {
+      calculatedHours,
       hoursActualYear: _hoursActualYear,
-      totalDiscount: _totalDiscount,
+      lastBalances: _lastBalances,
+    } = store({
+      lastBalances: lastBalances,
+      hoursActualYear: hoursActualYear,
+      totalDiscount: totalDiscount,
     });
 
-    const balances = [...lastBalances, ...hoursActualYear];
+    const balances = [..._lastBalances, _hoursActualYear];
 
     for (const balance of balances) {
       const { simple, working, nonWorking, year } = balance;
@@ -38,40 +38,37 @@ export default class YearsCalculator {
     };
   }
 
-  calculateTypesOfHours({ year, hours }) {
-    const { sumHours, storeHours } = this;
+  calculateTypesOfHours = ({ year, hours }) => {
+    const { sumHours, storeHours, getPreviousHours } = this;
     hours.forEach((hour, index) => {
       const typeOfHour = Hours.getTypeOfHourByIndex(index);
-      const previousHours = this.getPreviousHours({
+      const previousHours = getPreviousHours({
         currentYear: year,
         typeOfHour,
       });
       const sum = sumHours(hour, previousHours);
       storeHours({ typeOfHour, year, value: sum });
     });
-  }
+  };
 
-  store({
+  store = ({
     lastBalances: _lastBalances,
     hoursActualYear: _hoursActualYear,
     totalDiscount: _totalDiscount,
-  }) {
-    const { lastBalances, hoursActualYear, calculatedHours, totalDiscount } =
-      this;
-
-    lastBalances = [..._lastBalances];
-    hoursActualYear = [..._hoursActualYear];
-    totalDiscount = _totalDiscount || 0;
+  }) => {
+    this.lastBalances = [..._lastBalances];
+    this.hoursActualYear = { ..._hoursActualYear };
+    this.totalDiscount = _totalDiscount > 0 ? _totalDiscount : 0n;
 
     return {
-      lastBalances,
-      hoursActualYear,
-      calculatedHours,
-      totalDiscount,
+      lastBalances: this.lastBalances,
+      hoursActualYear: this.hoursActualYear,
+      calculatedHours: this.calculatedHours,
+      totalDiscount: this.totalDiscount,
     };
-  }
+  };
 
-  calculatedHoursSanitized() {
+  calculatedHoursSanitized = () => {
     const { calculatedHours } = this;
     return calculatedHours.map((calculatedHour) => ({
       ...calculatedHour,
@@ -80,21 +77,21 @@ export default class YearsCalculator {
         value: value >= 0 ? value : 0,
       })),
     }));
-  }
+  };
 
-  sumHours(hour, accumulatedHours) {
+  sumHours = (hour, accumulatedHours) => {
     if (accumulatedHours == null) {
       return hour - this.totalDiscount;
     }
     return accumulatedHours < 0 ? hour + accumulatedHours : hour;
-  }
+  };
 
-  getPreviousHours({ currentYear, typeOfHour }) {
+  getPreviousHours = ({ currentYear, typeOfHour }) => {
     const { calculatedHours } = this;
     if (calculatedHours.length === 0) {
       return null;
     }
-    const yearToSearch = this.isFirstTypeOfHour()
+    const yearToSearch = Hours.isFirstTypeOfHour(typeOfHour)
       ? currentYear - 1
       : currentYear;
     const yearSearched = calculatedHours.find(
@@ -106,16 +103,17 @@ export default class YearsCalculator {
 
     const { hours: previousHours } = yearSearched;
     const previousHour = previousHours.find(
-      ({ typeOfHour: _typeOfHour }) => _typeOfHour === typeOfHour
+      ({ typeOfHour: _typeOfHour }) =>
+        _typeOfHour === Hours.getPreviousTypeOfHour(typeOfHour)
     );
     if (!previousHour) {
       throw new Error("You must have a previous hour");
     }
 
     return previousHour.value;
-  }
+  };
 
-  storeHours({ typeOfHour, year, value }) {
+  storeHours = ({ typeOfHour, year, value }) => {
     const { calculatedHours } = this;
 
     if (Hours.isFirstTypeOfHour(typeOfHour)) {
@@ -134,5 +132,5 @@ export default class YearsCalculator {
 
     const { hours } = yearSearched;
     hours.push({ typeOfHour, value });
-  }
+  };
 }

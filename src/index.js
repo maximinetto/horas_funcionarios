@@ -1,8 +1,7 @@
-import express from "express";
+import { logger, OFFICIALS_SCHEDULES_PORT } from "config";
 import cors from "cors";
-import { OFFICIALS_SCHEDULES_PORT } from "config";
+import express from "express";
 import routes from "routes";
-import { logger } from "config";
 
 const app = express();
 
@@ -20,4 +19,9 @@ app.use((req, res, next) => {
 
 app.listen(OFFICIALS_SCHEDULES_PORT, () => {
   logger.info(`Server is listening on port ${OFFICIALS_SCHEDULES_PORT}`);
+});
+
+process.on("unhandledRejection", (reason) => {
+  logger.error(reason);
+  throw reason;
 });
