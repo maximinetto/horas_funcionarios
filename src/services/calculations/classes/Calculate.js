@@ -163,8 +163,22 @@ export default class Calculate {
   };
 
   allMonthsHaveHours = (calculations) => {
-    const { getBiggestCalculation } = this;
-    const firstMonth = getNumberByMonth(Month.JANUARY);
+    const { getBiggestCalculation, official } = this;
+    if (
+      !calculations ||
+      !(Array.isArray(calculations) && calculations.length > 0)
+    ) {
+      throw new Error(
+        "calculations must be an array and must have at least one element"
+      );
+    }
+    const { dateOfEntry } = official;
+    const dateOfEntryYear = dateOfEntry.getFullYear();
+    const dateOfEntryMonth = dateOfEntry.getMonth() + 1;
+    const firstMonth =
+      dateOfEntryYear === calculations[0].year
+        ? dateOfEntryMonth
+        : getNumberByMonth(Month.JANUARY);
     const lastMonthName = getBiggestCalculation(calculations).month;
     const lastMonthNumber = getNumberByMonth(lastMonthName);
     return calculations.every((calculation) => {
