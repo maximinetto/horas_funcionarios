@@ -65,7 +65,7 @@ export default class CalculateForTas extends Calculate {
     };
   };
 
-  calculatePerMonth = async (lastBalances) => {
+  calculatePerMonth = (lastBalances) => {
     const { calculations } = this;
     if (!Array.isArray(calculations)) {
       throw new Error("allCalculations must be an array");
