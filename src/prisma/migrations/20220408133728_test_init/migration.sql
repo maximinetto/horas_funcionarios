@@ -15,28 +15,45 @@ CREATE TABLE `officials` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `hourly_balance_tas` (
+CREATE TABLE `hourly_balance` (
     `id` VARCHAR(191) NOT NULL,
     `year` INTEGER NOT NULL,
-    `year_balance` INTEGER NOT NULL,
+    `actual_balance_id` VARCHAR(191) NOT NULL,
+
+    UNIQUE INDEX `hourly_balance_year_actual_balance_id_key`(`year`, `actual_balance_id`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `hourly_balance_tas` (
+    `id` VARCHAR(191) NOT NULL,
     `working` BIGINT NOT NULL,
     `non_working` BIGINT NOT NULL,
     `simple` BIGINT NOT NULL,
-    `official_id` INTEGER NOT NULL,
+    `hourly_balance_id` VARCHAR(191) NOT NULL,
 
-    UNIQUE INDEX `hourly_balance_tas_official_id_key`(`official_id`),
+    UNIQUE INDEX `hourly_balance_tas_hourly_balance_id_key`(`hourly_balance_id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `hourly_balance_teacher` (
     `id` VARCHAR(191) NOT NULL,
-    `year` INTEGER NOT NULL,
-    `year_balance` INTEGER NOT NULL,
     `balance` BIGINT NOT NULL,
+    `hourly_balance_id` VARCHAR(191) NOT NULL,
+
+    UNIQUE INDEX `hourly_balance_teacher_hourly_balance_id_key`(`hourly_balance_id`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `actual_balance` (
+    `id` VARCHAR(191) NOT NULL,
+    `year` INTEGER NOT NULL,
+    `total` BIGINT NOT NULL,
     `official_id` INTEGER NOT NULL,
 
-    UNIQUE INDEX `hourly_balance_teacher_official_id_key`(`official_id`),
+    UNIQUE INDEX `actual_balance_year_official_id_key`(`year`, `official_id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -44,10 +61,11 @@ CREATE TABLE `hourly_balance_teacher` (
 CREATE TABLE `calculation` (
     `id` VARCHAR(191) NOT NULL,
     `year` INTEGER NOT NULL,
-    `month` ENUM('JANUARY', 'FEBUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTUBER', 'NOVEMBER', 'DECEMBER') NOT NULL,
-    `official_id` INTEGER NOT NULL,
+    `month` ENUM('JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER') NOT NULL,
     `observations` TEXT NULL,
+    `actual_balance_id` VARCHAR(191) NOT NULL,
 
+    UNIQUE INDEX `calculation_year_month_actual_balance_id_key`(`year`, `month`, `actual_balance_id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -81,13 +99,19 @@ CREATE TABLE `calculation_teacher` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
-ALTER TABLE `hourly_balance_tas` ADD CONSTRAINT `hourly_balance_tas_official_id_fkey` FOREIGN KEY (`official_id`) REFERENCES `officials`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `hourly_balance` ADD CONSTRAINT `hourly_balance_actual_balance_id_fkey` FOREIGN KEY (`actual_balance_id`) REFERENCES `actual_balance`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `hourly_balance_teacher` ADD CONSTRAINT `hourly_balance_teacher_official_id_fkey` FOREIGN KEY (`official_id`) REFERENCES `officials`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `hourly_balance_tas` ADD CONSTRAINT `hourly_balance_tas_hourly_balance_id_fkey` FOREIGN KEY (`hourly_balance_id`) REFERENCES `hourly_balance`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `calculation` ADD CONSTRAINT `calculation_official_id_fkey` FOREIGN KEY (`official_id`) REFERENCES `officials`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `hourly_balance_teacher` ADD CONSTRAINT `hourly_balance_teacher_hourly_balance_id_fkey` FOREIGN KEY (`hourly_balance_id`) REFERENCES `hourly_balance`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `actual_balance` ADD CONSTRAINT `actual_balance_official_id_fkey` FOREIGN KEY (`official_id`) REFERENCES `officials`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `calculation` ADD CONSTRAINT `calculation_actual_balance_id_fkey` FOREIGN KEY (`actual_balance_id`) REFERENCES `actual_balance`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `calculation_tas` ADD CONSTRAINT `calculation_tas_calculation_id_fkey` FOREIGN KEY (`calculation_id`) REFERENCES `calculation`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
