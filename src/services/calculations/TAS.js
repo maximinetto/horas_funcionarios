@@ -1,4 +1,6 @@
-import { operations } from "persistence/calculations";
+import _groupBy from "lodash/groupBy";
+import { operations as balanceRepository } from "persistence/actualBalance";
+import { operations as calculationRepository } from "persistence/calculations";
 import CalculateForTas from "services/calculations/classes/CalculateForTAS";
 
 /*
@@ -55,12 +57,84 @@ export default async function calculateForTAS({
   calculations,
   actualDate,
 }) {
-  const calculate = new CalculateForTas(operations);
+  const hourlyBalances = await balances({ year, officialId: official.id });
+  const calculateService = new CalculateForTas(calculationRepository);
+  calculate(
+    { year, official, calculations, actualDate, hourlyBalances },
+    calculateService
+  );
+  tryToRecalculateLaterHours({ official, year }, calculateService);
+  save();
+}
 
-  return calculate.calculate({
+async function tryToRecalculateLaterHours(
+  { official, year },
+  calculateService
+) {
+  const calculations = await calculationRepository.get({
+    year: {
+      gt: year,
+    },
+    actualBalance: {
+      officialId: official.id,
+    },
+  });
+
+  if (!hasMoreLaterHours(calculations)) return;
+
+  const hourlyBalances = await balanceRepository.getTAS({
+    where: {
+      year: {
+        gt: year,
+        officialId: official.id,
+      },
+    },
+    include: {
+      hourlyBalances: {
+        include: {
+          hourlyBalanceTAS: true,
+        },
+      },
+    },
+  });
+
+  const currentCalculations = _groupBy(calculations, "year");
+
+  Object.entries(currentCalculations).forEach(([year, calculations]) => {
+    calculate(
+      { calculations, official, hourlyBalances, year },
+      calculateService
+    );
+  });
+}
+
+function hasMoreLaterHours(calculations) {
+  return calculations.length > 0;
+}
+
+async function calculate(
+  { year, official, calculations, actualDate, hourlyBalances },
+  calculateService
+) {
+  return calculateService.calculate({
     year,
     official,
     calculations,
     actualDate,
+    hourlyBalances,
   });
 }
+
+async function balances({ year, officialId }) {
+  const lastActualBalances =
+    await balanceRepository.getBalanceTASBYOfficialIdAndYear({
+      officialId: officialId,
+      year,
+    });
+
+  return lastActualBalances.length === 0
+    ? { hourlyBalanceTAS: [] }
+    : lastActualBalances[0];
+}
+
+function save() {}

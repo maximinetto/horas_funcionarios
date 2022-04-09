@@ -11,14 +11,15 @@ export default class CalculateForTas extends Calculate {
     super(calculationRepository);
   }
 
-  calculate = async ({ actualDate, calculations, year, official }) => {
+  calculate = async ({
+    actualDate,
+    calculations,
+    year,
+    official,
+    hourlyBalances,
+  }) => {
     await super.calculate({ actualDate, calculations, year, official });
-    const { calculatePerMonth, calculationRepository, currentYearSanitized } =
-      this;
-    const lastBalances = await calculationRepository.getBalance({
-      officialId: official.id,
-      year: year - 1,
-    });
+    const { calculatePerMonth, currentYearSanitized } = this;
 
     const [
       totalBalance,
@@ -26,14 +27,14 @@ export default class CalculateForTas extends Calculate {
       nonWorkingHours,
       simpleHours,
       totalDiscount,
-    ] = await calculatePerMonth(lastBalances);
+    ] = await calculatePerMonth(hourlyBalances);
     const hoursActualYear = currentYearSanitized(
       { workingHours, nonWorkingHours, simpleHours },
       year
     );
 
     const balancesPerYearCalculator = new YearsCalculator({
-      lastBalances,
+      hourlyBalances,
       hoursActualYear,
       totalDiscount,
     });
@@ -43,14 +44,8 @@ export default class CalculateForTas extends Calculate {
       calculatedHoursSanitized: balancesSanitized,
     } = await balancesPerYearCalculator.calculate({
       hoursActualYear,
-      lastBalances,
+      hourlyBalances,
       totalDiscount,
-    });
-
-    this.mutateInPersistence({
-      balances: balancesSanitized,
-      totalDiscount,
-      totalBalance,
     });
 
     return {
@@ -65,14 +60,14 @@ export default class CalculateForTas extends Calculate {
     };
   };
 
-  calculatePerMonth = (lastBalances) => {
+  calculatePerMonth = (hourlyBalances) => {
     const { calculations } = this;
     if (!Array.isArray(calculations)) {
       throw new Error("allCalculations must be an array");
     }
 
     return Promise.all([
-      this.getTotalBalance(lastBalances),
+      this.getTotalBalance(hourlyBalances),
       this.getTotalWorkingHours(),
       this.getTotalNonWorkingHours(),
       this.getTotalSimpleHours(),
@@ -80,19 +75,17 @@ export default class CalculateForTas extends Calculate {
     ]);
   };
 
-  mutateInPersistence = ({ balances, totalDiscount, totalBalance }) => {
-    const { calculations, officialId, year } = this;
-    balances.map(({ hours, year }) => ({ hours }));
-  };
-
-  getTotalBalance = (lastBalances) => {
-    const totalHours = lastBalances.reduce(
-      (total, { working, nonWorking, simple }) =>
-        total + working + nonWorking + simple,
+  getTotalBalance = (hourlyBalances) => {
+    const totalHours = hourlyBalances.reduce(
+      (total, { hourlyBalanceTAS }) =>
+        total +
+        hourlyBalanceTAS.working +
+        hourlyBalanceTAS.nonWorking +
+        hourlyBalanceTAS.simple,
       0n
     );
 
-    console.log("lastBalance:", totalHours.toString());
+    console.log("hourlyBalances:", totalHours.toString());
 
     let totalBalance = new Decimal(totalHours.toString());
     for (const calculation of this.calculations) {

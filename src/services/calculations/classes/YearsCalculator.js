@@ -2,29 +2,30 @@ import { instance as Hours } from "./typeOfHours";
 
 export default class YearsCalculator {
   constructor() {
-    this.lastBalances = [];
+    this.hourlyBalances = [];
     this.hoursActualYear = [];
     this.totalDiscount = 0;
     this.calculatedHours = [];
   }
 
-  async calculate({ lastBalances, hoursActualYear, totalDiscount }) {
+  async calculate({ hourlyBalances, hoursActualYear, totalDiscount }) {
     const { store, calculateTypesOfHours, calculatedHoursSanitized } = this;
 
     const {
       calculatedHours,
       hoursActualYear: _hoursActualYear,
-      lastBalances: _lastBalances,
+      hourlyBalances: _hourlyBalances,
     } = store({
-      lastBalances: lastBalances,
+      hourlyBalances: hourlyBalances,
       hoursActualYear: hoursActualYear,
       totalDiscount: totalDiscount,
     });
 
-    const balances = [..._lastBalances, _hoursActualYear];
+    const balances = [..._hourlyBalances, _hoursActualYear];
 
     for (const balance of balances) {
-      const { simple, working, nonWorking, year } = balance;
+      const { hourlyBalanceTAS } = balance;
+      const { simple, working, nonWorking, year } = hourlyBalanceTAS;
 
       calculateTypesOfHours({
         year,
@@ -52,16 +53,16 @@ export default class YearsCalculator {
   };
 
   store = ({
-    lastBalances: _lastBalances,
+    hourlyBalances: _hourlyBalances,
     hoursActualYear: _hoursActualYear,
     totalDiscount: _totalDiscount,
   }) => {
-    this.lastBalances = [..._lastBalances];
+    this.hourlyBalances = [..._hourlyBalances];
     this.hoursActualYear = { ..._hoursActualYear };
     this.totalDiscount = _totalDiscount > 0 ? _totalDiscount : 0n;
 
     return {
-      lastBalances: this.lastBalances,
+      hourlyBalances: this.hourlyBalances,
       hoursActualYear: this.hoursActualYear,
       calculatedHours: this.calculatedHours,
       totalDiscount: this.totalDiscount,

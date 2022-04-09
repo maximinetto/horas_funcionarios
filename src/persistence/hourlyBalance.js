@@ -1,5 +1,6 @@
 import database from "persistence/persistence.config";
 
+// TODO revisar luego el create, update y delete
 export const operations = {
   getOneTAS: (params) => {
     return database.hourlyBalanceTAS.findUnique({
@@ -12,29 +13,6 @@ export const operations = {
       ...options,
     });
   },
-  getBalance: ({ officialId, year }) => {
-    return database.$queryRaw`SELECT id, year, year_balance as yearBalance, working, non_working as nonWorking, simple, 
-      official_id as officialId 
-      FROM hourly_balance_tas 
-      WHERE official_id = ${officialId} AND year_balance = ${year} AND 
-      year >= (SELECT min(year) FROM hourly_balance_tas 
-        WHERE official_id = ${officialId} AND year_balance = ${year} AND 
-          (SELECT SUM(simple, working, non_working)
-          FROM hourly_balance_tas
-          WHERE official_id = ${officialId} AND year_balance = ${year})
-        > 0)
-      ORDER BY year ASC, year_balance ASC`.then((balances) =>
-      balances.map((balance) => ({
-        ...balance,
-        year: Number(balance.year),
-        yearBalance: Number(balance.yearBalance),
-        working: BigInt(balance.working),
-        nonWorking: BigInt(balance.nonWorking),
-        simple: BigInt(balance.simple),
-        officialId: Number(balance.officialId),
-      }))
-    );
-  },
   getOneTeacher: (params) => {
     return database.hourlyBalanceTeacher.findUnique({
       where: params,
@@ -45,31 +23,14 @@ export const operations = {
       where: params,
     });
   },
-  createTAS: ({
-    year,
-    yearBalance,
-    working,
-    nonWorking,
-    simple,
-    officialId,
-  }) => {
-    return database.hourlyBalanceTASTAS.create({
+  create: ({ year, yearBalance, working, nonWorking, simple, officialId }) => {
+    return database.hourlyBalance.create({
       data: {
         year,
         yearBalance,
         working,
         nonWorking,
         simple,
-        officialId,
-      },
-    });
-  },
-  createTeacher: ({ year, yearBalance, officialId, balance }) => {
-    return database.hourlyBalanceTeacher.create({
-      data: {
-        year,
-        yearBalance,
-        balance,
         officialId,
       },
     });
@@ -92,8 +53,8 @@ export const operations = {
       },
     });
   },
-  updateTeacher: (id, { year, yearBalance, officialId, balance }) => {
-    return database.hourlyBalanceTASTeacher.update({
+  update: (id, { year, yearBalance, officialId, balance }) => {
+    return database.hourlyBalance.update({
       where: {
         id,
       },
@@ -106,14 +67,14 @@ export const operations = {
     });
   },
   deleteTAS: (id) => {
-    return database.hourlyBalanceTAS.delete({
+    return database.hourlyBalance.delete({
       where: {
         id,
       },
     });
   },
   deleteTeacher: (id) => {
-    return database.hourlyBalanceTeacher.delete({
+    return database.hourlyBalance.delete({
       where: {
         id,
       },

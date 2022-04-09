@@ -10,7 +10,7 @@ export const operations = {
   get: (where, options) => {
     return database.calculation.findMany({
       where,
-      options,
+      ...options,
     });
   },
   createTAS: ({
