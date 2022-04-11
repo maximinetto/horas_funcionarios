@@ -1,19 +1,18 @@
-import { Decimal } from "decimal.js";
-import _keyBy from "lodash/keyBy";
 import {
   CalculationParamTAS,
   CalculationWithTAS,
   PrismaCalculationFinderOptions,
 } from "@/@types/calculations";
+import { TypeOfHour, TypeOfHoursByYear } from "@/@types/typeOfHours";
+import { TYPES_OF_HOURS } from "@/enums/typeOfHours";
 import { calculationTasFromArray } from "@/mappers/EntityToDTO";
-import Calculate from "services/calculations/classes/Calculate";
-import HoursClass, { instance as Hours } from "./typeOfHours";
-import YearsCalculator from "./YearsCalculator";
-import {
-  TypeOfHour,
-  TypeOfHoursByYear,
-  TYPES_OF_HOURS,
-} from "@/@types/typeOfHours";
+import Calculate from "@/services/calculations/classes/Calculate";
+import HoursClass, {
+  instance as Hours,
+} from "@/services/calculations/classes/typeOfHours";
+import YearsCalculator from "@/services/calculations/classes/YearsCalculator";
+import { Decimal } from "decimal.js";
+import _keyBy from "lodash/keyBy";
 
 export default class CalculateForTas extends Calculate {
   private static WORKING_MULTIPLIER = 1.5;

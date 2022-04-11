@@ -1,3 +1,4 @@
+import { TYPES_OF_HOURS } from "@/enums/typeOfHours";
 import {
   Calculation,
   CalculationTAS as CalculationTASModel,

@@ -1,4 +1,4 @@
-import ArrayIsEmptyError from "errors/ArrayIsEmptyError";
+import ArrayIsEmptyError from "@/errors/ArrayIsEmptyError";
 import _keyBy from "lodash/keyBy";
 
 export const isFirstValue = (index: number) => index === 0;

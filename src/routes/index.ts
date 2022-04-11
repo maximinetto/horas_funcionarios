@@ -1,7 +1,7 @@
+import { baseDir } from "@/config";
+import { createRouter } from "@/dependencies";
 import fs from "fs/promises";
 import path from "path";
-import { baseDir } from "../config";
-import { createRouter } from "../dependencies";
 
 const router = createRouter();
 

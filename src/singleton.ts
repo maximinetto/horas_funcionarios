@@ -1,6 +1,6 @@
+import prisma from "@/persistence/persistence.config";
 import { PrismaClient } from "@prisma/client";
 import { DeepMockProxy, mockDeep, mockReset } from "jest-mock-extended";
-import prisma from "persistence/persistence.config";
 
 jest.mock("persistence/persistence.config", () => {
   return {

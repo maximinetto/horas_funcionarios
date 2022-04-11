@@ -1,5 +1,5 @@
+import { getMonthByNumber, getNumberByMonth } from "@/utils/mapMonths";
 import { Month } from "@prisma/client";
-import { getMonthByNumber, getNumberByMonth } from "utils/mapMonths";
 
 test("Test get month number by month name.", () => {
   const months = [

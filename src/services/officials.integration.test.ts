@@ -1,7 +1,7 @@
+import prisma from "@/persistence/persistence.config";
 import officialService from "@/services/officials";
 import faker from "@faker-js/faker";
 import { Contract, TypeOfOfficials } from "@prisma/client";
-import prisma from "persistence/persistence.config";
 
 afterEach(async () => {
   const deleteOfficial = prisma.official.deleteMany();

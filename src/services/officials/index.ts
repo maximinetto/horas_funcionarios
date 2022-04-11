@@ -1,7 +1,7 @@
+import { operations } from "@/persistence/officials";
 import { lastDateOfTheYear } from "@/utils/date";
+import removeKeyIfValueDoesNotDefined from "@/utils/removeKeyIfValueDoesNotDefined";
 import { Contract, TypeOfOfficials } from "@prisma/client";
-import { operations } from "persistence/officials";
-import removeKeyIfValueDoesNotDefined from "utils/removeKeyIfValueDoesNotDefined";
 
 const service = {
   get: async ({
