@@ -3,10 +3,10 @@ import {
   deleteOfficial,
   getOfficials,
   updateOfficial,
-} from "controllers/officials";
-import { createRouter } from "dependencies";
-import middleware, { exists } from "validation/middlewares/validation";
-import { schemas } from "validation/schemas/officials";
+} from "@/controllers/officials";
+import { createRouter } from "@/dependencies";
+import middleware, { exists } from "@/validation/middlewares/validation";
+import { schemas } from "@/validation/schemas/officials";
 
 const entity = "official";
 

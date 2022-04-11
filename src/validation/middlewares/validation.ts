@@ -1,12 +1,12 @@
 import { Property } from "@/@types/common";
-import { asyncHandler } from "dependencies";
-import NotExistsError from "errors/NotExistsError";
+import { asyncHandler } from "@/dependencies";
+import NotExistsError from "@/errors/NotExistsError";
+import persistence from "@/persistence/persistence.config";
 import { Request, Response } from "express";
 import { NextFunction } from "express-serve-static-core";
 import { AnySchema, ValidationError } from "joi";
 import _get from "lodash/get";
 import _merge from "lodash/merge";
-import persistence from "persistence/persistence.config";
 
 export default function middleware(
   schema: AnySchema,

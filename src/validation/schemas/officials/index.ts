@@ -1,26 +1,26 @@
 import { Contract, TypeOfOfficials } from "@prisma/client";
-import { date, number, object, string } from "joi";
+import Joi from "joi";
 
 const types = Object.values(TypeOfOfficials);
 const contracts = Object.values(Contract);
 
-const recordNumberOfficialSchema = number().min(1);
-const firstNameOfficialSchema = string().min(1).max(255);
-const lastNameOfficialSchema = string().min(1).max(255);
-const positionOfficialSchema = string().min(1).max(255);
-const dateOfEntryOfficialSchema = date();
-const chargeNumberOfficialSchema = number().min(1);
-const typeOfficialSchema = string().valid(types);
-const contractOfficialSchema = string().valid(contracts);
-const officialIdSchema = number().min(1);
+const recordNumberOfficialSchema = Joi.number().min(1);
+const firstNameOfficialSchema = Joi.string().min(1).max(255);
+const lastNameOfficialSchema = Joi.string().min(1).max(255);
+const positionOfficialSchema = Joi.string().min(1).max(255);
+const dateOfEntryOfficialSchema = Joi.date();
+const chargeNumberOfficialSchema = Joi.number().min(1);
+const typeOfficialSchema = Joi.string().valid(...types);
+const contractOfficialSchema = Joi.string().valid(...contracts);
+const officialIdSchema = Joi.number().min(1);
 
 export const schemas = {
-  get: object({
+  get: Joi.object({
     type: typeOfficialSchema.optional(),
     contract: contractOfficialSchema.optional(),
-    year: number().optional(),
+    year: Joi.number().optional(),
   }),
-  create: object().keys({
+  create: Joi.object().keys({
     recordNumber: recordNumberOfficialSchema.required(),
     firstName: firstNameOfficialSchema.required(),
     lastName: lastNameOfficialSchema.required(),
@@ -30,7 +30,7 @@ export const schemas = {
     type: typeOfficialSchema.required(),
     contract: contractOfficialSchema.required(),
   }),
-  update: object()
+  update: Joi.object()
     .keys({
       recordNumber: recordNumberOfficialSchema,
       firstName: firstNameOfficialSchema,
@@ -42,7 +42,7 @@ export const schemas = {
       contract: contractOfficialSchema,
     })
     .min(1),
-  id: object().keys({
+  id: Joi.object().keys({
     id: officialIdSchema.required(),
   }),
 };

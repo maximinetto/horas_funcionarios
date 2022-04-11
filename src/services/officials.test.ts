@@ -1,8 +1,8 @@
+import service from "@/services/officials";
+import { prismaMock } from "@/singleton";
 import { faker } from "@faker-js/faker";
 import { Contract, TypeOfOfficials } from "@prisma/client";
 import { mockReset } from "jest-mock-extended";
-import { prismaMock } from "singleton";
-import service from "./officials/index";
 
 describe("Officials controller tests", () => {
   beforeEach(() => {

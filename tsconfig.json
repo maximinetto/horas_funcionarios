@@ -5,9 +5,9 @@
     "module": "commonjs",
     "rootDir": "./src",
 
-    "baseUrl": "./src",
+    "baseUrl": "./",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./src/*"],
     },
     "resolveJsonModule": true,
     "allowJs": true,

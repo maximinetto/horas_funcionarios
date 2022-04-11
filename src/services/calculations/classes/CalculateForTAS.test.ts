@@ -1,5 +1,7 @@
 import { CalculationTAS } from "@/@types/calculations";
 import { HourlyBalanceTAS } from "@/@types/hourlyBalance";
+import CalculateForTAS from "@/services/calculations/classes/CalculateForTAS";
+import { getMonthByNumber } from "@/utils/mapMonths";
 import faker from "@faker-js/faker";
 import {
   ActualBalance,
@@ -9,8 +11,6 @@ import {
 } from "@prisma/client";
 import Decimal from "decimal.js";
 import { DateTime } from "luxon";
-import CalculateForTAS from "services/calculations/classes/CalculateForTAS";
-import { getMonthByNumber } from "utils/mapMonths";
 
 const getBalance = jest.fn();
 const get = jest.fn();

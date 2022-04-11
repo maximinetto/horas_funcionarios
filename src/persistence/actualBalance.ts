@@ -3,8 +3,8 @@ import {
   ActualBalanceFindManyOptions,
   ActualBalanceWithHourlyBalancesOptional,
 } from "@/@types/actualBalance";
+import database from "@/persistence/persistence.config";
 import { Prisma } from "@prisma/client";
-import database from "persistence/persistence.config";
 
 export const operations = {
   getBalanceTASBYOfficialIdAndYear: ({

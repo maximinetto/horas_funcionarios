@@ -2,8 +2,8 @@ import {
   CalculationTASData,
   CalculationTeacherData,
 } from "@/@types/calculations";
+import database from "@/persistence/persistence.config";
 import { Prisma } from "@prisma/client";
-import database from "persistence/persistence.config";
 
 export class CalculationRepository {
   getOne(

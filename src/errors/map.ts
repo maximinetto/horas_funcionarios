@@ -1,6 +1,6 @@
-import ArrayIsEmptyError from "./ArrayIsEmptyError";
-import CustomError from "./CustomError";
-import InvalidValueError from "./InvalidValueError";
+import ArrayIsEmptyError from "@/errors/ArrayIsEmptyError";
+import CustomError from "@/errors/CustomError";
+import InvalidValueError from "@/errors/InvalidValueError";
 
 const map = [
   [InvalidValueError.prototype.getClassName(), 500],

@@ -1,5 +1,5 @@
 import { TypeOfHoursByYear } from "@/@types/typeOfHours";
-import { instance as Hours } from "./typeOfHours";
+import { instance as Hours } from "@/services/calculations/classes/typeOfHours";
 
 export default class YearsCalculator {
   private hourlyBalances: any[];

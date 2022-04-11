@@ -1,7 +1,7 @@
-import { logger, OFFICIALS_SCHEDULES_PORT } from "config";
+import { logger, OFFICIALS_SCHEDULES_PORT } from "@/config";
+import routes from "@/routes";
 import cors from "cors";
 import express from "express";
-import routes from "routes";
 
 const app = express();
 

@@ -1,7 +1,7 @@
-import { createHours } from "controllers/calculations";
-import { createRouter } from "dependencies";
-import middleware, { exists } from "validation/middlewares/validation";
-import { schemas } from "validation/schemas/calculations";
+import { createHours } from "@/controllers/calculations";
+import { createRouter } from "@/dependencies";
+import middleware, { exists } from "@/validation/middlewares/validation";
+import { schemas } from "@/validation/schemas/calculations";
 
 const entity = "calculation";
 
