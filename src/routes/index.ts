@@ -1,4 +1,4 @@
-import { baseDir } from "@/config";
+import { baseDir, logger } from "@/config";
 import { createRouter } from "@/dependencies";
 import fs from "fs/promises";
 import path from "path";
@@ -16,6 +16,7 @@ fs.readdir(pathRouter).then((files) => {
     const fileName = removeExtension(file);
     const skip = ["index"].includes(fileName) || file.endsWith("map");
     if (!skip) {
+      logger.info(`importing ${fileName}`);
       router.use(`/${fileName}`, require(`./${fileName}`).default);
     }
   });

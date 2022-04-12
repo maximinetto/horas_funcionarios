@@ -1,7 +1,7 @@
 import { CalculationTAS } from "@/@types/calculations";
 import { HourlyBalanceTAS } from "@/@types/hourlyBalance";
+import { CalculationRepository } from "@/persistence/calculations";
 import CalculateForTAS from "@/services/calculations/classes/CalculateForTAS";
-import { getMonthByNumber } from "@/utils/mapMonths";
 import faker from "@faker-js/faker";
 import {
   ActualBalance,
@@ -12,8 +12,15 @@ import {
 import Decimal from "decimal.js";
 import { DateTime } from "luxon";
 
-const getBalance = jest.fn();
-const get = jest.fn();
+const calculationRepository: jest.Mocked<CalculationRepository> = {
+  createTAS: jest.fn(),
+  createTeacher: jest.fn(),
+  updateTAS: jest.fn(),
+  get: jest.fn(),
+  delete: jest.fn(),
+  getOne: jest.fn(),
+  updateTeacher: jest.fn(),
+};
 
 type Total = {
   simple: Decimal;
@@ -45,7 +52,7 @@ interface Result {
   lastBalances: HourlyBalanceTAS[];
 }
 
-function hoursToSeconds(hours) {
+function hoursToSeconds(hours: number) {
   return BigInt(hours) * 60n * 60n;
 }
 
@@ -113,15 +120,15 @@ const calculations: CalculationTAS[] = [
 
 describe("Test calculations", () => {
   beforeEach(() => {
-    getBalance.mockReset();
+    calculationRepository.get.mockReset();
   });
 
   test("Should calculate right the passed values", async () => {
-    get.mockResolvedValue([]);
+    calculationRepository.get.mockResolvedValue([]);
     let data = await preset(calculations, year, date);
     let total = calculate(calculations, data.lastBalances);
     await testGeneral(data, total);
-    get.mockReset();
+    calculationRepository.get.mockReset();
 
     const otherCalculations: CalculationTAS[] = [
       buildCalculation({
@@ -186,9 +193,7 @@ describe("Test calculations", () => {
       }),
     ];
 
-    get.mockResolvedValue(
-      calculations.map((c) => ({ ...c, month: getMonthByNumber(c.month) }))
-    );
+    calculationRepository.get.mockResolvedValue(calculations);
     data = await preset(otherCalculations, year, date);
     total = calculate(
       [...calculations, ...otherCalculations],
@@ -269,31 +274,29 @@ describe("Test calculations", () => {
       total,
     }: { totalCurrentYear: Omit<Total, "totalHours">; total: Total }
   ) {
-    getBalance.mockResolvedValue(lastBalances);
+    const calculator = new CalculateForTAS(calculationRepository);
 
-    const calculator = new CalculateForTAS({ getBalance, get });
+    const response = await calculator.calculate({
+      ...data,
+      hourlyBalances: [...lastBalances],
+    });
 
-    try {
-      const response = await calculator.calculate({
-        ...data,
-        hourlyBalances: [...lastBalances],
-      });
-
-      expect(response.simpleHours.value).toBe(totalCurrentYear.simple);
-      expect(
-        totalCurrentYear.working.equals(response.workingHours.value)
-      ).toBeTruthy();
-      expect(
-        totalCurrentYear.nonWorking.equals(response.nonWorkingHours.value)
-      ).toBeTruthy();
-      expect(response.totalBalance).toBe(total.totalHours);
-    } catch (error) {
-      console.log(error);
-      throw new Error("Something went wrong");
-    }
+    expect(response.simpleHours.value.toString()).toBe(
+      totalCurrentYear.simple.toString()
+    );
+    expect(
+      totalCurrentYear.working.equals(response.workingHours.value)
+    ).toBeTruthy();
+    expect(
+      totalCurrentYear.nonWorking.equals(response.nonWorkingHours.value)
+    ).toBeTruthy();
+    expect(response.totalBalance.toString()).toBe(total.totalHours.toString());
   }
 
-  function calculate(calculations, lastBalances) {
+  function calculate(
+    calculations: CalculationTAS[],
+    lastBalances: HourlyBalanceTAS[]
+  ) {
     const totalCurrentYear: Omit<Total, "totalHours"> = {
       simple: new Decimal(0),
       working: new Decimal(0),
@@ -301,40 +304,50 @@ describe("Test calculations", () => {
       discount: new Decimal(0),
     };
     calculations.forEach((calculation) => {
-      totalCurrentYear.simple.add(calculation.surplusSimple);
-      totalCurrentYear.working.add(calculation.surplusBusiness);
-      totalCurrentYear.nonWorking.add(calculation.surplusNonWorking);
-      totalCurrentYear.discount.add(calculation.discount);
+      totalCurrentYear.simple = totalCurrentYear.simple.add(
+        calculation.surplusSimple.toString()
+      );
+      totalCurrentYear.working = totalCurrentYear.working.add(
+        calculation.surplusBusiness.toString()
+      );
+      totalCurrentYear.nonWorking = totalCurrentYear.nonWorking.add(
+        calculation.surplusNonWorking.toString()
+      );
+      totalCurrentYear.discount = totalCurrentYear.discount.add(
+        calculation.discount.toString()
+      );
     });
 
-    totalCurrentYear.working = new Decimal(
-      totalCurrentYear.working.toString()
-    ).mul(1.5);
-    totalCurrentYear.nonWorking = new Decimal(
-      totalCurrentYear.nonWorking.toString()
-    ).mul(2);
+    totalCurrentYear.working = totalCurrentYear.working.mul(1.5);
+    totalCurrentYear.nonWorking = totalCurrentYear.nonWorking.mul(2);
 
     const total: Total = {
       ...totalCurrentYear,
       totalHours: new Decimal(0),
     };
 
-    lastBalances.forEach((balance) => {
-      total.simple = new Decimal(balance.simple).add(total.simple);
-      total.working = new Decimal(balance.working.toString()).add(
-        total.working
-      );
-      total.nonWorking = new Decimal(balance.nonWorking.toString()).add(
-        total.nonWorking
-      );
+    lastBalances.forEach(({ hourlyBalanceTAS }) => {
+      if (hourlyBalanceTAS) {
+        total.simple = new Decimal(hourlyBalanceTAS.simple.toString()).add(
+          total.simple
+        );
+        total.working = new Decimal(hourlyBalanceTAS.working.toString()).add(
+          total.working
+        );
+        total.nonWorking = new Decimal(
+          hourlyBalanceTAS.nonWorking.toString()
+        ).add(total.nonWorking);
+      } else {
+        total.simple = new Decimal(0);
+        total.working = new Decimal(0);
+        total.nonWorking = new Decimal(0);
+      }
     });
 
     total.totalHours = new Decimal(total.working.toString())
       .add(total.nonWorking.toString())
       .add(total.simple.toString())
       .sub(total.discount.toString());
-
-    console.log("totalHours:", total.totalHours);
 
     return { totalCurrentYear, total };
   }

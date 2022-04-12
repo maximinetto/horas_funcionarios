@@ -1,6 +1,17 @@
+import { CalculationRepository } from "@/persistence/calculations";
+import CalculateForTas from "@/services/calculations/classes/CalculateForTAS";
 import faker from "@faker-js/faker";
 import { Month } from "@prisma/client";
-import CalculateForTas from "./CalculateForTAS";
+
+const calculationRepository: jest.Mocked<CalculationRepository> = {
+  createTAS: jest.fn(),
+  createTeacher: jest.fn(),
+  updateTAS: jest.fn(),
+  get: jest.fn(),
+  delete: jest.fn(),
+  getOne: jest.fn(),
+  updateTeacher: jest.fn(),
+};
 
 test("Test sort", () => {
   const december = {
@@ -40,7 +51,7 @@ test("Test sort", () => {
   const expected = [january, march, may, december];
 
   const { sortLowestToHighest, getBiggestCalculation } = new CalculateForTas(
-    {}
+    calculationRepository
   );
 
   testSortLowestToHighest();

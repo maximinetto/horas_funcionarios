@@ -2,13 +2,8 @@ import service from "@/services/officials";
 import { prismaMock } from "@/singleton";
 import { faker } from "@faker-js/faker";
 import { Contract, TypeOfOfficials } from "@prisma/client";
-import { mockReset } from "jest-mock-extended";
 
 describe("Officials controller tests", () => {
-  beforeEach(() => {
-    mockReset(prismaMock);
-  });
-
   test("Should get multiples official models", async () => {
     const officials = [
       {
@@ -141,7 +136,6 @@ describe("Officials controller tests", () => {
   });
 
   test("Should update an existing official record", async () => {
-    const service = require("@/services/officials").default;
     const official = {
       id: 1,
       recordNumber: 3333,

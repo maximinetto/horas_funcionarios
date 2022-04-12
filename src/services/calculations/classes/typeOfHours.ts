@@ -17,7 +17,7 @@ export default class Hours {
   isFirstTypeOfHour = (value: TYPES_OF_HOURS) => {
     return Object.keys(TYPES_OF_HOURS)[0] === value;
   };
-  getTypeOfHourByIndex = (index: number): string => {
+  getTypeOfHourByIndex = (index: number): TYPES_OF_HOURS => {
     const key = Object.keys(TYPES_OF_HOURS)[index];
     return TYPES_OF_HOURS[key];
   };

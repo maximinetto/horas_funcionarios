@@ -1,4 +1,4 @@
-import Hours from "./typeOfHours";
+import Hours from "@/services/calculations/classes/typeOfHours";
 
 const service = new Hours();
 

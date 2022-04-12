@@ -31,7 +31,7 @@ export function calculationTasFromArray(
   calculations: Calculation[]
 ): CalculationTAS[] {
   return calculations.map((calculation) => {
-    if (!isCalculationTAS(calculation)) {
+    if (isCalculationTAS(calculation)) {
       return <CalculationTAS>calculation;
     } else if ("calculationTAS" in calculation) {
       return calculationTas(calculation, calculation["calculationTAS"]);

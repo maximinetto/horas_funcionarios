@@ -4,16 +4,18 @@
   "description": "Un proyecto para conteo de horas de funcionarios",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
-    "build": "babel src --extensions .js,.ts --out-dir dist --copy-files src/prisma",
+    "test": "npm run unit && npm run integration",
+    "unit": "dotenv -e .env.test -- jest -c jest.config.unit.ts",
+    "integration": "dotenv -e .env.test -- jest -c jest.config.integration.ts",
+    "build": "rimraf dist && babel src --extensions .ts --out-dir dist --copy-files --no-copy-ignored ",
     "start": "npm run build && cross-env NODE_ENV=production node dist/index.js",
     "dev": "dotenv -e .env.development npm run watch",
-    "watch": "ts-node-dev -r tsconfig-paths/register --transpile-only --respawn --watch --ignore src/*.test.ts src/index.ts",
+    "watch": "ts-node-dev -r tsconfig-paths/register --transpile-only --respawn --watch --ignore-watch node_modules src/index.ts",
     "lint": "npm run lint:fix",
     "lint:fix": "eslint  . --fix",
     "format": "prettier --write .",
-    "migrate:dev": "dotenv -e .env.development -- npx prisma migrate dev --name init",
-    "migrate:test": "dotenv -e .env.test -- npx prisma migrate dev --name test-init"
+    "migrate:dev": "dotenv -e .env.development -- prisma migrate dev --name init",
+    "migrate:test": "dotenv -e .env.test -- prisma migrate dev --name test-init"
   },
   "author": "",
   "license": "ISC",
