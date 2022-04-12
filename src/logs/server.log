@@ -1,3 +1,85 @@
 [32minfo[39m: Apr-11-2022 18:15:52    	Server is listening on port 3000
 [32minfo[39m: Apr-11-2022 18:21:34    	Server is listening on port 3000
 [32minfo[39m: Apr-11-2022 18:21:58    	Server is listening on port 3000
+[32minfo[39m: Apr-11-2022 19:36:46    	Server is listening on port 3000
+[32minfo[39m: Apr-11-2022 19:39:15    	Server is listening on port 3000
+[32minfo[39m: Apr-11-2022 19:39:32    	Server is listening on port 3000
+[32minfo[39m: Apr-11-2022 19:39:55    	Server is listening on port 3000
+[32minfo[39m: Apr-11-2022 19:49:18    	Server is listening on port 3000
+[32minfo[39m: Apr-11-2022 19:49:51    	Server is listening on port 3000
+[32minfo[39m: Apr-11-2022 19:49:51    	importing calculations
+[32minfo[39m: Apr-11-2022 19:49:52    	importing officials
+[32minfo[39m: Apr-11-2022 19:59:30    	Server is listening on port 3000
+[32minfo[39m: Apr-11-2022 19:59:30    	importing calculations
+[32minfo[39m: Apr-11-2022 19:59:31    	importing officials
+[32minfo[39m: Apr-11-2022 19:59:39    	Server is listening on port 3000
+[32minfo[39m: Apr-11-2022 19:59:39    	importing calculations
+[32minfo[39m: Apr-11-2022 19:59:40    	importing officials
+[32minfo[39m: Apr-11-2022 20:00:35    	Server is listening on port 3000
+[32minfo[39m: Apr-11-2022 20:00:35    	importing calculations
+[32minfo[39m: Apr-11-2022 20:00:35    	importing officials
+[32minfo[39m: Apr-11-2022 20:01:21    	Server is listening on port 3000
+[32minfo[39m: Apr-11-2022 20:01:21    	importing calculations
+[32minfo[39m: Apr-11-2022 20:01:21    	importing officials
+[32minfo[39m: Apr-11-2022 20:01:48    	Server is listening on port 3000
+[32minfo[39m: Apr-11-2022 20:01:48    	importing calculations
+[32minfo[39m: Apr-11-2022 20:01:49    	importing officials
+[32minfo[39m: Apr-11-2022 20:03:37    	Server is listening on port 3000
+[32minfo[39m: Apr-11-2022 20:03:37    	importing calculations
+[32minfo[39m: Apr-11-2022 20:03:38    	importing officials
+[32minfo[39m: Apr-11-2022 20:05:18    	Server is listening on port 3000
+[32minfo[39m: Apr-11-2022 20:05:18    	importing calculations
+[32minfo[39m: Apr-11-2022 20:05:18    	importing officials
+[32minfo[39m: Apr-11-2022 20:05:42    	Server is listening on port 3000
+[32minfo[39m: Apr-11-2022 20:05:42    	importing calculations
+[32minfo[39m: Apr-11-2022 20:05:42    	importing officials
+[32minfo[39m: Apr-11-2022 20:06:52    	Server is listening on port 3000
+[32minfo[39m: Apr-11-2022 20:06:52    	importing calculations
+[32minfo[39m: Apr-11-2022 20:06:52    	importing officials
+[32minfo[39m: Apr-11-2022 20:07:04    	Server is listening on port 3000
+[32minfo[39m: Apr-11-2022 20:07:04    	importing calculations
+[32minfo[39m: Apr-11-2022 20:07:05    	importing officials
+[32minfo[39m: Apr-11-2022 20:07:30    	Server is listening on port 3000
+[32minfo[39m: Apr-11-2022 20:07:30    	importing calculations
+[32minfo[39m: Apr-11-2022 20:07:30    	importing officials
+[32minfo[39m: Apr-11-2022 20:07:47    	Server is listening on port 3000
+[32minfo[39m: Apr-11-2022 20:07:47    	importing calculations
+[32minfo[39m: Apr-11-2022 20:07:48    	importing officials
+[32minfo[39m: Apr-11-2022 20:07:58    	Server is listening on port 3000
+[32minfo[39m: Apr-11-2022 20:07:58    	importing calculations
+[32minfo[39m: Apr-11-2022 20:07:58    	importing officials
+[31merror[39m: Apr-11-2022 21:55:19    	calculations must have at least one element
+[32minfo[39m: Apr-11-2022 22:15:04    	hourlyBalances:
+[32minfo[39m: Apr-11-2022 23:21:36    	hourlyBalances:
+[31merror[39m: Apr-11-2022 23:52:20    	calculations must have at least one element
+[32minfo[39m: Apr-11-2022 23:53:13    	hourlyBalances:
+[32minfo[39m: Apr-11-2022 23:53:13    	calculation:
+[32minfo[39m: Apr-11-2022 23:53:13    	calculation:
+[32minfo[39m: Apr-11-2022 23:53:13    	calculation:
+[32minfo[39m: Apr-11-2022 23:53:13    	total
+[31merror[39m: Apr-11-2022 23:53:13    	calculation is not a CalculationTAS
+[32minfo[39m: Apr-11-2022 23:55:07    	total
+[31merror[39m: Apr-11-2022 23:55:07    	calculation is not a CalculationTAS
+[31merror[39m: Apr-11-2022 23:57:51    	calculation is not a CalculationTAS
+[31merror[39m: Apr-11-2022 23:59:00    	Cannot read properties of undefined (reading 'year')
+[31merror[39m: Apr-12-2022 00:01:02    	Cannot read properties of undefined (reading 'year')
+[31merror[39m: Apr-12-2022 00:02:17    	Cannot read properties of undefined (reading 'year')
+[31merror[39m: Apr-12-2022 00:03:39    	Cannot read properties of undefined (reading 'year')
+[31merror[39m: Apr-12-2022 00:04:48    	Cannot read properties of undefined (reading 'year')
+[31merror[39m: Apr-12-2022 00:08:12    	Cannot read properties of undefined (reading 'year')
+[31merror[39m: Apr-12-2022 00:11:29    	[2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m"0"[39m
+Received: [31m32460n[39m
+[31merror[39m: Apr-12-2022 00:12:42    	[2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m"0"[39m
+Received: [31m32460n[39m
+[31merror[39m: Apr-12-2022 00:14:47    	[2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m"0"[39m
+Received: [31m32460n[39m
+[31merror[39m: Apr-12-2022 00:20:26    	[2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m"32460"[39m
+Received: [31m32460n[39m

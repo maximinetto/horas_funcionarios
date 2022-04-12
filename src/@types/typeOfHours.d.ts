@@ -8,5 +8,10 @@ export type TypeOfHour = {
 
 export interface TypeOfHoursByYear {
   year: number;
-  hours: Dictionary<{ typeOfHour: TYPES_OF_HOURS; value: bigint | Decimal }>;
+  hours: { typeOfHour: TYPES_OF_HOURS; value: bigint | Decimal }[];
+}
+
+export interface TypeOfHoursByYearDecimal {
+  year: number;
+  hours: { typeOfHour: TYPES_OF_HOURS; value: Decimal }[];
 }

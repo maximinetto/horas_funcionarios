@@ -21,33 +21,27 @@ export default abstract class Calculate {
   protected official?: Official;
   protected hourlyBalances: HourlyBalance[];
 
-  constructor(calculationRepository) {
+  constructor(calculationRepository: CalculationRepository) {
     this.calculationRepository = calculationRepository;
     this.calculate.bind(this);
     this.calculations = [];
     this.hourlyBalances = [];
+    this.calculate.bind(this);
+    this.validate.bind(this);
+    this.sortLowestToHighest.bind(this);
+    this.getBiggestCalculation.bind(this);
   }
 
   protected abstract selectOptions(): PrismaCalculationFinderOptions;
 
-  validate = async () => {
-    const {
-      calculations,
-      year,
-      official,
-      calculationRepository,
-      calculationIsAfterOfDateOfEntry,
-      getSmallestCalculation,
-      mergeCalculations,
-      allMonthsHaveHours,
-      selectOptions,
-    } = this;
+  async validate() {
+    const { calculations, year, official, calculationRepository } = this;
 
     if (!calculations || !Array.isArray(calculations)) {
       throw new Error("calculations must be an array");
     }
 
-    const slowestCalculation = getSmallestCalculation(calculations);
+    const slowestCalculation = this.getSmallestCalculation(calculations);
     if (!official) {
       throw new Error("official must be defined");
     }
@@ -57,7 +51,7 @@ export default abstract class Calculate {
     }
 
     if (
-      !calculationIsAfterOfDateOfEntry(
+      !this.calculationIsAfterOfDateOfEntry(
         year,
         slowestCalculation,
         official.dateOfEntry
@@ -75,36 +69,36 @@ export default abstract class Calculate {
         },
         year: year,
       },
-      selectOptions()
+      this.selectOptions()
     );
 
-    this.calculations = mergeCalculations(calculationsFromPersistence);
+    this.calculations = this.mergeCalculations(calculationsFromPersistence);
 
-    if (!allMonthsHaveHours(this.calculations)) {
+    if (!this.allMonthsHaveHours(this.calculations)) {
       throw new InvalidValueError("All months must have hours");
     }
-  };
+  }
 
-  async calculate({
+  calculate({
     calculations: _calculations,
     year: _year,
     official: _official,
     hourlyBalances: _hourlyBalances,
-  }: CalculationParam): Promise<any> {
-    const { validate, store } = this;
+  }: CalculationParam): Promise<void | any> {
+    return new Promise((resolve, reject) => {
+      this.store({
+        calculations: _calculations,
+        year: _year,
+        official: _official,
+        hourlyBalances: _hourlyBalances,
+      });
 
-    store({
-      calculations: _calculations,
-      year: _year,
-      official: _official,
-      hourlyBalances: _hourlyBalances,
+      this.validate().then(resolve).catch(reject);
     });
-
-    validate();
   }
 
-  mergeCalculations = (calculationsFromPersistence: Calculation[]) => {
-    const { calculations, sortLowestToHighest } = this;
+  mergeCalculations(calculationsFromPersistence: Calculation[]) {
+    const { calculations } = this;
     const symmetricDifference = _xorBy(
       calculations,
       calculationsFromPersistence,
@@ -139,8 +133,8 @@ export default abstract class Calculate {
     return [
       ...symmetricDifference,
       ...differenceCalculationsFromPersistence,
-    ].sort(sortLowestToHighest);
-  };
+    ].sort(this.sortLowestToHighest);
+  }
 
   calculationIsAfterOfDateOfEntry(
     year: number,
@@ -168,30 +162,26 @@ export default abstract class Calculate {
     );
   }
 
-  getSmallestCalculation = (calculations: Calculation[]): Calculation => {
-    const { sortLowestToHighest } = this;
-
+  getSmallestCalculation(calculations: Calculation[]): Calculation {
     if (calculations.length === 0) {
       throw new Error("calculations must be not empty");
     }
 
-    return _cloneDeep(calculations).sort(sortLowestToHighest)[0];
-  };
+    return _cloneDeep(calculations).sort(this.sortLowestToHighest)[0];
+  }
 
   getBiggestCalculation = (calculations: Calculation[]): Calculation => {
-    const { sortLowestToHighest } = this;
     if (calculations.length === 0) {
       throw new Error("calculations must be not empty");
     }
 
     return calculations
       .slice()
-      .sort((a, b) => sortLowestToHighest(a, b) * -1)[0];
+      .sort((a, b) => this.sortLowestToHighest(a, b) * -1)[0];
   };
 
-  allMonthsHaveHours = (calculations: Calculation[]): boolean => {
-    const { getBiggestCalculation } = this;
-    if (calculations.length > 0) {
+  allMonthsHaveHours(calculations: Calculation[]): boolean {
+    if (calculations.length === 0) {
       throw new Error("calculations must have at least one element");
     }
 
@@ -206,16 +196,16 @@ export default abstract class Calculate {
       dateOfEntryYear === calculations[0].year
         ? dateOfEntryMonth
         : getNumberByMonth(Month.JANUARY);
-    const lastMonthName = getBiggestCalculation(calculations).month;
+    const lastMonthName = this.getBiggestCalculation(calculations).month;
     const lastMonthNumber = getNumberByMonth(lastMonthName);
     return calculations.every((calculation) => {
       const month = getNumberByMonth(calculation.month);
       const isBetween = month >= firstMonth && month <= lastMonthNumber;
       return isBetween;
     });
-  };
+  }
 
-  sortLowestToHighest = (a: Calculation, b: Calculation) => {
+  sortLowestToHighest(a: Calculation, b: Calculation) {
     const monthA = getNumberByMonth(a.month);
     const monthB = getNumberByMonth(b.month);
 
@@ -227,20 +217,22 @@ export default abstract class Calculate {
         resetDateFromFirstDay({ year: b.year, month: monthB })
       ).toMillis()
     );
-  };
+  }
 
-  calculationsWithId = (calculations: Calculation[]) =>
-    calculations.filter(idIsPresent);
+  calculationsWithId(calculations: Calculation[]) {
+    return calculations.filter(idIsPresent);
+  }
 
-  calculationsWithoutId = (calculations: Calculation[]) =>
-    calculations.filter((calculation) => !idIsPresent(calculation));
+  calculationsWithoutId(calculations: Calculation[]) {
+    return calculations.filter((calculation) => !idIsPresent(calculation));
+  }
 
-  store = ({
+  store({
     calculations,
     year,
     official,
     hourlyBalances,
-  }: CalculationParam): CalculationParam => {
+  }: CalculationParam): CalculationParam {
     this.calculations = this.calculationsWithMonthLikeString(calculations);
     this.year = year;
     this.official = official;
@@ -252,14 +244,15 @@ export default abstract class Calculate {
       official,
       hourlyBalances,
     };
-  };
+  }
 
-  calculationsWithMonthLikeString = (calculations: Calculation[]) =>
-    calculations.map((calculation) => ({
+  calculationsWithMonthLikeString(calculations: Calculation[]) {
+    return calculations.map((calculation) => ({
       ...calculation,
       month:
         typeof calculation.month === "number"
           ? getMonthByNumber(calculation.month)
           : calculation.month,
     }));
+  }
 }

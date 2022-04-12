@@ -20,5 +20,5 @@ module.exports = {
       },
     ],
   ],
-  ignore: ["**/*.test.ts"],
+  ignore: ["**/*.test.ts", "src/singleton.ts"],
 };
