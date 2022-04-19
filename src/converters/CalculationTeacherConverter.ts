@@ -2,11 +2,12 @@ import { CalculationTeacher as CalculationTeacherModel } from "@/@types/calculat
 import CalculationTeacherEntity from "@/entities/CalculationTeacher";
 import NullActualBalance from "@/entities/null_object/NullActualBalance";
 import Decimal from "decimal.js";
-import Converter from "./converter";
+import { AbstractConverter } from "./converter";
 
-export default class CalculationTeacherConverter
-  implements Converter<CalculationTeacherModel, CalculationTeacherEntity>
-{
+export default class CalculationTeacherConverter extends AbstractConverter<
+  CalculationTeacherModel,
+  CalculationTeacherEntity
+> {
   fromModelToEntity(model: CalculationTeacherModel): CalculationTeacherEntity {
     return new CalculationTeacherEntity(
       model.id,

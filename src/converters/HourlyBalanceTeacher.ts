@@ -2,11 +2,12 @@ import { HourlyBalanceTeacher as HourlyBalanceTeacherModel } from "@/@types/hour
 import HourlyBalanceEntity from "@/entities/HourlyBalanceTeacher";
 import NullActualBalance from "@/entities/null_object/NullActualBalance";
 import Decimal from "decimal.js";
-import Converter from "./converter";
+import { AbstractConverter } from "./converter";
 
-export default class HourlyBalanceTeacherConverter
-  implements Converter<HourlyBalanceTeacherModel, HourlyBalanceEntity>
-{
+export default class HourlyBalanceTeacherConverter extends AbstractConverter<
+  HourlyBalanceTeacherModel,
+  HourlyBalanceEntity
+> {
   fromModelToEntity(model: HourlyBalanceTeacherModel): HourlyBalanceEntity {
     return new HourlyBalanceEntity(
       model.hourlyBalanceTeacher ? model.hourlyBalanceTeacher.id : "",

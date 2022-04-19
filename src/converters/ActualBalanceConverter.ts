@@ -8,11 +8,12 @@ import {
 } from "@prisma/client";
 import Decimal from "decimal.js";
 import { DateTime } from "luxon";
-import Converter from "./converter";
+import { AbstractConverter } from "./converter";
 
-export default class ActualBalanceConverter
-  implements Converter<ActualBalanceModel, ActualBalanceEntity>
-{
+export default class ActualBalanceConverter extends AbstractConverter<
+  ActualBalanceModel,
+  ActualBalanceEntity
+> {
   fromModelToEntity(model: ActualBalanceModel): ActualBalanceEntity {
     return new ActualBalanceEntity(
       model.id,

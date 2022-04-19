@@ -1,7 +1,11 @@
+import Nullable from "@/entities/null_object/Nullable";
+import Comparable from "@/utils/Comparator";
 import { Optional } from "typescript-optional";
 import type ActualBalance from "./ActualBalance";
 
-export default abstract class HourlyBalance {
+export default abstract class HourlyBalance
+  implements Nullable, Comparable<HourlyBalance>
+{
   private id: string;
   private year: number;
   private actualBalance: Optional<ActualBalance>;
@@ -22,5 +26,23 @@ export default abstract class HourlyBalance {
 
   public getActualBalance(): Optional<ActualBalance> {
     return this.actualBalance;
+  }
+
+  public isDefault(): boolean {
+    return false;
+  }
+
+  compareTo(other: HourlyBalance): number {
+    if (this.id === other.id) {
+      return 0;
+    }
+    if (this.id === null) {
+      return -1;
+    }
+    if (other.id === null) {
+      return 1;
+    }
+
+    return this.id.localeCompare(other.id);
   }
 }

@@ -1,8 +1,10 @@
+import Nullable from "@/entities/null_object/Nullable";
+import Comparable from "@/utils/Comparator";
 import { Contract, TypeOfOfficials } from "@prisma/client";
 import { DateTime } from "luxon";
 import type ActualBalance from "./ActualBalance";
 
-export default class Official {
+export default class Official implements Nullable, Comparable<Official> {
   private id: number;
   private recordNumber: number;
   private firstName: string;
@@ -76,5 +78,21 @@ export default class Official {
 
   public getActualBalances(): ActualBalance[] {
     return this.actualBalances;
+  }
+
+  public isDefault(): boolean {
+    return false;
+  }
+
+  compareTo(other: Official): number {
+    if (this.id === null) {
+      return -1;
+    }
+
+    if (other.id === null) {
+      return 1;
+    }
+
+    return this.id - other.id;
   }
 }

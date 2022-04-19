@@ -1,8 +1,12 @@
+import Nullable from "@/entities/null_object/Nullable";
 import type Decimal from "decimal.js";
 import type ActualBalance from "./ActualBalance";
 import HourlyBalance from "./HourlyBalance";
 
-export default class HourlyBalanceTAS extends HourlyBalance {
+export default class HourlyBalanceTAS
+  extends HourlyBalance
+  implements Nullable
+{
   private working: Decimal;
   private nonWorking: Decimal;
   private simple: Decimal;
@@ -38,5 +42,9 @@ export default class HourlyBalanceTAS extends HourlyBalance {
 
   public getHourlyBalanceId(): string {
     return this.hourlyBalanceId;
+  }
+
+  public isDefault(): boolean {
+    return false;
   }
 }
