@@ -5,3 +5,9 @@ export type HourlyBalanceTAS = Prisma.HourlyBalanceGetPayload<{
     hourlyBalanceTAS: true;
   };
 }>;
+
+export type HourlyBalanceTeacher = Prisma.HourlyBalanceGetPayload<{
+  include: {
+    hourlyBalanceTeacher: true;
+  };
+}>;
