@@ -2,11 +2,12 @@ import { CalculationTAS as CalculationTASModel } from "@/@types/calculations";
 import CalculationTASEntity from "@/entities/CalculationTAS";
 import NullActualBalance from "@/entities/null_object/NullActualBalance";
 import Decimal from "decimal.js";
-import Converter from "./converter";
+import { AbstractConverter } from "./converter";
 
-export default class CalculationTASConverter
-  implements Converter<CalculationTASModel, CalculationTASEntity>
-{
+export default class CalculationTASConverter extends AbstractConverter<
+  CalculationTASModel,
+  CalculationTASEntity
+> {
   fromModelToEntity(model: CalculationTASModel): CalculationTASEntity {
     return new CalculationTASEntity(
       model.id,

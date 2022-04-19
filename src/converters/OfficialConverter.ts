@@ -1,11 +1,12 @@
 import OfficialEntity from "@/entities/Official";
 import { Official as OfficialModel } from "@prisma/client";
 import { DateTime } from "luxon";
-import Converter from "./converter";
+import { AbstractConverter } from "./converter";
 
-export default class OfficialConverter
-  implements Converter<OfficialModel, OfficialEntity>
-{
+export default class OfficialConverter extends AbstractConverter<
+  OfficialModel,
+  OfficialEntity
+> {
   fromModelToEntity(model: OfficialModel): OfficialEntity {
     return new OfficialEntity(
       model.id,

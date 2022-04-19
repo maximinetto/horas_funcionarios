@@ -2,11 +2,12 @@ import { HourlyBalanceTAS as HourlyBalanceTASModel } from "@/@types/hourlyBalanc
 import HourlyBalanceEntity from "@/entities/HourlyBalanceTAS";
 import NullActualBalance from "@/entities/null_object/NullActualBalance";
 import Decimal from "decimal.js";
-import Converter from "./converter";
+import { AbstractConverter } from "./converter";
 
-export default class HourlyBalanceTASConverter
-  implements Converter<HourlyBalanceTASModel, HourlyBalanceEntity>
-{
+export default class HourlyBalanceTASConverter extends AbstractConverter<
+  HourlyBalanceTASModel,
+  HourlyBalanceEntity
+> {
   fromModelToEntity(model: HourlyBalanceTASModel): HourlyBalanceEntity {
     return new HourlyBalanceEntity(
       model.hourlyBalanceTAS ? model.hourlyBalanceTAS.id : "",

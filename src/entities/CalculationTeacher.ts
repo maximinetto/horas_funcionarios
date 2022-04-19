@@ -1,8 +1,12 @@
+import Nullable from "@/entities/null_object/Nullable";
 import { Month } from "@prisma/client";
 import type Decimal from "decimal.js";
 import Calculation from "./Calculation";
 
-export default class CalculationTeacher extends Calculation {
+export default class CalculationTeacher
+  extends Calculation
+  implements Nullable
+{
   surplus: Decimal;
   discount: Decimal;
   calculationId: string;
@@ -33,5 +37,9 @@ export default class CalculationTeacher extends Calculation {
 
   public getCalculationId(): string {
     return this.calculationId;
+  }
+
+  public isDefault(): boolean {
+    return false;
   }
 }

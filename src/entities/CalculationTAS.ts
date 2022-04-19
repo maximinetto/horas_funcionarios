@@ -1,8 +1,9 @@
+import Nullable from "@/entities/null_object/Nullable";
 import { Month } from "@prisma/client";
 import type Decimal from "decimal.js";
 import Calculation from "./Calculation";
 
-export default class CalculationTAS extends Calculation {
+export default class CalculationTAS extends Calculation implements Nullable {
   surplusBusiness: Decimal;
   surplusNonWorking: Decimal;
   surplusSimple: Decimal;
@@ -82,5 +83,9 @@ export default class CalculationTAS extends Calculation {
 
   public getCalculationId(): string {
     return this.calculationId;
+  }
+
+  public isDefault(): boolean {
+    return false;
   }
 }

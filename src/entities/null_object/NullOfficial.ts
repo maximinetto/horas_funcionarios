@@ -1,8 +1,9 @@
 import { Contract, TypeOfOfficials } from "@prisma/client";
 import { DateTime } from "luxon";
 import Official from "../Official";
+import Nullable from "./Nullable";
 
-export default class NullOfficial extends Official {
+export default class NullOfficial extends Official implements Nullable {
   public constructor() {
     super(
       0,
@@ -16,5 +17,9 @@ export default class NullOfficial extends Official {
       0,
       []
     );
+  }
+
+  public isDefault(): boolean {
+    return true;
   }
 }
