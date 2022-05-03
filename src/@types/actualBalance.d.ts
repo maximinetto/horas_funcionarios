@@ -1,4 +1,7 @@
 import { Prisma } from "@prisma/client";
+import Decimal from "decimal.js";
+import { HourlyBalanceSimple, HourlyBalanceTASNonNull } from "./hourlyBalance";
+import { OfficialSimple } from "./officials";
 
 export type ActualBalanceDTO = Prisma.ActualBalanceGetPayload<{
   include: { hourlyBalances: true };
@@ -13,5 +16,19 @@ export type ActualBalanceWithHourlyBalances = Prisma.ActualBalanceGetPayload<{
   include: { hourlyBalances: true };
 }>;
 
+export interface ActualBalanceWithHourlyBalancesSimple
+  extends Omit<ActualBalanceWithHourlyBalances, "officialId"> {
+  total: Decimal;
+  official: Optional<OfficialSimple>;
+  hourlyBalances: HourlyBalanceSimple[];
+}
+
+export interface ActualBalanceWithHourlyBalancesTAS
+  extends ActualBalanceWithHourlyBalances {
+  hourlyBalances: HourlyBalanceTASNonNull[];
+}
 export interface ActualBalanceWithHourlyBalancesOptional
   extends Partial<ActualBalanceWithHourlyBalances> {}
+
+export interface ActualBalanceWithHourlyBalancesTASOptional
+  extends Partial<ActualBalanceWithHourlyBalancesTAS> {}

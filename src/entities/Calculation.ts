@@ -7,11 +7,11 @@ import ActualBalance from "./ActualBalance";
 export default abstract class Calculation
   implements Nullable, Comparable<Calculation>
 {
-  private id: string;
-  private year: number;
-  private month: Month;
-  private observations?: string;
-  private actualBalance: Optional<ActualBalance>;
+  private _id: string;
+  private _year: number;
+  private _month: Month;
+  private _observations?: string;
+  private _actualBalance: Optional<ActualBalance>;
 
   public constructor(
     id: string,
@@ -20,31 +20,31 @@ export default abstract class Calculation
     observations?: string,
     actualBalance?: ActualBalance
   ) {
-    this.id = id;
-    this.year = year;
-    this.month = month;
-    this.observations = observations;
-    this.actualBalance = Optional.ofNullable(actualBalance);
+    this._id = id;
+    this._year = year;
+    this._month = month;
+    this._observations = observations;
+    this._actualBalance = Optional.ofNullable(actualBalance);
   }
 
-  public getId(): string {
-    return this.id;
+  public get id(): string {
+    return this._id;
   }
 
-  public getYear(): number {
-    return this.year;
+  public get year(): number {
+    return this._year;
   }
 
-  public getMonth(): Month {
-    return this.month;
+  public get month(): Month {
+    return this._month;
   }
 
-  public getObservations(): string | undefined {
-    return this.observations;
+  public get observations(): string | undefined {
+    return this._observations;
   }
 
-  public getActualBalance(): Optional<ActualBalance> {
-    return this.actualBalance;
+  public get actualBalance(): Optional<ActualBalance> {
+    return this._actualBalance;
   }
 
   public isDefault(): boolean {

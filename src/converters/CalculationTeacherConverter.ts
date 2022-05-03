@@ -22,17 +22,14 @@ export default class CalculationTeacherConverter extends AbstractConverter<
   }
   fromEntityToModel(entity: CalculationTeacherEntity): CalculationTeacherModel {
     return {
-      id: entity.getId(),
-      year: entity.getYear(),
-      month: entity.getMonth(),
+      id: entity.id,
+      year: entity.year,
+      month: entity.month,
       surplus: BigInt(entity.getSurplus().toString()),
       discount: BigInt(entity.getDiscount().toString()),
       calculationId: entity.getCalculationId(),
-      observations: entity.getObservations() ?? null,
-      actualBalanceId: entity
-        .getActualBalance()
-        .orElse(new NullActualBalance())
-        .getId(),
+      observations: entity.observations ?? null,
+      actualBalanceId: entity.actualBalance.orElse(new NullActualBalance()).id,
     };
   }
 }

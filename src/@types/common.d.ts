@@ -4,4 +4,6 @@ export type NoUndefinedField<T> = {
 
 export type NonNullable<T> = Exclude<T, null | undefined>;
 
+export type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] };
+
 export type Property = "body" | "params" | "query" | "headers" | "cookies";

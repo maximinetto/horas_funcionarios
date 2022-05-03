@@ -1,20 +1,23 @@
+import { OfficialSimple } from "@/@types/officials";
 import Nullable from "@/entities/null_object/Nullable";
 import Comparable from "@/utils/Comparator";
 import { Contract, TypeOfOfficials } from "@prisma/client";
 import { DateTime } from "luxon";
 import type ActualBalance from "./ActualBalance";
 
-export default class Official implements Nullable, Comparable<Official> {
-  private id: number;
-  private recordNumber: number;
-  private firstName: string;
-  private lastName: string;
-  private position: string;
-  private contract: Contract;
-  private type: TypeOfOfficials;
-  private dateOfEntry: DateTime;
-  private chargeNumber: number;
-  private actualBalances: ActualBalance[];
+export default class Official
+  implements Nullable, Comparable<Official>, OfficialSimple
+{
+  private _id: number;
+  private _recordNumber: number;
+  private _firstName: string;
+  private _lastName: string;
+  private _position: string;
+  private _contract: Contract;
+  private _type: TypeOfOfficials;
+  private _dateOfEntry: DateTime;
+  private _chargeNumber: number;
+  private _actualBalances: ActualBalance[];
 
   public constructor(
     id: number,
@@ -28,56 +31,56 @@ export default class Official implements Nullable, Comparable<Official> {
     chargeNumber: number,
     actualBalances?: ActualBalance[]
   ) {
-    this.id = id;
-    this.recordNumber = recordNumber;
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.position = position;
-    this.contract = contract;
-    this.type = type;
-    this.dateOfEntry = dateOfEntry;
-    this.chargeNumber = chargeNumber;
-    this.actualBalances = actualBalances ?? [];
+    this._id = id;
+    this._recordNumber = recordNumber;
+    this._firstName = firstName;
+    this._lastName = lastName;
+    this._position = position;
+    this._contract = contract;
+    this._type = type;
+    this._dateOfEntry = dateOfEntry;
+    this._chargeNumber = chargeNumber;
+    this._actualBalances = actualBalances ?? [];
   }
 
-  public getId(): number {
-    return this.id;
+  public get id(): number {
+    return this._id;
   }
 
-  public getRecordNumber(): number {
-    return this.recordNumber;
+  public get recordNumber(): number {
+    return this._recordNumber;
   }
 
-  public getFirstName(): string {
-    return this.firstName;
+  public get firstName(): string {
+    return this._firstName;
   }
 
-  public getLastName(): string {
-    return this.lastName;
+  public get lastName(): string {
+    return this._lastName;
   }
 
-  public getPosition(): string {
-    return this.position;
+  public get position(): string {
+    return this._position;
   }
 
-  public getContract(): Contract {
-    return this.contract;
+  public get contract(): Contract {
+    return this._contract;
   }
 
-  public getType(): TypeOfOfficials {
-    return this.type;
+  public get type(): TypeOfOfficials {
+    return this._type;
   }
 
-  public getDateOfEntry(): DateTime {
-    return this.dateOfEntry;
+  public get dateOfEntry(): DateTime {
+    return this._dateOfEntry;
   }
 
-  public getChargeNumber(): number {
-    return this.chargeNumber;
+  public get chargeNumber(): number {
+    return this._chargeNumber;
   }
 
-  public getActualBalances(): ActualBalance[] {
-    return this.actualBalances;
+  public get actualBalances(): ActualBalance[] {
+    return this._actualBalances;
   }
 
   public isDefault(): boolean {
