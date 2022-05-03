@@ -3,6 +3,7 @@ import {
   TypeOfHoursByYear,
   TypeOfHoursByYearDecimal,
 } from "@/@types/typeOfHours";
+import { logger } from "@/config";
 import { TYPES_OF_HOURS } from "@/enums/typeOfHours";
 import { instance as Hours } from "@/services/calculations/classes/typeOfHours";
 import Decimal from "decimal.js";
@@ -50,6 +51,7 @@ export default class YearsCalculator {
 
       for (const balance of _hourlyBalances) {
         const { hourlyBalanceTAS, year } = balance;
+
         if (!hourlyBalanceTAS) {
           return reject("hourlyBalanceTAS must be defined");
         }
@@ -83,6 +85,8 @@ export default class YearsCalculator {
             typeof value === "bigint" ? new Decimal(value.toString()) : value,
         })),
       });
+
+      // logLine();
 
       return resolve({
         calculatedHours: [...calculatedHours],
@@ -166,16 +170,21 @@ export default class YearsCalculator {
     typeOfHour: TYPES_OF_HOURS;
   }): Decimal | null => {
     const { calculatedHours } = this;
+
     if (calculatedHours.length === 0) {
       return null;
     }
     const yearToSearch = Hours.isFirstTypeOfHour(typeOfHour)
       ? currentYear - 1
       : currentYear;
+
     const yearSearched = calculatedHours.find(
       ({ year }) => year === yearToSearch
     );
     if (!yearSearched) {
+      logger.info("year not found");
+      logger.info("currentYear: ", currentYear);
+      logger.info("calculatedHours:", JSON.stringify(calculatedHours));
       throw new Error("You must have a valid year");
     }
 
@@ -217,6 +226,11 @@ export default class YearsCalculator {
     }
 
     const { hours } = yearSearched;
+    if (hours.length >= 3) {
+      throw new Error(
+        "You can't have more than 3 hours. Flaco algo hiciste mal"
+      );
+    }
     hours.push({ typeOfHour, value });
   };
 }

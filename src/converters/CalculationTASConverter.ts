@@ -29,9 +29,9 @@ export default class CalculationTASConverter extends AbstractConverter<
   }
   fromEntityToModel(entity: CalculationTASEntity): CalculationTASModel {
     return {
-      id: entity.getId(),
-      year: entity.getYear(),
-      month: entity.getMonth(),
+      id: entity.id,
+      year: entity.year,
+      month: entity.month,
       surplusBusiness: BigInt(entity.getSurplusBusiness().toString()),
       surplusNonWorking: BigInt(entity.getSurplusNonWorking().toString()),
       surplusSimple: BigInt(entity.getSurplusSimple().toString()),
@@ -46,11 +46,8 @@ export default class CalculationTASConverter extends AbstractConverter<
         entity.getCompensatedNightOvertime().toString()
       ),
       calculationId: entity.getCalculationId(),
-      observations: entity.getObservations() ?? null,
-      actualBalanceId: entity
-        .getActualBalance()
-        .orElse(new NullActualBalance())
-        .getId(),
+      observations: entity.observations ?? null,
+      actualBalanceId: entity.actualBalance.orElse(new NullActualBalance()).id,
     };
   }
 }

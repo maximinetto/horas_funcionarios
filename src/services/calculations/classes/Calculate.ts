@@ -16,6 +16,7 @@ const idIsPresent = (calculation: Calculation): boolean =>
   calculation.id != null;
 export default abstract class Calculate {
   protected calculationRepository: CalculationRepository;
+  protected calculationsFromPersistence: Calculation[];
   protected calculations: Calculation[];
   protected year?: number;
   protected official?: Official;
@@ -25,6 +26,7 @@ export default abstract class Calculate {
     this.calculationRepository = calculationRepository;
     this.calculate.bind(this);
     this.calculations = [];
+    this.calculationsFromPersistence = [];
     this.hourlyBalances = [];
     this.calculate.bind(this);
     this.validate.bind(this);
@@ -41,7 +43,6 @@ export default abstract class Calculate {
       throw new Error("calculations must be an array");
     }
 
-    const slowestCalculation = this.getSmallestCalculation(calculations);
     if (!official) {
       throw new Error("official must be defined");
     }
@@ -50,29 +51,37 @@ export default abstract class Calculate {
       throw new Error("year must be defined");
     }
 
-    if (
-      !this.calculationIsAfterOfDateOfEntry(
-        year,
-        slowestCalculation,
-        official.dateOfEntry
-      )
-    ) {
-      throw new InvalidValueError(
-        "The year and month must be after or equal the date of entry"
+    if (calculations.length > 0) {
+      const slowestCalculation = this.getSmallestCalculation(calculations);
+
+      if (
+        !this.calculationIsAfterOfDateOfEntry(
+          year,
+          slowestCalculation,
+          official.dateOfEntry
+        )
+      ) {
+        throw new InvalidValueError(
+          "The year and month must be after or equal the date of entry"
+        );
+      }
+    }
+
+    if (this.calculationsFromPersistence.length === 0) {
+      this.calculationsFromPersistence = await calculationRepository.get(
+        {
+          actualBalance: {
+            officialId: official.id,
+          },
+          year: year,
+        },
+        this.selectOptions()
       );
     }
 
-    const calculationsFromPersistence = await calculationRepository.get(
-      {
-        actualBalance: {
-          officialId: official.id,
-        },
-        year: year,
-      },
-      this.selectOptions()
+    this.calculations = this.mergeCalculations(
+      this.calculationsFromPersistence
     );
-
-    this.calculations = this.mergeCalculations(calculationsFromPersistence);
 
     if (!this.allMonthsHaveHours(this.calculations)) {
       throw new InvalidValueError("All months must have hours");
@@ -81,6 +90,7 @@ export default abstract class Calculate {
 
   calculate({
     calculations: _calculations,
+    calculationsFromPersistence,
     year: _year,
     official: _official,
     hourlyBalances: _hourlyBalances,
@@ -91,6 +101,7 @@ export default abstract class Calculate {
         year: _year,
         official: _official,
         hourlyBalances: _hourlyBalances,
+        calculationsFromPersistence,
       });
 
       this.validate().then(resolve).catch(reject);
@@ -232,11 +243,13 @@ export default abstract class Calculate {
     year,
     official,
     hourlyBalances,
+    calculationsFromPersistence,
   }: CalculationParam): CalculationParam {
     this.calculations = this.calculationsWithMonthLikeString(calculations);
     this.year = year;
     this.official = official;
     this.hourlyBalances = hourlyBalances;
+    this.calculationsFromPersistence = calculationsFromPersistence ?? [];
 
     return {
       calculations,

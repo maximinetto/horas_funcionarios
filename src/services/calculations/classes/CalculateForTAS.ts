@@ -1,15 +1,11 @@
 import {
+  CalculationCalculated,
   CalculationParamTAS,
   CalculationTAS,
   PrismaCalculationFinderOptions,
 } from "@/@types/calculations";
 import { HourlyBalanceTAS } from "@/@types/hourlyBalance";
-import {
-  TypeOfHour,
-  TypeOfHoursByYear,
-  TypeOfHoursByYearDecimal,
-} from "@/@types/typeOfHours";
-import { logger } from "@/config";
+import { TypeOfHour, TypeOfHoursByYear } from "@/@types/typeOfHours";
 import { TYPES_OF_HOURS } from "@/enums/typeOfHours";
 import { calculationTasFromArray } from "@/mappers/EntityToDTO";
 import { CalculationRepository } from "@/persistence/calculations";
@@ -38,26 +34,21 @@ export default class CalculateForTas extends Calculate {
 
   calculate({
     calculations,
+    calculationsFromPersistence,
     year,
     official,
     hourlyBalances,
-  }: CalculationParamTAS): Promise<{
-    calculations: CalculationTAS[];
-    totalBalance: bigint;
-    workingHours: TypeOfHour;
-    nonWorkingHours: TypeOfHour;
-    simpleHours: {
-      typeOfHour: TYPES_OF_HOURS;
-      value: bigint;
-    };
-    totalDiscount: bigint;
-    balances: TypeOfHoursByYear[];
-    balancesSanitized: TypeOfHoursByYearDecimal[];
-  }> {
+  }: CalculationParamTAS): Promise<CalculationCalculated> {
     this.hourlyBalances = hourlyBalances;
 
     return super
-      .calculate({ calculations, year, official, hourlyBalances })
+      .calculate({
+        calculations,
+        year,
+        official,
+        hourlyBalances,
+        calculationsFromPersistence,
+      })
       .then(() => this.calculatePerMonth(hourlyBalances))
       .then(
         ([
@@ -169,7 +160,6 @@ export default class CalculateForTas extends Calculate {
       }
 
       const totalBalanceString = totalBalance.toString();
-      logger.debug("total", totalBalanceString, totalBalance);
       const totalBalanceBigInt = BigInt(totalBalanceString);
       return resolve(totalBalanceBigInt);
     });
