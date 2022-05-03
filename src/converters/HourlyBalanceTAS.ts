@@ -27,16 +27,15 @@ export default class HourlyBalanceTASConverter extends AbstractConverter<
     );
   }
   fromEntityToModel(entity: HourlyBalanceEntity): HourlyBalanceTASModel {
-    const actualBalanceId = entity
-      .getActualBalance()
-      .orElse(new NullActualBalance())
-      .getId();
+    const actualBalanceId = entity.actualBalance.orElse(
+      new NullActualBalance()
+    ).id;
 
     return {
-      year: entity.getYear(),
+      year: entity.year,
       hourlyBalanceTAS: {
         hourlyBalanceId: entity.getHourlyBalanceId(),
-        id: entity.getId(),
+        id: entity.id,
         working: BigInt(entity.getWorking().toString()),
         nonWorking: BigInt(entity.getNonWorking().toString()),
         simple: BigInt(entity.getSimple().toString()),

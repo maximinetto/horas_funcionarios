@@ -6,6 +6,7 @@ import {
   Official,
   Prisma,
 } from "@prisma/client";
+import { TypeOfHoursByYear, TypeOfHoursByYearDecimal } from "./typeOfHours";
 
 type Seconds = number | bigInt;
 
@@ -25,6 +26,7 @@ export type CalculationWithTeacher = Prisma.CalculationGetPayload<{
 
 export interface CalculationParam {
   calculations: Calculation[];
+  calculationsFromPersistence?: Calculation[];
   year?: number;
   official?: Official;
   hourlyBalances: HourlyBalance[];
@@ -50,6 +52,6 @@ export type CalculationCalculated = {
     value: bigint;
   };
   totalDiscount: bigint;
-  balances: any[];
-  balancesSanitized: any[];
+  balances: TypeOfHoursByYear[];
+  balancesSanitized: TypeOfHoursByYearDecimal[];
 };

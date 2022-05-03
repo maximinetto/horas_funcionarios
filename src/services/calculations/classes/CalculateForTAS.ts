@@ -38,6 +38,7 @@ export default class CalculateForTas extends Calculate {
 
   calculate({
     calculations,
+    calculationsFromPersistence,
     year,
     official,
     hourlyBalances,
@@ -57,7 +58,13 @@ export default class CalculateForTas extends Calculate {
     this.hourlyBalances = hourlyBalances;
 
     return super
-      .calculate({ calculations, year, official, hourlyBalances })
+      .calculate({
+        calculations,
+        year,
+        official,
+        hourlyBalances,
+        calculationsFromPersistence,
+      })
       .then(() => this.calculatePerMonth(hourlyBalances))
       .then(
         ([
