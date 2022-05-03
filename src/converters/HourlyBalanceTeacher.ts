@@ -21,16 +21,15 @@ export default class HourlyBalanceTeacherConverter extends AbstractConverter<
     );
   }
   fromEntityToModel(entity: HourlyBalanceEntity): HourlyBalanceTeacherModel {
-    const actualBalanceId = entity
-      .getActualBalance()
-      .orElse(new NullActualBalance())
-      .getId();
+    const actualBalanceId = entity.actualBalance.orElse(
+      new NullActualBalance()
+    ).id;
 
     return {
-      year: entity.getYear(),
+      year: entity.year,
       hourlyBalanceTeacher: {
         hourlyBalanceId: entity.getHourlyBalanceId(),
-        id: entity.getId(),
+        id: entity.id,
         balance: BigInt(entity.getBalance().toString()),
       },
       id: entity.getHourlyBalanceId(),

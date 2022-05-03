@@ -1,6 +1,6 @@
 import { CalculationTAS } from "@/@types/calculations";
-import { HourlyBalanceTAS } from "@/@types/hourlyBalance";
 import faker from "@faker-js/faker";
+import { HourlyBalanceTASNotNullable } from "./types";
 
 export function buildCalculation(
   calculation: Omit<CalculationTAS, "id" | "calculationId">
@@ -27,7 +27,7 @@ export function buildHourlyBalance({
   actualBalanceId: string;
 }) {
   const id = faker.datatype.uuid();
-  const result: HourlyBalanceTAS = {
+  const result: HourlyBalanceTASNotNullable = {
     id,
     year,
     hourlyBalanceTAS: {

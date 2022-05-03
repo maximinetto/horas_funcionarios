@@ -1,19 +1,19 @@
 import {
   ActualBalanceDTO,
   ActualBalanceFindManyOptions,
-  ActualBalanceWithHourlyBalancesOptional,
 } from "@/@types/actualBalance";
 import database from "@/persistence/persistence.config";
+import { serializeBalancesTAS } from "@/serializers/persistence/balance";
 import { Prisma } from "@prisma/client";
 
-export const operations = {
-  getBalanceTASBYOfficialIdAndYear: ({
+export class ActualBalanceRepository {
+  getBalanceTASBYOfficialIdAndYear({
     officialId,
     year,
   }: {
     officialId: number;
     year: number;
-  }): Promise<ActualBalanceDTO[]> => {
+  }): Promise<ActualBalanceDTO[]> {
     return database.$queryRaw`SELECT actual_balance.id as 'id', actual_balance.year as 'year', actual_balance.total as 'total', 
     actual_balance.official_id as 'officialId', 
     hourly_balance.id as 'hourlyBalance.id', hourly_balance.year as 'hourlyBalance.year',  
@@ -34,48 +34,21 @@ WHERE official_id = ${officialId} AND actual_balance.year = ${year} AND hourly_b
 ORDER BY year ASC, hourly_balance.year ASC`.then((balances) =>
       serializeBalancesTAS(balances)
     );
-  },
-  getTAS: (
+  }
+  getTAS(
     where: Prisma.ActualBalanceWhereInput,
     options?: ActualBalanceFindManyOptions
-  ): Promise<ActualBalanceWithHourlyBalancesOptional[]> =>
-    database.actualBalance.findMany({
+  ) {
+    return database.actualBalance.findMany({
       where,
       ...options,
-    }),
-};
-
-function serializeBalancesTAS(balances: unknown) {
-  if (balances == null || !Array.isArray(balances)) {
-    throw new Error("balances is not a array");
-  }
-
-  const result: ActualBalanceDTO[] = [];
-
-  for (const balance of balances) {
-    const rowFound = result.find((r) => balance.id === r.id);
-    const hourlyBalance = {
-      id: balance["hourlyBalance.id"],
-      year: Number(balance["hourlyBalance.year"]),
-      actualBalanceId: balance["hourlyBalance.actualBalanceId"],
-      hourlyBalanceTAS: {
-        working: BigInt(balance["hourlyBalanceTas.working"]),
-        nonWorking: BigInt(balance["hourlyBalanceTas.nonWorking"]),
-        simple: BigInt(balance["hourlyBalanceTas.simple"]),
+      include: {
+        hourlyBalances: {
+          include: {
+            hourlyBalanceTAS: true,
+          },
+        },
       },
-    };
-    if (rowFound) {
-      rowFound.hourlyBalances.push(hourlyBalance);
-    } else {
-      result.push({
-        id: balance["id"],
-        year: Number(balance["year"]),
-        total: BigInt(balance["total"]),
-        officialId: Number(balance["officialId"]),
-        hourlyBalances: [hourlyBalance],
-      });
-    }
+    });
   }
-
-  return result;
 }

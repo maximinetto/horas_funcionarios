@@ -1,3 +1,4 @@
+import { ActualBalanceWithHourlyBalancesSimple } from "@/@types/actualBalance";
 import Nullable from "@/entities/null_object/Nullable";
 import Comparable from "@/utils/Comparator";
 import type Decimal from "decimal.js";
@@ -6,13 +7,16 @@ import type HourlyBalance from "./HourlyBalance";
 import Official from "./Official";
 
 export default class ActualBalance
-  implements Nullable, Comparable<ActualBalance>
+  implements
+    Nullable,
+    Comparable<ActualBalance>,
+    ActualBalanceWithHourlyBalancesSimple
 {
-  private id: string;
-  private year: number;
-  private total: Decimal;
-  private official: Optional<Official>;
-  private hourlyBalances: HourlyBalance[];
+  private _id: string;
+  private _year: number;
+  private _total: Decimal;
+  private _official: Optional<Official>;
+  private _hourlyBalances: HourlyBalance[];
 
   public constructor(
     id: string,
@@ -21,31 +25,35 @@ export default class ActualBalance
     official?: Official,
     hourlyBalances?: HourlyBalance[]
   ) {
-    this.id = id;
-    this.year = year;
-    this.total = total;
-    this.official = Optional.ofNullable(official);
-    this.hourlyBalances = hourlyBalances ?? [];
+    this._id = id;
+    this._year = year;
+    this._total = total;
+    this._official = Optional.ofNullable(official);
+    this._hourlyBalances = hourlyBalances ?? [];
   }
 
-  public getId(): string {
-    return this.id;
+  public get id(): string {
+    return this._id;
   }
 
-  public getYear(): number {
-    return this.year;
+  public get year(): number {
+    return this._year;
   }
 
-  public getTotal(): Decimal {
-    return this.total;
+  public get total(): Decimal {
+    return this._total;
   }
 
-  public getOfficial(): Optional<Official> {
-    return this.official;
+  public get official(): Optional<Official> {
+    return this._official;
   }
 
-  public getHourlyBalances(): HourlyBalance[] {
-    return this.hourlyBalances;
+  public get hourlyBalances(): HourlyBalance[] {
+    return this._hourlyBalances;
+  }
+
+  public set hourlyBalances(hourlyBalances: HourlyBalance[]) {
+    this._hourlyBalances = hourlyBalances;
   }
 
   isDefault(): boolean {

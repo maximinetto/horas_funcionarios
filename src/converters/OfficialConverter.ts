@@ -22,15 +22,15 @@ export default class OfficialConverter extends AbstractConverter<
   }
   fromEntityToModel(entity: OfficialEntity): OfficialModel {
     return {
-      id: entity.getId(),
-      recordNumber: entity.getRecordNumber(),
-      firstName: entity.getFirstName(),
-      lastName: entity.getLastName(),
-      position: entity.getPosition(),
-      contract: entity.getContract(),
-      type: entity.getType(),
-      dateOfEntry: entity.getDateOfEntry().toJSDate(),
-      chargeNumber: entity.getChargeNumber(),
+      id: entity.id,
+      recordNumber: entity.recordNumber,
+      firstName: entity.firstName,
+      lastName: entity.lastName,
+      position: entity.position,
+      contract: entity.contract,
+      type: entity.type,
+      dateOfEntry: entity.dateOfEntry.toJSDate(),
+      chargeNumber: entity.chargeNumber,
     };
   }
 }

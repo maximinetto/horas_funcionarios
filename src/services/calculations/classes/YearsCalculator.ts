@@ -172,6 +172,7 @@ export default class YearsCalculator {
     const yearToSearch = Hours.isFirstTypeOfHour(typeOfHour)
       ? currentYear - 1
       : currentYear;
+
     const yearSearched = calculatedHours.find(
       ({ year }) => year === yearToSearch
     );

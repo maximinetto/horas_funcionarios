@@ -4,16 +4,16 @@ import type Decimal from "decimal.js";
 import Calculation from "./Calculation";
 
 export default class CalculationTAS extends Calculation implements Nullable {
-  surplusBusiness: Decimal;
-  surplusNonWorking: Decimal;
-  surplusSimple: Decimal;
-  discount: Decimal;
-  workingOvertime: Decimal;
-  workingNightOvertime: Decimal;
-  nonWorkingOvertime: Decimal;
-  nonWorkingNightOvertime: Decimal;
-  compensatedNightOvertime: Decimal;
-  calculationId: string;
+  private surplusBusiness: Decimal;
+  private surplusNonWorking: Decimal;
+  private surplusSimple: Decimal;
+  private discount: Decimal;
+  private workingOvertime: Decimal;
+  private workingNightOvertime: Decimal;
+  private nonWorkingOvertime: Decimal;
+  private nonWorkingNightOvertime: Decimal;
+  private compensatedNightOvertime: Decimal;
+  private calculationId: string;
 
   constructor(
     id: string,

@@ -1,3 +1,4 @@
+import { ActualBalanceRepository } from "@/persistence/actualBalance";
 import { CalculationRepository } from "@/persistence/calculations";
 
 export const calculationRepository: jest.Mocked<CalculationRepository> = {
@@ -8,4 +9,9 @@ export const calculationRepository: jest.Mocked<CalculationRepository> = {
   delete: jest.fn(),
   getOne: jest.fn(),
   updateTeacher: jest.fn(),
+};
+
+export const actualBalanceRepository: jest.Mocked<ActualBalanceRepository> = {
+  getBalanceTASBYOfficialIdAndYear: jest.fn(),
+  getTAS: jest.fn(),
 };
