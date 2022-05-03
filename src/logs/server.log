@@ -1,0 +1,582 @@
+[32minfo[39m: Apr-11-2022 18:15:52    	Server is listening on port 3000
+[32minfo[39m: Apr-11-2022 18:21:34    	Server is listening on port 3000
+[32minfo[39m: Apr-11-2022 18:21:58    	Server is listening on port 3000
+[32minfo[39m: Apr-11-2022 19:36:46    	Server is listening on port 3000
+[32minfo[39m: Apr-11-2022 19:39:15    	Server is listening on port 3000
+[32minfo[39m: Apr-11-2022 19:39:32    	Server is listening on port 3000
+[32minfo[39m: Apr-11-2022 19:39:55    	Server is listening on port 3000
+[32minfo[39m: Apr-11-2022 19:49:18    	Server is listening on port 3000
+[32minfo[39m: Apr-11-2022 19:49:51    	Server is listening on port 3000
+[32minfo[39m: Apr-11-2022 19:49:51    	importing calculations
+[32minfo[39m: Apr-11-2022 19:49:52    	importing officials
+[32minfo[39m: Apr-11-2022 19:59:30    	Server is listening on port 3000
+[32minfo[39m: Apr-11-2022 19:59:30    	importing calculations
+[32minfo[39m: Apr-11-2022 19:59:31    	importing officials
+[32minfo[39m: Apr-11-2022 19:59:39    	Server is listening on port 3000
+[32minfo[39m: Apr-11-2022 19:59:39    	importing calculations
+[32minfo[39m: Apr-11-2022 19:59:40    	importing officials
+[32minfo[39m: Apr-11-2022 20:00:35    	Server is listening on port 3000
+[32minfo[39m: Apr-11-2022 20:00:35    	importing calculations
+[32minfo[39m: Apr-11-2022 20:00:35    	importing officials
+[32minfo[39m: Apr-11-2022 20:01:21    	Server is listening on port 3000
+[32minfo[39m: Apr-11-2022 20:01:21    	importing calculations
+[32minfo[39m: Apr-11-2022 20:01:21    	importing officials
+[32minfo[39m: Apr-11-2022 20:01:48    	Server is listening on port 3000
+[32minfo[39m: Apr-11-2022 20:01:48    	importing calculations
+[32minfo[39m: Apr-11-2022 20:01:49    	importing officials
+[32minfo[39m: Apr-11-2022 20:03:37    	Server is listening on port 3000
+[32minfo[39m: Apr-11-2022 20:03:37    	importing calculations
+[32minfo[39m: Apr-11-2022 20:03:38    	importing officials
+[32minfo[39m: Apr-11-2022 20:05:18    	Server is listening on port 3000
+[32minfo[39m: Apr-11-2022 20:05:18    	importing calculations
+[32minfo[39m: Apr-11-2022 20:05:18    	importing officials
+[32minfo[39m: Apr-11-2022 20:05:42    	Server is listening on port 3000
+[32minfo[39m: Apr-11-2022 20:05:42    	importing calculations
+[32minfo[39m: Apr-11-2022 20:05:42    	importing officials
+[32minfo[39m: Apr-11-2022 20:06:52    	Server is listening on port 3000
+[32minfo[39m: Apr-11-2022 20:06:52    	importing calculations
+[32minfo[39m: Apr-11-2022 20:06:52    	importing officials
+[32minfo[39m: Apr-11-2022 20:07:04    	Server is listening on port 3000
+[32minfo[39m: Apr-11-2022 20:07:04    	importing calculations
+[32minfo[39m: Apr-11-2022 20:07:05    	importing officials
+[32minfo[39m: Apr-11-2022 20:07:30    	Server is listening on port 3000
+[32minfo[39m: Apr-11-2022 20:07:30    	importing calculations
+[32minfo[39m: Apr-11-2022 20:07:30    	importing officials
+[32minfo[39m: Apr-11-2022 20:07:47    	Server is listening on port 3000
+[32minfo[39m: Apr-11-2022 20:07:47    	importing calculations
+[32minfo[39m: Apr-11-2022 20:07:48    	importing officials
+[32minfo[39m: Apr-11-2022 20:07:58    	Server is listening on port 3000
+[32minfo[39m: Apr-11-2022 20:07:58    	importing calculations
+[32minfo[39m: Apr-11-2022 20:07:58    	importing officials
+[31merror[39m: Apr-11-2022 21:55:19    	calculations must have at least one element
+[32minfo[39m: Apr-11-2022 22:15:04    	hourlyBalances:
+[32minfo[39m: Apr-11-2022 23:21:36    	hourlyBalances:
+[31merror[39m: Apr-11-2022 23:52:20    	calculations must have at least one element
+[32minfo[39m: Apr-11-2022 23:53:13    	hourlyBalances:
+[32minfo[39m: Apr-11-2022 23:53:13    	calculation:
+[32minfo[39m: Apr-11-2022 23:53:13    	calculation:
+[32minfo[39m: Apr-11-2022 23:53:13    	calculation:
+[32minfo[39m: Apr-11-2022 23:53:13    	total
+[31merror[39m: Apr-11-2022 23:53:13    	calculation is not a CalculationTAS
+[32minfo[39m: Apr-11-2022 23:55:07    	total
+[31merror[39m: Apr-11-2022 23:55:07    	calculation is not a CalculationTAS
+[31merror[39m: Apr-11-2022 23:57:51    	calculation is not a CalculationTAS
+[31merror[39m: Apr-11-2022 23:59:00    	Cannot read properties of undefined (reading 'year')
+[31merror[39m: Apr-12-2022 00:01:02    	Cannot read properties of undefined (reading 'year')
+[31merror[39m: Apr-12-2022 00:02:17    	Cannot read properties of undefined (reading 'year')
+[31merror[39m: Apr-12-2022 00:03:39    	Cannot read properties of undefined (reading 'year')
+[31merror[39m: Apr-12-2022 00:04:48    	Cannot read properties of undefined (reading 'year')
+[31merror[39m: Apr-12-2022 00:08:12    	Cannot read properties of undefined (reading 'year')
+[31merror[39m: Apr-12-2022 00:11:29    	[2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m"0"[39m
+Received: [31m32460n[39m
+[31merror[39m: Apr-12-2022 00:12:42    	[2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m"0"[39m
+Received: [31m32460n[39m
+[31merror[39m: Apr-12-2022 00:14:47    	[2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m"0"[39m
+Received: [31m32460n[39m
+[31merror[39m: Apr-12-2022 00:20:26    	[2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m"32460"[39m
+Received: [31m32460n[39m
+[32minfo[39m: May-06-2022 12:52:41    	previousActualHourlyBalanceSaved {
+  id: '32346fde-5d58-446e-8fad-3bcb62d7623e',
+  year: 2019,
+  officialId: 1,
+  total: 345510n,
+  hourlyBalances: [
+    {
+      actualBalanceId: '32346fde-5d58-446e-8fad-3bcb62d7623e',
+      year: 2019,
+      id: 'ff5738ae-d411-4faf-bd72-50a8955733b3',
+      hourlyBalanceTAS: [Object]
+    }
+  ]
+}
+[32minfo[39m: May-06-2022 12:52:41    	yearNumber 2020
+[32minfo[39m: May-06-2022 12:52:41    	balances [
+  { year: 2019, hours: [ [Object], [Object], [Object] ] },
+  { year: 2020, hours: [ [Object], [Object], [Object] ] }
+]
+[32minfo[39m: May-06-2022 12:52:41    	for fin {
+  id: 'f1524337-13ae-4d00-8313-daae0e8a6cf8',
+  year: 2020,
+  officialId: 1,
+  total: 1468110n,
+  hourlyBalances: [
+    {
+      actualBalanceId: 'f1524337-13ae-4d00-8313-daae0e8a6cf8',
+      year: 2019,
+      id: 'eab8ee43-a872-49d3-8783-befa95bfb360',
+      hourlyBalanceTAS: [Object]
+    },
+    {
+      actualBalanceId: 'f1524337-13ae-4d00-8313-daae0e8a6cf8',
+      year: 2020,
+      id: '48ff869c-3519-477b-9c1c-3f252d503174',
+      hourlyBalanceTAS: [Object]
+    }
+  ]
+}
+[32minfo[39m: May-06-2022 12:52:41    	previousActualHourlyBalanceSaved {
+  id: 'f1524337-13ae-4d00-8313-daae0e8a6cf8',
+  year: 2020,
+  officialId: 1,
+  total: 1468110n,
+  hourlyBalances: [
+    {
+      actualBalanceId: 'f1524337-13ae-4d00-8313-daae0e8a6cf8',
+      year: 2019,
+      id: 'eab8ee43-a872-49d3-8783-befa95bfb360',
+      hourlyBalanceTAS: [Object]
+    },
+    {
+      actualBalanceId: 'f1524337-13ae-4d00-8313-daae0e8a6cf8',
+      year: 2020,
+      id: '48ff869c-3519-477b-9c1c-3f252d503174',
+      hourlyBalanceTAS: [Object]
+    }
+  ]
+}
+[32minfo[39m: May-06-2022 12:52:41    	yearNumber 2021
+[32minfo[39m: May-06-2022 12:52:41    	balances [
+  { year: 2019, hours: [ [Object], [Object], [Object] ] },
+  { year: 2020, hours: [ [Object], [Object], [Object] ] },
+  { year: 2021, hours: [ [Object], [Object], [Object] ] }
+]
+[32minfo[39m: May-06-2022 12:52:41    	for fin {
+  id: 'fe8da42a-7e01-42cc-b99d-c9c3d0132641',
+  year: 2021,
+  officialId: 1,
+  total: 2589300n,
+  hourlyBalances: [
+    {
+      actualBalanceId: 'fe8da42a-7e01-42cc-b99d-c9c3d0132641',
+      year: 2019,
+      id: '6e7ea6d0-5eb2-4bdf-9dd1-c0794a5be3e9',
+      hourlyBalanceTAS: [Object]
+    },
+    {
+      actualBalanceId: 'fe8da42a-7e01-42cc-b99d-c9c3d0132641',
+      year: 2020,
+      id: '9ac67672-c2ed-4a13-8757-c1819eae557e',
+      hourlyBalanceTAS: [Object]
+    },
+    {
+      actualBalanceId: 'fe8da42a-7e01-42cc-b99d-c9c3d0132641',
+      year: 2021,
+      id: 'ede301cd-702b-4076-8a11-311ee26b7e6f',
+      hourlyBalanceTAS: [Object]
+    }
+  ]
+}
+[32minfo[39m: May-06-2022 12:57:35    	previousActualHourlyBalanceSaved {
+  id: '94a67074-7fa0-4153-8411-209245129e69',
+  year: 2019,
+  officialId: 1,
+  total: 345510n,
+  hourlyBalances: [
+    {
+      actualBalanceId: '94a67074-7fa0-4153-8411-209245129e69',
+      year: 2019,
+      id: '667692f7-30d7-4f11-ab5f-6e2de15aa250',
+      hourlyBalanceTAS: [Object]
+    }
+  ]
+}
+[32minfo[39m: May-06-2022 12:57:35    	yearNumber 2020
+[32minfo[39m: May-06-2022 12:57:35    	balances [
+  { year: 2019, hours: [ [Object], [Object], [Object] ] },
+  { year: 2020, hours: [ [Object], [Object], [Object] ] }
+]
+[32minfo[39m: May-06-2022 12:57:35    	for fin {
+  id: '937ca604-9296-492b-882a-d1688c4f0084',
+  year: 2020,
+  officialId: 1,
+  total: 1846860n,
+  hourlyBalances: [
+    {
+      actualBalanceId: '937ca604-9296-492b-882a-d1688c4f0084',
+      year: 2019,
+      id: '61ed16ec-4576-481b-9afb-e4b6cc51bc40',
+      hourlyBalanceTAS: [Object]
+    },
+    {
+      actualBalanceId: '937ca604-9296-492b-882a-d1688c4f0084',
+      year: 2020,
+      id: 'af561546-3281-475e-98ab-5c01978be2b3',
+      hourlyBalanceTAS: [Object]
+    }
+  ]
+}
+[32minfo[39m: May-06-2022 12:57:35    	previousActualHourlyBalanceSaved {
+  id: '937ca604-9296-492b-882a-d1688c4f0084',
+  year: 2020,
+  officialId: 1,
+  total: 1846860n,
+  hourlyBalances: [
+    {
+      actualBalanceId: '937ca604-9296-492b-882a-d1688c4f0084',
+      year: 2019,
+      id: '61ed16ec-4576-481b-9afb-e4b6cc51bc40',
+      hourlyBalanceTAS: [Object]
+    },
+    {
+      actualBalanceId: '937ca604-9296-492b-882a-d1688c4f0084',
+      year: 2020,
+      id: 'af561546-3281-475e-98ab-5c01978be2b3',
+      hourlyBalanceTAS: [Object]
+    }
+  ]
+}
+[32minfo[39m: May-06-2022 12:57:35    	yearNumber 2021
+[32minfo[39m: May-06-2022 12:57:35    	balances [
+  { year: 2019, hours: [ [Object], [Object], [Object] ] },
+  { year: 2020, hours: [ [Object], [Object], [Object] ] },
+  { year: 2021, hours: [ [Object], [Object], [Object] ] }
+]
+[32minfo[39m: May-06-2022 12:57:35    	for fin {
+  id: '68efe119-3b3c-4e2a-8dc9-b371c1063c32',
+  year: 2021,
+  officialId: 1,
+  total: 3170280n,
+  hourlyBalances: [
+    {
+      actualBalanceId: '68efe119-3b3c-4e2a-8dc9-b371c1063c32',
+      year: 2019,
+      id: '58c96301-b84e-4f18-a9a4-3e447ffa9b32',
+      hourlyBalanceTAS: [Object]
+    },
+    {
+      actualBalanceId: '68efe119-3b3c-4e2a-8dc9-b371c1063c32',
+      year: 2020,
+      id: '70366afc-1510-4625-bdef-3a0b97c36a12',
+      hourlyBalanceTAS: [Object]
+    },
+    {
+      actualBalanceId: '68efe119-3b3c-4e2a-8dc9-b371c1063c32',
+      year: 2021,
+      id: '26171ec2-339f-42ec-94a5-89b1713f400e',
+      hourlyBalanceTAS: [Object]
+    }
+  ]
+}
+[32minfo[39m: May-06-2022 13:09:01    	previousActualHourlyBalanceSaved {
+  id: '70d25861-51dc-4b73-9611-940f44aa3b91',
+  year: 2019,
+  officialId: 1,
+  total: 345510n,
+  hourlyBalances: [
+    {
+      actualBalanceId: '70d25861-51dc-4b73-9611-940f44aa3b91',
+      year: 2019,
+      id: '7d100c4b-309b-46ac-b59c-61d9d916858b',
+      hourlyBalanceTAS: [Object]
+    }
+  ]
+}
+[32minfo[39m: May-06-2022 13:09:01    	yearNumber 2020
+[32minfo[39m: May-06-2022 13:09:01    	balances [
+  { year: 2019, hours: [ [Object], [Object], [Object] ] },
+  { year: 2020, hours: [ [Object], [Object], [Object] ] }
+]
+[32minfo[39m: May-06-2022 13:09:01    	previousActualHourlyBalanceSaved {
+  id: 'e7d32202-0f19-4247-9637-0c0389db17be',
+  year: 2020,
+  officialId: 1,
+  total: 1398330n,
+  hourlyBalances: [
+    {
+      actualBalanceId: 'e7d32202-0f19-4247-9637-0c0389db17be',
+      year: 2019,
+      id: '74b95a50-25cf-4617-84cd-5daa850b5c5b',
+      hourlyBalanceTAS: [Object]
+    },
+    {
+      actualBalanceId: 'e7d32202-0f19-4247-9637-0c0389db17be',
+      year: 2020,
+      id: '4d055672-09d2-4af2-a3c3-4d854a5aa3fc',
+      hourlyBalanceTAS: [Object]
+    }
+  ]
+}
+[32minfo[39m: May-06-2022 13:09:01    	yearNumber 2021
+[32minfo[39m: May-06-2022 13:09:01    	balances [
+  { year: 2019, hours: [ [Object], [Object], [Object] ] },
+  { year: 2020, hours: [ [Object], [Object], [Object] ] },
+  { year: 2021, hours: [ [Object], [Object], [Object] ] }
+]
+[32minfo[39m: May-06-2022 13:12:53    	previousActualHourlyBalanceSaved {
+  id: '9276499d-c416-42a2-8d83-8bf4d6ae4972',
+  year: 2019,
+  officialId: 1,
+  total: 345510n,
+  hourlyBalances: [
+    {
+      actualBalanceId: '9276499d-c416-42a2-8d83-8bf4d6ae4972',
+      year: 2019,
+      id: '660e31f2-f72c-4d1d-8844-0f14056bcae7',
+      hourlyBalanceTAS: [Object]
+    }
+  ]
+}
+[32minfo[39m: May-06-2022 13:12:53    	yearNumber 2020
+[32minfo[39m: May-06-2022 13:12:53    	balances [
+  { year: 2019, hours: [ [Object], [Object], [Object] ] },
+  { year: 2020, hours: [ [Object], [Object], [Object] ] }
+]
+[32minfo[39m: May-06-2022 13:12:53    	previousActualHourlyBalanceSaved {
+  id: 'f3160658-f7c1-4082-802d-b2108ffbf259',
+  year: 2020,
+  officialId: 1,
+  total: 1569240n,
+  hourlyBalances: [
+    {
+      actualBalanceId: 'f3160658-f7c1-4082-802d-b2108ffbf259',
+      year: 2019,
+      id: 'fe322d34-157c-4230-b8aa-810ad6d9337c',
+      hourlyBalanceTAS: [Object]
+    },
+    {
+      actualBalanceId: 'f3160658-f7c1-4082-802d-b2108ffbf259',
+      year: 2020,
+      id: '40531196-08dc-45ff-8620-38a7e6955eca',
+      hourlyBalanceTAS: [Object]
+    }
+  ]
+}
+[32minfo[39m: May-06-2022 13:12:53    	yearNumber 2021
+[32minfo[39m: May-06-2022 13:12:53    	balances [
+  { year: 2019, hours: [ [Object], [Object], [Object] ] },
+  { year: 2020, hours: [ [Object], [Object], [Object] ] },
+  { year: 2021, hours: [ [Object], [Object], [Object] ] }
+]
+[32minfo[39m: May-06-2022 13:14:46    	previousActualHourlyBalanceSaved {
+  id: 'f8ae7bf4-327d-4022-9eb3-bd4c13c941d5',
+  year: 2019,
+  officialId: 1,
+  total: 345510n,
+  hourlyBalances: [
+    {
+      actualBalanceId: 'f8ae7bf4-327d-4022-9eb3-bd4c13c941d5',
+      year: 2019,
+      id: '17a55b85-4b6f-48a2-9fbc-76af185d9b4c',
+      hourlyBalanceTAS: [Object]
+    }
+  ]
+}
+[32minfo[39m: May-06-2022 13:14:46    	yearNumber 2020
+[32minfo[39m: May-06-2022 13:14:46    	balances [
+  { year: 2019, hours: [ [Object], [Object], [Object] ] },
+  { year: 2020, hours: [ [Object], [Object], [Object] ] }
+]
+[32minfo[39m: May-06-2022 13:14:46    	previousActualHourlyBalanceSaved {
+  id: '85657873-0335-4005-850f-d745f7e53fc3',
+  year: 2020,
+  officialId: 1,
+  total: 1495380n,
+  hourlyBalances: [
+    {
+      actualBalanceId: '85657873-0335-4005-850f-d745f7e53fc3',
+      year: 2019,
+      id: 'cb690f0b-7e7e-452d-ad11-ae0cce1a3312',
+      hourlyBalanceTAS: [Object]
+    },
+    {
+      actualBalanceId: '85657873-0335-4005-850f-d745f7e53fc3',
+      year: 2020,
+      id: 'b1476d3b-4765-43ef-afe0-6c4000cbf372',
+      hourlyBalanceTAS: [Object]
+    }
+  ]
+}
+[32minfo[39m: May-06-2022 13:14:46    	yearNumber 2021
+[32minfo[39m: May-06-2022 13:14:46    	balances [
+  { year: 2019, hours: [ [Object], [Object], [Object] ] },
+  { year: 2020, hours: [ [Object], [Object], [Object] ] },
+  { year: 2021, hours: [ [Object], [Object], [Object] ] }
+]
+[32minfo[39m: May-06-2022 13:15:06    	previousActualHourlyBalanceSaved {
+  id: '06da02df-2d2f-4ee8-af5c-5cc8af72f49b',
+  year: 2019,
+  officialId: 1,
+  total: 345510n,
+  hourlyBalances: [
+    {
+      actualBalanceId: '06da02df-2d2f-4ee8-af5c-5cc8af72f49b',
+      year: 2019,
+      id: '75715ea9-39f5-48f5-a897-bf9e60a9cdcd',
+      hourlyBalanceTAS: [Object]
+    }
+  ]
+}
+[32minfo[39m: May-06-2022 13:15:06    	yearNumber 2020
+[32minfo[39m: May-06-2022 13:15:06    	balances [
+  { year: 2019, hours: [ [Object], [Object], [Object] ] },
+  { year: 2020, hours: [ [Object], [Object], [Object] ] }
+]
+[32minfo[39m: May-06-2022 13:15:06    	previousActualHourlyBalanceSaved {
+  id: '81675538-afd7-4f53-bce4-9c9c7f33e11e',
+  year: 2020,
+  officialId: 1,
+  total: 1648350n,
+  hourlyBalances: [
+    {
+      actualBalanceId: '81675538-afd7-4f53-bce4-9c9c7f33e11e',
+      year: 2019,
+      id: 'adfd6a34-0b21-46cb-ab48-c04193db4d26',
+      hourlyBalanceTAS: [Object]
+    },
+    {
+      actualBalanceId: '81675538-afd7-4f53-bce4-9c9c7f33e11e',
+      year: 2020,
+      id: '087f470e-533a-45b7-acc2-7d7796932564',
+      hourlyBalanceTAS: [Object]
+    }
+  ]
+}
+[32minfo[39m: May-06-2022 13:15:06    	yearNumber 2021
+[32minfo[39m: May-06-2022 13:15:06    	balances [
+  { year: 2019, hours: [ [Object], [Object], [Object] ] },
+  { year: 2020, hours: [ [Object], [Object], [Object] ] },
+  { year: 2021, hours: [ [Object], [Object], [Object] ] }
+]
+[32minfo[39m: May-06-2022 13:15:23    	previousActualHourlyBalanceSaved {
+  id: '92291e88-3760-4518-8b14-82eef6381c3c',
+  year: 2019,
+  officialId: 1,
+  total: 345510n,
+  hourlyBalances: [
+    {
+      actualBalanceId: '92291e88-3760-4518-8b14-82eef6381c3c',
+      year: 2019,
+      id: '902c3253-b9ab-4dca-aced-1ef606524e18',
+      hourlyBalanceTAS: [Object]
+    }
+  ]
+}
+[32minfo[39m: May-06-2022 13:15:23    	yearNumber 2020
+[32minfo[39m: May-06-2022 13:15:23    	balances [
+  { year: 2019, hours: [ [Object], [Object], [Object] ] },
+  { year: 2020, hours: [ [Object], [Object], [Object] ] }
+]
+[32minfo[39m: May-06-2022 13:15:23    	previousActualHourlyBalanceSaved {
+  id: '4e54389b-244c-47e3-8d3c-d5414a195e51',
+  year: 2020,
+  officialId: 1,
+  total: 1474620n,
+  hourlyBalances: [
+    {
+      actualBalanceId: '4e54389b-244c-47e3-8d3c-d5414a195e51',
+      year: 2019,
+      id: 'b3f76f75-2fc0-4b2c-8b10-808aebf4837b',
+      hourlyBalanceTAS: [Object]
+    },
+    {
+      actualBalanceId: '4e54389b-244c-47e3-8d3c-d5414a195e51',
+      year: 2020,
+      id: '3c7ae553-c375-45c8-b7ff-24575a521f3a',
+      hourlyBalanceTAS: [Object]
+    }
+  ]
+}
+[32minfo[39m: May-06-2022 13:15:23    	yearNumber 2021
+[32minfo[39m: May-06-2022 13:15:23    	balances [
+  { year: 2019, hours: [ [Object], [Object], [Object] ] },
+  { year: 2020, hours: [ [Object], [Object], [Object] ] },
+  { year: 2021, hours: [ [Object], [Object], [Object] ] }
+]
+[32minfo[39m: May-06-2022 13:17:07    	previousActualHourlyBalanceSaved {
+  id: '4ac369f7-ecdd-4da3-94f9-2688de2ac2b0',
+  year: 2019,
+  officialId: 1,
+  total: 345510n,
+  hourlyBalances: [
+    {
+      actualBalanceId: '4ac369f7-ecdd-4da3-94f9-2688de2ac2b0',
+      year: 2019,
+      id: '40092f3a-339b-44cb-a0ed-e63771e23478',
+      hourlyBalanceTAS: [Object]
+    }
+  ]
+}
+[32minfo[39m: May-06-2022 13:17:07    	yearNumber 2020
+[32minfo[39m: May-06-2022 13:17:07    	balances [
+  { year: 2019, hours: [ [Object], [Object], [Object] ] },
+  { year: 2020, hours: [ [Object], [Object], [Object] ] }
+]
+[32minfo[39m: May-06-2022 13:17:07    	previousActualHourlyBalanceSaved {
+  id: '9e340b63-973a-44d7-ba0d-76f0f95d040b',
+  year: 2020,
+  officialId: 1,
+  total: 1440750n,
+  hourlyBalances: [
+    {
+      actualBalanceId: '9e340b63-973a-44d7-ba0d-76f0f95d040b',
+      year: 2019,
+      id: '4cdac7f3-16fa-443b-b593-893cdf183def',
+      hourlyBalanceTAS: [Object]
+    },
+    {
+      actualBalanceId: '9e340b63-973a-44d7-ba0d-76f0f95d040b',
+      year: 2020,
+      id: '740dfa5e-c4ce-41d4-8b49-ee3cdef5cd6d',
+      hourlyBalanceTAS: [Object]
+    }
+  ]
+}
+[32minfo[39m: May-06-2022 13:17:07    	yearNumber 2021
+[32minfo[39m: May-06-2022 13:17:07    	balances [
+  { year: 2019, hours: [ [Object], [Object], [Object] ] },
+  { year: 2020, hours: [ [Object], [Object], [Object] ] },
+  { year: 2021, hours: [ [Object], [Object], [Object] ] }
+]
+[32minfo[39m: May-06-2022 13:17:31    	previousActualHourlyBalanceSaved {
+  id: '02240153-6bc9-43e6-92d5-b6fd00a1300f',
+  year: 2019,
+  officialId: 1,
+  total: 345510n,
+  hourlyBalances: [
+    {
+      actualBalanceId: '02240153-6bc9-43e6-92d5-b6fd00a1300f',
+      year: 2019,
+      id: '75715333-d05e-4ad1-a74a-38dbb8070b1c',
+      hourlyBalanceTAS: [Object]
+    }
+  ]
+}
+[32minfo[39m: May-06-2022 13:17:31    	yearNumber 2020
+[32minfo[39m: May-06-2022 13:17:31    	balances [
+  { year: 2019, hours: [ [Object], [Object], [Object] ] },
+  { year: 2020, hours: [ [Object], [Object], [Object] ] }
+]
+[32minfo[39m: May-06-2022 13:17:31    	previousActualHourlyBalanceSaved {
+  id: '6f38ce27-3384-4474-9628-57190a9b03ba',
+  year: 2020,
+  officialId: 1,
+  total: 1754340n,
+  hourlyBalances: [
+    {
+      actualBalanceId: '6f38ce27-3384-4474-9628-57190a9b03ba',
+      year: 2019,
+      id: '5b4447b2-6efc-4cfb-8696-777a3b01d1b5',
+      hourlyBalanceTAS: [Object]
+    },
+    {
+      actualBalanceId: '6f38ce27-3384-4474-9628-57190a9b03ba',
+      year: 2020,
+      id: '34a9cc1c-3768-4523-9ecc-b0003390277a',
+      hourlyBalanceTAS: [Object]
+    }
+  ]
+}
+[32minfo[39m: May-06-2022 13:17:31    	yearNumber 2021
+[32minfo[39m: May-06-2022 13:17:31    	balances [
+  { year: 2019, hours: [ [Object], [Object], [Object] ] },
+  { year: 2020, hours: [ [Object], [Object], [Object] ] },
+  { year: 2021, hours: [ [Object], [Object], [Object] ] }
+]
