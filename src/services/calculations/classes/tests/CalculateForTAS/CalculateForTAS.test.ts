@@ -6,14 +6,12 @@ import calculation from "./calculate";
 import { calculateTotalBalance } from "./calculateBalance";
 import { calculate } from "./calculateForMonth";
 import { converter } from "./convert";
-import expectBalance from "./expectBalance";
 import { convert } from "./hourlyBalanceToActualBalance";
 import {
   actualBalance,
   actualBalanceSecondTest,
   calculationsFirstTest,
   calculationsSecondTest,
-  dateFirstTest,
   dateSecondTest,
   otherCalculations,
   yearFirstTest,
@@ -26,8 +24,18 @@ import {
   arrayWithoutElementAtIndex,
   generateRandomUUIDV4,
   hoursToSeconds,
-  logger,
 } from "./util";
+
+export interface ActualBalanceComplete {
+  id: string;
+  officialId: number;
+  year: number;
+  total: bigint;
+  hourlyBalances: HourlyBalanceTASNotNullable[];
+}
+export interface CalculationDataTAS extends CalculationData {
+  actualBalance: ActualBalanceComplete;
+}
 
 describe("Test calculations", () => {
   beforeEach(() => {
@@ -40,7 +48,7 @@ describe("Test calculations", () => {
 
   test("Should calculate right the passed values", async () => {
     calculationRepository.get.mockResolvedValue([]);
-    let data = preset(calculationsFirstTest, yearFirstTest, dateFirstTest);
+    let data = preset(calculationsFirstTest, yearFirstTest);
     actualBalanceRepository.getTAS.mockResolvedValue([
       convert(data.lastBalances, actualBalance.officialId),
     ]);
@@ -49,7 +57,7 @@ describe("Test calculations", () => {
     actualBalanceRepository.getTAS.mockClear();
 
     calculationRepository.get.mockResolvedValue(calculationsFirstTest);
-    data = preset(otherCalculations, yearFirstTest, dateFirstTest);
+    data = preset(otherCalculations, yearFirstTest);
     actualBalanceRepository.getTAS.mockResolvedValue([
       convert(data.lastBalances, actualBalance.officialId),
     ]);
@@ -59,11 +67,11 @@ describe("Test calculations", () => {
 
   test("Should calculate right previous balances and next balances", async () => {
     const calculations: Dictionary<Array<CalculationTAS>> = {};
-    const balances: CalculationData[] = [];
+    const balances: CalculationDataTAS[] = [];
     const balancesRecalculated: CalculationData[] = [];
 
     function generate() {
-      const firstBalance = calculation(
+      const balances2019 = calculation(
         {
           balances: [],
           calculations: converter(calculationsSecondTest),
@@ -71,51 +79,47 @@ describe("Test calculations", () => {
         actualBalanceSecondTest.officialId
       );
 
-      balances.push(firstBalance);
+      balances.push(balances2019);
 
-      logger(firstBalance);
-
-      calculations[firstBalance.actualBalance.year - 1] = [
+      calculations[balances2019.actualBalance.year] = [
         ...calculationsSecondTest,
       ];
 
-      const actualBalance2020 = firstBalance.actualBalance;
+      const actualBalance2019 = balances2019.actualBalance;
 
-      const nextCalculations = genRandomCalculations(
-        actualBalance2020.year,
+      const calculation2020 = genRandomCalculations(
+        actualBalance2019.year + 1,
         generateRandomUUIDV4()
       );
 
-      const nextBalance = calculation(
+      const balances2020 = calculation(
         {
-          balances: firstBalance.balances,
-          calculations: converter(nextCalculations),
+          balances: balances2019.balances,
+          calculations: converter(calculation2020),
         },
         actualBalanceSecondTest.officialId
       );
 
-      calculations[nextBalance.actualBalance.year - 1] = [...nextCalculations];
+      const actualBalance2020 = balances2020.actualBalance;
+      calculations[actualBalance2020.year] = [...calculation2020];
 
-      const actualBalance2021 = nextBalance.actualBalance;
-      balances.push(nextBalance);
+      balances.push(balances2020);
 
       const nextNextCalculations = genRandomCalculations(
-        actualBalance2021.year,
+        actualBalance2020.year + 1,
         generateRandomUUIDV4()
       );
 
-      const nextNextBalance = calculation(
+      const balances2021 = calculation(
         {
-          balances: nextBalance.balances,
+          balances: balances2020.balances,
           calculations: converter(nextNextCalculations),
         },
         actualBalanceSecondTest.officialId
       );
 
-      calculations[nextNextBalance.actualBalance.year - 1] = [
-        ...nextNextCalculations,
-      ];
-      balances.push(nextNextBalance);
+      calculations[balances2021.actualBalance.year] = [...nextNextCalculations];
+      balances.push(balances2021);
     }
 
     function reCalculate() {
@@ -165,9 +169,7 @@ describe("Test calculations", () => {
       year: yearSecondTest,
     });
 
-    const balancesEnriched = balances.map((b) =>
-      convert(b.balances, actualBalanceSecondTest.officialId)
-    );
+    const balancesEnriched = balances.map((b) => b.actualBalance);
 
     actualBalanceRepository.getTAS.mockResolvedValue(balancesEnriched);
 
@@ -204,45 +206,6 @@ describe("Test calculations", () => {
       calculations[actualBalanceSecondTest.year + 2]
     );
 
-    // expectCurrentActualBalanceEquals(
-    //   hourlyBalanceFrom2019To2020.balances.map((b) => {
-    //     const balances = result.balancesCalculated.balances;
-    //     const balance = balances.find((bn) => bn.year === b.year);
-    //     if (!balance) {
-    //       throw new Error("Balance not found");
-    //     }
-
-    //     const hourlyBalance = balance.hourlyBalanceTAS;
-
-    //     return {
-    //       actualBalanceId: b.actualBalanceId,
-    //       id: b.id,
-    //       year: b.year,
-    //       hourlyBalanceTAS: {
-    //         simple: hourlyBalance.simple,
-    //         working: hourlyBalance.working,
-    //         nonWorking: hourlyBalance.nonWorking,
-    //         hourlyBalanceId: b.hourlyBalanceTAS.hourlyBalanceId,
-    //         id: b.hourlyBalanceTAS.id,
-    //       },
-    //     };
-    //   }),
-    //   result.others[0],
-    //   nextCalculations
-    // );
-
-    // logger(
-    //   hourlyBalanceFrom2019To2021.balances,
-    //   result.others[1],
-    //   nextNextCalculations
-    // );
-
-    // expectCurrentActualBalanceEquals(
-    //   hourlyBalanceFrom2019To2021.balances,
-    //   result.others[1],
-    //   nextNextCalculations
-    // );
-
     calculationRepository.get.mockReset();
   });
 
@@ -258,13 +221,6 @@ describe("Test calculations", () => {
       actualBalanceRepository: actualBalanceRepository,
     });
 
-    // const calculator = new CalculateForTAS(calculationRepository);
-
-    // const response = await calculator.calculate({
-    //   ...data,
-    //   hourlyBalances: [...lastBalances],
-    // });
-
     const currentYear = response.currentYear;
 
     const balances = expectCurrentActualBalanceEquals(
@@ -274,7 +230,11 @@ describe("Test calculations", () => {
       data.official.id
     );
 
-    return { others: response.others, balancesCalculated: balances };
+    return {
+      others: response.others,
+      balancesCalculated: balances,
+      actualBalances: response.actualHourlyBalances,
+    };
   }
 
   function expectCurrentActualBalanceEquals(
@@ -313,11 +273,11 @@ describe("Test calculations", () => {
       total.totalHours.toString()
     );
 
-    expectBalance(currentCalculation.balances).toBe(totalBalances.result);
+    // expectBalance(currentCalculation.balances).toBe(totalBalances.result);
 
-    expectBalance(currentCalculation.balancesSanitized).toBe(
-      totalBalances.resultSanitized
-    );
+    // expectBalance(currentCalculation.balancesSanitized).toBe(
+    //   totalBalances.resultSanitized
+    // );
 
     return totalBalances;
   }

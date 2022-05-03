@@ -39,6 +39,21 @@ export async function balances({
   return result;
 }
 
+export function getCurrentActualHourlyBalance(
+  actualHourlyBalances: {
+    hourlyBalances: (HourlyBalance & {
+      hourlyBalanceTAS: HourlyBalanceTAS | null;
+    })[];
+    id: string;
+    year: number;
+    total: bigint;
+    officialId: number;
+  }[],
+  year: number
+) {
+  return actualHourlyBalances.find((a) => a.year === year);
+}
+
 function getMinHourlyBalanceWithSumGreaterThanZero(
   hourlyBalances: (HourlyBalance & {
     hourlyBalanceTAS: HourlyBalanceTAS | null;
