@@ -14,7 +14,7 @@ export function convert(
 
   return {
     id: actualBalanceId,
-    year: year + 1,
+    year: year,
     total: hourlyBalancesTAS.reduce(
       (acc, { hourlyBalanceTAS }) =>
         acc +

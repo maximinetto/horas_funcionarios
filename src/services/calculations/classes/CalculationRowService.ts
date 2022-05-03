@@ -1,4 +1,4 @@
-import { CalculationTAS } from "@/@types/calculations";
+import { CalculationCalculated, CalculationTAS } from "@/@types/calculations";
 import { calculationTasFromArray } from "@/mappers/EntityToDTO";
 import {
   Calculation,
@@ -32,7 +32,7 @@ export default class CalculationRowService {
       calculationsFromPersistence?: Calculation[];
     },
     calculateService: CalculateForTas
-  ) {
+  ): Promise<CalculationCalculated> {
     const hourlyBalances = actualHourlyBalance
       ? actualHourlyBalance.hourlyBalances
       : [];
@@ -65,7 +65,7 @@ export default class CalculationRowService {
         total: bigint;
         officialId: number;
       };
-      year: string;
+      year: number;
       calculationsFromPersistence: Calculation[];
     },
     calculateService: CalculateForTas
@@ -75,7 +75,7 @@ export default class CalculationRowService {
         calculations: calculationTasFromArray(calculations),
         official,
         actualHourlyBalance,
-        year: Number(year),
+        year,
         calculationsFromPersistence,
       },
       calculateService

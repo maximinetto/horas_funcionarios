@@ -7,13 +7,8 @@ import { actualBalance } from "./initialValues";
 import { HourlyBalanceTASNotNullable, Result } from "./types";
 import { hoursToSeconds } from "./util";
 
-export function preset(
-  calculations: CalculationTAS[],
-  year: number,
-  date: Date
-): Result {
+export function preset(calculations: CalculationTAS[], year: number): Result {
   const data = {
-    actualDate: date,
     calculations,
     official: {
       id: actualBalance.officialId,
