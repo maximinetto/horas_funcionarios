@@ -18,5 +18,8 @@ export const generateRandomUUIDV4 = function (): string {
 };
 
 export const logger = function (...args: any[]) {
-  console.log(args.map((arg) => JSON.stringify(arg, null, 2)).join(" "));
+  const strings = args.map((arg) => JSON.stringify(arg, null, 2)).join(" ");
+  console.log(strings);
 };
+
+export const logLine = () => console.log("-".repeat(process.stdout.columns));

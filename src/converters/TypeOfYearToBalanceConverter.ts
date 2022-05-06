@@ -13,7 +13,8 @@ export function convertTypesOfYearsToActualBalance(
     total: bigint;
     officialId: number;
   },
-  balances: TypeOfHoursByYearDecimal[]
+  balances: TypeOfHoursByYearDecimal[],
+  total: bigint
 ): {
   hourlyBalances: (HourlyBalance & {
     hourlyBalanceTAS: HourlyBalanceTAS | null;
@@ -61,6 +62,7 @@ export function convertTypesOfYearsToActualBalance(
 
   return {
     ...others,
+    total,
     hourlyBalances,
   };
 }

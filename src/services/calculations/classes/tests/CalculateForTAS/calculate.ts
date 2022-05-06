@@ -1,9 +1,12 @@
-import { ActualBalanceDTO } from "@/@types/actualBalance";
 import CalculationTASConverter from "@/converters/CalculationTASConverter";
 import CalculationTAS from "@/entities/CalculationTAS";
 import subtractHoursFromBalance from "./calculateBalance";
 import { calculate } from "./calculateForMonth";
-import { CalculationData, HourlyBalanceTASNotNullable } from "./types";
+import {
+  ActualBalanceComplete,
+  CalculationDataTAS,
+} from "./CalculateForTAS.test";
+import { HourlyBalanceTASNotNullable } from "./types";
 import { generateRandomUUIDV4 } from "./util";
 
 export default function calculation(
@@ -15,7 +18,7 @@ export default function calculation(
     calculations: CalculationTAS[];
   },
   officialId: number
-): CalculationData {
+): CalculationDataTAS {
   if (balances.length === 0 && calculations.length === 0) {
     return {
       result: [],
@@ -85,9 +88,9 @@ export default function calculation(
     total += b.hourlyBalanceTAS.nonWorking;
   });
 
-  const actualBalance: ActualBalanceDTO = {
+  const actualBalance: ActualBalanceComplete = {
     id: actualBalanceId,
-    year: year + 1,
+    year: year,
     officialId,
     total,
     hourlyBalances: results.balances,

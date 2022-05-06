@@ -5,12 +5,7 @@ import { DateTime } from "luxon";
 import { buildCalculation } from "./buildCalculation";
 import { hoursToSeconds } from "./util";
 
-export const dateFirstTest = DateTime.fromObject({
-  year: 2021,
-  month: 2,
-  day: 25,
-}).toJSDate();
-export const yearFirstTest = dateFirstTest.getFullYear();
+export const yearFirstTest = 2021;
 
 export const actualBalance: ActualBalance = {
   id: faker.datatype.uuid(),
