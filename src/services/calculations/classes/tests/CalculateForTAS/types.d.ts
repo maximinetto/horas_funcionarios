@@ -4,7 +4,6 @@ import { HourlyBalanceTAS } from "@/@types/hourlyBalance";
 import { TypeOfOfficials } from "@prisma/client";
 
 export type Data = {
-  actualDate: Date;
   calculations: CalculationTAS[];
   official: {
     id: number;
