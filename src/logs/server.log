@@ -580,3 +580,48 @@ Received: [31m32460n[39m
   { year: 2020, hours: [ [Object], [Object], [Object] ] },
   { year: 2021, hours: [ [Object], [Object], [Object] ] }
 ]
+[32minfo[39m: May-06-2022 14:10:53    	previousActualHourlyBalanceSaved {
+  id: '58fd1c74-b63f-43ba-9d42-047686b8b385',
+  year: 2019,
+  officialId: 1,
+  total: 345510n,
+  hourlyBalances: [
+    {
+      actualBalanceId: '58fd1c74-b63f-43ba-9d42-047686b8b385',
+      year: 2019,
+      id: 'e1244055-299a-43ed-ad8e-6aebd4c8ec0f',
+      hourlyBalanceTAS: [Object]
+    }
+  ]
+}
+[32minfo[39m: May-06-2022 14:10:53    	yearNumber 2020
+[32minfo[39m: May-06-2022 14:10:53    	balances [
+  { year: 2019, hours: [ [Object], [Object], [Object] ] },
+  { year: 2020, hours: [ [Object], [Object], [Object] ] }
+]
+[32minfo[39m: May-06-2022 14:10:53    	previousActualHourlyBalanceSaved {
+  id: '9e281e31-d237-4c86-81bc-60a19b3a67ed',
+  year: 2020,
+  officialId: 1,
+  total: 1369290n,
+  hourlyBalances: [
+    {
+      actualBalanceId: '9e281e31-d237-4c86-81bc-60a19b3a67ed',
+      year: 2019,
+      id: 'cae864d8-f78c-451b-a661-68f3aa6daffa',
+      hourlyBalanceTAS: [Object]
+    },
+    {
+      actualBalanceId: '9e281e31-d237-4c86-81bc-60a19b3a67ed',
+      year: 2020,
+      id: 'c6d595fa-212c-4631-b522-f61675288bfa',
+      hourlyBalanceTAS: [Object]
+    }
+  ]
+}
+[32minfo[39m: May-06-2022 14:10:53    	yearNumber 2021
+[32minfo[39m: May-06-2022 14:10:53    	balances [
+  { year: 2019, hours: [ [Object], [Object], [Object] ] },
+  { year: 2020, hours: [ [Object], [Object], [Object] ] },
+  { year: 2021, hours: [ [Object], [Object], [Object] ] }
+]
