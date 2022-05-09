@@ -166,12 +166,11 @@ export default class RecalculateService {
     const previousActualHourlyBalanceCalculated =
       this.actualHourlyBalances[this.actualHourlyBalances.length - 1];
 
-    logger.info(
-      "previousActualHourlyBalanceSaved",
-      previousActualHourlyBalanceCalculated
-    );
+    logger.info("previousActualHourlyBalanceSaved", {
+      previousActualHourlyBalanceCalculated,
+    });
 
-    logger.info("yearNumber", yearNumber);
+    logger.info("yearNumber", {yearNumber});
 
     const data = await this.calculationRowService.reCalculate(
       {
@@ -184,7 +183,7 @@ export default class RecalculateService {
       this.calculateService
     );
 
-    logger.info("balances", data.balances);
+    logger.info("balances", {balances: data.balances});
 
     const actualHourlyBalanceToReplace = getCurrentActualHourlyBalance(
       previousActualHourlyBalances,

@@ -5,16 +5,15 @@ import {
   PrismaCalculationFinderOptions,
 } from "@/@types/calculations";
 import { HourlyBalanceTAS } from "@/@types/hourlyBalance";
-import { TypeOfHour, TypeOfHoursByYear } from "@/@types/typeOfHours";
+import { TypeOfHour } from "@/@types/typeOfHours";
 import { TYPES_OF_HOURS } from "@/enums/typeOfHours";
 import { calculationTasFromArray } from "@/mappers/EntityToDTO";
-import { CalculationRepository } from "@/persistence/calculations";
+import { CalculationRepository, includeCalculationsTAS } from "@/persistence/calculations";
 import Calculate from "@/services/calculations/classes/Calculate";
-import HoursClass, {
-  instance as Hours,
-} from "@/services/calculations/classes/typeOfHours";
-import YearsCalculator from "@/services/calculations/classes/YearsCalculator";
+import HoursClass from "@/services/calculations/classes/typeOfHours";
+import YearsCalculator from "@/services/calculations/classes/TAS/YearsCalculator";
 import { Decimal } from "decimal.js";
+import { hoursOfYearEnricher } from "./hourEnrich";
 
 export default class CalculateForTas extends Calculate {
   private static WORKING_MULTIPLIER = 1.5;
@@ -22,14 +21,15 @@ export default class CalculateForTas extends Calculate {
 
   protected hourlyBalances: HourlyBalanceTAS[];
   protected calculations: CalculationTAS[];
+  private balancesPerYearCalculator: YearsCalculator;
 
-  constructor(calculationRepository: CalculationRepository) {
+  constructor(calculationRepository: CalculationRepository, balancesPerYearCalculator: YearsCalculator) {
     super(calculationRepository);
     this.hourlyBalances = [];
     this.calculations = [];
     this.calculatePerMonth.bind(this);
-    this.currentYearSanitized.bind(this);
     this.calculateAccumulateHoursByYear.bind(this);
+    this.balancesPerYearCalculator = balancesPerYearCalculator ?? new YearsCalculator();
   }
 
   calculate({
@@ -98,14 +98,14 @@ export default class CalculateForTas extends Calculate {
       throw new Error("year must be defined");
     }
 
-    const hoursActualYear = this.currentYearSanitized(
+    const hoursActualYear = hoursOfYearEnricher(
       { workingHours, nonWorkingHours, simpleHours },
       this.year
     );
 
     const balancesPerYearCalculator = new YearsCalculator();
 
-    return balancesPerYearCalculator
+    return this.balancesPerYearCalculator
       .calculate({
         hoursActualYear,
         hourlyBalances: this.hourlyBalances,
@@ -256,41 +256,8 @@ export default class CalculateForTas extends Calculate {
       .add(_surplusSimple);
   }
 
-  currentYearSanitized(
-    {
-      workingHours,
-      nonWorkingHours,
-      simpleHours,
-    }: {
-      workingHours: { typeOfHour: TYPES_OF_HOURS; value: Decimal };
-      nonWorkingHours: { typeOfHour: TYPES_OF_HOURS; value: Decimal };
-      simpleHours: { typeOfHour: TYPES_OF_HOURS; value: bigint };
-    },
-    year: number
-  ): TypeOfHoursByYear {
-    const hours = [workingHours, nonWorkingHours, simpleHours];
-
-    const sortedHours = Hours.arrayOftypeOfHours().map((typeOfHour) => {
-      const hour = hours.find(
-        ({ typeOfHour: _typeOfHour }) => typeOfHour === _typeOfHour
-      );
-      if (!hour) {
-        throw new Error("hour is undefined");
-      }
-      return { typeOfHour, value: hour.value };
-    });
-
-    return {
-      year,
-      hours: sortedHours,
-    };
-  }
-
-  selectOptions(): PrismaCalculationFinderOptions {
-    return {
-      include: {
-        calculationTAS: true,
-      },
-    };
+  
+  selectOptions() {
+    return includeCalculationsTAS()
   }
 }

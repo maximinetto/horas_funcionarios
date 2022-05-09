@@ -1,14 +1,16 @@
 import dotenv from "dotenv";
 import path from "path";
-import util from "util";
 import { createLogger, format, transports } from "winston";
 
 export const baseDir = __dirname;
-const envDir = path.resolve(baseDir, "..", ".env");
 
-dotenv.config({
-  path: envDir,
-});
+export function configureDotEnv(env = ".env") {
+  const envDir = path.resolve(baseDir, "..", env);
+
+  dotenv.config({
+    path: envDir,
+  });
+}
 
 const {
   OFFICIALS_SCHEDULES_PORT = 3000,
@@ -16,28 +18,19 @@ const {
   OFFICIALS_SCHEDULES_DB_URL = "mysql://root:@localhost:3306/official_schedules?schema=public",
 } = process.env;
 
-const combineMessageAndSplat = () => {
-  return {
-    transform: (info, opts) => {
-      //combine message and args if any
-      info.message = util.format(
-        info.message,
-        ...(info[Symbol.for("splat")] || [])
-      );
-      return info;
-    },
-  };
-};
-
 const configLogger = {
   filename: path.resolve(baseDir, "logs", "server.log"),
   format: format.combine(
     format.timestamp({ format: "MMM-DD-YYYY HH:mm:ss" }),
-    combineMessageAndSplat(),
     format.align(),
-    format.printf(
-      (info) => `${info.level}: ${[info.timestamp]}    ${info.message}`
-    )
+    format.printf(({ level, message, timestamp, ...metadata }) => {
+      let result = `${level}: ${[timestamp]} ${message}`;
+      if (metadata) {
+        result += `\n${JSON.stringify(metadata)}`;
+      }
+
+      return result;
+    })
   ),
 };
 
