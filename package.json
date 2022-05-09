@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "npm run unit && npm run integration",
-    "unit": "dotenv -e .env.test -- jest -c jest.config.unit.ts",
-    "integration": "dotenv -e .env.test -- jest -c jest.config.integration.ts",
+    "unit": "jest -c jest.config.unit.ts",
+    "integration": "jest -c jest.config.integration.ts",
     "build": "rimraf dist && babel src --extensions .ts --out-dir dist --copy-files --no-copy-ignored ",
     "start": "npm run build && cross-env NODE_ENV=production node dist/index.js",
     "dev": "dotenv -e .env.development npm run watch",
