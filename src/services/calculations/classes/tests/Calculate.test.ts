@@ -1,5 +1,5 @@
 import { CalculationRepository } from "@/persistence/calculations";
-import CalculateForTas from "@/services/calculations/classes/CalculateForTAS";
+import CalculateForTas from "@/services/calculations/classes/TAS/CalculateForTAS";
 import faker from "@faker-js/faker";
 import { Month } from "@prisma/client";
 

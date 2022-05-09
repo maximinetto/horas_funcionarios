@@ -125,6 +125,7 @@ export default class YearsCalculator {
     this.hourlyBalances = [..._hourlyBalances];
     this.hoursActualYear = { ..._hoursActualYear };
     this.totalDiscount = _totalDiscount > 0 ? _totalDiscount : 0n;
+    this.calculatedHours = [];
 
     return {
       hourlyBalances: this.hourlyBalances,
@@ -183,8 +184,8 @@ export default class YearsCalculator {
     );
     if (!yearSearched) {
       logger.info("year not found");
-      logger.info("currentYear: ", currentYear);
-      logger.info("calculatedHours:", JSON.stringify(calculatedHours));
+      logger.info("currentYear: ", {currentYear});
+      logger.info("calculatedHours:", {calculatedHours});
       throw new Error("You must have a valid year");
     }
 

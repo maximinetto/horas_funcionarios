@@ -2,13 +2,13 @@ import { CalculationCalculated, CalculationTAS } from "@/@types/calculations";
 import BalanceConverter from "@/converters/BalanceConverter";
 import { ActualBalanceRepository } from "@/persistence/actualBalance";
 import { CalculationRepository } from "@/persistence/calculations";
-import CalculateForTas from "@/services/calculations/classes/CalculateForTAS";
-import CalculationRowService from "@/services/calculations/classes/CalculationRowService";
+import CalculateForTas from "@/services/calculations/classes/TAS/CalculateForTAS";
+import CalculationRowService from "@/services/calculations/classes/TAS/CalculationRowService";
 import { HourlyBalance, HourlyBalanceTAS, Official } from "@prisma/client";
 import { balances, getCurrentActualHourlyBalance } from "../hourlyBalances";
 import ActualHourlyBalanceCreator from "../hourlyBalances/ActualHourlyBalanceCreator";
 import ActualHourlyBalanceReplacer from "../hourlyBalances/ActualHourlyBalanceReplacer";
-import RecalculateService from "./classes/RecalculateService";
+import RecalculateService from "./classes/TAS/RecalculateService";
 
 export default async function calculateForTAS({
   year: currentYear,
