@@ -5,6 +5,12 @@ import {
 import database from "@/persistence/persistence.config";
 import { Prisma } from "@prisma/client";
 
+export const includeCalculationsTAS = () => ({
+  include: {
+    calculationTAS: true,
+  },
+});
+
 export class CalculationRepository {
   getOne(
     where: Prisma.CalculationWhereInput,
