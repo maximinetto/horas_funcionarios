@@ -1,4 +1,4 @@
-import Decimal from "decimal.js";
+import { Decimal } from "decimal.js";
 import ActualBalance from "../ActualBalance";
 import Nullable from "./Nullable";
 

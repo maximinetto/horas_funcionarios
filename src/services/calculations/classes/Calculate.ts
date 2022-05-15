@@ -2,11 +2,12 @@ import {
   CalculationParam,
   PrismaCalculationFinderOptions,
 } from "@/@types/calculations";
+import Calculation from "@/entities/Calculation";
 import InvalidValueError from "@/errors/InvalidValueError";
 import type { CalculationRepository } from "@/persistence/calculations";
 import { resetDateFromFirstDay } from "@/utils/date";
-import { getMonthByNumber, getNumberByMonth } from "@/utils/mapMonths";
-import { Calculation, HourlyBalance, Month, Official } from "@prisma/client";
+import { getNumberByMonth } from "@/utils/mapMonths";
+import { HourlyBalance, Month, Official } from "@prisma/client";
 import _cloneDeep from "lodash/cloneDeep";
 import _differenceBy from "lodash/differenceBy";
 import _xorBy from "lodash/xorBy";
@@ -24,41 +25,40 @@ export default abstract class Calculate {
 
   constructor(calculationRepository: CalculationRepository) {
     this.calculationRepository = calculationRepository;
-    this.calculate.bind(this);
     this.calculations = [];
     this.calculationsFromPersistence = [];
     this.hourlyBalances = [];
-    this.calculate.bind(this);
-    this.validate.bind(this);
     this.sortLowestToHighest.bind(this);
     this.getBiggestCalculation.bind(this);
   }
 
   protected abstract selectOptions(): PrismaCalculationFinderOptions;
+  protected abstract replaceCalculationId(
+    calculation: Calculation,
+    id: string
+  ): Calculation;
 
   async validate() {
-    const { calculations, year, official, calculationRepository } = this;
-
-    if (!calculations || !Array.isArray(calculations)) {
+    if (!this.calculations || !Array.isArray(this.calculations)) {
       throw new Error("calculations must be an array");
     }
 
-    if (!official) {
+    if (!this.official) {
       throw new Error("official must be defined");
     }
 
-    if (!year) {
+    if (!this.year) {
       throw new Error("year must be defined");
     }
 
-    if (calculations.length > 0) {
-      const slowestCalculation = this.getSmallestCalculation(calculations);
+    if (this.calculations.length > 0) {
+      const slowestCalculation = this.getSmallestCalculation(this.calculations);
 
       if (
         !this.calculationIsAfterOfDateOfEntry(
-          year,
+          this.year,
           slowestCalculation,
-          official.dateOfEntry
+          this.official.dateOfEntry
         )
       ) {
         throw new InvalidValueError(
@@ -68,12 +68,12 @@ export default abstract class Calculate {
     }
 
     if (this.calculationsFromPersistence.length === 0) {
-      this.calculationsFromPersistence = await calculationRepository.get(
+      this.calculationsFromPersistence = await this.calculationRepository.get(
         {
           actualBalance: {
-            officialId: official.id,
+            officialId: this.official.id,
           },
-          year: year,
+          year: this.year,
         },
         this.selectOptions()
       );
@@ -88,41 +88,38 @@ export default abstract class Calculate {
     }
   }
 
-  calculate({
+  async calculate({
     calculations: _calculations,
-    calculationsFromPersistence,
+    calculationsFromPersistence = [],
     year: _year,
     official: _official,
     hourlyBalances: _hourlyBalances,
   }: CalculationParam): Promise<void | any> {
-    return new Promise((resolve, reject) => {
-      this.store({
-        calculations: _calculations,
-        year: _year,
-        official: _official,
-        hourlyBalances: _hourlyBalances,
-        calculationsFromPersistence,
-      });
-
-      this.validate().then(resolve).catch(reject);
+    this.store({
+      calculations: _calculations,
+      year: _year,
+      official: _official,
+      hourlyBalances: _hourlyBalances,
+      calculationsFromPersistence,
     });
+
+    return this.validate();
   }
 
-  mergeCalculations(calculationsFromPersistence: Calculation[]) {
-    const { calculations } = this;
+  mergeCalculations(calculationsFromPersistence: Calculation[]): Calculation[] {
     const symmetricDifference = _xorBy(
-      calculations,
+      this.calculations,
       calculationsFromPersistence,
       "month"
     );
     const differenceCalculations = _differenceBy(
-      calculations,
+      this.calculations,
       symmetricDifference,
       "month"
     );
 
-    const differenceCalculationsFromPersistence = differenceCalculations.map(
-      (calculation) => {
+    const differenceCalculationsFromPersistence: Calculation[] =
+      differenceCalculations.map((calculation) => {
         const calculationFromPersistence = calculationsFromPersistence.find(
           (calculationFromPersistence) =>
             calculationFromPersistence.month === calculation.month
@@ -133,13 +130,8 @@ export default abstract class Calculate {
         }
 
         const { id } = calculationFromPersistence;
-
-        return {
-          ...calculation,
-          id,
-        };
-      }
-    );
+        return this.replaceCalculationId(calculation, id);
+      });
 
     return [
       ...symmetricDifference,
@@ -245,7 +237,7 @@ export default abstract class Calculate {
     hourlyBalances,
     calculationsFromPersistence,
   }: CalculationParam): CalculationParam {
-    this.calculations = this.calculationsWithMonthLikeString(calculations);
+    this.calculations = calculations;
     this.year = year;
     this.official = official;
     this.hourlyBalances = hourlyBalances;
@@ -256,16 +248,7 @@ export default abstract class Calculate {
       year,
       official,
       hourlyBalances,
+      calculationsFromPersistence,
     };
-  }
-
-  calculationsWithMonthLikeString(calculations: Calculation[]) {
-    return calculations.map((calculation) => ({
-      ...calculation,
-      month:
-        typeof calculation.month === "number"
-          ? getMonthByNumber(calculation.month)
-          : calculation.month,
-    }));
   }
 }

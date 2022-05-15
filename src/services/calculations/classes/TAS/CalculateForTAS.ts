@@ -1,38 +1,63 @@
 import {
   CalculationCalculated,
   CalculationParamTAS,
-  CalculationTAS,
-  PrismaCalculationFinderOptions,
 } from "@/@types/calculations";
 import { HourlyBalanceTAS } from "@/@types/hourlyBalance";
 import { TypeOfHour } from "@/@types/typeOfHours";
+import Calculation from "@/entities/Calculation";
+import CalculationTAS from "@/entities/CalculationTAS";
 import { TYPES_OF_HOURS } from "@/enums/typeOfHours";
-import { calculationTasFromArray } from "@/mappers/EntityToDTO";
-import { CalculationRepository, includeCalculationsTAS } from "@/persistence/calculations";
+import {
+  CalculationRepository,
+  includeCalculationsTAS,
+} from "@/persistence/calculations";
 import Calculate from "@/services/calculations/classes/Calculate";
-import HoursClass from "@/services/calculations/classes/typeOfHours";
 import YearsCalculator from "@/services/calculations/classes/TAS/YearsCalculator";
+import HoursClass from "@/services/calculations/classes/typeOfHours";
 import { Decimal } from "decimal.js";
 import { hoursOfYearEnricher } from "./hourEnrich";
 
-export default class CalculateForTas extends Calculate {
-  private static WORKING_MULTIPLIER = 1.5;
-  private static NON_WORKING_MULTIPLIER = 2;
+const WORKING_MULTIPLIER = 1.5;
+const NON_WORKING_MULTIPLIER = 2;
 
-  protected hourlyBalances: HourlyBalanceTAS[];
-  protected calculations: CalculationTAS[];
+export default class CalculateForTas extends Calculate {
+  protected declare calculations: CalculationTAS[];
+  protected declare hourlyBalances: HourlyBalanceTAS[];
   private balancesPerYearCalculator: YearsCalculator;
 
-  constructor(calculationRepository: CalculationRepository, balancesPerYearCalculator: YearsCalculator) {
+  constructor(
+    calculationRepository: CalculationRepository,
+    balancesPerYearCalculator?: YearsCalculator
+  ) {
     super(calculationRepository);
-    this.hourlyBalances = [];
-    this.calculations = [];
-    this.calculatePerMonth.bind(this);
-    this.calculateAccumulateHoursByYear.bind(this);
-    this.balancesPerYearCalculator = balancesPerYearCalculator ?? new YearsCalculator();
+    this.balancesPerYearCalculator =
+      balancesPerYearCalculator ?? new YearsCalculator();
   }
 
-  calculate({
+  protected replaceCalculationId(
+    calculation: CalculationTAS,
+    id: string
+  ): Calculation {
+    return CalculationTAS.from({
+      id,
+      month: calculation.month,
+      year: calculation.year,
+      surplusBusiness: calculation.surplusBusiness,
+      surplusNonWorking: calculation.surplusNonWorking,
+      surplusSimple: calculation.surplusSimple,
+      discount: calculation.discount,
+      compensatedNightOvertime: calculation.compensatedNightOvertime,
+      workingNightOvertime: calculation.workingNightOvertime,
+      nonWorkingNightOvertime: calculation.nonWorkingNightOvertime,
+      nonWorkingOvertime: calculation.nonWorkingOvertime,
+      workingOvertime: calculation.workingOvertime,
+      observations: calculation.observations,
+      actualBalance: calculation.actualBalance.get(),
+      calculationId: calculation.calculationId,
+    });
+  }
+
+  async calculate({
     calculations,
     calculationsFromPersistence,
     year,
@@ -41,31 +66,30 @@ export default class CalculateForTas extends Calculate {
   }: CalculationParamTAS): Promise<CalculationCalculated> {
     this.hourlyBalances = hourlyBalances;
 
-    return super
-      .calculate({
-        calculations,
-        year,
-        official,
-        hourlyBalances,
-        calculationsFromPersistence,
-      })
-      .then(() => this.calculatePerMonth(hourlyBalances))
-      .then(
-        ([
-          totalBalance,
-          workingHours,
-          nonWorkingHours,
-          simpleHours,
-          totalDiscount,
-        ]) =>
-          this.calculateAccumulateHoursByYear({
-            nonWorkingHours,
-            simpleHours,
-            totalBalance,
-            totalDiscount,
-            workingHours,
-          })
-      );
+    await super.calculate({
+      calculations,
+      year,
+      official,
+      hourlyBalances,
+      calculationsFromPersistence,
+    });
+    const [
+      totalBalance,
+      workingHours,
+      nonWorkingHours,
+      simpleHours,
+      totalDiscount,
+    ] = await this.calculatePerMonth(hourlyBalances);
+
+    const results = await this.calculateAccumulateHoursByYear({
+      nonWorkingHours,
+      simpleHours,
+      totalBalance,
+      totalDiscount,
+      workingHours,
+    });
+
+    return results;
   }
 
   calculatePerMonth(hourlyBalances: HourlyBalanceTAS[]) {
@@ -78,21 +102,12 @@ export default class CalculateForTas extends Calculate {
     ]);
   }
 
-  calculateAccumulateHoursByYear({
+  async calculateAccumulateHoursByYear({
     nonWorkingHours,
     simpleHours,
     totalBalance,
     totalDiscount,
     workingHours,
-  }: {
-    totalBalance: bigint;
-    workingHours: TypeOfHour;
-    nonWorkingHours: TypeOfHour;
-    simpleHours: {
-      typeOfHour: TYPES_OF_HOURS;
-      value: bigint;
-    };
-    totalDiscount: bigint;
   }) {
     if (this.year === undefined) {
       throw new Error("year must be defined");
@@ -103,78 +118,66 @@ export default class CalculateForTas extends Calculate {
       this.year
     );
 
-    const balancesPerYearCalculator = new YearsCalculator();
+    const {
+      calculatedHours: balances,
+      calculatedHoursSanitized: balancesSanitized,
+    } = await this.balancesPerYearCalculator.calculate({
+      hoursActualYear,
+      hourlyBalances: this.hourlyBalances,
+      totalDiscount,
+    });
 
-    return this.balancesPerYearCalculator
-      .calculate({
-        hoursActualYear,
-        hourlyBalances: this.hourlyBalances,
-        totalDiscount,
-      })
-      .then(
-        ({
-          calculatedHours: balances,
-          calculatedHoursSanitized: balancesSanitized,
-        }) => ({
-          calculations: this.calculations,
-          totalBalance,
-          workingHours,
-          nonWorkingHours,
-          simpleHours,
-          totalDiscount,
-          balances,
-          balancesSanitized,
-        })
-      );
+    return {
+      calculations: this.calculations,
+      totalBalance,
+      workingHours,
+      nonWorkingHours,
+      simpleHours,
+      totalDiscount,
+      balances,
+      balancesSanitized,
+    };
   }
 
-  getTotalBalance(hourlyBalances: HourlyBalanceTAS[]): Promise<bigint> {
-    return new Promise((resolve, reject) => {
-      const totalHours: BigInt = hourlyBalances.reduce(
-        (total, { hourlyBalanceTAS }) => {
-          if (hourlyBalanceTAS) {
-            return (
-              total +
-              hourlyBalanceTAS.working +
-              hourlyBalanceTAS.nonWorking +
-              hourlyBalanceTAS.simple
-            );
-          }
+  getTotalBalance(hourlyBalances: HourlyBalanceTAS[]) {
+    const totalHours: BigInt = hourlyBalances.reduce(
+      (total, { hourlyBalanceTAS }) => {
+        if (hourlyBalanceTAS) {
+          return (
+            total +
+            hourlyBalanceTAS.working +
+            hourlyBalanceTAS.nonWorking +
+            hourlyBalanceTAS.simple
+          );
+        }
 
-          return total + 0n;
-        },
-        0n
-      );
+        return total + 0n;
+      },
+      0n
+    );
 
-      let totalBalance = new Decimal(totalHours.toString());
-      for (const calculation of this.calculations) {
-        const { surplusBusiness, surplusNonWorking, surplusSimple, discount } =
-          calculation;
+    const getTotalHoursPerCalculation = this.getTotalHoursPerCalculation;
 
-        const hours = this.getTotalHoursPerCalculation({
-          surplusBusiness,
-          surplusNonWorking,
-          surplusSimple,
-        });
-        totalBalance = totalBalance.add(hours).sub(discount.toString());
-      }
+    console.log("pre getTotalHoursPerCalculation", this.calculations);
 
-      const totalBalanceString = totalBalance.toString();
-      const totalBalanceBigInt = BigInt(totalBalanceString);
-      return resolve(totalBalanceBigInt);
-    });
+    const totalBalance = this.calculations.reduce((total, calculation) => {
+      const { discount } = calculation;
+      const hours = getTotalHoursPerCalculation(calculation);
+      return total.add(hours).sub(discount.toString());
+    }, new Decimal(totalHours.toString()));
+
+    const totalBalanceString = totalBalance.toString();
+    return Promise.resolve(BigInt(totalBalanceString));
   }
 
   getTotalWorkingHours(): Promise<TypeOfHour> {
-    const calculationsTAS = calculationTasFromArray(this.calculations);
-    const total = calculationsTAS.reduce(
-      (total, { surplusBusiness }) => total + surplusBusiness,
+    const total = this.calculations.reduce(
+      (total, { surplusBusiness }) =>
+        total + BigInt(surplusBusiness.toString()),
       0n
     );
     const valueToDecimal = new Decimal(total.toString());
-    const valueToDecimalMultiplied = valueToDecimal.mul(
-      CalculateForTas.WORKING_MULTIPLIER
-    );
+    const valueToDecimalMultiplied = valueToDecimal.mul(WORKING_MULTIPLIER);
 
     return Promise.resolve({
       typeOfHour: HoursClass.working,
@@ -183,15 +186,13 @@ export default class CalculateForTas extends Calculate {
   }
 
   getTotalNonWorkingHours(): Promise<TypeOfHour> {
-    const calculationsTAS = calculationTasFromArray(this.calculations);
-    const total = calculationsTAS.reduce(
-      (total, { surplusNonWorking }) => total + surplusNonWorking,
+    const total = this.calculations.reduce(
+      (total, { surplusNonWorking }) =>
+        total + BigInt(surplusNonWorking.toString()),
       0n
     );
     const valueToDecimal = new Decimal(total.toString());
-    const valueToDecimalMultiplied = valueToDecimal.mul(
-      CalculateForTas.NON_WORKING_MULTIPLIER
-    );
+    const valueToDecimalMultiplied = valueToDecimal.mul(NON_WORKING_MULTIPLIER);
 
     return Promise.resolve({
       typeOfHour: HoursClass.nonWorking,
@@ -203,9 +204,8 @@ export default class CalculateForTas extends Calculate {
     typeOfHour: TYPES_OF_HOURS;
     value: bigint;
   }> {
-    const calculationsTAS = calculationTasFromArray(this.calculations);
-    const total = calculationsTAS.reduce(
-      (total, { surplusSimple }) => total + surplusSimple,
+    const total = this.calculations.reduce(
+      (total, { surplusSimple }) => total + BigInt(surplusSimple.toString()),
       0n
     );
 
@@ -216,48 +216,23 @@ export default class CalculateForTas extends Calculate {
   }
 
   getTotalDiscount(): Promise<bigint> {
-    const calculationsTAS = calculationTasFromArray(this.calculations);
     return Promise.resolve(
-      calculationsTAS.reduce((total, { discount }) => total + discount, 0n)
+      this.calculations.reduce(
+        (total, { discount }) => total + BigInt(discount.toString()),
+        0n
+      )
     );
   }
 
-  getTotalHoursPerCalculation({
-    surplusBusiness,
-    surplusNonWorking,
-    surplusSimple,
-  }: {
-    surplusBusiness: bigint | number | string;
-    surplusNonWorking: bigint | number | string;
-    surplusSimple: bigint | number | string;
-  }): Decimal {
-    const _surplusBusiness = new Decimal(
-      typeof surplusBusiness === "bigint" || typeof surplusBusiness === "number"
-        ? surplusBusiness.toString()
-        : surplusBusiness
-    );
-
-    const _surplusNonWorking = new Decimal(
-      typeof surplusNonWorking === "bigint" ||
-      typeof surplusNonWorking === "number"
-        ? surplusNonWorking.toString()
-        : surplusNonWorking
-    );
-
-    const _surplusSimple = new Decimal(
-      typeof surplusSimple === "bigint" || typeof surplusSimple === "number"
-        ? surplusSimple.toString()
-        : surplusSimple
-    );
-
-    return _surplusBusiness
-      .mul(CalculateForTas.WORKING_MULTIPLIER)
-      .add(_surplusNonWorking.mul(CalculateForTas.NON_WORKING_MULTIPLIER))
-      .add(_surplusSimple);
+  getTotalHoursPerCalculation(calculation: CalculationTAS): Decimal {
+    const { surplusBusiness, surplusNonWorking, surplusSimple } = calculation;
+    return surplusBusiness
+      .mul(WORKING_MULTIPLIER)
+      .add(surplusNonWorking.mul(NON_WORKING_MULTIPLIER))
+      .add(surplusSimple);
   }
 
-  
   selectOptions() {
-    return includeCalculationsTAS()
+    return includeCalculationsTAS();
   }
 }

@@ -1,4 +1,5 @@
-import { CalculationTAS } from "@/@types/calculations";
+import { CalculationTAS as CalculationTASModel } from "@/@types/calculations";
+import CalculationTAS from "@/entities/CalculationTAS";
 import { getMonthByNumber } from "@/utils/mapMonths";
 import faker from "@faker-js/faker";
 import { Contract, TypeOfOfficials } from "@prisma/client";
@@ -110,7 +111,7 @@ export const genRandomCalculations = (
     const surplusSimple = faker.datatype.number({ min: 0, max: 30 });
     const min = Math.min(surplusBusiness, surplusNonWorking, surplusSimple);
     const discount = faker.datatype.number({ min: 0, max: min });
-    return buildCalculation({
+    const calculation = {
       year,
       month,
       observations: "",
@@ -138,9 +139,10 @@ export const genRandomCalculations = (
       nonWorkingNightOvertime:
         hoursToSeconds(faker.datatype.number({ min: 0, max: 30 })) +
         BigInt(faker.datatype.number({ min: 0, max: 59 })) * 60n,
-      actualBalanceId,
       compensatedNightOvertime:
         hoursToSeconds(faker.datatype.number({ min: 0, max: 30 })) +
         BigInt(faker.datatype.number({ min: 0, max: 59 })) * 60n,
-    });
+      actualBalanceId,
+    } as Omit<CalculationTASModel, "id" | "calculationId">;
+    return buildCalculation(calculation);
   });

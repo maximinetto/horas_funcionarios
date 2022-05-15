@@ -1,5 +1,7 @@
-import { CalculationCalculated, CalculationTAS } from "@/@types/calculations";
+import { CalculationCalculated } from "@/@types/calculations";
+import { logger } from "@/config";
 import BalanceConverter from "@/converters/BalanceConverter";
+import CalculationTAS from "@/entities/CalculationTAS";
 import { ActualBalanceRepository } from "@/persistence/actualBalance";
 import { CalculationRepository } from "@/persistence/calculations";
 import CalculateForTas from "@/services/calculations/classes/TAS/CalculateForTAS";
@@ -81,6 +83,10 @@ export default async function calculateForTAS({
     });
 
     const nextYear = getNextYear(actualHourlyBalanceCalculated.year);
+
+    logger.info("Recalculating for next year", {
+      year: nextYear,
+    });
 
     const others = await recalculate(
       nextYear,

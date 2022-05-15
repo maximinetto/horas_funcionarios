@@ -1,14 +1,10 @@
 import { CalculationCalculated } from "@/@types/calculations";
 import { logger } from "@/config";
+import Calculation from "@/entities/Calculation";
 import { CalculationRepository } from "@/persistence/calculations";
 import { getCurrentActualHourlyBalance } from "@/services/hourlyBalances";
 import ActualHourlyBalanceReplacer from "@/services/hourlyBalances/ActualHourlyBalanceReplacer";
-import {
-  Calculation,
-  HourlyBalance,
-  HourlyBalanceTAS,
-  Official,
-} from "@prisma/client";
+import { HourlyBalance, HourlyBalanceTAS, Official } from "@prisma/client";
 import { Dictionary } from "lodash";
 import _groupBy from "lodash/groupBy";
 import CalculateForTas from "./CalculateForTAS";
@@ -90,6 +86,7 @@ export default class RecalculateService {
 
     const entries = this.groupAndSortCalculations(calculations);
 
+    logger.debug("hola");
     return this.recalculateLaterHours(
       entries,
       official,
@@ -170,7 +167,7 @@ export default class RecalculateService {
       previousActualHourlyBalanceCalculated,
     });
 
-    logger.info("yearNumber", {yearNumber});
+    logger.info("yearNumber", { yearNumber });
 
     const data = await this.calculationRowService.reCalculate(
       {
@@ -183,7 +180,7 @@ export default class RecalculateService {
       this.calculateService
     );
 
-    logger.info("balances", {balances: data.balances});
+    logger.info("balances", { balances: data.balances });
 
     const actualHourlyBalanceToReplace = getCurrentActualHourlyBalance(
       previousActualHourlyBalances,

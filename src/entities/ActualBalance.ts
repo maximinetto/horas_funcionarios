@@ -1,7 +1,7 @@
 import { ActualBalanceWithHourlyBalancesSimple } from "@/@types/actualBalance";
 import Nullable from "@/entities/null_object/Nullable";
 import Comparable from "@/utils/Comparator";
-import type Decimal from "decimal.js";
+import { Decimal } from "decimal.js";
 import { Optional } from "typescript-optional";
 import type HourlyBalance from "./HourlyBalance";
 import Official from "./Official";
@@ -21,13 +21,13 @@ export default class ActualBalance
   public constructor(
     id: string,
     year: number,
-    total: Decimal,
+    total?: Decimal,
     official?: Official,
     hourlyBalances?: HourlyBalance[]
   ) {
     this._id = id;
     this._year = year;
-    this._total = total;
+    this._total = total ?? new Decimal(0);
     this._official = Optional.ofNullable(official);
     this._hourlyBalances = hourlyBalances ?? [];
   }

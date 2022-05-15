@@ -1,17 +1,11 @@
+import ActualBalance from "@/entities/ActualBalance";
+import Calculation from "@/entities/Calculation";
 import { CalculationRepository } from "@/persistence/calculations";
 import CalculateForTas from "@/services/calculations/classes/TAS/CalculateForTAS";
 import faker from "@faker-js/faker";
 import { Month } from "@prisma/client";
 
-const calculationRepository: jest.Mocked<CalculationRepository> = {
-  createTAS: jest.fn(),
-  createTeacher: jest.fn(),
-  updateTAS: jest.fn(),
-  get: jest.fn(),
-  delete: jest.fn(),
-  getOne: jest.fn(),
-  updateTeacher: jest.fn(),
-};
+jest.mock("@/persistence/calculations");
 
 test("Test sort", () => {
   const december = {
@@ -46,9 +40,11 @@ test("Test sort", () => {
     actualBalanceId: faker.datatype.uuid(),
   };
 
-  const calculations = [december, january, may, march];
+  const calculations = enrich([december, january, may, march]);
 
-  const expected = [january, march, may, december];
+  const expected = enrich([january, march, may, december]);
+
+  const calculationRepository = new CalculationRepository();
 
   const { sortLowestToHighest, getBiggestCalculation } = new CalculateForTas(
     calculationRepository
@@ -71,3 +67,24 @@ test("Test sort", () => {
     });
   }
 });
+
+function enrich(
+  calculations: {
+    id: string;
+    year: number;
+    month: Month;
+    observations: string;
+    actualBalanceId: string;
+  }[]
+) {
+  return calculations.map(
+    (c) =>
+      new Calculation(
+        c.id,
+        c.year,
+        c.month,
+        c.observations,
+        new ActualBalance(c.actualBalanceId, c.year)
+      )
+  );
+}

@@ -2,7 +2,7 @@ import {
   TypeOfHoursByYear,
   TypeOfHoursByYearDecimal,
 } from "@/@types/typeOfHours";
-import Decimal from "decimal.js";
+import { Decimal } from "decimal.js";
 
 export default class BalanceConverter {
   fromDecimalToBigInt(
