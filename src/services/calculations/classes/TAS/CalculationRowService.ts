@@ -1,15 +1,11 @@
-import { CalculationCalculated, CalculationTAS } from "@/@types/calculations";
-import { calculationTasFromArray } from "@/mappers/EntityToDTO";
-import {
-  Calculation,
-  HourlyBalance,
-  HourlyBalanceTAS,
-  Official,
-} from "@prisma/client";
+import { CalculationCalculated } from "@/@types/calculations";
+import Calculation from "@/entities/Calculation";
+import CalculationTAS from "@/entities/CalculationTAS";
+import { HourlyBalance, HourlyBalanceTAS, Official } from "@prisma/client";
 import CalculateForTas from "./CalculateForTAS";
 
 export default class CalculationRowService {
-  async calculate(
+  calculate(
     {
       year,
       official,
@@ -42,7 +38,7 @@ export default class CalculationRowService {
       official,
       calculations,
       hourlyBalances,
-      calculationsFromPersistence,
+      calculationsFromPersistence: calculationsFromPersistence ?? [],
     });
   }
 
@@ -54,7 +50,7 @@ export default class CalculationRowService {
       year,
       calculationsFromPersistence,
     }: {
-      calculations: Calculation[];
+      calculations: CalculationTAS[];
       official: Official;
       actualHourlyBalance: {
         hourlyBalances: (HourlyBalance & {
@@ -72,7 +68,7 @@ export default class CalculationRowService {
   ) {
     return this.calculate(
       {
-        calculations: calculationTasFromArray(calculations),
+        calculations,
         official,
         actualHourlyBalance,
         year,

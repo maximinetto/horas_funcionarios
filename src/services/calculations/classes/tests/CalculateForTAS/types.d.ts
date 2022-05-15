@@ -1,6 +1,6 @@
 import { ActualBalanceDTO } from "@/@types/actualBalance";
-import { CalculationTAS } from "@/@types/calculations";
 import { HourlyBalanceTAS } from "@/@types/hourlyBalance";
+import CalculationTAS from "@/entities/CalculationTAS";
 import { TypeOfOfficials } from "@prisma/client";
 
 export type Data = {

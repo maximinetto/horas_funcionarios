@@ -1,11 +1,12 @@
-import { CalculationCalculated, CalculationTAS } from "@/@types/calculations";
-import CalculationTASConverter from "@/converters/CalculationTASConverter";
-import calculateForTAS from "@/services/calculations/TAS";
+import CalculationTAS from "@/entities/CalculationTAS";
+import { CalculationRepository } from "@/persistence/calculations";
+import Decimal from "decimal.js";
 import { Dictionary } from "lodash";
+import {
+  expectCalculationEquals,
+  expectCurrentActualBalanceEquals,
+} from "../expect";
 import calculation from "./calculate";
-import { calculateTotalBalance } from "./calculateBalance";
-import { calculate } from "./calculateForMonth";
-import { converter } from "./convert";
 import { convert } from "./hourlyBalanceToActualBalance";
 import {
   actualBalance,
@@ -17,9 +18,9 @@ import {
   yearFirstTest,
   yearSecondTest,
 } from "./initialValues";
-import { actualBalanceRepository, calculationRepository } from "./mock";
+import { actualBalanceRepository } from "./mock";
 import { buildOfficial, genRandomCalculations, preset } from "./prepareData";
-import { CalculationData, HourlyBalanceTASNotNullable, Result } from "./types";
+import { CalculationData, HourlyBalanceTASNotNullable } from "./types";
 import {
   arrayWithoutElementAtIndex,
   generateRandomUUIDV4,
@@ -37,9 +38,48 @@ export interface CalculationDataTAS extends CalculationData {
   actualBalance: ActualBalanceComplete;
 }
 
+function copy(
+  source: CalculationTAS,
+  { discount, surplusNonWorking, surplusSimple }: Partial<CalculationTAS>
+) {
+  return new CalculationTAS(
+    source.id,
+    source.year,
+    source.month,
+    source.surplusBusiness,
+    surplusNonWorking ?? source.surplusNonWorking,
+    surplusSimple ?? source.surplusSimple,
+    discount ?? source.discount,
+    source.workingOvertime,
+    source.workingNightOvertime,
+    source.nonWorkingOvertime,
+    source.nonWorkingNightOvertime,
+    source.compensatedNightOvertime,
+    source.calculationId,
+    source.observations,
+    source.actualBalance.get()
+  );
+}
+
+function prepareCalculationsToReplace() {
+  const c1 = copy(calculationsSecondTest[2], {
+    discount: new Decimal((hoursToSeconds(2) + 21n * 60n).toString()),
+  });
+
+  const c2 = copy(calculationsSecondTest[5], {
+    discount: new Decimal(0),
+  });
+
+  const c3 = copy(calculationsSecondTest[11], {
+    surplusNonWorking: new Decimal((hoursToSeconds(3) + 44n * 60n).toString()),
+    surplusSimple: new Decimal((hoursToSeconds(4) + 55n * 60n).toString()),
+  });
+
+  return [c1, c2, c3];
+}
+
 describe("Test calculations", () => {
   beforeEach(() => {
-    calculationRepository.get.mockReset();
     actualBalanceRepository.getTAS.mockReset();
     BigInt.prototype["toJSON"] = function () {
       return this.toString();
@@ -47,22 +87,23 @@ describe("Test calculations", () => {
   });
 
   test("Should calculate right the passed values", async () => {
-    calculationRepository.get.mockResolvedValue([]);
+    CalculationRepository.prototype.get = jest.fn().mockResolvedValue([]);
     let data = preset(calculationsFirstTest, yearFirstTest);
     actualBalanceRepository.getTAS.mockResolvedValue([
       convert(data.lastBalances, actualBalance.officialId),
     ]);
-    expectCalculationEquals(data, calculationsFirstTest);
-    calculationRepository.get.mockReset();
+    await expectCalculationEquals(data, calculationsFirstTest);
     actualBalanceRepository.getTAS.mockClear();
 
-    calculationRepository.get.mockResolvedValue(calculationsFirstTest);
+    CalculationRepository.prototype.get = jest
+      .fn()
+      .mockResolvedValue(calculationsFirstTest);
     data = preset(otherCalculations, yearFirstTest);
     actualBalanceRepository.getTAS.mockResolvedValue([
       convert(data.lastBalances, actualBalance.officialId),
     ]);
     const allCalculations = [...calculationsFirstTest, ...otherCalculations];
-    expectCalculationEquals(data, allCalculations);
+    await expectCalculationEquals(data, allCalculations);
   });
 
   test("Should calculate right previous balances and next balances", async () => {
@@ -74,7 +115,7 @@ describe("Test calculations", () => {
       const balances2019 = calculation(
         {
           balances: [],
-          calculations: converter(calculationsSecondTest),
+          calculations: calculationsSecondTest,
         },
         actualBalanceSecondTest.officialId
       );
@@ -95,7 +136,7 @@ describe("Test calculations", () => {
       const balances2020 = calculation(
         {
           balances: balances2019.balances,
-          calculations: converter(calculation2020),
+          calculations: calculation2020,
         },
         actualBalanceSecondTest.officialId
       );
@@ -113,7 +154,7 @@ describe("Test calculations", () => {
       const balances2021 = calculation(
         {
           balances: balances2020.balances,
-          calculations: converter(nextNextCalculations),
+          calculations: nextNextCalculations,
         },
         actualBalanceSecondTest.officialId
       );
@@ -131,7 +172,7 @@ describe("Test calculations", () => {
         const nextBalance = calculation(
           {
             balances,
-            calculations: converter(c),
+            calculations: c,
           },
           actualBalanceSecondTest.officialId
         );
@@ -146,21 +187,8 @@ describe("Test calculations", () => {
 
     const calculationFromPersistence = [...Object.values(calculations)];
 
-    const calculationsToReplace = [
-      {
-        ...calculationsSecondTest[2],
-        discount: hoursToSeconds(2) + 21n * 60n,
-      },
-      {
-        ...calculationsSecondTest[5],
-        discount: 0n,
-      },
-      {
-        ...calculationsSecondTest[11],
-        surplusNonWorking: hoursToSeconds(3) + 44n * 60n,
-        surplusSimple: hoursToSeconds(4) + 55n * 60n,
-      },
-    ];
+    const calculationsToReplace: CalculationTAS[] =
+      prepareCalculationsToReplace();
 
     const data = buildOfficial({
       calculations: calculationsToReplace,
@@ -173,7 +201,8 @@ describe("Test calculations", () => {
 
     actualBalanceRepository.getTAS.mockResolvedValue(balancesEnriched);
 
-    calculationRepository.get
+    CalculationRepository.prototype.get = jest
+      .fn()
       .mockResolvedValueOnce(calculationFromPersistence.flat())
       .mockResolvedValueOnce(
         calculationFromPersistence
@@ -206,79 +235,6 @@ describe("Test calculations", () => {
       calculations[actualBalanceSecondTest.year + 2]
     );
 
-    calculationRepository.get.mockReset();
+    // calculationRepository.get.mockReset();
   });
-
-  async function expectCalculationEquals(
-    { lastBalances, data }: Result,
-    _calculations: CalculationTAS[]
-  ) {
-    const response = await calculateForTAS({
-      calculations: data.calculations,
-      official: data.official,
-      year: data.year,
-      calculationRepository: calculationRepository,
-      actualBalanceRepository: actualBalanceRepository,
-    });
-
-    const currentYear = response.currentYear;
-
-    const balances = expectCurrentActualBalanceEquals(
-      lastBalances,
-      currentYear,
-      _calculations,
-      data.official.id
-    );
-
-    return {
-      others: response.others,
-      balancesCalculated: balances,
-      actualBalances: response.actualHourlyBalances,
-    };
-  }
-
-  function expectCurrentActualBalanceEquals(
-    lastBalances: HourlyBalanceTASNotNullable[],
-    currentCalculation: CalculationCalculated,
-    _calculations: CalculationTAS[],
-    officialId: number = 1
-  ) {
-    const converter = new CalculationTASConverter();
-    const calculations = converter.fromModelsToEntities(_calculations);
-
-    const totalCalculationsCurrentYear = calculate(_calculations);
-    const total = calculateTotalBalance(
-      totalCalculationsCurrentYear,
-      lastBalances
-    );
-    const totalBalances = calculation(
-      { balances: lastBalances, calculations },
-      officialId
-    );
-
-    expect(currentCalculation.simpleHours.value.toString()).toBe(
-      totalCalculationsCurrentYear.simple.toString()
-    );
-    expect(
-      totalCalculationsCurrentYear.working.equals(
-        currentCalculation.workingHours.value
-      )
-    ).toBeTruthy();
-    expect(
-      totalCalculationsCurrentYear.nonWorking.equals(
-        currentCalculation.nonWorkingHours.value
-      )
-    ).toBeTruthy();
-    expect(currentCalculation.totalBalance.toString()).toBe(
-      total.totalHours.toString()
-    );
-
-    // expectBalance(currentCalculation.balances).toBe(totalBalances.result);
-
-    // expectBalance(currentCalculation.balancesSanitized).toBe(
-    //   totalBalances.resultSanitized
-    // );
-
-    return totalBalances;
-  }
 });

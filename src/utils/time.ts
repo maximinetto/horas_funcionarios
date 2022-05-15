@@ -1,4 +1,4 @@
-import Decimal from "decimal.js";
+import { Decimal } from "decimal.js";
 
 export const timeToSeconds = (input: string = "00:00") => {
   if (!input.includes(":")) {
