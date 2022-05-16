@@ -1,6 +1,23 @@
 import Calculation from "@/entities/Calculation";
+import { resetDateFromFirstDay } from "@/utils/date";
+import { getNumberByMonth } from "@/utils/mapMonths";
+import { DateTime } from "luxon";
 import Sorter from "./Sorter";
 
 export default class CalculationSorter extends Sorter<Calculation> {
   sort(calculations: Calculation[]) {}
+
+  sortFromLowestToHighestDate(a: Calculation, b: Calculation) {
+    const monthA = getNumberByMonth(a.month);
+    const monthB = getNumberByMonth(b.month);
+
+    return (
+      DateTime.fromObject(
+        resetDateFromFirstDay({ year: a.year, month: monthA })
+      ).toMillis() -
+      DateTime.fromObject(
+        resetDateFromFirstDay({ year: b.year, month: monthB })
+      ).toMillis()
+    );
+  }
 }

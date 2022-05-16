@@ -80,8 +80,6 @@ export function expectCurrentActualBalanceEquals(
     total.totalHours.toString()
   );
 
-  console.log("after expect");
-
   expectBalance(currentCalculation.balances).toBe(totalBalances.result);
 
   expectBalance(currentCalculation.balancesSanitized).toBe(

@@ -158,8 +158,6 @@ export default class HoursTASCalculator extends Calculator {
 
     const getTotalHoursPerCalculation = this.getTotalHoursPerCalculation;
 
-    console.log("pre getTotalHoursPerCalculation", this.calculations);
-
     const totalBalance = this.calculations.reduce((total, calculation) => {
       const { discount } = calculation;
       const hours = getTotalHoursPerCalculation(calculation);
