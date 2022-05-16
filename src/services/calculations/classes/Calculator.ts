@@ -2,19 +2,15 @@ import {
   CalculationParam,
   PrismaCalculationFinderOptions,
 } from "@/@types/calculations";
+import Calculations from "@/collections/Calculations";
 import Calculation from "@/entities/Calculation";
 import InvalidValueError from "@/errors/InvalidValueError";
 import type { CalculationRepository } from "@/persistence/calculations";
+import CalculationSorter from "@/sorters/CalculationSorter";
 import { resetDateFromFirstDay } from "@/utils/date";
 import { getNumberByMonth } from "@/utils/mapMonths";
 import { HourlyBalance, Month, Official } from "@prisma/client";
-import _cloneDeep from "lodash/cloneDeep";
-import _differenceBy from "lodash/differenceBy";
-import _xorBy from "lodash/xorBy";
 import { DateTime } from "luxon";
-
-const idIsPresent = (calculation: Calculation): boolean =>
-  calculation.id != null;
 export default abstract class Calculator {
   protected calculationRepository: CalculationRepository;
   protected calculationsFromPersistence: Calculation[];
@@ -22,14 +18,16 @@ export default abstract class Calculator {
   protected year?: number;
   protected official?: Official;
   protected hourlyBalances: HourlyBalance[];
+  protected calculationsSorter: CalculationSorter;
+  protected calculationsCollection: Calculations;
 
   constructor(calculationRepository: CalculationRepository) {
     this.calculationRepository = calculationRepository;
     this.calculations = [];
     this.calculationsFromPersistence = [];
     this.hourlyBalances = [];
-    this.sortLowestToHighest.bind(this);
-    this.getBiggestCalculation.bind(this);
+    this.calculationsSorter = new CalculationSorter();
+    this.calculationsCollection = new Calculations();
   }
 
   protected abstract selectOptions(): PrismaCalculationFinderOptions;
@@ -52,7 +50,8 @@ export default abstract class Calculator {
     }
 
     if (this.calculations.length > 0) {
-      const slowestCalculation = this.getSmallestCalculation(this.calculations);
+      const slowestCalculation =
+        this.calculationsCollection.getSmallestCalculation(this.calculations);
 
       if (
         !this.calculationIsAfterOfDateOfEntry(
@@ -79,8 +78,10 @@ export default abstract class Calculator {
       );
     }
 
-    this.calculations = this.mergeCalculations(
-      this.calculationsFromPersistence
+    this.calculations = this.calculationsCollection.mergeCalculations(
+      this.calculationsFromPersistence,
+      this.calculations,
+      this.replaceCalculationId
     );
 
     if (!this.allMonthsHaveHours(this.calculations)) {
@@ -104,39 +105,6 @@ export default abstract class Calculator {
     });
 
     return this.validate();
-  }
-
-  mergeCalculations(calculationsFromPersistence: Calculation[]): Calculation[] {
-    const symmetricDifference = _xorBy(
-      this.calculations,
-      calculationsFromPersistence,
-      "month"
-    );
-    const differenceCalculations = _differenceBy(
-      this.calculations,
-      symmetricDifference,
-      "month"
-    );
-
-    const differenceCalculationsFromPersistence: Calculation[] =
-      differenceCalculations.map((calculation) => {
-        const calculationFromPersistence = calculationsFromPersistence.find(
-          (calculationFromPersistence) =>
-            calculationFromPersistence.month === calculation.month
-        );
-
-        if (!calculationFromPersistence) {
-          return calculation;
-        }
-
-        const { id } = calculationFromPersistence;
-        return this.replaceCalculationId(calculation, id);
-      });
-
-    return [
-      ...symmetricDifference,
-      ...differenceCalculationsFromPersistence,
-    ].sort(this.sortLowestToHighest);
   }
 
   calculationIsAfterOfDateOfEntry(
@@ -165,24 +133,6 @@ export default abstract class Calculator {
     );
   }
 
-  getSmallestCalculation(calculations: Calculation[]): Calculation {
-    if (calculations.length === 0) {
-      throw new Error("calculations must be not empty");
-    }
-
-    return _cloneDeep(calculations).sort(this.sortLowestToHighest)[0];
-  }
-
-  getBiggestCalculation = (calculations: Calculation[]): Calculation => {
-    if (calculations.length === 0) {
-      throw new Error("calculations must be not empty");
-    }
-
-    return calculations
-      .slice()
-      .sort((a, b) => this.sortLowestToHighest(a, b) * -1)[0];
-  };
-
   allMonthsHaveHours(calculations: Calculation[]): boolean {
     if (calculations.length === 0) {
       throw new Error("calculations must have at least one element");
@@ -199,35 +149,14 @@ export default abstract class Calculator {
       dateOfEntryYear === calculations[0].year
         ? dateOfEntryMonth
         : getNumberByMonth(Month.JANUARY);
-    const lastMonthName = this.getBiggestCalculation(calculations).month;
+    const lastMonthName =
+      this.calculationsCollection.getBiggestCalculation(calculations).month;
     const lastMonthNumber = getNumberByMonth(lastMonthName);
     return calculations.every((calculation) => {
       const month = getNumberByMonth(calculation.month);
       const isBetween = month >= firstMonth && month <= lastMonthNumber;
       return isBetween;
     });
-  }
-
-  sortLowestToHighest(a: Calculation, b: Calculation) {
-    const monthA = getNumberByMonth(a.month);
-    const monthB = getNumberByMonth(b.month);
-
-    return (
-      DateTime.fromObject(
-        resetDateFromFirstDay({ year: a.year, month: monthA })
-      ).toMillis() -
-      DateTime.fromObject(
-        resetDateFromFirstDay({ year: b.year, month: monthB })
-      ).toMillis()
-    );
-  }
-
-  calculationsWithId(calculations: Calculation[]) {
-    return calculations.filter(idIsPresent);
-  }
-
-  calculationsWithoutId(calculations: Calculation[]) {
-    return calculations.filter((calculation) => !idIsPresent(calculation));
   }
 
   store({
