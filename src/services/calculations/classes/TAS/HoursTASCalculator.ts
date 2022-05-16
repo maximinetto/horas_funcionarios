@@ -11,7 +11,7 @@ import {
   CalculationRepository,
   includeCalculationsTAS,
 } from "@/persistence/calculations";
-import Calculate from "@/services/calculations/classes/Calculate";
+import Calculator from "@/services/calculations/classes/Calculator";
 import YearsCalculator from "@/services/calculations/classes/TAS/YearsCalculator";
 import HoursClass from "@/services/calculations/classes/typeOfHours";
 import { Decimal } from "decimal.js";
@@ -20,7 +20,7 @@ import { hoursOfYearEnricher } from "./hourEnrich";
 const WORKING_MULTIPLIER = 1.5;
 const NON_WORKING_MULTIPLIER = 2;
 
-export default class CalculateForTas extends Calculate {
+export default class HoursTASCalculator extends Calculator {
   protected declare calculations: CalculationTAS[];
   protected declare hourlyBalances: HourlyBalanceTAS[];
   private balancesPerYearCalculator: YearsCalculator;
