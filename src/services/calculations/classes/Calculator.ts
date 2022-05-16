@@ -15,7 +15,7 @@ import { DateTime } from "luxon";
 
 const idIsPresent = (calculation: Calculation): boolean =>
   calculation.id != null;
-export default abstract class Calculate {
+export default abstract class Calculator {
   protected calculationRepository: CalculationRepository;
   protected calculationsFromPersistence: Calculation[];
   protected calculations: Calculation[];

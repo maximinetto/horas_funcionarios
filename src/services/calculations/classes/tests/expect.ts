@@ -1,13 +1,16 @@
 import { CalculationCalculated } from "@/@types/calculations";
 import CalculationTAS from "@/entities/CalculationTAS";
 import calculateForTAS from "../../TAS";
-import calculation from "./CalculateForTAS/calculate";
-import { calculateTotalBalance } from "./CalculateForTAS/calculateBalance";
-import { calculate } from "./CalculateForTAS/calculateForMonth";
-import { CalculationDataTAS } from "./CalculateForTAS/CalculateForTAS.test";
-import expectBalance from "./CalculateForTAS/expectBalance";
-import { actualBalanceRepository } from "./CalculateForTAS/mock";
-import { HourlyBalanceTASNotNullable, Result } from "./CalculateForTAS/types";
+import calculation from "./HoursTASCalculator/calculate";
+import { calculateTotalBalance } from "./HoursTASCalculator/calculateBalance";
+import { calculate } from "./HoursTASCalculator/calculateForMonth";
+import expectBalance from "./HoursTASCalculator/expectBalance";
+import { CalculationDataTAS } from "./HoursTASCalculator/HoursTASCalculator.test";
+import { actualBalanceRepository } from "./HoursTASCalculator/mock";
+import {
+  HourlyBalanceTASNotNullable,
+  Result,
+} from "./HoursTASCalculator/types";
 
 export async function expectCalculationEquals(
   { lastBalances, data }: Result,

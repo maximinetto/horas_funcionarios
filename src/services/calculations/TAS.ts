@@ -4,8 +4,8 @@ import BalanceConverter from "@/converters/BalanceConverter";
 import CalculationTAS from "@/entities/CalculationTAS";
 import { ActualBalanceRepository } from "@/persistence/actualBalance";
 import { CalculationRepository } from "@/persistence/calculations";
-import CalculateForTas from "@/services/calculations/classes/TAS/CalculateForTAS";
 import CalculationRowService from "@/services/calculations/classes/TAS/CalculationRowService";
+import HoursTASCalculator from "@/services/calculations/classes/TAS/HoursTASCalculator";
 import { HourlyBalance, HourlyBalanceTAS, Official } from "@prisma/client";
 import { balances, getCurrentActualHourlyBalance } from "../hourlyBalances";
 import ActualHourlyBalanceCreator from "../hourlyBalances/ActualHourlyBalanceCreator";
@@ -25,7 +25,7 @@ export default async function calculateForTAS({
     balanceConverter,
     actualBalanceCreator
   ),
-  calculateService = new CalculateForTas(calculationRepository),
+  calculateService = new HoursTASCalculator(calculationRepository),
   recalculateService = new RecalculateService(
     calculationRepository,
     calculationRowService,
@@ -42,7 +42,7 @@ export default async function calculateForTAS({
   actualBalanceCreator?: ActualHourlyBalanceCreator;
   actualBalanceReplacer?: ActualHourlyBalanceReplacer;
   balanceConverter?: BalanceConverter;
-  calculateService?: CalculateForTas;
+  calculateService?: HoursTASCalculator;
   recalculateService?: RecalculateService;
 }) {
   async function main() {

@@ -4,7 +4,7 @@ import { calculate } from "./calculateForMonth";
 import {
   ActualBalanceComplete,
   CalculationDataTAS,
-} from "./CalculateForTAS.test";
+} from "./HoursTASCalculator.test";
 import { HourlyBalanceTASNotNullable } from "./types";
 import { generateRandomUUIDV4 } from "./util";
 

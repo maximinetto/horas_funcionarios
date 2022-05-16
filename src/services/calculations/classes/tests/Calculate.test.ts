@@ -1,7 +1,7 @@
 import ActualBalance from "@/entities/ActualBalance";
 import Calculation from "@/entities/Calculation";
 import { CalculationRepository } from "@/persistence/calculations";
-import CalculateForTas from "@/services/calculations/classes/TAS/CalculateForTAS";
+import HoursTASCalculator from "@/services/calculations/classes/TAS/HoursTASCalculator";
 import faker from "@faker-js/faker";
 import { Month } from "@prisma/client";
 
@@ -46,7 +46,7 @@ test("Test sort", () => {
 
   const calculationRepository = new CalculationRepository();
 
-  const { sortLowestToHighest, getBiggestCalculation } = new CalculateForTas(
+  const { sortLowestToHighest, getBiggestCalculation } = new HoursTASCalculator(
     calculationRepository
   );
 

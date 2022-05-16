@@ -2,7 +2,7 @@ import { CalculationCalculated } from "@/@types/calculations";
 import Calculation from "@/entities/Calculation";
 import CalculationTAS from "@/entities/CalculationTAS";
 import { HourlyBalance, HourlyBalanceTAS, Official } from "@prisma/client";
-import CalculateForTas from "./CalculateForTAS";
+import HoursTASCalculator from "./HoursTASCalculator";
 
 export default class CalculationRowService {
   calculate(
@@ -27,7 +27,7 @@ export default class CalculationRowService {
       };
       calculationsFromPersistence?: Calculation[];
     },
-    calculateService: CalculateForTas
+    calculateService: HoursTASCalculator
   ): Promise<CalculationCalculated> {
     const hourlyBalances = actualHourlyBalance
       ? actualHourlyBalance.hourlyBalances
@@ -64,7 +64,7 @@ export default class CalculationRowService {
       year: number;
       calculationsFromPersistence: Calculation[];
     },
-    calculateService: CalculateForTas
+    calculateService: HoursTASCalculator
   ) {
     return this.calculate(
       {

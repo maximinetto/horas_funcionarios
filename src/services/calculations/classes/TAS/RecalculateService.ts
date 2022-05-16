@@ -7,13 +7,13 @@ import ActualHourlyBalanceReplacer from "@/services/hourlyBalances/ActualHourlyB
 import { HourlyBalance, HourlyBalanceTAS, Official } from "@prisma/client";
 import { Dictionary } from "lodash";
 import _groupBy from "lodash/groupBy";
-import CalculateForTas from "./CalculateForTAS";
 import CalculationRowService from "./CalculationRowService";
+import HoursTASCalculator from "./HoursTASCalculator";
 
 export default class RecalculateService {
   private calculationRepository: CalculationRepository;
   private calculationRowService: CalculationRowService;
-  private calculateService: CalculateForTas;
+  private calculateService: HoursTASCalculator;
   private actualBalanceReplacer: ActualHourlyBalanceReplacer;
   private actualHourlyBalances: {
     hourlyBalances: (HourlyBalance & {
@@ -28,7 +28,7 @@ export default class RecalculateService {
   constructor(
     calculationRepository: CalculationRepository,
     calculationRowService: CalculationRowService,
-    calculateService: CalculateForTas,
+    calculateService: HoursTASCalculator,
     actualBalanceReplacer: ActualHourlyBalanceReplacer
   ) {
     this.calculationRepository = calculationRepository;
