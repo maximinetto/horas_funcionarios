@@ -1,6 +1,7 @@
 import Calculation from "@/entities/Calculation";
 import { resetDateFromFirstDay } from "@/utils/date";
 import { getNumberByMonth } from "@/utils/mapMonths";
+import numberSorter from "@/utils/numberSorter";
 import { DateTime } from "luxon";
 import Sorter from "./Sorter";
 
@@ -19,5 +20,9 @@ export default class CalculationSorter extends Sorter<Calculation> {
         resetDateFromFirstDay({ year: b.year, month: monthB })
       ).toMillis()
     );
+  }
+
+  sortFromLowestToHighestYear(a: Calculation, b: Calculation) {
+    return numberSorter(a.year, b.year);
   }
 }

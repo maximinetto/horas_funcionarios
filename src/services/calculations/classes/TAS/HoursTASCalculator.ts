@@ -4,7 +4,6 @@ import {
 } from "@/@types/calculations";
 import { HourlyBalanceTAS } from "@/@types/hourlyBalance";
 import { TypeOfHour } from "@/@types/typeOfHours";
-import Calculation from "@/entities/Calculation";
 import CalculationTAS from "@/entities/CalculationTAS";
 import { TYPES_OF_HOURS } from "@/enums/typeOfHours";
 import {
@@ -15,12 +14,13 @@ import Calculator from "@/services/calculations/classes/Calculator";
 import YearsCalculator from "@/services/calculations/classes/TAS/YearsCalculator";
 import HoursClass from "@/services/calculations/classes/typeOfHours";
 import { Decimal } from "decimal.js";
+import CalculationTASCreator from "./CalculationTASCreator";
 import { hoursOfYearEnricher } from "./hourEnrich";
 
-const WORKING_MULTIPLIER = 1.5;
-const NON_WORKING_MULTIPLIER = 2;
-
 export default class HoursTASCalculator extends Calculator {
+  static WORKING_MULTIPLIER = 1.5;
+  static NON_WORKING_MULTIPLIER = 2;
+
   protected declare calculations: CalculationTAS[];
   protected declare hourlyBalances: HourlyBalanceTAS[];
   private balancesPerYearCalculator: YearsCalculator;
@@ -29,32 +29,13 @@ export default class HoursTASCalculator extends Calculator {
     calculationRepository: CalculationRepository,
     balancesPerYearCalculator?: YearsCalculator
   ) {
-    super(calculationRepository);
+    super(
+      calculationRepository,
+      new CalculationTASCreator(),
+      includeCalculationsTAS()
+    );
     this.balancesPerYearCalculator =
       balancesPerYearCalculator ?? new YearsCalculator();
-  }
-
-  protected replaceCalculationId(
-    calculation: CalculationTAS,
-    id: string
-  ): Calculation {
-    return CalculationTAS.from({
-      id,
-      month: calculation.month,
-      year: calculation.year,
-      surplusBusiness: calculation.surplusBusiness,
-      surplusNonWorking: calculation.surplusNonWorking,
-      surplusSimple: calculation.surplusSimple,
-      discount: calculation.discount,
-      compensatedNightOvertime: calculation.compensatedNightOvertime,
-      workingNightOvertime: calculation.workingNightOvertime,
-      nonWorkingNightOvertime: calculation.nonWorkingNightOvertime,
-      nonWorkingOvertime: calculation.nonWorkingOvertime,
-      workingOvertime: calculation.workingOvertime,
-      observations: calculation.observations,
-      actualBalance: calculation.actualBalance.get(),
-      calculationId: calculation.calculationId,
-    });
   }
 
   async calculate({
@@ -81,15 +62,13 @@ export default class HoursTASCalculator extends Calculator {
       totalDiscount,
     ] = await this.calculatePerMonth(hourlyBalances);
 
-    const results = await this.calculateAccumulateHoursByYear({
+    return this.calculateAccumulateHoursByYear({
       nonWorkingHours,
       simpleHours,
       totalBalance,
       totalDiscount,
       workingHours,
     });
-
-    return results;
   }
 
   calculatePerMonth(hourlyBalances: HourlyBalanceTAS[]) {
@@ -175,7 +154,9 @@ export default class HoursTASCalculator extends Calculator {
       0n
     );
     const valueToDecimal = new Decimal(total.toString());
-    const valueToDecimalMultiplied = valueToDecimal.mul(WORKING_MULTIPLIER);
+    const valueToDecimalMultiplied = valueToDecimal.mul(
+      HoursTASCalculator.WORKING_MULTIPLIER
+    );
 
     return Promise.resolve({
       typeOfHour: HoursClass.working,
@@ -190,7 +171,9 @@ export default class HoursTASCalculator extends Calculator {
       0n
     );
     const valueToDecimal = new Decimal(total.toString());
-    const valueToDecimalMultiplied = valueToDecimal.mul(NON_WORKING_MULTIPLIER);
+    const valueToDecimalMultiplied = valueToDecimal.mul(
+      HoursTASCalculator.NON_WORKING_MULTIPLIER
+    );
 
     return Promise.resolve({
       typeOfHour: HoursClass.nonWorking,
@@ -225,12 +208,8 @@ export default class HoursTASCalculator extends Calculator {
   getTotalHoursPerCalculation(calculation: CalculationTAS): Decimal {
     const { surplusBusiness, surplusNonWorking, surplusSimple } = calculation;
     return surplusBusiness
-      .mul(WORKING_MULTIPLIER)
-      .add(surplusNonWorking.mul(NON_WORKING_MULTIPLIER))
+      .mul(HoursTASCalculator.WORKING_MULTIPLIER)
+      .add(surplusNonWorking.mul(HoursTASCalculator.NON_WORKING_MULTIPLIER))
       .add(surplusSimple);
-  }
-
-  selectOptions() {
-    return includeCalculationsTAS();
   }
 }
