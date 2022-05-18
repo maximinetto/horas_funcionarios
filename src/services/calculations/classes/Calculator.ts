@@ -11,6 +11,7 @@ import { resetDateFromFirstDay } from "@/utils/date";
 import { getNumberByMonth } from "@/utils/mapMonths";
 import { HourlyBalance, Month, Official } from "@prisma/client";
 import { DateTime } from "luxon";
+import CalculationCreator from "./CalculationCreator";
 export default abstract class Calculator {
   protected calculationRepository: CalculationRepository;
   protected calculationsFromPersistence: Calculation[];
@@ -20,21 +21,23 @@ export default abstract class Calculator {
   protected hourlyBalances: HourlyBalance[];
   protected calculationsSorter: CalculationSorter;
   protected calculationsCollection: Calculations;
+  private calculationCreator: CalculationCreator;
+  private selectOptions: PrismaCalculationFinderOptions;
 
-  constructor(calculationRepository: CalculationRepository) {
+  constructor(
+    calculationRepository: CalculationRepository,
+    calculationCreator: CalculationCreator,
+    selectOptions: PrismaCalculationFinderOptions
+  ) {
     this.calculationRepository = calculationRepository;
     this.calculations = [];
     this.calculationsFromPersistence = [];
     this.hourlyBalances = [];
     this.calculationsSorter = new CalculationSorter();
     this.calculationsCollection = new Calculations();
+    this.calculationCreator = calculationCreator;
+    this.selectOptions = selectOptions;
   }
-
-  protected abstract selectOptions(): PrismaCalculationFinderOptions;
-  protected abstract replaceCalculationId(
-    calculation: Calculation,
-    id: string
-  ): Calculation;
 
   async validate() {
     if (!this.calculations || !Array.isArray(this.calculations)) {
@@ -74,14 +77,14 @@ export default abstract class Calculator {
           },
           year: this.year,
         },
-        this.selectOptions()
+        this.selectOptions
       );
     }
 
     this.calculations = this.calculationsCollection.mergeCalculations(
       this.calculationsFromPersistence,
       this.calculations,
-      this.replaceCalculationId
+      this.calculationCreator.create
     );
 
     if (!this.allMonthsHaveHours(this.calculations)) {
