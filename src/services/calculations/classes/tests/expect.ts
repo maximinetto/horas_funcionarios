@@ -16,14 +16,6 @@ export async function expectCalculationEquals(
   { lastBalances, data }: Result,
   _calculations: CalculationTAS[]
 ) {
-  console.info("_calculations", {
-    calculations: _calculations,
-  });
-
-  console.info("data.calculations", {
-    calculations: data.calculations,
-  });
-
   const response = await calculateForTAS({
     calculations: data.calculations,
     official: data.official,

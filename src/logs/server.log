@@ -580,3 +580,105 @@ Received: [31m32460n[39m
   { year: 2020, hours: [ [Object], [Object], [Object] ] },
   { year: 2021, hours: [ [Object], [Object], [Object] ] }
 ]
+[32minfo[39m: May-30-2022 12:41:39 	previousActualHourlyBalanceSaved {
+  id: '6e6993a7-35e0-4516-b895-99e75ae6c2c3',
+  year: 2019,
+  officialId: 1,
+  total: 345510n,
+  hourlyBalances: [
+    {
+      actualBalanceId: '6e6993a7-35e0-4516-b895-99e75ae6c2c3',
+      year: 2019,
+      id: '65226d20-e102-49da-8e65-2d78ce1cefdf',
+      hourlyBalanceTAS: [Object]
+    }
+  ]
+}
+{"id":"6e6993a7-35e0-4516-b895-99e75ae6c2c3","year":2019,"officialId":1,"total":"345510","hourlyBalances":[{"actualBalanceId":"6e6993a7-35e0-4516-b895-99e75ae6c2c3","year":2019,"id":"65226d20-e102-49da-8e65-2d78ce1cefdf","hourlyBalanceTAS":{"simple":"111660","working":"122490","nonWorking":"111360","hourlyBalanceId":"65226d20-e102-49da-8e65-2d78ce1cefdf","id":"93ef9078-d594-49fa-8f45-8b2d80dc8fc4"}}]}
+[32minfo[39m: May-30-2022 12:41:39 	yearNumber 2020
+{}
+[32minfo[39m: May-30-2022 12:41:39 	balances [
+  { year: 2019, hours: [ [Object], [Object], [Object] ] },
+  { year: 2020, hours: [ [Object], [Object], [Object] ] }
+]
+{"0":{"year":2019,"hours":[{"typeOfHour":"simple","value":"33420"},{"typeOfHour":"working","value":"122490"},{"typeOfHour":"nonWorking","value":"111360"}]},"1":{"year":2020,"hours":[{"typeOfHour":"simple","value":"711840"},{"typeOfHour":"working","value":"335250"},{"typeOfHour":"nonWorking","value":"300120"}]}}
+[32minfo[39m: May-30-2022 12:41:39 	previousActualHourlyBalanceSaved {
+  id: '99a32a9e-d50e-4634-8ed9-5d473f5eadda',
+  year: 2020,
+  officialId: 1,
+  total: 1614480n,
+  hourlyBalances: [
+    {
+      actualBalanceId: '99a32a9e-d50e-4634-8ed9-5d473f5eadda',
+      year: 2019,
+      id: 'f0efc545-1822-4c86-896f-09a365df50d2',
+      hourlyBalanceTAS: [Object]
+    },
+    {
+      actualBalanceId: '99a32a9e-d50e-4634-8ed9-5d473f5eadda',
+      year: 2020,
+      id: 'd22f7652-1ee7-457d-bb0b-0ae27d552b91',
+      hourlyBalanceTAS: [Object]
+    }
+  ]
+}
+{"id":"99a32a9e-d50e-4634-8ed9-5d473f5eadda","year":2020,"officialId":1,"total":"1614480","hourlyBalances":[{"actualBalanceId":"99a32a9e-d50e-4634-8ed9-5d473f5eadda","year":2019,"id":"f0efc545-1822-4c86-896f-09a365df50d2","hourlyBalanceTAS":{"simple":"33420","working":"122490","nonWorking":"111360","hourlyBalanceId":"f0efc545-1822-4c86-896f-09a365df50d2","id":"9bf29a68-f28f-44a5-b8c0-7226c06bf1d6"}},{"actualBalanceId":"99a32a9e-d50e-4634-8ed9-5d473f5eadda","year":2020,"id":"d22f7652-1ee7-457d-bb0b-0ae27d552b91","hourlyBalanceTAS":{"simple":"711840","working":"335250","nonWorking":"300120","hourlyBalanceId":"d22f7652-1ee7-457d-bb0b-0ae27d552b91","id":"7d0d1283-3ef3-4b05-89bf-c1bd6446ea7b"}}]}
+[32minfo[39m: May-30-2022 12:41:39 	yearNumber 2021
+{}
+[32minfo[39m: May-30-2022 12:41:39 	balances [
+  { year: 2019, hours: [ [Object], [Object], [Object] ] },
+  { year: 2020, hours: [ [Object], [Object], [Object] ] },
+  { year: 2021, hours: [ [Object], [Object], [Object] ] }
+]
+{"0":{"year":2019,"hours":[{"typeOfHour":"simple","value":"-43440"},{"typeOfHour":"working","value":"79050"},{"typeOfHour":"nonWorking","value":"111360"}]},"1":{"year":2020,"hours":[{"typeOfHour":"simple","value":"711840"},{"typeOfHour":"working","value":"335250"},{"typeOfHour":"nonWorking","value":"300120"}]},"2":{"year":2021,"hours":[{"typeOfHour":"simple","value":"521940"},{"typeOfHour":"working","value":"294120"},{"typeOfHour":"nonWorking","value":"282120"}]}}
+[32minfo[39m: May-30-2022 12:42:33 	previousActualHourlyBalanceSaved {
+  id: 'e60f1db2-bbc6-4875-82a7-a0ea20a3fd88',
+  year: 2019,
+  officialId: 1,
+  total: 345510n,
+  hourlyBalances: [
+    {
+      actualBalanceId: 'e60f1db2-bbc6-4875-82a7-a0ea20a3fd88',
+      year: 2019,
+      id: '34d69c4c-3c15-44af-b7b1-7336f867ff88',
+      hourlyBalanceTAS: [Object]
+    }
+  ]
+}
+{"id":"e60f1db2-bbc6-4875-82a7-a0ea20a3fd88","year":2019,"officialId":1,"total":"345510","hourlyBalances":[{"actualBalanceId":"e60f1db2-bbc6-4875-82a7-a0ea20a3fd88","year":2019,"id":"34d69c4c-3c15-44af-b7b1-7336f867ff88","hourlyBalanceTAS":{"simple":"111660","working":"122490","nonWorking":"111360","hourlyBalanceId":"34d69c4c-3c15-44af-b7b1-7336f867ff88","id":"bb845403-9cef-411a-b220-7b21fd8a0c63"}}]}
+[32minfo[39m: May-30-2022 12:42:33 	yearNumber 2020
+{}
+[32minfo[39m: May-30-2022 12:42:33 	balances [
+  { year: 2019, hours: [ [Object], [Object], [Object] ] },
+  { year: 2020, hours: [ [Object], [Object], [Object] ] }
+]
+{"0":{"year":2019,"hours":[{"typeOfHour":"simple","value":"48180"},{"typeOfHour":"working","value":"122490"},{"typeOfHour":"nonWorking","value":"111360"}]},"1":{"year":2020,"hours":[{"typeOfHour":"simple","value":"632400"},{"typeOfHour":"working","value":"439110"},{"typeOfHour":"nonWorking","value":"297840"}]}}
+[32minfo[39m: May-30-2022 12:42:33 	previousActualHourlyBalanceSaved {
+  id: '6bf40ba9-96ea-4e3a-b1a6-9fe7f0c75414',
+  year: 2020,
+  officialId: 1,
+  total: 1651380n,
+  hourlyBalances: [
+    {
+      actualBalanceId: '6bf40ba9-96ea-4e3a-b1a6-9fe7f0c75414',
+      year: 2019,
+      id: '297abe58-4b6b-4cfe-813a-04aa0697ddd7',
+      hourlyBalanceTAS: [Object]
+    },
+    {
+      actualBalanceId: '6bf40ba9-96ea-4e3a-b1a6-9fe7f0c75414',
+      year: 2020,
+      id: 'a89f7c8f-4a7a-4481-a0fe-40c1511180f4',
+      hourlyBalanceTAS: [Object]
+    }
+  ]
+}
+{"id":"6bf40ba9-96ea-4e3a-b1a6-9fe7f0c75414","year":2020,"officialId":1,"total":"1651380","hourlyBalances":[{"actualBalanceId":"6bf40ba9-96ea-4e3a-b1a6-9fe7f0c75414","year":2019,"id":"297abe58-4b6b-4cfe-813a-04aa0697ddd7","hourlyBalanceTAS":{"simple":"48180","working":"122490","nonWorking":"111360","hourlyBalanceId":"297abe58-4b6b-4cfe-813a-04aa0697ddd7","id":"0227bed5-2f5e-4c63-8939-1aaf2ba0ac66"}},{"actualBalanceId":"6bf40ba9-96ea-4e3a-b1a6-9fe7f0c75414","year":2020,"id":"a89f7c8f-4a7a-4481-a0fe-40c1511180f4","hourlyBalanceTAS":{"simple":"632400","working":"439110","nonWorking":"297840","hourlyBalanceId":"a89f7c8f-4a7a-4481-a0fe-40c1511180f4","id":"3d4212b0-9c4f-4835-9bc2-cd862f7635dd"}}]}
+[32minfo[39m: May-30-2022 12:42:34 	yearNumber 2021
+{}
+[32minfo[39m: May-30-2022 12:42:34 	balances [
+  { year: 2019, hours: [ [Object], [Object], [Object] ] },
+  { year: 2020, hours: [ [Object], [Object], [Object] ] },
+  { year: 2021, hours: [ [Object], [Object], [Object] ] }
+]
+{"0":{"year":2019,"hours":[{"typeOfHour":"simple","value":"-14640"},{"typeOfHour":"working","value":"107850"},{"typeOfHour":"nonWorking","value":"111360"}]},"1":{"year":2020,"hours":[{"typeOfHour":"simple","value":"632400"},{"typeOfHour":"working","value":"439110"},{"typeOfHour":"nonWorking","value":"297840"}]},"2":{"year":2021,"hours":[{"typeOfHour":"simple","value":"756060"},{"typeOfHour":"working","value":"290970"},{"typeOfHour":"nonWorking","value":"177720"}]}}

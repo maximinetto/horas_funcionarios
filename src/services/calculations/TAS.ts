@@ -1,28 +1,15 @@
-<<<<<<< HEAD
 import { CalculationCalculated } from "@/@types/calculations";
 import BalanceConverter from "@/converters/BalanceConverter";
 import CalculationTAS from "@/entities/CalculationTAS";
 import { ActualBalanceRepository } from "@/persistence/actualBalance";
 import { CalculationRepository } from "@/persistence/calculations";
-import CalculationRowService from "@/services/calculations/classes/TAS/CalculationRowService";
-import HoursTASCalculator from "@/services/calculations/classes/TAS/HoursTASCalculator";
-=======
-import { CalculationCalculated, CalculationTAS } from "@/@types/calculations";
-import BalanceConverter from "@/converters/BalanceConverter";
-import { ActualBalanceRepository } from "@/persistence/actualBalance";
-import { CalculationRepository } from "@/persistence/calculations";
-import CalculateForTas from "@/services/calculations/classes/CalculateForTAS";
-import CalculationRowService from "@/services/calculations/classes/CalculationRowService";
->>>>>>> e70383e (resolving conflicts)
 import { HourlyBalance, HourlyBalanceTAS, Official } from "@prisma/client";
 import { balances, getCurrentActualHourlyBalance } from "../hourlyBalances";
 import ActualHourlyBalanceCreator from "../hourlyBalances/ActualHourlyBalanceCreator";
 import ActualHourlyBalanceReplacer from "../hourlyBalances/ActualHourlyBalanceReplacer";
-<<<<<<< HEAD
-import RecalculateService from "./classes/TAS/RecalculateService";
-=======
 import RecalculateService from "./classes/RecalculateService";
->>>>>>> e70383e (resolving conflicts)
+import CalculationRowService from "./classes/TAS/CalculationRowService";
+import HoursTASCalculator from "./classes/TAS/HoursTASCalculator";
 
 export default async function calculateForTAS({
   year: currentYear,
@@ -37,11 +24,7 @@ export default async function calculateForTAS({
     balanceConverter,
     actualBalanceCreator
   ),
-<<<<<<< HEAD
   calculateService = new HoursTASCalculator(calculationRepository),
-=======
-  calculateService = new CalculateForTas(calculationRepository),
->>>>>>> e70383e (resolving conflicts)
   recalculateService = new RecalculateService(
     calculationRepository,
     calculationRowService,
@@ -58,11 +41,8 @@ export default async function calculateForTAS({
   actualBalanceCreator?: ActualHourlyBalanceCreator;
   actualBalanceReplacer?: ActualHourlyBalanceReplacer;
   balanceConverter?: BalanceConverter;
-<<<<<<< HEAD
+
   calculateService?: HoursTASCalculator;
-=======
-  calculateService?: CalculateForTas;
->>>>>>> e70383e (resolving conflicts)
   recalculateService?: RecalculateService;
 }) {
   async function main() {
