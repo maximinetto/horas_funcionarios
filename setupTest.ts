@@ -1,3 +1,3 @@
-import {configureDotEnv} from "./src/config";
+import { configureDotEnv } from "./src/config";
 
-configureDotEnv(".env.test")
+configureDotEnv(".env.test");
