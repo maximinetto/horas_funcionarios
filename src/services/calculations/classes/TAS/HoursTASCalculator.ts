@@ -18,9 +18,6 @@ import CalculationTASCreator from "./CalculationTASCreator";
 import { hoursOfYearEnricher } from "./hourEnrich";
 
 export default class HoursTASCalculator extends Calculator {
-  static WORKING_MULTIPLIER = 1.5;
-  static NON_WORKING_MULTIPLIER = 2;
-
   protected declare calculations: CalculationTAS[];
   protected declare hourlyBalances: HourlyBalanceTAS[];
   private balancesPerYearCalculator: YearsCalculator;
@@ -135,11 +132,9 @@ export default class HoursTASCalculator extends Calculator {
       0n
     );
 
-    const getTotalHoursPerCalculation = this.getTotalHoursPerCalculation;
-
     const totalBalance = this.calculations.reduce((total, calculation) => {
       const { discount } = calculation;
-      const hours = getTotalHoursPerCalculation(calculation);
+      const hours = calculation.getTotalHoursPerCalculation();
       return total.add(hours).sub(discount.toString());
     }, new Decimal(totalHours.toString()));
 
@@ -155,7 +150,7 @@ export default class HoursTASCalculator extends Calculator {
     );
     const valueToDecimal = new Decimal(total.toString());
     const valueToDecimalMultiplied = valueToDecimal.mul(
-      HoursTASCalculator.WORKING_MULTIPLIER
+      CalculationTAS.WORKING_MULTIPLIER
     );
 
     return Promise.resolve({
@@ -172,7 +167,7 @@ export default class HoursTASCalculator extends Calculator {
     );
     const valueToDecimal = new Decimal(total.toString());
     const valueToDecimalMultiplied = valueToDecimal.mul(
-      HoursTASCalculator.NON_WORKING_MULTIPLIER
+      CalculationTAS.NON_WORKING_MULTIPLIER
     );
 
     return Promise.resolve({
@@ -203,13 +198,5 @@ export default class HoursTASCalculator extends Calculator {
         0n
       )
     );
-  }
-
-  getTotalHoursPerCalculation(calculation: CalculationTAS): Decimal {
-    const { surplusBusiness, surplusNonWorking, surplusSimple } = calculation;
-    return surplusBusiness
-      .mul(HoursTASCalculator.WORKING_MULTIPLIER)
-      .add(surplusNonWorking.mul(HoursTASCalculator.NON_WORKING_MULTIPLIER))
-      .add(surplusSimple);
   }
 }
