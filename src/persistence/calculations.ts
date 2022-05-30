@@ -2,6 +2,7 @@ import {
   CalculationTASData,
   CalculationTeacherData,
 } from "@/@types/calculations";
+import CalculationConverter from "@/converters/CalculationConverter";
 import database from "@/persistence/persistence.config";
 import { Prisma } from "@prisma/client";
 
@@ -12,6 +13,12 @@ export const includeCalculationsTAS = () => ({
 });
 
 export class CalculationRepository {
+  private calculationConverter: CalculationConverter;
+  constructor(calculationConverter?: CalculationConverter) {
+    this.calculationConverter =
+      calculationConverter || new CalculationConverter();
+  }
+
   getOne(
     where: Prisma.CalculationWhereInput,
     options: Omit<Prisma.CalculationFindUniqueArgs, "where">
@@ -26,10 +33,22 @@ export class CalculationRepository {
     where: Prisma.CalculationWhereInput,
     options?: Omit<Prisma.CalculationFindManyArgs, "where">
   ) {
-    return database.calculation.findMany({
-      where,
-      ...options,
-    });
+    return database.calculation
+      .findMany({
+        where,
+        ...options,
+      })
+      .then((c) => {
+        return c.map((c: any) => {
+          const aux = { ...c };
+          c.calculationTAS ? (aux.calculationTAS = c.calculationTAS) : null;
+          c.calculationTeacher
+            ? (aux.calculationTeacher = c.calculationTeacher)
+            : null;
+
+          return this.calculationConverter.fromModelToEntity(aux);
+        });
+      });
   }
 
   createTAS({

@@ -1,7 +1,7 @@
 import { CalculationTAS as CalculationTASModel } from "@/@types/calculations";
 import CalculationTASEntity from "@/entities/CalculationTAS";
 import NullActualBalance from "@/entities/null_object/NullActualBalance";
-import Decimal from "decimal.js";
+import { Decimal } from "decimal.js";
 import { AbstractConverter } from "./converter";
 
 export default class CalculationTASConverter extends AbstractConverter<
@@ -32,20 +32,20 @@ export default class CalculationTASConverter extends AbstractConverter<
       id: entity.id,
       year: entity.year,
       month: entity.month,
-      surplusBusiness: BigInt(entity.getSurplusBusiness().toString()),
-      surplusNonWorking: BigInt(entity.getSurplusNonWorking().toString()),
-      surplusSimple: BigInt(entity.getSurplusSimple().toString()),
-      discount: BigInt(entity.getDiscount().toString()),
-      workingOvertime: BigInt(entity.getWorkingOvertime().toString()),
-      workingNightOvertime: BigInt(entity.getWorkingNightOvertime().toString()),
-      nonWorkingOvertime: BigInt(entity.getNonWorkingOvertime().toString()),
+      surplusBusiness: BigInt(entity.surplusBusiness.toString()),
+      surplusNonWorking: BigInt(entity.surplusNonWorking.toString()),
+      surplusSimple: BigInt(entity.surplusSimple.toString()),
+      discount: BigInt(entity.discount.toString()),
+      workingOvertime: BigInt(entity.workingOvertime.toString()),
+      workingNightOvertime: BigInt(entity.workingNightOvertime.toString()),
+      nonWorkingOvertime: BigInt(entity.nonWorkingOvertime.toString()),
       nonWorkingNightOvertime: BigInt(
-        entity.getNonWorkingNightOvertime().toString()
+        entity.nonWorkingNightOvertime.toString()
       ),
       compensatedNightOvertime: BigInt(
-        entity.getCompensatedNightOvertime().toString()
+        entity.compensatedNightOvertime.toString()
       ),
-      calculationId: entity.getCalculationId(),
+      calculationId: entity.calculationId,
       observations: entity.observations ?? null,
       actualBalanceId: entity.actualBalance.orElse(new NullActualBalance()).id,
     };

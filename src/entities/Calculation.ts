@@ -4,9 +4,7 @@ import { Month } from "@prisma/client";
 import { Optional } from "typescript-optional";
 import ActualBalance from "./ActualBalance";
 
-export default abstract class Calculation
-  implements Nullable, Comparable<Calculation>
-{
+export default class Calculation implements Nullable, Comparable<Calculation> {
   private _id: string;
   private _year: number;
   private _month: Month;

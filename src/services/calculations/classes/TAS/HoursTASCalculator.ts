@@ -10,31 +10,30 @@ import {
   CalculationRepository,
   includeCalculationsTAS,
 } from "@/persistence/calculations";
-import Calculate from "@/services/calculations/classes/Calculate";
+import Calculator from "@/services/calculations/classes/Calculator";
 import YearsCalculator from "@/services/calculations/classes/TAS/YearsCalculator";
 import HoursClass from "@/services/calculations/classes/typeOfHours";
 import { Decimal } from "decimal.js";
+import CalculationTASCreator from "./CalculationTASCreator";
 import { hoursOfYearEnricher } from "./hourEnrich";
 
-export default class CalculateForTas extends Calculate {
-  protected hourlyBalances: HourlyBalanceTAS[];
-  protected calculations: CalculationTAS[];
+export default class HoursTASCalculator extends Calculator {
+  static WORKING_MULTIPLIER = 1.5;
+  static NON_WORKING_MULTIPLIER = 2;
+
+  protected declare calculations: CalculationTAS[];
+  protected declare hourlyBalances: HourlyBalanceTAS[];
   private balancesPerYearCalculator: YearsCalculator;
 
   constructor(
     calculationRepository: CalculationRepository,
     balancesPerYearCalculator?: YearsCalculator
   ) {
-    super(calculationRepository);
-    this.hourlyBalances = [];
-    this.calculations = [];
-    this.calculatePerMonth.bind(this);
-    this.calculateAccumulateHoursByYear.bind(this);
-    this.getTotalBalance.bind(this);
-    this.getTotalWorkingHours.bind(this);
-    this.getTotalDiscount.bind(this);
-    this.getTotalSimpleHours.bind(this);
-    this.getTotalNonWorkingHours.bind(this);
+    super(
+      calculationRepository,
+      new CalculationTASCreator(),
+      includeCalculationsTAS()
+    );
     this.balancesPerYearCalculator =
       balancesPerYearCalculator ?? new YearsCalculator();
   }
@@ -63,15 +62,13 @@ export default class CalculateForTas extends Calculate {
       totalDiscount,
     ] = await this.calculatePerMonth(hourlyBalances);
 
-    const results = await this.calculateAccumulateHoursByYear({
+    return this.calculateAccumulateHoursByYear({
       nonWorkingHours,
       simpleHours,
       totalBalance,
       totalDiscount,
       workingHours,
     });
-
-    return results;
   }
 
   calculatePerMonth(hourlyBalances: HourlyBalanceTAS[]) {
@@ -121,7 +118,7 @@ export default class CalculateForTas extends Calculate {
     };
   }
 
-  getTotalBalance(hourlyBalances: HourlyBalanceTAS[]): Promise<bigint> {
+  getTotalBalance(hourlyBalances: HourlyBalanceTAS[]) {
     const totalHours: BigInt = hourlyBalances.reduce(
       (total, { hourlyBalanceTAS }) => {
         if (hourlyBalanceTAS) {
@@ -138,9 +135,11 @@ export default class CalculateForTas extends Calculate {
       0n
     );
 
+    const getTotalHoursPerCalculation = this.getTotalHoursPerCalculation;
+
     const totalBalance = this.calculations.reduce((total, calculation) => {
       const { discount } = calculation;
-      const hours = calculation.getTotalHoursPerCalculation();
+      const hours = getTotalHoursPerCalculation(calculation);
       return total.add(hours).sub(discount.toString());
     }, new Decimal(totalHours.toString()));
 
@@ -156,7 +155,7 @@ export default class CalculateForTas extends Calculate {
     );
     const valueToDecimal = new Decimal(total.toString());
     const valueToDecimalMultiplied = valueToDecimal.mul(
-      CalculationTAS.WORKING_MULTIPLIER
+      HoursTASCalculator.WORKING_MULTIPLIER
     );
 
     return Promise.resolve({
@@ -173,7 +172,7 @@ export default class CalculateForTas extends Calculate {
     );
     const valueToDecimal = new Decimal(total.toString());
     const valueToDecimalMultiplied = valueToDecimal.mul(
-      CalculationTAS.NON_WORKING_MULTIPLIER
+      HoursTASCalculator.NON_WORKING_MULTIPLIER
     );
 
     return Promise.resolve({
@@ -206,7 +205,11 @@ export default class CalculateForTas extends Calculate {
     );
   }
 
-  selectOptions() {
-    return includeCalculationsTAS();
+  getTotalHoursPerCalculation(calculation: CalculationTAS): Decimal {
+    const { surplusBusiness, surplusNonWorking, surplusSimple } = calculation;
+    return surplusBusiness
+      .mul(HoursTASCalculator.WORKING_MULTIPLIER)
+      .add(surplusNonWorking.mul(HoursTASCalculator.NON_WORKING_MULTIPLIER))
+      .add(surplusSimple);
   }
 }

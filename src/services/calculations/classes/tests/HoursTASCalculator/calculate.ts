@@ -1,11 +1,10 @@
-import CalculationTASConverter from "@/converters/CalculationTASConverter";
 import CalculationTAS from "@/entities/CalculationTAS";
 import subtractHoursFromBalance from "./calculateBalance";
 import { calculate } from "./calculateForMonth";
 import {
   ActualBalanceComplete,
   CalculationDataTAS,
-} from "./CalculateForTAS.test";
+} from "./HoursTASCalculator.test";
 import { HourlyBalanceTASNotNullable } from "./types";
 import { generateRandomUUIDV4 } from "./util";
 
@@ -35,9 +34,7 @@ export default function calculation(
     };
   }
 
-  const converter = new CalculationTASConverter();
-  const calculationsConverted = converter.fromEntitiesToModels(calculations);
-  const calculationsCalculated = calculate(calculationsConverted);
+  const calculationsCalculated = calculate(calculations);
 
   const actualBalanceId = calculations[0].actualBalance.get().id;
 

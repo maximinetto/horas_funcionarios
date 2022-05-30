@@ -1,4 +1,4 @@
-import { CalculationTAS } from "@/@types/calculations";
+import CalculationTAS from "@/entities/CalculationTAS";
 import faker from "@faker-js/faker";
 import { ActualBalance, Month } from "@prisma/client";
 import { DateTime } from "luxon";
