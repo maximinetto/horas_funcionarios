@@ -1,11 +1,7 @@
 import { TypeOfHoursByYear } from "@/@types/typeOfHours";
 import { TYPES_OF_HOURS } from "@/enums/typeOfHours";
+import { generateRandomUUIDV4 } from "@/utils/strings";
 import { HourlyBalance, HourlyBalanceTAS } from "@prisma/client";
-<<<<<<< HEAD
-import { generateRandomUUIDV4 } from "../calculations/classes/tests/HoursTASCalculator/util";
-=======
-import { generateRandomUUIDV4 } from "../calculations/classes/tests/CalculateForTAS/util";
->>>>>>> e70383e (resolving conflicts)
 
 export default class ActualHourlyBalanceCreator {
   create({

@@ -1,4 +1,5 @@
 import CalculationTAS from "@/entities/CalculationTAS";
+import { generateRandomUUIDV4 } from "@/utils/strings";
 import subtractHoursFromBalance from "./calculateBalance";
 import { calculate } from "./calculateForMonth";
 import {
@@ -6,7 +7,6 @@ import {
   CalculationDataTAS,
 } from "./HoursTASCalculator.test";
 import { HourlyBalanceTASNotNullable } from "./types";
-import { generateRandomUUIDV4 } from "./util";
 
 export default function calculation(
   {

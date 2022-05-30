@@ -16,6 +16,9 @@ export default class CalculationTAS extends Calculation implements Nullable {
   private _compensatedNightOvertime: Decimal;
   private _calculationId: string;
 
+  public static WORKING_MULTIPLIER = 1.5;
+  public static NON_WORKING_MULTIPLIER = 2;
+
   public static from({
     id,
     year,
@@ -136,6 +139,13 @@ export default class CalculationTAS extends Calculation implements Nullable {
 
   public get calculationId(): string {
     return this._calculationId;
+  }
+
+  public getTotalHoursPerCalculation(): Decimal {
+    return this.surplusBusiness
+      .mul(CalculationTAS.WORKING_MULTIPLIER)
+      .add(this.surplusNonWorking.mul(CalculationTAS.NON_WORKING_MULTIPLIER))
+      .add(this.surplusSimple);
   }
 
   public isDefault(): boolean {

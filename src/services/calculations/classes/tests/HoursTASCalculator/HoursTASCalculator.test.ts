@@ -1,5 +1,6 @@
 import CalculationTAS from "@/entities/CalculationTAS";
 import { CalculationRepository } from "@/persistence/calculations";
+import { generateRandomUUIDV4 } from "@/utils/strings";
 import Decimal from "decimal.js";
 import { Dictionary } from "lodash";
 import {
@@ -21,11 +22,7 @@ import {
 import { actualBalanceRepository } from "./mock";
 import { buildOfficial, genRandomCalculations, preset } from "./prepareData";
 import { CalculationData, HourlyBalanceTASNotNullable } from "./types";
-import {
-  arrayWithoutElementAtIndex,
-  generateRandomUUIDV4,
-  hoursToSeconds,
-} from "./util";
+import { arrayWithoutElementAtIndex, hoursToSeconds } from "./util";
 
 export interface ActualBalanceComplete {
   id: string;
@@ -234,7 +231,5 @@ describe("Test calculations", () => {
       result.others[1],
       calculations[actualBalanceSecondTest.year + 2]
     );
-
-    // calculationRepository.get.mockReset();
   });
 });
