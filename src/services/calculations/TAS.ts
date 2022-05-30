@@ -7,9 +7,9 @@ import { HourlyBalance, HourlyBalanceTAS, Official } from "@prisma/client";
 import { balances, getCurrentActualHourlyBalance } from "../hourlyBalances";
 import ActualHourlyBalanceCreator from "../hourlyBalances/ActualHourlyBalanceCreator";
 import ActualHourlyBalanceReplacer from "../hourlyBalances/ActualHourlyBalanceReplacer";
-import RecalculateService from "./classes/RecalculateService";
 import CalculationRowService from "./classes/TAS/CalculationRowService";
 import HoursTASCalculator from "./classes/TAS/HoursTASCalculator";
+import RecalculateService from "./classes/TAS/RecalculateService";
 
 export default async function calculateForTAS({
   year: currentYear,
