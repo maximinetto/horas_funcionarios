@@ -2,16 +2,18 @@ import {
   CalculationCalculated,
   CalculationParamTAS,
   CalculationTAS,
-  PrismaCalculationFinderOptions,
 } from "@/@types/calculations";
 import { HourlyBalanceTAS } from "@/@types/hourlyBalance";
 import { TypeOfHour } from "@/@types/typeOfHours";
 import { TYPES_OF_HOURS } from "@/enums/typeOfHours";
 import { calculationTasFromArray } from "@/mappers/EntityToDTO";
-import { CalculationRepository, includeCalculationsTAS } from "@/persistence/calculations";
+import {
+  CalculationRepository,
+  includeCalculationsTAS,
+} from "@/persistence/calculations";
 import Calculate from "@/services/calculations/classes/Calculate";
-import HoursClass from "@/services/calculations/classes/typeOfHours";
 import YearsCalculator from "@/services/calculations/classes/TAS/YearsCalculator";
+import HoursClass from "@/services/calculations/classes/typeOfHours";
 import { Decimal } from "decimal.js";
 import { hoursOfYearEnricher } from "./hourEnrich";
 
@@ -23,13 +25,17 @@ export default class CalculateForTas extends Calculate {
   protected calculations: CalculationTAS[];
   private balancesPerYearCalculator: YearsCalculator;
 
-  constructor(calculationRepository: CalculationRepository, balancesPerYearCalculator: YearsCalculator) {
+  constructor(
+    calculationRepository: CalculationRepository,
+    balancesPerYearCalculator?: YearsCalculator
+  ) {
     super(calculationRepository);
     this.hourlyBalances = [];
     this.calculations = [];
     this.calculatePerMonth.bind(this);
     this.calculateAccumulateHoursByYear.bind(this);
-    this.balancesPerYearCalculator = balancesPerYearCalculator ?? new YearsCalculator();
+    this.balancesPerYearCalculator =
+      balancesPerYearCalculator ?? new YearsCalculator();
   }
 
   calculate({
@@ -256,8 +262,7 @@ export default class CalculateForTas extends Calculate {
       .add(_surplusSimple);
   }
 
-  
   selectOptions() {
-    return includeCalculationsTAS()
+    return includeCalculationsTAS();
   }
 }
