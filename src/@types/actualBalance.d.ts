@@ -1,5 +1,5 @@
 import { Prisma } from "@prisma/client";
-import Decimal from "decimal.js";
+import { Decimal } from "decimal.js";
 import { HourlyBalanceSimple, HourlyBalanceTASNonNull } from "./hourlyBalance";
 import { OfficialSimple } from "./officials";
 

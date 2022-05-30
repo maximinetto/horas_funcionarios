@@ -9,7 +9,7 @@ import {
   Contract,
   TypeOfOfficials,
 } from "@prisma/client";
-import Decimal from "decimal.js";
+import { Decimal } from "decimal.js";
 import { DateTime } from "luxon";
 import { Optional } from "typescript-optional";
 import { AbstractConverter } from "./converter";

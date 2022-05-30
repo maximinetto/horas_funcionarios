@@ -1,6 +1,6 @@
 import Nullable from "@/entities/null_object/Nullable";
 import { Month } from "@prisma/client";
-import type Decimal from "decimal.js";
+import { Decimal } from "decimal.js";
 import Calculation from "./Calculation";
 
 export default class CalculationTeacher

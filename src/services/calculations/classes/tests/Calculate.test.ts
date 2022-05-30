@@ -1,73 +1,95 @@
-import { CalculationRepository } from "@/persistence/calculations";
-import CalculateForTas from "@/services/calculations/classes/TAS/CalculateForTAS";
+import Calculations from "@/collections/Calculations";
+import ActualBalance from "@/entities/ActualBalance";
+import Calculation from "@/entities/Calculation";
+import CalculationSorter from "@/sorters/CalculationSorter";
 import faker from "@faker-js/faker";
 import { Month } from "@prisma/client";
 
-const calculationRepository: jest.Mocked<CalculationRepository> = {
-  createTAS: jest.fn(),
-  createTeacher: jest.fn(),
-  updateTAS: jest.fn(),
-  get: jest.fn(),
-  delete: jest.fn(),
-  getOne: jest.fn(),
-  updateTeacher: jest.fn(),
-};
+describe("Sorters and getters", () => {
+  let calculationsSorter: CalculationSorter;
 
-test("Test sort", () => {
-  const december = {
-    id: faker.datatype.uuid(),
-    year: 2020,
-    month: Month.DECEMBER,
-    observations: "asdasd",
-    actualBalanceId: faker.datatype.uuid(),
-  };
+  beforeAll(() => {
+    jest.mock("@/persistence/calculations");
+    calculationsSorter = new CalculationSorter();
+  });
 
-  const january = {
-    id: faker.datatype.uuid(),
-    year: 2020,
-    month: Month.JANUARY,
-    observations: "asdasd  sdasdsadasd dasd",
-    actualBalanceId: faker.datatype.uuid(),
-  };
+  test("Test should sort and get correct values", () => {
+    const december = {
+      id: faker.datatype.uuid(),
+      year: 2020,
+      month: Month.DECEMBER,
+      observations: "asdasd",
+      actualBalanceId: faker.datatype.uuid(),
+    };
 
-  const may = {
-    id: faker.datatype.uuid(),
-    year: 2020,
-    month: Month.MAY,
-    observations: "",
-    actualBalanceId: faker.datatype.uuid(),
-  };
+    const january = {
+      id: faker.datatype.uuid(),
+      year: 2020,
+      month: Month.JANUARY,
+      observations: "asdasd  sdasdsadasd dasd",
+      actualBalanceId: faker.datatype.uuid(),
+    };
 
-  const march = {
-    id: faker.datatype.uuid(),
-    year: 2020,
-    month: Month.MARCH,
-    observations: "",
-    actualBalanceId: faker.datatype.uuid(),
-  };
+    const may = {
+      id: faker.datatype.uuid(),
+      year: 2020,
+      month: Month.MAY,
+      observations: "",
+      actualBalanceId: faker.datatype.uuid(),
+    };
 
-  const calculations = [december, january, may, march];
+    const march = {
+      id: faker.datatype.uuid(),
+      year: 2020,
+      month: Month.MARCH,
+      observations: "",
+      actualBalanceId: faker.datatype.uuid(),
+    };
 
-  const expected = [january, march, may, december];
+    const calculations = enrich([december, january, may, march]);
 
-  const { sortLowestToHighest, getBiggestCalculation } = new CalculateForTas(
-    calculationRepository
-  );
+    const expected = enrich([january, march, may, december]);
 
-  testSortLowestToHighest();
+    const { getBiggestCalculation } = new Calculations();
 
-  const biggestCalculation = getBiggestCalculation(calculations);
+    testSortLowestToHighest();
 
-  expect(biggestCalculation).toEqual(expected[expected.length - 1]);
+    const biggestCalculation = getBiggestCalculation(calculations);
 
-  testSortLowestToHighest();
+    expect(biggestCalculation).toEqual(expected[expected.length - 1]);
 
-  function testSortLowestToHighest() {
-    const result = calculations.sort(sortLowestToHighest);
-    result.forEach((calculation, index) => {
-      const current = expected[index];
-      expect(calculation.month).toBe(current.month);
-      expect(calculation.year).toBe(current.year);
-    });
+    testSortLowestToHighest();
+
+    function testSortLowestToHighest() {
+      const result = calculations.sort(
+        calculationsSorter.sortFromLowestToHighestDate
+      );
+      result.forEach((calculation, index) => {
+        const current = expected[index];
+        expect(calculation.month).toBe(current.month);
+        expect(calculation.year).toBe(current.year);
+      });
+    }
+  });
+
+  function enrich(
+    calculations: {
+      id: string;
+      year: number;
+      month: Month;
+      observations: string;
+      actualBalanceId: string;
+    }[]
+  ) {
+    return calculations.map(
+      (c) =>
+        new Calculation(
+          c.id,
+          c.year,
+          c.month,
+          c.observations,
+          new ActualBalance(c.actualBalanceId, c.year)
+        )
+    );
   }
 });

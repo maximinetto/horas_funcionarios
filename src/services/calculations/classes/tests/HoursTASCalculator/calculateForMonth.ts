@@ -1,5 +1,5 @@
-import { CalculationTAS } from "@/@types/calculations";
-import Decimal from "decimal.js";
+import CalculationTAS from "@/entities/CalculationTAS";
+import { Decimal } from "decimal.js";
 import { Total } from "./types";
 
 export function calculate(calculations: CalculationTAS[]) {

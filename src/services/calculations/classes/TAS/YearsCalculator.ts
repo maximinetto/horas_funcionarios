@@ -6,7 +6,7 @@ import {
 import { logger } from "@/config";
 import { TYPES_OF_HOURS } from "@/enums/typeOfHours";
 import { instance as Hours } from "@/services/calculations/classes/typeOfHours";
-import Decimal from "decimal.js";
+import { Decimal } from "decimal.js";
 
 export default class YearsCalculator {
   private hourlyBalances: HourlyBalanceTAS[];
@@ -24,7 +24,7 @@ export default class YearsCalculator {
     this.calculatedHours = [];
   }
 
-  calculate({
+  async calculate({
     hourlyBalances,
     hoursActualYear,
     totalDiscount,
@@ -36,63 +36,57 @@ export default class YearsCalculator {
     calculatedHours: TypeOfHoursByYear[];
     calculatedHoursSanitized: TypeOfHoursByYearDecimal[];
   }> {
-    return new Promise((resolve, reject) => {
-      const { store, calculateTypesOfHours, calculatedHoursSanitized } = this;
-
-      const {
-        calculatedHours,
-        hoursActualYear: _hoursActualYear,
-        hourlyBalances: _hourlyBalances,
-      } = store({
-        hourlyBalances: hourlyBalances,
-        hoursActualYear: hoursActualYear,
-        totalDiscount: totalDiscount,
-      });
-
-      for (const balance of _hourlyBalances) {
-        const { hourlyBalanceTAS, year } = balance;
-
-        if (!hourlyBalanceTAS) {
-          return reject("hourlyBalanceTAS must be defined");
-        }
-        const { simple, working, nonWorking } = hourlyBalanceTAS;
-
-        const typeOfHours = [
-          {
-            typeOfHour: TYPES_OF_HOURS.simple,
-            value: new Decimal(simple.toString()),
-          },
-          {
-            typeOfHour: TYPES_OF_HOURS.working,
-            value: new Decimal(working.toString()),
-          },
-          {
-            typeOfHour: TYPES_OF_HOURS.nonWorking,
-            value: new Decimal(nonWorking.toString()),
-          },
-        ];
-        calculateTypesOfHours({
-          year,
-          hours: typeOfHours,
-        });
-      }
-
-      calculateTypesOfHours({
-        year: _hoursActualYear.year,
-        hours: _hoursActualYear.hours.map(({ typeOfHour, value }) => ({
-          typeOfHour,
-          value:
-            typeof value === "bigint" ? new Decimal(value.toString()) : value,
-        })),
-      });
-
-      // logLine();
-
-      return resolve({
-        calculatedHours: [...calculatedHours],
-        calculatedHoursSanitized: calculatedHoursSanitized(),
-      });
+    const {
+      calculatedHours,
+      hoursActualYear: _hoursActualYear,
+      hourlyBalances: _hourlyBalances,
+    } = this.store({
+      hourlyBalances: hourlyBalances,
+      hoursActualYear: hoursActualYear,
+      totalDiscount: totalDiscount,
     });
+
+    for (const balance of _hourlyBalances) {
+      const { hourlyBalanceTAS, year } = balance;
+
+      if (!hourlyBalanceTAS) {
+        throw new Error("hourlyBalanceTAS must be defined");
+      }
+      const { simple, working, nonWorking } = hourlyBalanceTAS;
+
+      const typeOfHours = [
+        {
+          typeOfHour: TYPES_OF_HOURS.simple,
+          value: new Decimal(simple.toString()),
+        },
+        {
+          typeOfHour: TYPES_OF_HOURS.working,
+          value: new Decimal(working.toString()),
+        },
+        {
+          typeOfHour: TYPES_OF_HOURS.nonWorking,
+          value: new Decimal(nonWorking.toString()),
+        },
+      ];
+      await this.calculateTypesOfHours({
+        year,
+        hours: typeOfHours,
+      });
+    }
+
+    await this.calculateTypesOfHours({
+      year: _hoursActualYear.year,
+      hours: _hoursActualYear.hours.map(({ typeOfHour, value }) => ({
+        typeOfHour,
+        value:
+          typeof value === "bigint" ? new Decimal(value.toString()) : value,
+      })),
+    });
+
+    return {
+      calculatedHours: [...calculatedHours],
+      calculatedHoursSanitized: this.calculatedHoursSanitized(),
+    };
   }
 
   calculateTypesOfHours = ({
@@ -102,14 +96,13 @@ export default class YearsCalculator {
     year: number;
     hours: { typeOfHour: TYPES_OF_HOURS; value: Decimal }[];
   }) => {
-    const { sumHours, storeHours, getPreviousHours } = this;
-    hours.forEach(({ typeOfHour, value }, index) => {
-      const previousHours = getPreviousHours({
+    hours.forEach(({ typeOfHour, value }) => {
+      const previousHours = this.getPreviousHours({
         currentYear: year,
         typeOfHour,
       });
-      const sum = sumHours(value, previousHours);
-      storeHours({ typeOfHour, year, value: sum });
+      const sum = this.sumHours(value, previousHours);
+      this.storeHours({ typeOfHour, year, value: sum });
     });
   };
 
@@ -136,8 +129,7 @@ export default class YearsCalculator {
   };
 
   calculatedHoursSanitized = () => {
-    const { calculatedHours } = this;
-    return calculatedHours.map((calculatedHour) => {
+    return this.calculatedHours.map((calculatedHour) => {
       const { hours, ...others } = calculatedHour;
       const result = hours.map(({ typeOfHour, value }) => {
         const result =
@@ -170,22 +162,22 @@ export default class YearsCalculator {
     currentYear: number;
     typeOfHour: TYPES_OF_HOURS;
   }): Decimal | null => {
-    const { calculatedHours } = this;
-
-    if (calculatedHours.length === 0) {
+    if (this.calculatedHours.length === 0) {
       return null;
     }
     const yearToSearch = Hours.isFirstTypeOfHour(typeOfHour)
       ? currentYear - 1
       : currentYear;
 
-    const yearSearched = calculatedHours.find(
+    const yearSearched = this.calculatedHours.find(
       ({ year }) => year === yearToSearch
     );
     if (!yearSearched) {
       logger.info("year not found");
-      logger.info("currentYear: ", {currentYear});
-      logger.info("calculatedHours:", {calculatedHours});
+      logger.info("currentYear: ", { currentYear });
+      logger.info("calculatedHours:", {
+        calculatedHours: this.calculatedHours,
+      });
       throw new Error("You must have a valid year");
     }
 
@@ -210,16 +202,14 @@ export default class YearsCalculator {
     year: number;
     value: Decimal;
   }): number | undefined => {
-    const { calculatedHours } = this;
-
     if (Hours.isFirstTypeOfHour(typeOfHour)) {
-      return calculatedHours.push({
+      return this.calculatedHours.push({
         year,
         hours: [{ typeOfHour, value }],
       });
     }
 
-    const yearSearched = calculatedHours.find(
+    const yearSearched = this.calculatedHours.find(
       ({ year: _year }) => _year === year
     );
     if (!yearSearched) {

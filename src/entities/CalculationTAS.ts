@@ -1,19 +1,75 @@
 import Nullable from "@/entities/null_object/Nullable";
 import { Month } from "@prisma/client";
-import type Decimal from "decimal.js";
+import { Decimal } from "decimal.js";
+import ActualBalance from "./ActualBalance";
 import Calculation from "./Calculation";
 
 export default class CalculationTAS extends Calculation implements Nullable {
-  private surplusBusiness: Decimal;
-  private surplusNonWorking: Decimal;
-  private surplusSimple: Decimal;
-  private discount: Decimal;
-  private workingOvertime: Decimal;
-  private workingNightOvertime: Decimal;
-  private nonWorkingOvertime: Decimal;
-  private nonWorkingNightOvertime: Decimal;
-  private compensatedNightOvertime: Decimal;
-  private calculationId: string;
+  private _surplusBusiness: Decimal;
+  private _surplusNonWorking: Decimal;
+  private _surplusSimple: Decimal;
+  private _discount: Decimal;
+  private _workingOvertime: Decimal;
+  private _workingNightOvertime: Decimal;
+  private _nonWorkingOvertime: Decimal;
+  private _nonWorkingNightOvertime: Decimal;
+  private _compensatedNightOvertime: Decimal;
+  private _calculationId: string;
+
+  public static WORKING_MULTIPLIER = 1.5;
+  public static NON_WORKING_MULTIPLIER = 2;
+
+  public static from({
+    id,
+    year,
+    month,
+    surplusBusiness,
+    surplusNonWorking,
+    surplusSimple,
+    discount,
+    workingOvertime,
+    workingNightOvertime,
+    nonWorkingOvertime,
+    nonWorkingNightOvertime,
+    compensatedNightOvertime,
+    calculationId,
+    observations,
+    actualBalance,
+  }: {
+    id: string;
+    year: number;
+    month: Month;
+    surplusBusiness: Decimal;
+    surplusNonWorking: Decimal;
+    surplusSimple: Decimal;
+    discount: Decimal;
+    workingOvertime: Decimal;
+    workingNightOvertime: Decimal;
+    nonWorkingOvertime: Decimal;
+    nonWorkingNightOvertime: Decimal;
+    compensatedNightOvertime: Decimal;
+    calculationId: string;
+    observations?: string;
+    actualBalance: ActualBalance;
+  }): CalculationTAS {
+    return new CalculationTAS(
+      id,
+      year,
+      month,
+      surplusBusiness,
+      surplusNonWorking,
+      surplusSimple,
+      discount,
+      workingOvertime,
+      workingNightOvertime,
+      nonWorkingOvertime,
+      nonWorkingNightOvertime,
+      compensatedNightOvertime,
+      calculationId,
+      observations,
+      actualBalance
+    );
+  }
 
   constructor(
     id: string,
@@ -30,59 +86,66 @@ export default class CalculationTAS extends Calculation implements Nullable {
     compensatedNightOvertime: Decimal,
     calculationId: string,
     observations?: string,
-    actualBalance?: any
+    actualBalance?: ActualBalance
   ) {
     super(id, year, month, observations, actualBalance);
-    this.surplusBusiness = surplusBusiness;
-    this.surplusNonWorking = surplusNonWorking;
-    this.surplusSimple = surplusSimple;
-    this.discount = discount;
-    this.workingOvertime = workingOvertime;
-    this.workingNightOvertime = workingNightOvertime;
-    this.nonWorkingOvertime = nonWorkingOvertime;
-    this.nonWorkingNightOvertime = nonWorkingNightOvertime;
-    this.compensatedNightOvertime = compensatedNightOvertime;
-    this.calculationId = calculationId;
+    this._surplusBusiness = surplusBusiness;
+    this._surplusNonWorking = surplusNonWorking;
+    this._surplusSimple = surplusSimple;
+    this._discount = discount;
+    this._workingOvertime = workingOvertime;
+    this._workingNightOvertime = workingNightOvertime;
+    this._nonWorkingOvertime = nonWorkingOvertime;
+    this._nonWorkingNightOvertime = nonWorkingNightOvertime;
+    this._compensatedNightOvertime = compensatedNightOvertime;
+    this._calculationId = calculationId;
   }
 
-  public getSurplusBusiness(): Decimal {
-    return this.surplusBusiness;
+  public get surplusBusiness(): Decimal {
+    return this._surplusBusiness;
   }
 
-  public getSurplusNonWorking(): Decimal {
-    return this.surplusNonWorking;
+  public get surplusNonWorking(): Decimal {
+    return this._surplusNonWorking;
   }
 
-  public getSurplusSimple(): Decimal {
-    return this.surplusSimple;
+  public get surplusSimple(): Decimal {
+    return this._surplusSimple;
   }
 
-  public getDiscount(): Decimal {
-    return this.discount;
+  public get discount(): Decimal {
+    return this._discount;
   }
 
-  public getWorkingOvertime(): Decimal {
-    return this.workingOvertime;
+  public get workingOvertime(): Decimal {
+    return this._workingOvertime;
   }
 
-  public getWorkingNightOvertime(): Decimal {
-    return this.workingNightOvertime;
+  public get workingNightOvertime(): Decimal {
+    return this._workingNightOvertime;
   }
 
-  public getNonWorkingOvertime(): Decimal {
-    return this.nonWorkingOvertime;
+  public get nonWorkingOvertime(): Decimal {
+    return this._nonWorkingOvertime;
   }
 
-  public getNonWorkingNightOvertime(): Decimal {
-    return this.nonWorkingNightOvertime;
+  public get nonWorkingNightOvertime(): Decimal {
+    return this._nonWorkingNightOvertime;
   }
 
-  public getCompensatedNightOvertime(): Decimal {
-    return this.compensatedNightOvertime;
+  public get compensatedNightOvertime(): Decimal {
+    return this._compensatedNightOvertime;
   }
 
-  public getCalculationId(): string {
-    return this.calculationId;
+  public get calculationId(): string {
+    return this._calculationId;
+  }
+
+  public getTotalHoursPerCalculation(): Decimal {
+    return this.surplusBusiness
+      .mul(CalculationTAS.WORKING_MULTIPLIER)
+      .add(this.surplusNonWorking.mul(CalculationTAS.NON_WORKING_MULTIPLIER))
+      .add(this.surplusSimple);
   }
 
   public isDefault(): boolean {

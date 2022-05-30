@@ -1,23 +1,17 @@
 import { CalculationCalculated } from "@/@types/calculations";
-import { logger } from "@/config";
+import Calculation from "@/entities/Calculation";
 import { CalculationRepository } from "@/persistence/calculations";
 import { getCurrentActualHourlyBalance } from "@/services/hourlyBalances";
 import ActualHourlyBalanceReplacer from "@/services/hourlyBalances/ActualHourlyBalanceReplacer";
-import {
-  Calculation,
-  HourlyBalance,
-  HourlyBalanceTAS,
-  Official,
-} from "@prisma/client";
-import { Dictionary } from "lodash";
-import _groupBy from "lodash/groupBy";
-import CalculateForTas from "./CalculateForTAS";
+import groupAndSortCalculations from "@/sorters/CalculationSorterAndGrouper";
+import { HourlyBalance, HourlyBalanceTAS, Official } from "@prisma/client";
 import CalculationRowService from "./CalculationRowService";
+import HoursTASCalculator from "./HoursTASCalculator";
 
 export default class RecalculateService {
   private calculationRepository: CalculationRepository;
   private calculationRowService: CalculationRowService;
-  private calculateService: CalculateForTas;
+  private calculateService: HoursTASCalculator;
   private actualBalanceReplacer: ActualHourlyBalanceReplacer;
   private actualHourlyBalances: {
     hourlyBalances: (HourlyBalance & {
@@ -32,7 +26,7 @@ export default class RecalculateService {
   constructor(
     calculationRepository: CalculationRepository,
     calculationRowService: CalculationRowService,
-    calculateService: CalculateForTas,
+    calculateService: HoursTASCalculator,
     actualBalanceReplacer: ActualHourlyBalanceReplacer
   ) {
     this.calculationRepository = calculationRepository;
@@ -88,7 +82,7 @@ export default class RecalculateService {
 
     this.actualHourlyBalances.push(actualHourlyBalanceCalculated);
 
-    const entries = this.groupAndSortCalculations(calculations);
+    const entries = groupAndSortCalculations(calculations);
 
     return this.recalculateLaterHours(
       entries,
@@ -99,12 +93,6 @@ export default class RecalculateService {
 
   hasMoreLaterHours(calculations: Calculation[]) {
     return calculations.length > 0;
-  }
-
-  groupAndSortCalculations(calculations: Calculation[]) {
-    const calculationsGrouped = _groupBy(calculations, "year");
-
-    return this.sortCalculations(calculationsGrouped);
   }
 
   async recalculateLaterHours(
@@ -123,13 +111,15 @@ export default class RecalculateService {
     const dataToSave: CalculationCalculated[] = [];
 
     for (const [year, calculations] of entries) {
-      await this.recalculateRow({
-        year,
-        calculations,
-        official,
-        previousActualHourlyBalances,
-        dataToSave,
-      });
+      dataToSave.push(
+        await this.recalculateRow({
+          year,
+          calculations,
+          official,
+          previousActualHourlyBalances,
+          dataToSave,
+        })
+      );
     }
 
     return {
@@ -146,7 +136,6 @@ export default class RecalculateService {
     calculations,
     previousActualHourlyBalances,
     official,
-    dataToSave,
   }: {
     year: string;
     calculations: Calculation[];
@@ -166,12 +155,6 @@ export default class RecalculateService {
     const previousActualHourlyBalanceCalculated =
       this.actualHourlyBalances[this.actualHourlyBalances.length - 1];
 
-    logger.info("previousActualHourlyBalanceSaved", {
-      previousActualHourlyBalanceCalculated,
-    });
-
-    logger.info("yearNumber", {yearNumber});
-
     const data = await this.calculationRowService.reCalculate(
       {
         calculations: [],
@@ -182,8 +165,6 @@ export default class RecalculateService {
       },
       this.calculateService
     );
-
-    logger.info("balances", {balances: data.balances});
 
     const actualHourlyBalanceToReplace = getCurrentActualHourlyBalance(
       previousActualHourlyBalances,
@@ -199,13 +180,7 @@ export default class RecalculateService {
       balances: data.balances,
       totalBalance: data.totalBalance,
     });
-    dataToSave.push(data);
     this.actualHourlyBalances.push(actualHourlyBalance);
-  }
-
-  sortCalculations(entries: Dictionary<Calculation[]>) {
-    const result = Object.entries(entries);
-    result.sort(([ya], [yb]) => Number(ya) - Number(yb));
-    return result;
+    return data;
   }
 }
