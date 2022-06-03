@@ -1,7 +1,8 @@
 import { CalculationCalculated } from "@/@types/calculations";
+import ActualBalance from "@/entities/ActualBalance";
 import Calculation from "@/entities/Calculation";
 import CalculationTAS from "@/entities/CalculationTAS";
-import { HourlyBalance, HourlyBalanceTAS, Official } from "@prisma/client";
+import Official from "@/entities/Official";
 import HoursTASCalculator from "./HoursTASCalculator";
 
 export default class CalculationRowService {
@@ -16,15 +17,7 @@ export default class CalculationRowService {
       year: number;
       official: Official;
       calculations: CalculationTAS[];
-      actualHourlyBalance?: {
-        hourlyBalances: (HourlyBalance & {
-          hourlyBalanceTAS: HourlyBalanceTAS | null;
-        })[];
-        id: string;
-        year: number;
-        total: bigint;
-        officialId: number;
-      };
+      actualHourlyBalance?: ActualBalance;
       calculationsFromPersistence?: Calculation[];
     },
     calculateService: HoursTASCalculator
@@ -52,15 +45,7 @@ export default class CalculationRowService {
     }: {
       calculations: CalculationTAS[];
       official: Official;
-      actualHourlyBalance: {
-        hourlyBalances: (HourlyBalance & {
-          hourlyBalanceTAS: HourlyBalanceTAS | null;
-        })[];
-        id: string;
-        year: number;
-        total: bigint;
-        officialId: number;
-      };
+      actualHourlyBalance: ActualBalance;
       year: number;
       calculationsFromPersistence: Calculation[];
     },

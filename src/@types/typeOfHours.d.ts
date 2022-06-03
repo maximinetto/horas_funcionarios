@@ -3,6 +3,11 @@ import { Decimal } from "decimal.js";
 
 export type TypeOfHour = {
   typeOfHour: TYPES_OF_HOURS;
+  value: bigint;
+};
+
+export type TypeOfHourDecimal = {
+  typeOfHour: TYPES_OF_HOURS;
   value: Decimal;
 };
 

@@ -1,6 +1,7 @@
 import { ActualBalanceWithHourlyBalancesSimple } from "@/@types/actualBalance";
 import Nullable from "@/entities/null_object/Nullable";
 import Comparable from "@/utils/Comparator";
+import { generateRandomUUIDV4 } from "@/utils/strings";
 import { Decimal } from "decimal.js";
 import { Optional } from "typescript-optional";
 import type HourlyBalance from "./HourlyBalance";
@@ -58,6 +59,10 @@ export default class ActualBalance
 
   isDefault(): boolean {
     return false;
+  }
+
+  static default(id = generateRandomUUIDV4()): ActualBalance {
+    return new ActualBalance(id, 0);
   }
 
   compareTo(other: ActualBalance): number {

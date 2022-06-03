@@ -1,20 +1,24 @@
-import { HourlyBalanceTAS } from "@/@types/hourlyBalance";
-import { TypeOfHour, TypeOfHoursByYearDecimal } from "@/@types/typeOfHours";
+import {
+  TypeOfHour,
+  TypeOfHourDecimal,
+  TypeOfHoursByYearDecimal,
+} from "@/@types/typeOfHours";
+import HourlyBalanceTAS from "@/entities/HourlyBalanceTAS";
 import { Decimal } from "decimal.js";
 import Hours from "../../typeOfHours";
-import { HourlyBalanceTASNotNullable, Total } from "./types";
+import { Total } from "./types";
 
 export default function subtractHoursFromBalance(
-  balances: HourlyBalanceTASNotNullable[],
+  balances: HourlyBalanceTAS[],
   discount: Decimal
 ) {
   balances.sort(sort);
 
-  const result: { year: number; hours: TypeOfHour[] }[] = [];
+  const result: { year: number; hours: TypeOfHourDecimal[] }[] = [];
 
   balances.forEach((balance, index) => {
     const { year } = balance;
-    const { simple, working, nonWorking } = balance.hourlyBalanceTAS;
+    const { simple, working, nonWorking } = balance;
     const calculatedBalance = calculateRow(
       { simple, working, nonWorking, year },
       discount,
@@ -23,42 +27,47 @@ export default function subtractHoursFromBalance(
     result.push(calculatedBalance);
   });
 
-  const resultToBalance: HourlyBalanceTASNotNullable[] = result.map(
-    (row, index) => {
-      const { year, hours } = row;
-
-      return {
-        actualBalanceId: balances[index].actualBalanceId,
-        year,
-        id: balances[index].id,
-        hourlyBalanceTAS: {
-          simple: BigInt(hours[0].value.toString()),
-          working: BigInt(hours[1].value.toString()),
-          nonWorking: BigInt(hours[2].value.toString()),
-          hourlyBalanceId: balances[index].hourlyBalanceTAS.hourlyBalanceId,
-          id: balances[index].hourlyBalanceTAS.id,
-        },
-      };
-    }
-  );
+  const resultToBalance: HourlyBalanceTAS[] = result.map((row, index) => {
+    const { year, hours } = row;
+    const simple = hours[0].value;
+    const working = hours[1].value;
+    const nonWorking = hours[2].value;
+    return new HourlyBalanceTAS(
+      balances[index].id,
+      year,
+      working,
+      nonWorking,
+      simple,
+      balances[index].hourlyBalanceId,
+      balances[index].actualBalance.get()
+    );
+  });
 
   return {
     result,
     resultSanitized: sanitize(result),
     balances: resultToBalance,
-    balancesSanitized: resultToBalance.map((b) => ({
-      ...b,
-      hourlyBalanceTAS: {
-        ...b.hourlyBalanceTAS,
-        simple: b.hourlyBalanceTAS.simple < 0 ? 0n : b.hourlyBalanceTAS.simple,
-        working:
-          b.hourlyBalanceTAS.working < 0 ? 0n : b.hourlyBalanceTAS.working,
-        nonWorking:
-          b.hourlyBalanceTAS.nonWorking < 0
-            ? 0n
-            : b.hourlyBalanceTAS.nonWorking,
-      },
-    })),
+    balancesSanitized: resultToBalance.map((b) => {
+      const simple = b.simple.greaterThanOrEqualTo(0)
+        ? b.working
+        : new Decimal("0");
+      const working = b.working.greaterThanOrEqualTo(0)
+        ? b.working
+        : new Decimal("0");
+      const nonWorking = b.nonWorking.greaterThanOrEqualTo(0)
+        ? b.working
+        : new Decimal("0");
+
+      return new HourlyBalanceTAS(
+        b.id,
+        b.year,
+        working,
+        nonWorking,
+        simple,
+        b.hourlyBalanceId,
+        b.actualBalance.get()
+      );
+    }),
   };
 }
 
@@ -78,8 +87,8 @@ export function calculateNextRowBalance(
   previousHour?: TypeOfHour
 ) {
   const simple: Decimal =
-    previousHour && previousHour.value.lessThan(0)
-      ? previousHour.value.plus(totalCurrentYear.simple)
+    previousHour && previousHour.value < 0n
+      ? previousHour.value + totalCurrentYear.simple
       : totalCurrentYear.simple;
   const working: Decimal = simple.lessThan(0)
     ? simple.plus(totalCurrentYear.working)
@@ -108,29 +117,17 @@ export function calculateNextRowBalance(
 
 export function calculateTotalBalance(
   totalCurrentYear: Omit<Total, "totalHours">,
-  lastBalances: HourlyBalanceTASNotNullable[]
+  lastBalances: HourlyBalanceTAS[]
 ) {
   const total: Total = {
     ...totalCurrentYear,
     totalHours: new Decimal(0),
   };
 
-  lastBalances.forEach(({ hourlyBalanceTAS }) => {
-    if (hourlyBalanceTAS) {
-      total.simple = new Decimal(hourlyBalanceTAS.simple.toString()).add(
-        total.simple
-      );
-      total.working = new Decimal(hourlyBalanceTAS.working.toString()).add(
-        total.working
-      );
-      total.nonWorking = new Decimal(
-        hourlyBalanceTAS.nonWorking.toString()
-      ).add(total.nonWorking);
-    } else {
-      total.simple = new Decimal(0).add(total.simple);
-      total.working = new Decimal(0).add(total.working);
-      total.nonWorking = new Decimal(0).add(total.nonWorking);
-    }
+  lastBalances.forEach(({ simple, working, nonWorking }) => {
+    total.simple = new Decimal(simple.toString()).add(total.simple);
+    total.working = new Decimal(working.toString()).add(total.working);
+    total.nonWorking = new Decimal(nonWorking.toString()).add(total.nonWorking);
   });
   total.totalHours = new Decimal(total.working.toString())
     .add(total.nonWorking.toString())
@@ -175,12 +172,12 @@ function calculateRow(
     nonWorking,
   }: {
     year: number;
-    simple: bigint;
-    working: bigint;
-    nonWorking: bigint;
+    simple: Decimal;
+    working: Decimal;
+    nonWorking: Decimal;
   },
   discount: Decimal,
-  accumulator: { year: number; hours: TypeOfHour[] }[]
+  accumulator: { year: number; hours: TypeOfHourDecimal[] }[]
 ) {
   const data = { simple, working, nonWorking, year };
   if (accumulator.length === 0) {
@@ -200,7 +197,7 @@ export function calculateFirstRowBalance(
     simple: _simple,
     working: _working,
     nonWorking: _nonWorking,
-  }: { simple: bigint; working: bigint; nonWorking: bigint; year: number },
+  }: { simple: Decimal; working: Decimal; nonWorking: Decimal; year: number },
   discount: Decimal
 ) {
   const simple = new Decimal(_simple.toString()).sub(discount);
@@ -217,8 +214,8 @@ function lastCases(
     simple: _simple,
     working: _working,
     nonWorking: _nonWorking,
-  }: { simple: bigint; working: bigint; nonWorking: bigint; year: number },
-  accumulator: { year: number; hours: TypeOfHour[] }[]
+  }: { simple: Decimal; working: Decimal; nonWorking: Decimal; year: number },
+  accumulator: { year: number; hours: TypeOfHourDecimal[] }[]
 ) {
   const lastTypeOfHour = accumulator[accumulator.length - 1];
   const previousHours = lastTypeOfHour.hours[lastTypeOfHour.hours.length - 1];

@@ -1,9 +1,10 @@
 import { CalculationTAS as CalculationTASModel } from "@/@types/calculations";
 import ActualBalance from "@/entities/ActualBalance";
 import CalculationTAS from "@/entities/CalculationTAS";
+import HourlyBalanceTAS from "@/entities/HourlyBalanceTAS";
+import { generateRandomUUIDV4 } from "@/utils/strings";
 import faker from "@faker-js/faker";
 import { Decimal } from "decimal.js";
-import { HourlyBalanceTASNotNullable } from "./types";
 
 export function buildCalculation(
   calculation: Omit<CalculationTASModel, "id" | "calculationId">
@@ -37,24 +38,20 @@ export function buildHourlyBalance({
   working,
 }: {
   year: number;
-  working: bigint;
+  actualBalanceId: string;
   nonWorking: bigint;
   simple: bigint;
-  actualBalanceId: string;
+  working: bigint;
 }) {
   const id = faker.datatype.uuid();
-  const result: HourlyBalanceTASNotNullable = {
+
+  return new HourlyBalanceTAS(
     id,
     year,
-    hourlyBalanceTAS: {
-      id: faker.datatype.uuid(),
-      working,
-      nonWorking,
-      simple,
-      hourlyBalanceId: id,
-    },
-    actualBalanceId,
-  };
-
-  return result;
+    new Decimal(working.toString()),
+    new Decimal(nonWorking.toString()),
+    new Decimal(simple.toString()),
+    generateRandomUUIDV4(),
+    ActualBalance.default(actualBalanceId)
+  );
 }

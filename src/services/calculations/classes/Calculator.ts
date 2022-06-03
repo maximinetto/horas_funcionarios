@@ -4,12 +4,14 @@ import {
 } from "@/@types/calculations";
 import Calculations from "@/collections/Calculations";
 import Calculation from "@/entities/Calculation";
+import HourlyBalance from "@/entities/HourlyBalance";
+import Official from "@/entities/Official";
 import InvalidValueError from "@/errors/InvalidValueError";
 import type { CalculationRepository } from "@/persistence/calculations";
 import CalculationSorter from "@/sorters/CalculationSorter";
 import { resetDateFromFirstDay } from "@/utils/date";
 import { getNumberByMonth } from "@/utils/mapMonths";
-import { HourlyBalance, Month, Official } from "@prisma/client";
+import { Month } from "@prisma/client";
 import { DateTime } from "luxon";
 import CalculationCreator from "./CalculationCreator";
 export default abstract class Calculator {
@@ -113,7 +115,7 @@ export default abstract class Calculator {
   calculationIsAfterOfDateOfEntry(
     year: number,
     calculation: Calculation,
-    dateOfEntry: Date
+    dateOfEntry: DateTime
   ) {
     const monthNumber = Number(calculation.month);
     const month = isNaN(monthNumber)
@@ -129,8 +131,8 @@ export default abstract class Calculator {
       ).toMillis() >=
       DateTime.fromObject(
         resetDateFromFirstDay({
-          year: dateOfEntry.getFullYear(),
-          month: dateOfEntry.getMonth() + 1,
+          year: dateOfEntry.year,
+          month: dateOfEntry.month,
         })
       ).toMillis()
     );
@@ -146,8 +148,8 @@ export default abstract class Calculator {
     }
 
     const { dateOfEntry } = this.official;
-    const dateOfEntryYear = dateOfEntry.getFullYear();
-    const dateOfEntryMonth = dateOfEntry.getMonth() + 1;
+    const dateOfEntryYear = dateOfEntry.year;
+    const dateOfEntryMonth = dateOfEntry.month;
     const firstMonth =
       dateOfEntryYear === calculations[0].year
         ? dateOfEntryMonth

@@ -1,5 +1,6 @@
+import ActualBalance from "@/entities/ActualBalance";
+import HourlyBalanceTAS from "@/entities/HourlyBalanceTAS";
 import { ActualBalanceRepository } from "@/persistence/actualBalance";
-import { HourlyBalance, HourlyBalanceTAS } from "@prisma/client";
 
 export async function balances({
   year,
@@ -28,46 +29,41 @@ export async function balances({
     }
   );
 
-  const result = lastActualBalances.map((ac) => ({
-    ...ac,
-    hourlyBalances: ac.hourlyBalances?.filter((h) => {
-      const min = getMinHourlyBalanceWithSumGreaterThanZero(ac.hourlyBalances);
+  const result = lastActualBalances.map((ac) => {
+    const min = getMinHourlyBalanceWithSumGreaterThanZero(ac.hourlyBalances);
+    const remainingHourlyBalances = ac.hourlyBalances?.filter((h) => {
       return min ? h.year >= min.year : false;
-    }),
-  }));
+    });
+    return new ActualBalance(
+      ac.id,
+      ac.year,
+      ac.total,
+      ac.official.orUndefined(),
+      remainingHourlyBalances
+    );
+  });
 
   return result;
 }
 
 export function getCurrentActualHourlyBalance(
-  actualHourlyBalances: {
-    hourlyBalances: (HourlyBalance & {
-      hourlyBalanceTAS: HourlyBalanceTAS | null;
-    })[];
-    id: string;
-    year: number;
-    total: bigint;
-    officialId: number;
-  }[],
+  actualHourlyBalances: ActualBalance[],
   year: number
 ) {
   return actualHourlyBalances.find((a) => a.year === year);
 }
 
 function getMinHourlyBalanceWithSumGreaterThanZero(
-  hourlyBalances: (HourlyBalance & {
-    hourlyBalanceTAS: HourlyBalanceTAS | null;
-  })[]
+  hourlyBalances: HourlyBalanceTAS[]
 ) {
   const results = hourlyBalances.slice().sort((a, b) => a.year - b.year);
 
   for (const hourlyBalance of results) {
-    if (hourlyBalance.hourlyBalanceTAS == null) {
-      throw new Error("Hourly Balances must be defined");
-    }
-    const { simple, working, nonWorking } = hourlyBalance.hourlyBalanceTAS;
+    const { simple, working, nonWorking } = hourlyBalance;
 
-    if (simple + working + nonWorking > 0) {
+    if (
+      simple.plus(working.toString()).plus(nonWorking.toString()).greaterThan(0)
+    ) {
       return hourlyBalance;
     }
   }

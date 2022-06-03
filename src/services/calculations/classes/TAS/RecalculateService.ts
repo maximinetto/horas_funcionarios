@@ -1,10 +1,11 @@
 import { CalculationCalculated } from "@/@types/calculations";
+import ActualBalance from "@/entities/ActualBalance";
 import Calculation from "@/entities/Calculation";
+import Official from "@/entities/Official";
 import { CalculationRepository } from "@/persistence/calculations";
 import { getCurrentActualHourlyBalance } from "@/services/hourlyBalances";
 import ActualHourlyBalanceReplacer from "@/services/hourlyBalances/ActualHourlyBalanceReplacer";
 import groupAndSortCalculations from "@/sorters/CalculationSorterAndGrouper";
-import { HourlyBalance, HourlyBalanceTAS, Official } from "@prisma/client";
 import CalculationRowService from "./CalculationRowService";
 import HoursTASCalculator from "./HoursTASCalculator";
 
@@ -13,15 +14,7 @@ export default class RecalculateService {
   private calculationRowService: CalculationRowService;
   private calculateService: HoursTASCalculator;
   private actualBalanceReplacer: ActualHourlyBalanceReplacer;
-  private actualHourlyBalances: {
-    hourlyBalances: (HourlyBalance & {
-      hourlyBalanceTAS: HourlyBalanceTAS | null;
-    })[];
-    id: string;
-    year: number;
-    total: bigint;
-    officialId: number;
-  }[] = [];
+  private actualHourlyBalances: ActualBalance[] = [];
 
   constructor(
     calculationRepository: CalculationRepository,
@@ -43,24 +36,8 @@ export default class RecalculateService {
   }: {
     official: Official;
     year: number;
-    previousActualHourlyBalances: {
-      hourlyBalances: (HourlyBalance & {
-        hourlyBalanceTAS: HourlyBalanceTAS | null;
-      })[];
-      id: string;
-      year: number;
-      total: bigint;
-      officialId: number;
-    }[];
-    actualHourlyBalanceCalculated: {
-      hourlyBalances: (HourlyBalance & {
-        hourlyBalanceTAS: HourlyBalanceTAS | null;
-      })[];
-      id: string;
-      year: number;
-      total: bigint;
-      officialId: number;
-    };
+    previousActualHourlyBalances: ActualBalance[];
+    actualHourlyBalanceCalculated: ActualBalance;
   }) {
     const calculations = await this.calculationRepository.get(
       {
@@ -98,15 +75,7 @@ export default class RecalculateService {
   async recalculateLaterHours(
     entries: [string, Calculation[]][],
     official: Official,
-    previousActualHourlyBalances: {
-      hourlyBalances: (HourlyBalance & {
-        hourlyBalanceTAS: HourlyBalanceTAS | null;
-      })[];
-      id: string;
-      year: number;
-      total: bigint;
-      officialId: number;
-    }[]
+    previousActualHourlyBalances: ActualBalance[]
   ) {
     const dataToSave: CalculationCalculated[] = [];
 
@@ -140,15 +109,7 @@ export default class RecalculateService {
     year: string;
     calculations: Calculation[];
     official: Official;
-    previousActualHourlyBalances: {
-      hourlyBalances: (HourlyBalance & {
-        hourlyBalanceTAS: HourlyBalanceTAS | null;
-      })[];
-      id: string;
-      year: number;
-      total: bigint;
-      officialId: number;
-    }[];
+    previousActualHourlyBalances: ActualBalance[];
     dataToSave: CalculationCalculated[];
   }) {
     const yearNumber = Number(year);
