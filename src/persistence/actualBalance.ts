@@ -1,12 +1,23 @@
 import {
   ActualBalanceDTO,
   ActualBalanceFindManyOptions,
+  ActualBalanceWithTASEntity,
 } from "@/@types/actualBalance";
+import HourlyBalanceTASConverter from "@/converters/HourlyBalanceTASConverter";
+import ActualBalance from "@/entities/ActualBalance";
+import Official from "@/entities/Official";
 import database from "@/persistence/persistence.config";
 import { serializeBalancesTAS } from "@/serializers/persistence/balance";
 import { Prisma } from "@prisma/client";
+import Decimal from "decimal.js";
 
 export class ActualBalanceRepository {
+  private hourlyBalanceConverter: HourlyBalanceTASConverter;
+  constructor(hourlyBalanceConverter?: HourlyBalanceTASConverter) {
+    this.hourlyBalanceConverter =
+      hourlyBalanceConverter || new HourlyBalanceTASConverter();
+  }
+
   getBalanceTASBYOfficialIdAndYear({
     officialId,
     year,
@@ -38,17 +49,34 @@ ORDER BY year ASC, hourly_balance.year ASC`.then((balances) =>
   getTAS(
     where: Prisma.ActualBalanceWhereInput,
     options?: ActualBalanceFindManyOptions
-  ) {
-    return database.actualBalance.findMany({
-      where,
-      ...options,
-      include: {
-        hourlyBalances: {
-          include: {
-            hourlyBalanceTAS: true,
+  ): Promise<ActualBalanceWithTASEntity[]> {
+    return database.actualBalance
+      .findMany({
+        where,
+        ...options,
+        include: {
+          hourlyBalances: {
+            include: {
+              hourlyBalanceTAS: true,
+            },
           },
         },
-      },
-    });
+      })
+      .then((actuals) => {
+        return actuals.map((balance) => {
+          const hourlyBalances =
+            this.hourlyBalanceConverter.fromModelsToEntities(
+              balance.hourlyBalances
+            );
+
+          return new ActualBalance(
+            balance.id,
+            balance.year,
+            new Decimal(balance.total.toString()),
+            Official.default(balance.officialId),
+            hourlyBalances
+          );
+        });
+      });
   }
 }

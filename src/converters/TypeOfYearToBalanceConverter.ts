@@ -1,68 +1,76 @@
 import { TypeOfHoursByYearDecimal } from "@/@types/typeOfHours";
+import ActualBalance from "@/entities/ActualBalance";
+import HourlyBalance from "@/entities/HourlyBalance";
+import HourlyBalanceTAS from "@/entities/HourlyBalanceTAS";
 import { TYPES_OF_HOURS } from "@/enums/typeOfHours";
 import { instance as hours } from "@/services/calculations/classes/typeOfHours";
-import { HourlyBalance, HourlyBalanceTAS } from "@prisma/client";
+import Decimal from "decimal.js";
 
 export function convertTypesOfYearsToActualBalance(
-  actualBalance: {
-    hourlyBalances: (HourlyBalance & {
-      hourlyBalanceTAS: HourlyBalanceTAS | null;
-    })[];
-    id: string;
-    year: number;
-    total: bigint;
-    officialId: number;
-  },
+  actualBalance: ActualBalance,
   balances: TypeOfHoursByYearDecimal[],
   total: bigint
-): {
-  hourlyBalances: (HourlyBalance & {
-    hourlyBalanceTAS: HourlyBalanceTAS | null;
-  })[];
-  id: string;
-  year: number;
-  total: bigint;
-  officialId: number;
-} {
+): ActualBalance {
   const hourlyBalances = actualBalance.hourlyBalances.map((h) => {
     const current = balances.find((b) => b.year === h.year);
 
     if (!current) {
       throw new Error("No current balance");
     }
-    const simple = BigInt(
+    const simple = new Decimal(
       current.hours
         .find((h) => hours.isFirstTypeOfHour(h.typeOfHour))
-        ?.value.toString() || 0n
+        ?.value.toString() ?? "0"
     );
-    const working = BigInt(
+    const working = new Decimal(
       current.hours
         .find((h) => h.typeOfHour === TYPES_OF_HOURS.working)
-        ?.value.toString() || 0n
+        ?.value.toString() || "0"
     );
-    const nonWorking = BigInt(
+    const nonWorking = new Decimal(
       current.hours
         .find((h) => h.typeOfHour === TYPES_OF_HOURS.nonWorking)
-        ?.value.toString() || 0n
+        ?.value.toString() || "0"
     );
 
-    const hourlyBalanceTAS: HourlyBalanceTAS | null = h.hourlyBalanceTAS
-      ? {
-          ...h.hourlyBalanceTAS,
-          simple,
-          working,
-          nonWorking,
-        }
-      : null;
-
-    return { ...h, hourlyBalanceTAS };
+    if (isTASEntity(h)) {
+      return new HourlyBalanceTAS(
+        h.id,
+        h.year,
+        working,
+        nonWorking,
+        simple,
+        h.hourlyBalanceId
+      );
+    } else if (isTeacherEntity(h)) {
+      return new HourlyBalanceTAS(
+        h.id,
+        h.year,
+        working,
+        nonWorking,
+        simple,
+        h.hourlyBalanceId
+      );
+    } else {
+      throw new Error("Unknown entity");
+    }
   });
 
   const { hourlyBalances: h, ...others } = actualBalance;
 
-  return {
-    ...others,
-    total,
-    hourlyBalances,
-  };
+  return new ActualBalance(
+    actualBalance.id,
+    actualBalance.year,
+    new Decimal(total.toString()),
+    actualBalance.official.orUndefined(),
+    hourlyBalances
+  );
+}
+
+function isTASEntity(entity: HourlyBalance): entity is HourlyBalanceTAS {
+  return entity instanceof HourlyBalanceTAS;
+}
+
+function isTeacherEntity(entity: HourlyBalance): entity is HourlyBalanceTAS {
+  return entity instanceof HourlyBalanceTAS;
 }
