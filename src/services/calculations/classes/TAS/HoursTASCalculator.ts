@@ -2,9 +2,9 @@ import {
   CalculationCalculated,
   CalculationParamTAS,
 } from "@/@types/calculations";
-import { HourlyBalanceTAS } from "@/@types/hourlyBalance";
-import { TypeOfHour } from "@/@types/typeOfHours";
+import { TypeOfHour, TypeOfHourDecimal } from "@/@types/typeOfHours";
 import CalculationTAS from "@/entities/CalculationTAS";
+import HourlyBalanceTAS from "@/entities/HourlyBalanceTAS";
 import { TYPES_OF_HOURS } from "@/enums/typeOfHours";
 import {
   CalculationRepository,
@@ -84,6 +84,12 @@ export default class HoursTASCalculator extends Calculator {
     totalBalance,
     totalDiscount,
     workingHours,
+  }: {
+    nonWorkingHours: TypeOfHourDecimal;
+    simpleHours: TypeOfHour;
+    totalBalance: bigint;
+    totalDiscount: bigint;
+    workingHours: TypeOfHourDecimal;
   }) {
     if (this.year === undefined) {
       throw new Error("year must be defined");
@@ -116,21 +122,12 @@ export default class HoursTASCalculator extends Calculator {
   }
 
   getTotalBalance(hourlyBalances: HourlyBalanceTAS[]) {
-    const totalHours: BigInt = hourlyBalances.reduce(
-      (total, { hourlyBalanceTAS }) => {
-        if (hourlyBalanceTAS) {
-          return (
-            total +
-            hourlyBalanceTAS.working +
-            hourlyBalanceTAS.nonWorking +
-            hourlyBalanceTAS.simple
-          );
-        }
-
-        return total + 0n;
-      },
-      0n
-    );
+    const totalHours = hourlyBalances.reduce((total, hourlyBalance) => {
+      return total
+        .plus(hourlyBalance.working)
+        .plus(hourlyBalance.simple)
+        .plus(hourlyBalance.nonWorking.toString());
+    }, new Decimal(0));
 
     const totalBalance = this.calculations.reduce((total, calculation) => {
       const { discount } = calculation;
@@ -142,7 +139,7 @@ export default class HoursTASCalculator extends Calculator {
     return Promise.resolve(BigInt(totalBalanceString));
   }
 
-  getTotalWorkingHours(): Promise<TypeOfHour> {
+  getTotalWorkingHours(): Promise<TypeOfHourDecimal> {
     const total = this.calculations.reduce(
       (total, { surplusBusiness }) =>
         total + BigInt(surplusBusiness.toString()),
@@ -159,7 +156,7 @@ export default class HoursTASCalculator extends Calculator {
     });
   }
 
-  getTotalNonWorkingHours(): Promise<TypeOfHour> {
+  getTotalNonWorkingHours(): Promise<TypeOfHourDecimal> {
     const total = this.calculations.reduce(
       (total, { surplusNonWorking }) =>
         total + BigInt(surplusNonWorking.toString()),

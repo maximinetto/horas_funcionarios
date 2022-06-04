@@ -1,9 +1,9 @@
-import { HourlyBalanceTAS } from "@/@types/hourlyBalance";
 import {
   TypeOfHoursByYear,
   TypeOfHoursByYearDecimal,
 } from "@/@types/typeOfHours";
 import { logger } from "@/config";
+import HourlyBalanceTAS from "@/entities/HourlyBalanceTAS";
 import { TYPES_OF_HOURS } from "@/enums/typeOfHours";
 import { instance as Hours } from "@/services/calculations/classes/typeOfHours";
 import { Decimal } from "decimal.js";
@@ -47,12 +47,7 @@ export default class YearsCalculator {
     });
 
     for (const balance of _hourlyBalances) {
-      const { hourlyBalanceTAS, year } = balance;
-
-      if (!hourlyBalanceTAS) {
-        throw new Error("hourlyBalanceTAS must be defined");
-      }
-      const { simple, working, nonWorking } = hourlyBalanceTAS;
+      const { year, simple, working, nonWorking } = balance;
 
       const typeOfHours = [
         {

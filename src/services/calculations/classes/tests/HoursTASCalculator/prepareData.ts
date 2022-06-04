@@ -1,37 +1,37 @@
 import { CalculationTAS as CalculationTASModel } from "@/@types/calculations";
 import CalculationTAS from "@/entities/CalculationTAS";
+import HourlyBalanceTAS from "@/entities/HourlyBalanceTAS";
+import Official from "@/entities/Official";
 import { getMonthByNumber } from "@/utils/mapMonths";
 import faker from "@faker-js/faker";
 import { Contract, TypeOfOfficials } from "@prisma/client";
+import { DateTime } from "luxon";
 import { buildCalculation, buildHourlyBalance } from "./buildCalculation";
 import { actualBalance } from "./initialValues";
-import { HourlyBalanceTASNotNullable, Result } from "./types";
+import { Result } from "./types";
 import { hoursToSeconds } from "./util";
 
 export function preset(calculations: CalculationTAS[], year: number): Result {
   const data = {
     calculations,
-    official: {
-      id: actualBalance.officialId,
-      recordNumber: faker.datatype.number(),
-      firstName: faker.name.firstName(),
-      lastName: faker.name.lastName(),
-      position: faker.name.jobTitle(),
-      contract: faker.random.arrayElement([
-        Contract.PERMANENT,
-        Contract.TEMPORARY,
-      ]),
-      type: faker.random.arrayElement([
+    official: new Official(
+      actualBalance.officialId,
+      faker.datatype.number(),
+      faker.name.firstName(),
+      faker.name.lastName(),
+      faker.name.jobTitle(),
+      faker.random.arrayElement([Contract.PERMANENT, Contract.TEMPORARY]),
+      faker.random.arrayElement([
         TypeOfOfficials.TEACHER,
         TypeOfOfficials.NOT_TEACHER,
       ]),
-      dateOfEntry: faker.date.past(1, "2018-04-01T00:00z"),
-      chargeNumber: faker.datatype.number(),
-    },
+      DateTime.fromJSDate(faker.date.past(1, "2018-04-01T00:00z")),
+      faker.datatype.number()
+    ),
     year,
   };
 
-  const lastBalances: HourlyBalanceTASNotNullable[] = [
+  const lastBalances: HourlyBalanceTAS[] = [
     buildHourlyBalance({
       year: 2017,
       actualBalanceId: actualBalance.id,
@@ -79,23 +79,20 @@ export const buildOfficial = ({
   return {
     actualDate: date,
     calculations,
-    official: {
-      id: officialId ?? faker.datatype.number(),
-      recordNumber: faker.datatype.number(),
-      firstName: faker.name.firstName(),
-      lastName: faker.name.lastName(),
-      position: faker.name.jobTitle(),
-      contract: faker.random.arrayElement([
-        Contract.PERMANENT,
-        Contract.TEMPORARY,
-      ]),
-      type: faker.random.arrayElement([
+    official: new Official(
+      officialId ?? faker.datatype.number(),
+      faker.datatype.number(),
+      faker.name.firstName(),
+      faker.name.lastName(),
+      faker.name.jobTitle(),
+      faker.random.arrayElement([Contract.PERMANENT, Contract.TEMPORARY]),
+      faker.random.arrayElement([
         TypeOfOfficials.TEACHER,
         TypeOfOfficials.NOT_TEACHER,
       ]),
-      dateOfEntry: faker.date.past(1, "2018-04-01T00:00z"),
-      chargeNumber: faker.datatype.number(),
-    },
+      DateTime.fromJSDate(faker.date.past(1, "2018-04-01T00:00z")),
+      faker.datatype.number()
+    ),
     year,
   };
 };

@@ -10,10 +10,12 @@ export async function calculate({ calculations, year, officialId }) {
   }
 
   officialId = Number(officialId);
-  const official = await operations.getOne(officialId);
-  if (!official) {
+  const officialInstance = await operations.getOne(officialId);
+  if (officialInstance.isEmpty()) {
     throw new NotExistsError("The official does not exists");
   }
+
+  const official = officialInstance.get();
 
   if (official.type === TypeOfOfficials.TEACHER) {
     // TODO: calculateForTeacher

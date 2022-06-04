@@ -34,13 +34,13 @@ export default class HourlyBalanceTASConverter extends AbstractConverter<
     return {
       year: entity.year,
       hourlyBalanceTAS: {
-        hourlyBalanceId: entity.getHourlyBalanceId(),
+        hourlyBalanceId: entity.hourlyBalanceId,
         id: entity.id,
-        working: BigInt(entity.getWorking().toString()),
-        nonWorking: BigInt(entity.getNonWorking().toString()),
-        simple: BigInt(entity.getSimple().toString()),
+        working: BigInt(entity.working.toString()),
+        nonWorking: BigInt(entity.nonWorking.toString()),
+        simple: BigInt(entity.simple.toString()),
       },
-      id: entity.getHourlyBalanceId(),
+      id: entity.hourlyBalanceId,
       actualBalanceId,
     };
   }

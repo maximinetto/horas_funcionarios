@@ -1,36 +1,26 @@
-import { ActualBalance, HourlyBalance, HourlyBalanceTAS } from "@prisma/client";
-import { HourlyBalanceTASNotNullable } from "./types";
+import ActualBalance from "@/entities/ActualBalance";
+import HourlyBalanceTAS from "@/entities/HourlyBalanceTAS";
+import Official from "@/entities/Official";
+import Decimal from "decimal.js";
 
 export function convert(
-  hourlyBalancesTAS: HourlyBalanceTASNotNullable[],
-  officialId: number
-): ActualBalance & {
-  hourlyBalances: (HourlyBalance & {
-    hourlyBalanceTAS: HourlyBalanceTAS;
-  })[];
-} {
-  const actualBalanceId = hourlyBalancesTAS[0].actualBalanceId;
+  hourlyBalancesTAS: HourlyBalanceTAS[],
+  official: Official
+): ActualBalance {
+  const actualBalanceId = hourlyBalancesTAS[0].actualBalance.get().id;
   const year = hourlyBalancesTAS[hourlyBalancesTAS.length - 1].year;
+  const total = hourlyBalancesTAS.reduce(
+    (acc, { simple, working, nonWorking }) =>
+      acc.plus(simple).plus(working).plus(nonWorking),
 
-  return {
-    id: actualBalanceId,
-    year: year,
-    total: hourlyBalancesTAS.reduce(
-      (acc, { hourlyBalanceTAS }) =>
-        acc +
-        hourlyBalanceTAS.simple +
-        hourlyBalanceTAS.working +
-        hourlyBalanceTAS.nonWorking,
-      0n
-    ),
-    officialId,
-    hourlyBalances: hourlyBalancesTAS.map((hourlyBalanceTAS) => ({
-      id: hourlyBalanceTAS.id,
-      year: hourlyBalanceTAS.year,
-      hourlyBalanceTAS: {
-        ...hourlyBalanceTAS.hourlyBalanceTAS,
-      },
-      actualBalanceId,
-    })),
-  };
+    new Decimal(0)
+  );
+
+  return new ActualBalance(
+    actualBalanceId,
+    year,
+    total,
+    official,
+    hourlyBalancesTAS
+  );
 }

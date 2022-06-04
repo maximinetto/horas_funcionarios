@@ -1,4 +1,7 @@
+import ActualBalance from "@/entities/ActualBalance";
 import CalculationTAS from "@/entities/CalculationTAS";
+import HourlyBalanceTAS from "@/entities/HourlyBalanceTAS";
+import { ActualBalanceRepository } from "@/persistence/actualBalance";
 import { CalculationRepository } from "@/persistence/calculations";
 import { generateRandomUUIDV4 } from "@/utils/strings";
 import Decimal from "decimal.js";
@@ -10,7 +13,6 @@ import {
 import calculation from "./calculate";
 import { convert } from "./hourlyBalanceToActualBalance";
 import {
-  actualBalance,
   actualBalanceSecondTest,
   calculationsFirstTest,
   calculationsSecondTest,
@@ -19,7 +21,6 @@ import {
   yearFirstTest,
   yearSecondTest,
 } from "./initialValues";
-import { actualBalanceRepository } from "./mock";
 import { buildOfficial, genRandomCalculations, preset } from "./prepareData";
 import { CalculationData, HourlyBalanceTASNotNullable } from "./types";
 import { arrayWithoutElementAtIndex, hoursToSeconds } from "./util";
@@ -32,7 +33,7 @@ export interface ActualBalanceComplete {
   hourlyBalances: HourlyBalanceTASNotNullable[];
 }
 export interface CalculationDataTAS extends CalculationData {
-  actualBalance: ActualBalanceComplete;
+  actualBalance: ActualBalance;
 }
 
 function copy(
@@ -77,7 +78,6 @@ function prepareCalculationsToReplace() {
 
 describe("Test calculations", () => {
   beforeEach(() => {
-    actualBalanceRepository.getTAS.mockReset();
     BigInt.prototype["toJSON"] = function () {
       return this.toString();
     };
@@ -86,19 +86,20 @@ describe("Test calculations", () => {
   test("Should calculate right the passed values", async () => {
     CalculationRepository.prototype.get = jest.fn().mockResolvedValue([]);
     let data = preset(calculationsFirstTest, yearFirstTest);
-    actualBalanceRepository.getTAS.mockResolvedValue([
-      convert(data.lastBalances, actualBalance.officialId),
-    ]);
+    ActualBalanceRepository.prototype.getTAS = jest
+      .fn()
+      .mockResolvedValue([convert(data.lastBalances, data.data.official)]);
+
     await expectCalculationEquals(data, calculationsFirstTest);
-    actualBalanceRepository.getTAS.mockClear();
 
     CalculationRepository.prototype.get = jest
       .fn()
       .mockResolvedValue(calculationsFirstTest);
     data = preset(otherCalculations, yearFirstTest);
-    actualBalanceRepository.getTAS.mockResolvedValue([
-      convert(data.lastBalances, actualBalance.officialId),
-    ]);
+    const actual = convert(data.lastBalances, data.data.official);
+    ActualBalanceRepository.prototype.getTAS = jest
+      .fn()
+      .mockResolvedValue([actual]);
     const allCalculations = [...calculationsFirstTest, ...otherCalculations];
     await expectCalculationEquals(data, allCalculations);
   });
@@ -109,13 +110,10 @@ describe("Test calculations", () => {
     const balancesRecalculated: CalculationData[] = [];
 
     function generate() {
-      const balances2019 = calculation(
-        {
-          balances: [],
-          calculations: calculationsSecondTest,
-        },
-        actualBalanceSecondTest.officialId
-      );
+      const balances2019 = calculation({
+        balances: [],
+        calculations: calculationsSecondTest,
+      });
 
       balances.push(balances2019);
 
@@ -130,13 +128,10 @@ describe("Test calculations", () => {
         generateRandomUUIDV4()
       );
 
-      const balances2020 = calculation(
-        {
-          balances: balances2019.balances,
-          calculations: calculation2020,
-        },
-        actualBalanceSecondTest.officialId
-      );
+      const balances2020 = calculation({
+        balances: balances2019.balances,
+        calculations: calculation2020,
+      });
 
       const actualBalance2020 = balances2020.actualBalance;
       calculations[actualBalance2020.year] = [...calculation2020];
@@ -148,13 +143,10 @@ describe("Test calculations", () => {
         generateRandomUUIDV4()
       );
 
-      const balances2021 = calculation(
-        {
-          balances: balances2020.balances,
-          calculations: nextNextCalculations,
-        },
-        actualBalanceSecondTest.officialId
-      );
+      const balances2021 = calculation({
+        balances: balances2020.balances,
+        calculations: nextNextCalculations,
+      });
 
       calculations[balances2021.actualBalance.year] = [...nextNextCalculations];
       balances.push(balances2021);
@@ -164,15 +156,12 @@ describe("Test calculations", () => {
       const values = Object.values(calculations);
 
       let i = 0;
-      let balances: HourlyBalanceTASNotNullable[] = [];
+      let balances: HourlyBalanceTAS[] = [];
       for (const c of values) {
-        const nextBalance = calculation(
-          {
-            balances,
-            calculations: c,
-          },
-          actualBalanceSecondTest.officialId
-        );
+        const nextBalance = calculation({
+          balances,
+          calculations: c,
+        });
 
         balances = nextBalance.balances;
         balancesRecalculated.push(nextBalance);
@@ -196,7 +185,9 @@ describe("Test calculations", () => {
 
     const balancesEnriched = balances.map((b) => b.actualBalance);
 
-    actualBalanceRepository.getTAS.mockResolvedValue(balancesEnriched);
+    ActualBalanceRepository.prototype.getTAS = jest
+      .fn()
+      .mockResolvedValue(balancesEnriched);
 
     CalculationRepository.prototype.get = jest
       .fn()

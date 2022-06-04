@@ -1,76 +1,66 @@
+import ActualBalance from "@/entities/ActualBalance";
 import CalculationTAS from "@/entities/CalculationTAS";
+import HourlyBalanceTAS from "@/entities/HourlyBalanceTAS";
 import { generateRandomUUIDV4 } from "@/utils/strings";
+import Decimal from "decimal.js";
 import subtractHoursFromBalance from "./calculateBalance";
 import { calculate } from "./calculateForMonth";
-import {
-  ActualBalanceComplete,
-  CalculationDataTAS,
-} from "./HoursTASCalculator.test";
-import { HourlyBalanceTASNotNullable } from "./types";
+import { CalculationDataTAS } from "./HoursTASCalculator.test";
 
-export default function calculation(
-  {
-    balances,
-    calculations,
-  }: {
-    balances: HourlyBalanceTASNotNullable[];
-    calculations: CalculationTAS[];
-  },
-  officialId: number
-): CalculationDataTAS {
+export default function calculation({
+  balances,
+  calculations,
+}: {
+  balances: HourlyBalanceTAS[];
+  calculations: CalculationTAS[];
+}): CalculationDataTAS {
   if (balances.length === 0 && calculations.length === 0) {
     return {
       result: [],
       resultSanitized: [],
       balances: [],
       balancesSanitized: [],
-      actualBalance: {
-        id: generateRandomUUIDV4(),
-        officialId,
-        year: 0,
-        total: 0n,
-        hourlyBalances: [],
-      },
+      actualBalance: new ActualBalance(
+        generateRandomUUIDV4(),
+        0,
+        new Decimal(0),
+        undefined,
+        []
+      ),
     };
   }
 
   const calculationsCalculated = calculate(calculations);
 
-  const actualBalanceId = calculations[0].actualBalance.get().id;
+  const actualBalanceAux = calculations[0].actualBalance.get();
 
   const year = calculations[0].year;
   const balanceId = generateRandomUUIDV4();
 
-  const newBalances: HourlyBalanceTASNotNullable[] = balances.map((b) => {
+  const newBalances: HourlyBalanceTAS[] = balances.map((b) => {
     const id = generateRandomUUIDV4();
-    return {
-      ...b,
-      actualBalanceId,
-      hourlyBalanceTAS: {
-        hourlyBalanceId: id,
-        id: generateRandomUUIDV4(),
-        nonWorking: b.hourlyBalanceTAS.nonWorking,
-        simple: b.hourlyBalanceTAS.simple,
-        working: b.hourlyBalanceTAS.working,
-      },
+    return new HourlyBalanceTAS(
       id,
-    };
+      b.year,
+      b.working,
+      b.nonWorking,
+      b.simple,
+      generateRandomUUIDV4(),
+      actualBalanceAux
+    );
   });
 
-  const balancesWithCurrentYear: HourlyBalanceTASNotNullable[] = [
+  const balancesWithCurrentYear: HourlyBalanceTAS[] = [
     ...newBalances,
-    {
-      id: balanceId,
-      actualBalanceId,
+    new HourlyBalanceTAS(
+      balanceId,
       year,
-      hourlyBalanceTAS: {
-        simple: calculationsCalculated.simple,
-        working: calculationsCalculated.working,
-        nonWorking: calculationsCalculated.nonWorking,
-        hourlyBalanceId: balanceId,
-        id: generateRandomUUIDV4(),
-      },
-    },
+      calculationsCalculated.working,
+      calculationsCalculated.nonWorking,
+      calculationsCalculated.simple,
+      generateRandomUUIDV4(),
+      actualBalanceAux
+    ),
   ];
 
   const results = subtractHoursFromBalance(
@@ -78,23 +68,26 @@ export default function calculation(
     calculationsCalculated.discount
   );
 
-  let total = 0n;
-  results.balances.forEach((b) => {
-    total += b.hourlyBalanceTAS.simple;
-    total += b.hourlyBalanceTAS.working;
-    total += b.hourlyBalanceTAS.nonWorking;
-  });
+  let total = new Decimal(0);
+  results.balances.reduce(
+    (total, { simple, working, nonWorking }) =>
+      total.plus(simple).plus(working).plus(nonWorking),
+    new Decimal(0)
+  );
 
-  const actualBalance: ActualBalanceComplete = {
-    id: actualBalanceId,
-    year: year,
-    officialId,
+  const actualBalance: ActualBalance = new ActualBalance(
+    actualBalanceAux.id,
+    year,
     total,
-    hourlyBalances: results.balances,
-  };
+    actualBalanceAux.official.orUndefined(),
+    results.balances
+  );
 
   return {
-    ...results,
     actualBalance,
+    balances: results.balances,
+    balancesSanitized: results.balancesSanitized,
+    result: results.result,
+    resultSanitized: results.resultSanitized,
   };
 }

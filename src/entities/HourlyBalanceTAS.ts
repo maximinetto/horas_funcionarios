@@ -7,10 +7,10 @@ export default class HourlyBalanceTAS
   extends HourlyBalance
   implements Nullable
 {
-  private working: Decimal;
-  private nonWorking: Decimal;
-  private simple: Decimal;
-  private hourlyBalanceId: string;
+  private _working: Decimal;
+  private _nonWorking: Decimal;
+  private _simple: Decimal;
+  private _hourlyBalanceId: string;
 
   public constructor(
     id: string,
@@ -22,26 +22,26 @@ export default class HourlyBalanceTAS
     actualBalance?: ActualBalance
   ) {
     super(id, year, actualBalance);
-    this.working = working;
-    this.nonWorking = nonWorking;
-    this.simple = simple;
-    this.hourlyBalanceId = hourlyBalanceId;
+    this._working = working;
+    this._nonWorking = nonWorking;
+    this._simple = simple;
+    this._hourlyBalanceId = hourlyBalanceId;
   }
 
-  public getWorking(): Decimal {
-    return this.working;
+  public get working(): Decimal {
+    return this._working;
   }
 
-  public getNonWorking(): Decimal {
-    return this.nonWorking;
+  public get nonWorking(): Decimal {
+    return this._nonWorking;
   }
 
-  public getSimple(): Decimal {
-    return this.simple;
+  public get simple(): Decimal {
+    return this._simple;
   }
 
-  public getHourlyBalanceId(): string {
-    return this.hourlyBalanceId;
+  public get hourlyBalanceId(): string {
+    return this._hourlyBalanceId;
   }
 
   public isDefault(): boolean {
