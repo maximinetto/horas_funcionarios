@@ -126,14 +126,14 @@ export default class HoursTASCalculator extends Calculator {
       return total
         .plus(hourlyBalance.working)
         .plus(hourlyBalance.simple)
-        .plus(hourlyBalance.nonWorking.toString());
+        .plus(hourlyBalance.nonWorking);
     }, new Decimal(0));
 
     const totalBalance = this.calculations.reduce((total, calculation) => {
       const { discount } = calculation;
       const hours = calculation.getTotalHoursPerCalculation();
-      return total.add(hours).sub(discount.toString());
-    }, new Decimal(totalHours.toString()));
+      return total.add(hours).sub(discount);
+    }, new Decimal(totalHours));
 
     const totalBalanceString = totalBalance.toString();
     return Promise.resolve(BigInt(totalBalanceString));

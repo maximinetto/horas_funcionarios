@@ -9,7 +9,6 @@ describe("Sorters and getters", () => {
   let calculationsSorter: CalculationSorter;
 
   beforeAll(() => {
-    jest.mock("@/persistence/calculations");
     calculationsSorter = new CalculationSorter();
   });
 
