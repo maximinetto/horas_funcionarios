@@ -1,26 +1,28 @@
 import { CalculationCalculated } from "@/@types/calculations";
 import CalculationTAS from "@/entities/CalculationTAS";
+import HourlyBalanceTAS from "@/entities/HourlyBalanceTAS";
 import calculateForTAS from "../../TAS";
 import calculation from "./HoursTASCalculator/calculate";
 import { calculateTotalBalance } from "./HoursTASCalculator/calculateBalance";
 import { calculate } from "./HoursTASCalculator/calculateForMonth";
 import expectBalance from "./HoursTASCalculator/expectBalance";
 import { CalculationDataTAS } from "./HoursTASCalculator/HoursTASCalculator.test";
-import { actualBalanceRepository } from "./HoursTASCalculator/mock";
-import {
-  HourlyBalanceTASNotNullable,
-  Result,
-} from "./HoursTASCalculator/types";
+import { Data } from "./HoursTASCalculator/types";
 
 export async function expectCalculationEquals(
-  { lastBalances, data }: Result,
+  {
+    lastBalances,
+    data,
+  }: {
+    lastBalances: HourlyBalanceTAS[];
+    data: Data;
+  },
   _calculations: CalculationTAS[]
 ) {
   const response = await calculateForTAS({
     calculations: data.calculations,
     official: data.official,
     year: data.year,
-    actualBalanceRepository: actualBalanceRepository,
   });
 
   const currentYear = response.currentYear;
@@ -28,8 +30,7 @@ export async function expectCalculationEquals(
   const balances = expectCurrentActualBalanceEquals(
     lastBalances,
     currentYear,
-    _calculations,
-    data.official.id
+    _calculations
   );
 
   return {
@@ -40,20 +41,19 @@ export async function expectCalculationEquals(
 }
 
 export function expectCurrentActualBalanceEquals(
-  lastBalances: HourlyBalanceTASNotNullable[],
+  lastBalances: HourlyBalanceTAS[],
   currentCalculation: CalculationCalculated,
-  _calculations: CalculationTAS[],
-  officialId: number = 1
+  _calculations: CalculationTAS[]
 ): CalculationDataTAS {
   const totalCalculationsCurrentYear = calculate(_calculations);
   const total = calculateTotalBalance(
     totalCalculationsCurrentYear,
     lastBalances
   );
-  const totalBalances = calculation(
-    { balances: lastBalances, calculations: _calculations },
-    officialId
-  );
+  const totalBalances = calculation({
+    balances: lastBalances,
+    calculations: _calculations,
+  });
 
   expect(currentCalculation.simpleHours.value.toString()).toBe(
     totalCalculationsCurrentYear.simple.toString()

@@ -87,6 +87,20 @@ export default class Official
     return false;
   }
 
+  public static default(id = 0): Official {
+    return new Official(
+      id,
+      0,
+      "",
+      "",
+      "",
+      Contract.PERMANENT,
+      TypeOfOfficials.NOT_TEACHER,
+      DateTime.fromMillis(0),
+      0,
+      []
+    );
+  }
   compareTo(other: Official): number {
     if (this.id === null) {
       return -1;

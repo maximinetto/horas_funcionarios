@@ -1,9 +1,10 @@
 import { CalculationCalculated } from "@/@types/calculations";
 import BalanceConverter from "@/converters/BalanceConverter";
+import ActualBalance from "@/entities/ActualBalance";
 import CalculationTAS from "@/entities/CalculationTAS";
+import Official from "@/entities/Official";
 import { ActualBalanceRepository } from "@/persistence/actualBalance";
 import { CalculationRepository } from "@/persistence/calculations";
-import { HourlyBalance, HourlyBalanceTAS, Official } from "@prisma/client";
 import { balances, getCurrentActualHourlyBalance } from "../hourlyBalances";
 import ActualHourlyBalanceCreator from "../hourlyBalances/ActualHourlyBalanceCreator";
 import ActualHourlyBalanceReplacer from "../hourlyBalances/ActualHourlyBalanceReplacer";
@@ -101,24 +102,8 @@ export default async function calculateForTAS({
 
   async function recalculate(
     nextYear: number,
-    previousActualHourlyBalances: {
-      hourlyBalances: (HourlyBalance & {
-        hourlyBalanceTAS: HourlyBalanceTAS | null;
-      })[];
-      id: string;
-      year: number;
-      total: bigint;
-      officialId: number;
-    }[],
-    actualHourlyBalanceCalculated: {
-      hourlyBalances: (HourlyBalance & {
-        hourlyBalanceTAS: HourlyBalanceTAS | null;
-      })[];
-      id: string;
-      year: number;
-      total: bigint;
-      officialId: number;
-    }
+    previousActualHourlyBalances: ActualBalance[],
+    actualHourlyBalanceCalculated: ActualBalance
   ) {
     const postCalculatedData =
       await recalculateService.tryToRecalculateLaterHours({

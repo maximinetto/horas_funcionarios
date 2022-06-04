@@ -4,7 +4,7 @@ import {
 } from "@/@types/typeOfHours";
 import BalanceConverter from "@/converters/BalanceConverter";
 import { convertTypesOfYearsToActualBalance } from "@/converters/TypeOfYearToBalanceConverter";
-import { HourlyBalance, HourlyBalanceTAS } from "@prisma/client";
+import ActualBalance from "@/entities/ActualBalance";
 import ActualHourlyBalanceCreator from "./ActualHourlyBalanceCreator";
 
 export default class ActualHourlyBalanceReplacer {
@@ -26,15 +26,7 @@ export default class ActualHourlyBalanceReplacer {
   }: {
     balances: (TypeOfHoursByYearDecimal | TypeOfHoursByYear)[];
     totalBalance: bigint;
-    actualBalance: {
-      hourlyBalances: (HourlyBalance & {
-        hourlyBalanceTAS: HourlyBalanceTAS | null;
-      })[];
-      id: string;
-      year: number;
-      total: bigint;
-      officialId: number;
-    };
+    actualBalance: ActualBalance;
   }) {
     const enrichBalances = this.balanceConverter.fromBigIntToDecimal(balances);
     const currentActualBalance = convertTypesOfYearsToActualBalance(

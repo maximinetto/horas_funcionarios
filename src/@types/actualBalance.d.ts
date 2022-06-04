@@ -1,3 +1,4 @@
+import ActualBalance from "@/entities/ActualBalance";
 import { Prisma } from "@prisma/client";
 import { Decimal } from "decimal.js";
 import { HourlyBalanceSimple, HourlyBalanceTASNonNull } from "./hourlyBalance";
@@ -32,3 +33,7 @@ export interface ActualBalanceWithHourlyBalancesOptional
 
 export interface ActualBalanceWithHourlyBalancesTASOptional
   extends Partial<ActualBalanceWithHourlyBalancesTAS> {}
+
+export interface ActualBalanceWithTASEntity extends ActualBalance {
+  hourlyBalances: HourlyBalanceTAS[];
+}
