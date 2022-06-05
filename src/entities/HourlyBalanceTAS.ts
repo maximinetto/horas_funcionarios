@@ -47,4 +47,8 @@ export default class HourlyBalanceTAS
   public isDefault(): boolean {
     return false;
   }
+
+  public calculateTotal(): Decimal {
+    return this.working.plus(this.nonWorking).plus(this.simple);
+  }
 }

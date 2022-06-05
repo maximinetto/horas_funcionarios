@@ -1,10 +1,14 @@
 import Nullable from "@/entities/null_object/Nullable";
 import Comparable from "@/utils/Comparator";
 import { Month } from "@prisma/client";
+import Decimal from "decimal.js";
 import { Optional } from "typescript-optional";
 import ActualBalance from "./ActualBalance";
+import ICalculation from "./ICalculation";
 
-export default class Calculation implements Nullable, Comparable<Calculation> {
+export default class Calculation
+  implements Nullable, Comparable<Calculation>, ICalculation
+{
   private _id: string;
   private _year: number;
   private _month: Month;
@@ -47,6 +51,14 @@ export default class Calculation implements Nullable, Comparable<Calculation> {
 
   public isDefault(): boolean {
     return false;
+  }
+
+  public getTotalHoursPerCalculation(): Decimal {
+    return new Decimal(0);
+  }
+
+  public discountPerCalculation(): Decimal {
+    return new Decimal(0);
   }
 
   compareTo(other: Calculation): number {

@@ -148,6 +148,10 @@ export default class CalculationTAS extends Calculation implements Nullable {
       .add(this.surplusSimple);
   }
 
+  public discountPerCalculation(): Decimal {
+    return this.discount;
+  }
+
   public isDefault(): boolean {
     return false;
   }

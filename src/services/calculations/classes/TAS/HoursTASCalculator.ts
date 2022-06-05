@@ -38,19 +38,15 @@ export default class HoursTASCalculator extends Calculator {
     totalNonWorkingHours: TypeOfHourDecimal;
     totalSimpleHours: TypeOfHourDecimal;
   }> {
-    const [
-      totalBalance,
-      totalWorkingHours,
-      totalNonWorkingHours,
-      totalSimpleHours,
-      totalDiscount,
-    ] = await Promise.all([
-      this.getTotalBalance(hourlyBalances),
-      this.getTotalWorkingHours(),
-      this.getTotalNonWorkingHours(),
-      this.getTotalSimpleHours(),
-      this.getTotalDiscount(),
-    ]);
+    const { totalBalance, totalDiscount } = await super.calculatePerMonth(
+      hourlyBalances
+    );
+    const [totalWorkingHours, totalNonWorkingHours, totalSimpleHours] =
+      await Promise.all([
+        this.getTotalWorkingHours(),
+        this.getTotalNonWorkingHours(),
+        this.getTotalSimpleHours(),
+      ]);
     return {
       totalBalance,
       totalWorkingHours,
@@ -107,23 +103,6 @@ export default class HoursTASCalculator extends Calculator {
     };
   }
 
-  getTotalBalance(hourlyBalances: HourlyBalanceTAS[]): Promise<Decimal> {
-    const totalHours = hourlyBalances.reduce((total, hourlyBalance) => {
-      return total
-        .plus(hourlyBalance.working)
-        .plus(hourlyBalance.simple)
-        .plus(hourlyBalance.nonWorking);
-    }, new Decimal(0));
-
-    const totalBalance = this.calculations.reduce((total, calculation) => {
-      const { discount } = calculation;
-      const hours = calculation.getTotalHoursPerCalculation();
-      return total.add(hours).sub(discount);
-    }, new Decimal(totalHours));
-
-    return Promise.resolve(totalBalance);
-  }
-
   getTotalWorkingHours(): Promise<TypeOfHourDecimal> {
     const total = this.calculations.reduce(
       (total, { surplusBusiness }) =>
@@ -168,14 +147,5 @@ export default class HoursTASCalculator extends Calculator {
       typeOfHour: HoursClass.simple,
       value: total,
     });
-  }
-
-  getTotalDiscount(): Promise<Decimal> {
-    return Promise.resolve(
-      this.calculations.reduce(
-        (total, { discount }) => total.plus(discount),
-        new Decimal(0)
-      )
-    );
   }
 }

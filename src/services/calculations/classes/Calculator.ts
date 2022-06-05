@@ -6,6 +6,7 @@ import {
 import Calculations from "@/collections/Calculations";
 import Calculation from "@/entities/Calculation";
 import HourlyBalance from "@/entities/HourlyBalance";
+import ICalculation from "@/entities/ICalculation";
 import Official from "@/entities/Official";
 import InvalidValueError from "@/errors/InvalidValueError";
 import type { CalculationRepository } from "@/persistence/calculations";
@@ -43,10 +44,20 @@ export default abstract class Calculator {
     this.selectOptions = selectOptions;
   }
 
-  abstract calculatePerMonth(hourlyBalances: HourlyBalance[]): Promise<{
+  async calculatePerMonth(hourlyBalances: HourlyBalance[]): Promise<{
     totalBalance: Decimal;
     totalDiscount: Decimal;
-  }>;
+  }> {
+    const [totalBalance, totalDiscount] = await Promise.all([
+      this.getTotalBalance(hourlyBalances),
+      this.getTotalDiscount(),
+    ]);
+    return {
+      totalBalance,
+      totalDiscount,
+    };
+  }
+
   abstract calculateAccumulateHoursByYear(hours: {
     totalBalance: Decimal;
     totalDiscount: Decimal;
@@ -123,6 +134,32 @@ export default abstract class Calculator {
     await this.validate();
     const result = await this.calculatePerMonth(_hourlyBalances);
     return this.calculateAccumulateHoursByYear(result);
+  }
+
+  getTotalBalance(hourlyBalances: HourlyBalance[]): Promise<Decimal> {
+    const totalHours = hourlyBalances.reduce((total, hourlyBalance) => {
+      return total.plus(hourlyBalance.calculateTotal());
+    }, new Decimal(0));
+
+    const totalBalance = this.calculations.reduce(
+      (total, calculation: ICalculation) => {
+        const hours = calculation.getTotalHoursPerCalculation();
+        return total.add(hours).sub(calculation.discountPerCalculation());
+      },
+      new Decimal(totalHours)
+    );
+
+    return Promise.resolve(totalBalance);
+  }
+
+  getTotalDiscount(): Promise<Decimal> {
+    return Promise.resolve(
+      this.calculations.reduce(
+        (total, calculation) =>
+          total.plus(calculation.discountPerCalculation()),
+        new Decimal(0)
+      )
+    );
   }
 
   calculationIsAfterOfDateOfEntry(
