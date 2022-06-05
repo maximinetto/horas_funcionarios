@@ -5,6 +5,7 @@ import {
 import BalanceConverter from "@/converters/BalanceConverter";
 import { convertTypesOfYearsToActualBalance } from "@/converters/TypeOfYearToBalanceConverter";
 import ActualBalance from "@/entities/ActualBalance";
+import type Decimal from "decimal.js";
 import ActualHourlyBalanceCreator from "./ActualHourlyBalanceCreator";
 
 export default class ActualHourlyBalanceReplacer {
@@ -25,7 +26,7 @@ export default class ActualHourlyBalanceReplacer {
     totalBalance,
   }: {
     balances: (TypeOfHoursByYearDecimal | TypeOfHoursByYear)[];
-    totalBalance: bigint;
+    totalBalance: Decimal;
     actualBalance: ActualBalance;
   }) {
     const enrichBalances = this.balanceConverter.fromBigIntToDecimal(balances);
@@ -45,7 +46,7 @@ export default class ActualHourlyBalanceReplacer {
   }: {
     balances: (TypeOfHoursByYearDecimal | TypeOfHoursByYear)[];
     officialId: number;
-    totalBalance: bigint;
+    totalBalance: Decimal;
   }) {
     const balancesSortedByYear = this.balancesSortedByYear(balances);
     const balanceNewer = this.getBalanceNewer(balancesSortedByYear);

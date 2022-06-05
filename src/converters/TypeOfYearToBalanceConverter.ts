@@ -9,7 +9,7 @@ import Decimal from "decimal.js";
 export function convertTypesOfYearsToActualBalance(
   actualBalance: ActualBalance,
   balances: TypeOfHoursByYearDecimal[],
-  total: bigint
+  total: Decimal
 ): ActualBalance {
   const hourlyBalances = actualBalance.hourlyBalances.map((h) => {
     const current = balances.find((b) => b.year === h.year);

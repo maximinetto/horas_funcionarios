@@ -1,4 +1,5 @@
 import {
+  CalculationCalculated,
   CalculationParam,
   PrismaCalculationFinderOptions,
 } from "@/@types/calculations";
@@ -12,6 +13,7 @@ import CalculationSorter from "@/sorters/CalculationSorter";
 import { resetDateFromFirstDay } from "@/utils/date";
 import { getNumberByMonth } from "@/utils/mapMonths";
 import { Month } from "@prisma/client";
+import Decimal from "decimal.js";
 import { DateTime } from "luxon";
 import CalculationCreator from "./CalculationCreator";
 export default abstract class Calculator {
@@ -40,6 +42,15 @@ export default abstract class Calculator {
     this.calculationCreator = calculationCreator;
     this.selectOptions = selectOptions;
   }
+
+  abstract calculatePerMonth(hourlyBalances: HourlyBalance[]): Promise<{
+    totalBalance: Decimal;
+    totalDiscount: Decimal;
+  }>;
+  abstract calculateAccumulateHoursByYear(hours: {
+    totalBalance: Decimal;
+    totalDiscount: Decimal;
+  });
 
   async validate() {
     if (!this.calculations || !Array.isArray(this.calculations)) {
@@ -100,7 +111,7 @@ export default abstract class Calculator {
     year: _year,
     official: _official,
     hourlyBalances: _hourlyBalances,
-  }: CalculationParam): Promise<void | any> {
+  }: CalculationParam): Promise<CalculationCalculated> {
     this.store({
       calculations: _calculations,
       year: _year,
@@ -109,7 +120,9 @@ export default abstract class Calculator {
       calculationsFromPersistence,
     });
 
-    return this.validate();
+    await this.validate();
+    const result = await this.calculatePerMonth(_hourlyBalances);
+    return this.calculateAccumulateHoursByYear(result);
   }
 
   calculationIsAfterOfDateOfEntry(

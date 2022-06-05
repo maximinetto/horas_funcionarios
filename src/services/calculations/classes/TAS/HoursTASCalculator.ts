@@ -1,11 +1,7 @@
-import {
-  CalculationCalculated,
-  CalculationParamTAS,
-} from "@/@types/calculations";
-import { TypeOfHour, TypeOfHourDecimal } from "@/@types/typeOfHours";
+import { CalculationCalculated } from "@/@types/calculations";
+import { TypeOfHourDecimal } from "@/@types/typeOfHours";
 import CalculationTAS from "@/entities/CalculationTAS";
 import HourlyBalanceTAS from "@/entities/HourlyBalanceTAS";
-import { TYPES_OF_HOURS } from "@/enums/typeOfHours";
 import {
   CalculationRepository,
   includeCalculationsTAS,
@@ -35,68 +31,58 @@ export default class HoursTASCalculator extends Calculator {
       balancesPerYearCalculator ?? new YearsCalculator();
   }
 
-  async calculate({
-    calculations,
-    calculationsFromPersistence,
-    year,
-    official,
-    hourlyBalances,
-  }: CalculationParamTAS): Promise<CalculationCalculated> {
-    this.hourlyBalances = hourlyBalances;
-
-    await super.calculate({
-      calculations,
-      year,
-      official,
-      hourlyBalances,
-      calculationsFromPersistence,
-    });
+  async calculatePerMonth(hourlyBalances: HourlyBalanceTAS[]): Promise<{
+    totalBalance: Decimal;
+    totalDiscount: Decimal;
+    totalWorkingHours: TypeOfHourDecimal;
+    totalNonWorkingHours: TypeOfHourDecimal;
+    totalSimpleHours: TypeOfHourDecimal;
+  }> {
     const [
       totalBalance,
-      workingHours,
-      nonWorkingHours,
-      simpleHours,
+      totalWorkingHours,
+      totalNonWorkingHours,
+      totalSimpleHours,
       totalDiscount,
-    ] = await this.calculatePerMonth(hourlyBalances);
-
-    return this.calculateAccumulateHoursByYear({
-      nonWorkingHours,
-      simpleHours,
-      totalBalance,
-      totalDiscount,
-      workingHours,
-    });
-  }
-
-  calculatePerMonth(hourlyBalances: HourlyBalanceTAS[]) {
-    return Promise.all([
+    ] = await Promise.all([
       this.getTotalBalance(hourlyBalances),
       this.getTotalWorkingHours(),
       this.getTotalNonWorkingHours(),
       this.getTotalSimpleHours(),
       this.getTotalDiscount(),
     ]);
+    return {
+      totalBalance,
+      totalWorkingHours,
+      totalNonWorkingHours,
+      totalSimpleHours,
+      totalDiscount,
+    };
   }
 
   async calculateAccumulateHoursByYear({
-    nonWorkingHours,
-    simpleHours,
     totalBalance,
+    totalWorkingHours,
+    totalNonWorkingHours,
+    totalSimpleHours,
     totalDiscount,
-    workingHours,
   }: {
-    nonWorkingHours: TypeOfHourDecimal;
-    simpleHours: TypeOfHour;
-    totalBalance: bigint;
-    totalDiscount: bigint;
-    workingHours: TypeOfHourDecimal;
-  }) {
+    totalBalance: Decimal;
+    totalDiscount: Decimal;
+    totalWorkingHours: TypeOfHourDecimal;
+    totalNonWorkingHours: TypeOfHourDecimal;
+    totalSimpleHours: TypeOfHourDecimal;
+  }): Promise<CalculationCalculated> {
     if (this.year === undefined) {
       throw new Error("year must be defined");
     }
 
     const hoursActualYear = hoursOfYearEnricher(
-      { workingHours, nonWorkingHours, simpleHours },
+      {
+        workingHours: totalWorkingHours,
+        nonWorkingHours: totalNonWorkingHours,
+        simpleHours: totalSimpleHours,
+      },
       this.year
     );
 
@@ -112,16 +98,16 @@ export default class HoursTASCalculator extends Calculator {
     return {
       calculations: this.calculations,
       totalBalance,
-      workingHours,
-      nonWorkingHours,
-      simpleHours,
+      totalWorkingHours,
+      totalNonWorkingHours,
+      totalSimpleHours,
       totalDiscount,
       balances,
       balancesSanitized,
     };
   }
 
-  getTotalBalance(hourlyBalances: HourlyBalanceTAS[]) {
+  getTotalBalance(hourlyBalances: HourlyBalanceTAS[]): Promise<Decimal> {
     const totalHours = hourlyBalances.reduce((total, hourlyBalance) => {
       return total
         .plus(hourlyBalance.working)
@@ -135,8 +121,7 @@ export default class HoursTASCalculator extends Calculator {
       return total.add(hours).sub(discount);
     }, new Decimal(totalHours));
 
-    const totalBalanceString = totalBalance.toString();
-    return Promise.resolve(BigInt(totalBalanceString));
+    return Promise.resolve(totalBalance);
   }
 
   getTotalWorkingHours(): Promise<TypeOfHourDecimal> {
@@ -173,13 +158,10 @@ export default class HoursTASCalculator extends Calculator {
     });
   }
 
-  getTotalSimpleHours(): Promise<{
-    typeOfHour: TYPES_OF_HOURS;
-    value: bigint;
-  }> {
+  getTotalSimpleHours(): Promise<TypeOfHourDecimal> {
     const total = this.calculations.reduce(
-      (total, { surplusSimple }) => total + BigInt(surplusSimple.toString()),
-      0n
+      (total, { surplusSimple }) => total.plus(surplusSimple),
+      new Decimal(0)
     );
 
     return Promise.resolve({
@@ -188,11 +170,11 @@ export default class HoursTASCalculator extends Calculator {
     });
   }
 
-  getTotalDiscount(): Promise<bigint> {
+  getTotalDiscount(): Promise<Decimal> {
     return Promise.resolve(
       this.calculations.reduce(
-        (total, { discount }) => total + BigInt(discount.toString()),
-        0n
+        (total, { discount }) => total.plus(discount),
+        new Decimal(0)
       )
     );
   }

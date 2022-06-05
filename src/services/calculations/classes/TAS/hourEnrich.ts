@@ -11,7 +11,7 @@ export const hoursOfYearEnricher = (
   }: {
     workingHours: { typeOfHour: TYPES_OF_HOURS; value: Decimal };
     nonWorkingHours: { typeOfHour: TYPES_OF_HOURS; value: Decimal };
-    simpleHours: { typeOfHour: TYPES_OF_HOURS; value: bigint };
+    simpleHours: { typeOfHour: TYPES_OF_HOURS; value: Decimal };
   },
   year: number
 ): TypeOfHoursByYear => {

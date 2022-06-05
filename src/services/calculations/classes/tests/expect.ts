@@ -55,17 +55,17 @@ export function expectCurrentActualBalanceEquals(
     calculations: _calculations,
   });
 
-  expect(currentCalculation.simpleHours.value.toString()).toBe(
+  expect(currentCalculation.totalSimpleHours.value.toString()).toBe(
     totalCalculationsCurrentYear.simple.toString()
   );
   expect(
     totalCalculationsCurrentYear.working.equals(
-      currentCalculation.workingHours.value
+      currentCalculation.totalWorkingHours.value
     )
   ).toBeTruthy();
   expect(
     totalCalculationsCurrentYear.nonWorking.equals(
-      currentCalculation.nonWorkingHours.value
+      currentCalculation.totalNonWorkingHours.value
     )
   ).toBeTruthy();
   expect(currentCalculation.totalBalance.toString()).toBe(

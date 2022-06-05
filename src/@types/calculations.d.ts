@@ -1,14 +1,18 @@
 import Calculation from "@/entities/Calculation";
 import CalculationTASEntity from "@/entities/CalculationTAS";
 import Official from "@/entities/Official";
-import { TYPES_OF_HOURS } from "@/enums/typeOfHours";
 import {
   Calculation as CalculationModel,
   CalculationTAS as CalculationTASModel,
   CalculationTeacher,
   Prisma,
 } from "@prisma/client";
-import { TypeOfHoursByYear, TypeOfHoursByYearDecimal } from "./typeOfHours";
+import Decimal from "decimal.js";
+import {
+  TypeOfHourDecimal,
+  TypeOfHoursByYear,
+  TypeOfHoursByYearDecimal,
+} from "./typeOfHours";
 
 type Seconds = number | bigInt;
 
@@ -58,14 +62,11 @@ export interface PrismaCalculationFinderOptions
 
 export type CalculationCalculated = {
   calculations: CalculationTASEntity[];
-  totalBalance: bigint;
-  workingHours: TypeOfHour;
-  nonWorkingHours: TypeOfHour;
-  simpleHours: {
-    typeOfHour: TYPES_OF_HOURS;
-    value: bigint;
-  };
-  totalDiscount: bigint;
+  totalBalance: Decimal;
+  totalWorkingHours: TypeOfHourDecimal;
+  totalNonWorkingHours: TypeOfHourDecimal;
+  totalSimpleHours: TypeOfHourDecimal;
+  totalDiscount: Decimal;
   balances: TypeOfHoursByYear[];
   balancesSanitized: TypeOfHoursByYearDecimal[];
 };

@@ -2,6 +2,7 @@ import { TypeOfHoursByYear } from "@/@types/typeOfHours";
 import { TYPES_OF_HOURS } from "@/enums/typeOfHours";
 import { generateRandomUUIDV4 } from "@/utils/strings";
 import { HourlyBalance, HourlyBalanceTAS } from "@prisma/client";
+import type Decimal from "decimal.js";
 
 export default class ActualHourlyBalanceCreator {
   create({
@@ -11,7 +12,7 @@ export default class ActualHourlyBalanceCreator {
     balances,
   }: {
     year: number;
-    total: bigint;
+    total: Decimal;
     officialId: number;
     balances: TypeOfHoursByYear[];
   }): {
@@ -20,7 +21,7 @@ export default class ActualHourlyBalanceCreator {
     })[];
     id: string;
     year: number;
-    total: bigint;
+    total: Decimal;
     officialId: number;
   } {
     const id = generateRandomUUIDV4();

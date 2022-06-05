@@ -11,7 +11,7 @@ import { Decimal } from "decimal.js";
 export default class YearsCalculator {
   private hourlyBalances: HourlyBalanceTAS[];
   private hoursActualYear: TypeOfHoursByYear;
-  private totalDiscount: bigint;
+  private totalDiscount: Decimal;
   private calculatedHours: TypeOfHoursByYear[];
 
   constructor() {
@@ -20,7 +20,7 @@ export default class YearsCalculator {
       year: 0,
       hours: [],
     };
-    this.totalDiscount = 0n;
+    this.totalDiscount = new Decimal(0);
     this.calculatedHours = [];
   }
 
@@ -31,7 +31,7 @@ export default class YearsCalculator {
   }: {
     hoursActualYear: TypeOfHoursByYear;
     hourlyBalances: HourlyBalanceTAS[];
-    totalDiscount: bigint;
+    totalDiscount: Decimal;
   }): Promise<{
     calculatedHours: TypeOfHoursByYear[];
     calculatedHoursSanitized: TypeOfHoursByYearDecimal[];
@@ -108,11 +108,13 @@ export default class YearsCalculator {
   }: {
     hourlyBalances: HourlyBalanceTAS[];
     hoursActualYear: TypeOfHoursByYear;
-    totalDiscount: bigint;
+    totalDiscount: Decimal;
   }) => {
     this.hourlyBalances = [..._hourlyBalances];
     this.hoursActualYear = { ..._hoursActualYear };
-    this.totalDiscount = _totalDiscount > 0 ? _totalDiscount : 0n;
+    this.totalDiscount = _totalDiscount.greaterThan(0)
+      ? _totalDiscount
+      : new Decimal(0);
     this.calculatedHours = [];
 
     return {
