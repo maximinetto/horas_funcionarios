@@ -31,16 +31,7 @@ export default class HoursTASCalculator extends Calculator {
       balancesPerYearCalculator ?? new YearsCalculator();
   }
 
-  async calculatePerMonth(hourlyBalances: HourlyBalanceTAS[]): Promise<{
-    totalBalance: Decimal;
-    totalDiscount: Decimal;
-    totalWorkingHours: TypeOfHourDecimal;
-    totalNonWorkingHours: TypeOfHourDecimal;
-    totalSimpleHours: TypeOfHourDecimal;
-  }> {
-    const { totalBalance, totalDiscount } = await super.calculatePerMonth(
-      hourlyBalances
-    );
+  async calculatePerMonthAlternatives() {
     const [totalWorkingHours, totalNonWorkingHours, totalSimpleHours] =
       await Promise.all([
         this.getTotalWorkingHours(),
@@ -48,11 +39,9 @@ export default class HoursTASCalculator extends Calculator {
         this.getTotalSimpleHours(),
       ]);
     return {
-      totalBalance,
       totalWorkingHours,
       totalNonWorkingHours,
       totalSimpleHours,
-      totalDiscount,
     };
   }
 

@@ -16,6 +16,9 @@ import { getNumberByMonth } from "@/utils/mapMonths";
 import { Month } from "@prisma/client";
 import Decimal from "decimal.js";
 import { DateTime } from "luxon";
+import CalculatePerMonth, {
+  CalculatePerMonthAlternative,
+} from "./CalculatePerMonth";
 import CalculationCreator from "./CalculationCreator";
 export default abstract class Calculator {
   protected calculationRepository: CalculationRepository;
@@ -44,24 +47,25 @@ export default abstract class Calculator {
     this.selectOptions = selectOptions;
   }
 
-  async calculatePerMonth(hourlyBalances: HourlyBalance[]): Promise<{
-    totalBalance: Decimal;
-    totalDiscount: Decimal;
-  }> {
-    const [totalBalance, totalDiscount] = await Promise.all([
+  abstract calculatePerMonthAlternatives(): Promise<CalculatePerMonthAlternative>;
+
+  abstract calculateAccumulateHoursByYear(hours: CalculatePerMonth);
+
+  async calculatePerMonth(
+    hourlyBalances: HourlyBalance[]
+  ): Promise<CalculatePerMonth> {
+    const [totalBalance, totalDiscount, others] = await Promise.all([
       this.getTotalBalance(hourlyBalances),
       this.getTotalDiscount(),
+      this.calculatePerMonthAlternatives(),
     ]);
+
     return {
       totalBalance,
       totalDiscount,
+      ...others,
     };
   }
-
-  abstract calculateAccumulateHoursByYear(hours: {
-    totalBalance: Decimal;
-    totalDiscount: Decimal;
-  });
 
   async validate() {
     if (!this.calculations || !Array.isArray(this.calculations)) {
