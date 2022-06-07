@@ -55,7 +55,7 @@ export default class RecalculateService {
       }
     );
 
-    if (!this.hasMoreLaterHours(calculations)) return;
+    if (!Calculation.calculationsHasMoreLaterHours(calculations)) return;
 
     this.actualHourlyBalances.push(actualHourlyBalanceCalculated);
 

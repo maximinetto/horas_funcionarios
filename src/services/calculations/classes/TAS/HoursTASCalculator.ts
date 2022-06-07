@@ -94,35 +94,27 @@ export default class HoursTASCalculator extends Calculator {
 
   getTotalWorkingHours(): Promise<TypeOfHourDecimal> {
     const total = this.calculations.reduce(
-      (total, { surplusBusiness }) =>
-        total + BigInt(surplusBusiness.toString()),
-      0n
+      (total, { surplusBusiness }) => total.plus(surplusBusiness),
+      new Decimal(0)
     );
-    const valueToDecimal = new Decimal(total.toString());
-    const valueToDecimalMultiplied = valueToDecimal.mul(
-      CalculationTAS.WORKING_MULTIPLIER
-    );
+    const valueMultiplied = total.mul(CalculationTAS.WORKING_MULTIPLIER);
 
     return Promise.resolve({
       typeOfHour: HoursClass.working,
-      value: valueToDecimalMultiplied,
+      value: valueMultiplied,
     });
   }
 
   getTotalNonWorkingHours(): Promise<TypeOfHourDecimal> {
     const total = this.calculations.reduce(
-      (total, { surplusNonWorking }) =>
-        total + BigInt(surplusNonWorking.toString()),
-      0n
+      (total, { surplusNonWorking }) => total.plus(surplusNonWorking),
+      new Decimal(0)
     );
-    const valueToDecimal = new Decimal(total.toString());
-    const valueToDecimalMultiplied = valueToDecimal.mul(
-      CalculationTAS.NON_WORKING_MULTIPLIER
-    );
+    const valueMultiplied = total.mul(CalculationTAS.NON_WORKING_MULTIPLIER);
 
     return Promise.resolve({
       typeOfHour: HoursClass.nonWorking,
-      value: valueToDecimalMultiplied,
+      value: valueMultiplied,
     });
   }
 

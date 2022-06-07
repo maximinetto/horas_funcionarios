@@ -61,6 +61,10 @@ export default class Calculation
     return new Decimal(0);
   }
 
+  public static calculationsHasMoreLaterHours(calculations: Calculation[]) {
+    return calculations.length > 0;
+  }
+
   compareTo(other: Calculation): number {
     if (this.id === other.id) {
       return 0;

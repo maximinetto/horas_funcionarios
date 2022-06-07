@@ -11,15 +11,14 @@ import Official from "@/entities/Official";
 import InvalidValueError from "@/errors/InvalidValueError";
 import type { CalculationRepository } from "@/persistence/calculations";
 import CalculationSorter from "@/sorters/CalculationSorter";
-import { resetDateFromFirstDay } from "@/utils/date";
 import { getNumberByMonth } from "@/utils/mapMonths";
 import { Month } from "@prisma/client";
 import Decimal from "decimal.js";
-import { DateTime } from "luxon";
 import CalculatePerMonth, {
   CalculatePerMonthAlternative,
 } from "./CalculatePerMonth";
 import CalculationCreator from "./CalculationCreator";
+import calculationIsAfterOfDateOfEntry from "./calculationIsAfterOfDateOfEntry";
 export default abstract class Calculator {
   protected calculationRepository: CalculationRepository;
   protected calculationsFromPersistence: Calculation[];
@@ -68,24 +67,14 @@ export default abstract class Calculator {
   }
 
   async validate() {
-    if (!this.calculations || !Array.isArray(this.calculations)) {
-      throw new Error("calculations must be an array");
-    }
+    this.checkDataIsValid();
 
-    if (!this.official) {
-      throw new Error("official must be defined");
-    }
-
-    if (!this.year) {
-      throw new Error("year must be defined");
-    }
-
-    if (this.calculations.length > 0) {
+    if (Calculation.calculationsHasMoreLaterHours(this.calculations)) {
       const slowestCalculation =
         this.calculationsCollection.getSmallestCalculation(this.calculations);
 
       if (
-        !this.calculationIsAfterOfDateOfEntry(
+        !calculationIsAfterOfDateOfEntry(
           this.year,
           slowestCalculation,
           this.official.dateOfEntry
@@ -166,32 +155,6 @@ export default abstract class Calculator {
     );
   }
 
-  calculationIsAfterOfDateOfEntry(
-    year: number,
-    calculation: Calculation,
-    dateOfEntry: DateTime
-  ) {
-    const monthNumber = Number(calculation.month);
-    const month = isNaN(monthNumber)
-      ? getNumberByMonth(calculation.month)
-      : monthNumber;
-
-    return (
-      DateTime.fromObject(
-        resetDateFromFirstDay({
-          year,
-          month,
-        })
-      ).toMillis() >=
-      DateTime.fromObject(
-        resetDateFromFirstDay({
-          year: dateOfEntry.year,
-          month: dateOfEntry.month,
-        })
-      ).toMillis()
-    );
-  }
-
   allMonthsHaveHours(calculations: Calculation[]): boolean {
     if (calculations.length === 0) {
       throw new Error("calculations must have at least one element");
@@ -238,5 +201,23 @@ export default abstract class Calculator {
       hourlyBalances,
       calculationsFromPersistence,
     };
+  }
+
+  private checkDataIsValid(): asserts this is {
+    year: number;
+    official: Official;
+    calculations: Calculation[];
+  } {
+    if (!this.calculations || !Array.isArray(this.calculations)) {
+      throw new Error("calculations must be an array");
+    }
+
+    if (!this.official) {
+      throw new Error("official must be defined");
+    }
+
+    if (!this.year) {
+      throw new Error("year must be defined");
+    }
   }
 }
