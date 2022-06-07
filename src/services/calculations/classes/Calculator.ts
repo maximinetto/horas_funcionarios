@@ -8,17 +8,14 @@ import Calculation from "@/entities/Calculation";
 import HourlyBalance from "@/entities/HourlyBalance";
 import ICalculation from "@/entities/ICalculation";
 import Official from "@/entities/Official";
-import InvalidValueError from "@/errors/InvalidValueError";
 import type { CalculationRepository } from "@/persistence/calculations";
 import CalculationSorter from "@/sorters/CalculationSorter";
-import { getNumberByMonth } from "@/utils/mapMonths";
-import { Month } from "@prisma/client";
 import Decimal from "decimal.js";
 import CalculatePerMonth, {
   CalculatePerMonthAlternative,
 } from "./CalculatePerMonth";
 import CalculationCreator from "./CalculationCreator";
-import calculationIsAfterOfDateOfEntry from "./calculationIsAfterOfDateOfEntry";
+import CalculationValidator from "./CalculationValidator";
 export default abstract class Calculator {
   protected calculationRepository: CalculationRepository;
   protected calculationsFromPersistence: Calculation[];
@@ -30,20 +27,25 @@ export default abstract class Calculator {
   protected calculationsCollection: Calculations;
   private calculationCreator: CalculationCreator;
   private selectOptions: PrismaCalculationFinderOptions;
+  private calculationValidator: CalculationValidator;
 
   constructor(
     calculationRepository: CalculationRepository,
     calculationCreator: CalculationCreator,
-    selectOptions: PrismaCalculationFinderOptions
+    selectOptions: PrismaCalculationFinderOptions,
+    calculationValidator: CalculationValidator
   ) {
     this.calculationRepository = calculationRepository;
+    this.calculationCreator = calculationCreator;
     this.calculations = [];
     this.calculationsFromPersistence = [];
     this.hourlyBalances = [];
     this.calculationsSorter = new CalculationSorter();
     this.calculationsCollection = new Calculations();
-    this.calculationCreator = calculationCreator;
     this.selectOptions = selectOptions;
+    this.calculationValidator = calculationValidator;
+    this.getCalculationsAndTransform =
+      this.getCalculationsAndTransform.bind(this);
   }
 
   abstract calculatePerMonthAlternatives(): Promise<CalculatePerMonthAlternative>;
@@ -66,36 +68,11 @@ export default abstract class Calculator {
     };
   }
 
-  async validate() {
-    this.checkDataIsValid();
-
-    if (Calculation.calculationsHasMoreLaterHours(this.calculations)) {
-      const slowestCalculation =
-        this.calculationsCollection.getSmallestCalculation(this.calculations);
-
-      if (
-        !calculationIsAfterOfDateOfEntry(
-          this.year,
-          slowestCalculation,
-          this.official.dateOfEntry
-        )
-      ) {
-        throw new InvalidValueError(
-          "The year and month must be after or equal the date of entry"
-        );
-      }
-    }
-
-    if (this.calculationsFromPersistence.length === 0) {
-      this.calculationsFromPersistence = await this.calculationRepository.get(
-        {
-          actualBalance: {
-            officialId: this.official.id,
-          },
-          year: this.year,
-        },
-        this.selectOptions
-      );
+  async getCalculationsAndTransform(): Promise<Calculation[]> {
+    this.calculationValidator.officialIsDefined(this.official);
+    this.calculationValidator.yearIsDefined(this.year);
+    if (this.isOutsidePersistenceSet()) {
+      await this.getRestOfCalculations(this.official, this.year);
     }
 
     this.calculations = this.calculationsCollection.mergeCalculations(
@@ -104,9 +81,7 @@ export default abstract class Calculator {
       this.calculationCreator.create
     );
 
-    if (!this.allMonthsHaveHours(this.calculations)) {
-      throw new InvalidValueError("All months must have hours");
-    }
+    return this.calculations;
   }
 
   async calculate({
@@ -116,7 +91,7 @@ export default abstract class Calculator {
     official: _official,
     hourlyBalances: _hourlyBalances,
   }: CalculationParam): Promise<CalculationCalculated> {
-    this.store({
+    this.setAttributes({
       calculations: _calculations,
       year: _year,
       official: _official,
@@ -124,7 +99,14 @@ export default abstract class Calculator {
       calculationsFromPersistence,
     });
 
-    await this.validate();
+    await this.calculationValidator.validate(
+      {
+        calculations: this.calculations,
+        official: this.official,
+        year: this.year,
+      },
+      this.getCalculationsAndTransform
+    );
     const result = await this.calculatePerMonth(_hourlyBalances);
     return this.calculateAccumulateHoursByYear(result);
   }
@@ -155,33 +137,7 @@ export default abstract class Calculator {
     );
   }
 
-  allMonthsHaveHours(calculations: Calculation[]): boolean {
-    if (calculations.length === 0) {
-      throw new Error("calculations must have at least one element");
-    }
-
-    if (!this.official) {
-      throw new Error("official must be defined");
-    }
-
-    const { dateOfEntry } = this.official;
-    const dateOfEntryYear = dateOfEntry.year;
-    const dateOfEntryMonth = dateOfEntry.month;
-    const firstMonth =
-      dateOfEntryYear === calculations[0].year
-        ? dateOfEntryMonth
-        : getNumberByMonth(Month.JANUARY);
-    const lastMonthName =
-      this.calculationsCollection.getBiggestCalculation(calculations).month;
-    const lastMonthNumber = getNumberByMonth(lastMonthName);
-    return calculations.every((calculation) => {
-      const month = getNumberByMonth(calculation.month);
-      const isBetween = month >= firstMonth && month <= lastMonthNumber;
-      return isBetween;
-    });
-  }
-
-  store({
+  private setAttributes({
     calculations,
     year,
     official,
@@ -203,21 +159,19 @@ export default abstract class Calculator {
     };
   }
 
-  private checkDataIsValid(): asserts this is {
-    year: number;
-    official: Official;
-    calculations: Calculation[];
-  } {
-    if (!this.calculations || !Array.isArray(this.calculations)) {
-      throw new Error("calculations must be an array");
-    }
+  private async getRestOfCalculations(official: Official, year: number) {
+    this.calculationsFromPersistence = await this.calculationRepository.get(
+      {
+        actualBalance: {
+          officialId: official.id,
+        },
+        year,
+      },
+      this.selectOptions
+    );
+  }
 
-    if (!this.official) {
-      throw new Error("official must be defined");
-    }
-
-    if (!this.year) {
-      throw new Error("year must be defined");
-    }
+  private isOutsidePersistenceSet() {
+    return this.calculationsFromPersistence.length === 0;
   }
 }

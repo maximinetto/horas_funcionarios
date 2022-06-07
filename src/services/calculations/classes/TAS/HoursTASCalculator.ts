@@ -10,6 +10,7 @@ import Calculator from "@/services/calculations/classes/Calculator";
 import YearsCalculator from "@/services/calculations/classes/TAS/YearsCalculator";
 import HoursClass from "@/services/calculations/classes/typeOfHours";
 import { Decimal } from "decimal.js";
+import CalculationValidator from "../CalculationValidator";
 import CalculationTASCreator from "./CalculationTASCreator";
 import { hoursOfYearEnricher } from "./hourEnrich";
 
@@ -20,12 +21,14 @@ export default class HoursTASCalculator extends Calculator {
 
   constructor(
     calculationRepository: CalculationRepository,
+    validator: CalculationValidator,
     balancesPerYearCalculator?: YearsCalculator
   ) {
     super(
       calculationRepository,
       new CalculationTASCreator(),
-      includeCalculationsTAS()
+      includeCalculationsTAS(),
+      validator
     );
     this.balancesPerYearCalculator =
       balancesPerYearCalculator ?? new YearsCalculator();

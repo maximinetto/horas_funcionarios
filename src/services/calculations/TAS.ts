@@ -1,4 +1,5 @@
 import { CalculationCalculated } from "@/@types/calculations";
+import Calculations from "@/collections/Calculations";
 import BalanceConverter from "@/converters/BalanceConverter";
 import ActualBalance from "@/entities/ActualBalance";
 import CalculationTAS from "@/entities/CalculationTAS";
@@ -8,6 +9,7 @@ import { CalculationRepository } from "@/persistence/calculations";
 import { balances, getCurrentActualHourlyBalance } from "../hourlyBalances";
 import ActualHourlyBalanceCreator from "../hourlyBalances/ActualHourlyBalanceCreator";
 import ActualHourlyBalanceReplacer from "../hourlyBalances/ActualHourlyBalanceReplacer";
+import CalculationValidator from "./classes/CalculationValidator";
 import CalculationRowService from "./classes/TAS/CalculationRowService";
 import HoursTASCalculator from "./classes/TAS/HoursTASCalculator";
 import RecalculateService from "./classes/TAS/RecalculateService";
@@ -25,7 +27,10 @@ export default async function calculateForTAS({
     balanceConverter,
     actualBalanceCreator
   ),
-  calculateService = new HoursTASCalculator(calculationRepository),
+  calculateService = new HoursTASCalculator(
+    calculationRepository,
+    new CalculationValidator(new Calculations())
+  ),
   recalculateService = new RecalculateService(
     calculationRepository,
     calculationRowService,
@@ -42,7 +47,6 @@ export default async function calculateForTAS({
   actualBalanceCreator?: ActualHourlyBalanceCreator;
   actualBalanceReplacer?: ActualHourlyBalanceReplacer;
   balanceConverter?: BalanceConverter;
-
   calculateService?: HoursTASCalculator;
   recalculateService?: RecalculateService;
 }) {
