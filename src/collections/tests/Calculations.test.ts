@@ -1,6 +1,7 @@
 import CalculationTAS from "@/entities/CalculationTAS";
 import { buildCalculation } from "@/services/calculations/classes/tests/HoursTASCalculator/buildCalculation";
 import { hoursToSeconds } from "@/services/calculations/classes/tests/HoursTASCalculator/util";
+import CalculationSorter from "@/sorters/CalculationSorter";
 import { generateRandomUUIDV4 } from "@/utils/strings";
 import { Month } from "@prisma/client";
 import Decimal from "decimal.js";
@@ -9,6 +10,7 @@ import Calculations from "../Calculations";
 test("Should replace calculations and pass test", () => {
   const year = 2020;
   const id = generateRandomUUIDV4();
+  const sortCalculations = new CalculationSorter();
 
   const first = buildCalculation({
     year,
@@ -86,7 +88,25 @@ test("Should replace calculations and pass test", () => {
     observations: "Jajajaja",
     discount: new Decimal(0),
   });
-  const replace: CalculationTAS[] = [firstExpected, secondExpected];
+  const replace: CalculationTAS[] = [
+    firstExpected,
+    secondExpected,
+    buildCalculation({
+      year,
+      month: Month.MAY,
+      observations: "",
+      surplusBusiness: hoursToSeconds(0) + 13n * 60n,
+      surplusNonWorking: 0n,
+      surplusSimple: 0n,
+      discount: 0n,
+      workingOvertime: 0n,
+      workingNightOvertime: 0n,
+      nonWorkingOvertime: 0n,
+      nonWorkingNightOvertime: 0n,
+      actualBalanceId: id,
+      compensatedNightOvertime: 0n,
+    }),
+  ];
 
   const result = new Calculations(...replace);
   result.mergeCalculations({
@@ -96,7 +116,9 @@ test("Should replace calculations and pass test", () => {
 
   const actual = result.toPrimitiveArray();
 
-  const expected = [firstExpected, origin[1], secondExpected, origin[3]];
+  const expected = [...replace, origin[1], origin[3]].sort(
+    sortCalculations.sortFromLowestToHighestDate
+  );
 
   expect(actual).toHaveLength(expected.length);
 
