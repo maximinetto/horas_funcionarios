@@ -5,11 +5,11 @@ import _differenceBy from "lodash/differenceBy";
 import _xorBy from "lodash/xorBy";
 
 export default class Calculations {
-  constructor(
-    private calculationsSorter: CalculationSorter,
-    private _calculations: Calculation[]
-  ) {
+  private calculationsSorter: CalculationSorter;
+  private _calculations: Calculation[];
+  constructor() {
     this.calculationsSorter = new CalculationSorter();
+    this._calculations = [];
   }
 
   getBiggestCalculation = (calculations?: Calculation[]): Calculation => {
