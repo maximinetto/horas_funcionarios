@@ -75,11 +75,11 @@ export default abstract class HoursCalculator {
       await this.getRestOfCalculations(this.official, this.year);
     }
 
-    this.calculations = this.calculationsCollection.mergeCalculations(
-      this.calculationsFromPersistence,
-      this.calculations,
-      this.calculationCreator.create
-    );
+    this.calculations = this.calculationsCollection.mergeCalculations({
+      origin: this.calculationsFromPersistence,
+      replace: this.calculations,
+      replacer: this.calculationCreator.create,
+    });
 
     return this.calculations;
   }

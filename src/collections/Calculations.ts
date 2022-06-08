@@ -4,76 +4,90 @@ import _cloneDeep from "lodash/cloneDeep";
 import _differenceBy from "lodash/differenceBy";
 import _xorBy from "lodash/xorBy";
 
-const idIsPresent = (calculation: Calculation): boolean =>
-  calculation.id != null;
-
 export default class Calculations {
-  private calculationsSorter: CalculationSorter;
-
-  constructor() {
+  constructor(
+    private calculationsSorter: CalculationSorter,
+    private _calculations: Calculation[]
+  ) {
     this.calculationsSorter = new CalculationSorter();
   }
 
-  getBiggestCalculation = (calculations: Calculation[]): Calculation => {
-    if (calculations.length === 0) {
+  getBiggestCalculation = (calculations?: Calculation[]): Calculation => {
+    const _calculations = calculations ?? this._calculations;
+    if (_calculations.length === 0) {
       throw new Error("calculations must be not empty");
     }
 
-    return calculations
+    return _calculations
       .slice()
       .sort(
         (a, b) => this.calculationsSorter.sortFromLowestToHighestDate(a, b) * -1
       )[0];
   };
 
-  getSmallestCalculation(calculations: Calculation[]): Calculation {
-    if (calculations.length === 0) {
+  getSmallestCalculation(calculations?: Calculation[]): Calculation {
+    const _calculations = calculations ?? this._calculations;
+    if (_calculations.length === 0) {
       throw new Error("calculations must be not empty");
     }
 
-    return _cloneDeep(calculations).sort(
+    return _cloneDeep(_calculations).sort(
       this.calculationsSorter.sortFromLowestToHighestDate
     )[0];
   }
 
-  mergeCalculations(
-    source: Calculation[],
-    target: Calculation[],
-    replacer: (calculation: Calculation, id: string) => Calculation
-  ): Calculation[] {
-    const symmetricDifference = _xorBy(target, source, "month");
+  mergeCalculations({
+    origin,
+    replace,
+    replacer,
+  }: {
+    replacer: (calculation: Calculation, id: string) => Calculation;
+    replace: Calculation[];
+    origin?: Calculation[];
+  }): Calculation[] {
+    const _origin = origin ?? this._calculations;
+
+    const symmetricDifference = _xorBy(replace, _origin, "month");
     const differenceCalculations = _differenceBy(
-      target,
+      replace,
       symmetricDifference,
       "month"
     );
 
-    const differenceCalculationsFromPersistence: Calculation[] =
+    const differenceCalculationsSource: Calculation[] =
       differenceCalculations.map((calculation) => {
-        const calculationFromPersistence = source.find(
-          (calculationFromPersistence) =>
-            calculationFromPersistence.month === calculation.month
+        const calculationFromSource = _origin.find(
+          (calculationFromSource) =>
+            calculationFromSource.month === calculation.month
         );
 
-        if (!calculationFromPersistence) {
+        if (!calculationFromSource) {
           return calculation;
         }
 
-        const { id } = calculationFromPersistence;
+        const { id } = calculationFromSource;
         return replacer(calculation, id);
       });
 
-    return [
-      ...symmetricDifference,
-      ...differenceCalculationsFromPersistence,
-    ].sort(this.calculationsSorter.sortFromLowestToHighestDate);
+    return [...symmetricDifference, ...differenceCalculationsSource].sort(
+      this.calculationsSorter.sortFromLowestToHighestDate
+    );
   }
 
-  calculationsWithId(calculations: Calculation[]) {
-    return calculations.filter(idIsPresent);
+  calculationsWithId(calculations?: Calculation[]) {
+    const _calculations = calculations ?? this._calculations;
+
+    return _calculations.filter(this.idIsPresent);
   }
 
-  calculationsWithoutId(calculations: Calculation[]) {
-    return calculations.filter((calculation) => !idIsPresent(calculation));
+  calculationsWithoutId(calculations?: Calculation[]) {
+    const _calculations = calculations ?? this._calculations;
+
+    return _calculations.filter(
+      (calculation) => !this.idIsPresent(calculation)
+    );
   }
+
+  private idIsPresent = (calculation: Calculation): boolean =>
+    calculation.id != null;
 }

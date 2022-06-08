@@ -2,9 +2,10 @@ import Calculations from "@/collections/Calculations";
 import Calculation from "@/entities/Calculation";
 import Official from "@/entities/Official";
 import InvalidValueError from "@/errors/InvalidValueError";
+import { resetDateFromFirstDay } from "@/utils/date";
 import { getNumberByMonth } from "@/utils/mapMonths";
 import { Month } from "@prisma/client";
-import calculationIsAfterOfDateOfEntry from "./calculationIsAfterOfDateOfEntry";
+import { DateTime } from "luxon";
 
 export default class CalculationValidator {
   constructor(
@@ -47,7 +48,7 @@ export default class CalculationValidator {
       this.calculationsCollection.getSmallestCalculation(calculations);
 
     if (
-      !calculationIsAfterOfDateOfEntry(
+      !this.calculationIsAfterOfDateOfEntry(
         year,
         slowestCalculation,
         official.dateOfEntry
@@ -116,6 +117,32 @@ export default class CalculationValidator {
     if (!year) {
       throw new Error("official must be defined");
     }
+  }
+
+  private calculationIsAfterOfDateOfEntry(
+    year: number,
+    calculation: Calculation,
+    dateOfEntry: DateTime
+  ) {
+    const monthNumber = Number(calculation.month);
+    const month = isNaN(monthNumber)
+      ? getNumberByMonth(calculation.month)
+      : monthNumber;
+
+    return (
+      DateTime.fromObject(
+        resetDateFromFirstDay({
+          year,
+          month,
+        })
+      ).toMillis() >=
+      DateTime.fromObject(
+        resetDateFromFirstDay({
+          year: dateOfEntry.year,
+          month: dateOfEntry.month,
+        })
+      ).toMillis()
+    );
   }
 
   private tryAllMonthsHaveHours() {
