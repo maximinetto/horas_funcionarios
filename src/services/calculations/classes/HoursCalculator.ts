@@ -16,7 +16,7 @@ import CalculatePerMonth, {
 } from "./CalculatePerMonth";
 import CalculationCreator from "./CalculationCreator";
 import CalculationValidator from "./CalculationValidator";
-export default abstract class Calculator {
+export default abstract class HoursCalculator {
   protected calculationRepository: CalculationRepository;
   protected calculationsFromPersistence: Calculation[];
   protected calculations: Calculation[];
