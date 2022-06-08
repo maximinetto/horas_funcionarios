@@ -16,16 +16,16 @@ import CalculatePerMonth, {
 } from "./CalculatePerMonth";
 import CalculationCreator from "./CalculationCreator";
 import CalculationValidator from "./CalculationValidator";
+
 export default abstract class HoursCalculator {
   protected calculationRepository: CalculationRepository;
   protected calculationsFromPersistence: Calculation[];
-  protected calculations: Calculation[];
+  protected calculations: Calculations<Calculation>;
   protected year?: number;
   protected official?: Official;
-  protected hourlyBalances: HourlyBalance[];
+  protected hourlyBalances: Array<HourlyBalance>;
   protected calculationsSorter: CalculationSorter;
-  protected calculationsCollection: Calculations;
-  private calculationCreator: CalculationCreator;
+  protected calculationCreator: CalculationCreator;
   private selectOptions: PrismaCalculationFinderOptions;
   private calculationValidator: CalculationValidator;
 
@@ -37,11 +37,10 @@ export default abstract class HoursCalculator {
   ) {
     this.calculationRepository = calculationRepository;
     this.calculationCreator = calculationCreator;
-    this.calculations = [];
+    this.calculations = new Calculations();
     this.calculationsFromPersistence = [];
     this.hourlyBalances = [];
     this.calculationsSorter = new CalculationSorter();
-    this.calculationsCollection = new Calculations();
     this.selectOptions = selectOptions;
     this.calculationValidator = calculationValidator;
     this.getCalculationsAndTransform =
@@ -68,16 +67,15 @@ export default abstract class HoursCalculator {
     };
   }
 
-  async getCalculationsAndTransform(): Promise<Calculation[]> {
+  async getCalculationsAndTransform(): Promise<Calculations<Calculation>> {
     this.calculationValidator.officialIsDefined(this.official);
     this.calculationValidator.yearIsDefined(this.year);
     if (this.isOutsidePersistenceSet()) {
       await this.getRestOfCalculations(this.official, this.year);
     }
 
-    this.calculations = this.calculationsCollection.mergeCalculations({
+    this.calculations.mergeCalculations({
       origin: this.calculationsFromPersistence,
-      replace: this.calculations,
       replacer: this.calculationCreator.create,
     });
 
@@ -90,7 +88,7 @@ export default abstract class HoursCalculator {
     year: _year,
     official: _official,
     hourlyBalances: _hourlyBalances,
-  }: CalculationParam): Promise<CalculationCalculated> {
+  }: CalculationParam<Calculation>): Promise<CalculationCalculated> {
     this.setAttributes({
       calculations: _calculations,
       year: _year,
@@ -116,7 +114,7 @@ export default abstract class HoursCalculator {
       return total.plus(hourlyBalance.calculateTotal());
     }, new Decimal(0));
 
-    const totalBalance = this.calculations.reduce(
+    const totalBalance = this.calculations.calc(
       (total, calculation: ICalculation) => {
         const hours = calculation.getTotalHoursPerCalculation();
         return total.add(hours).sub(calculation.discountPerCalculation());
@@ -129,7 +127,7 @@ export default abstract class HoursCalculator {
 
   getTotalDiscount(): Promise<Decimal> {
     return Promise.resolve(
-      this.calculations.reduce(
+      this.calculations.calc(
         (total, calculation) =>
           total.plus(calculation.discountPerCalculation()),
         new Decimal(0)
@@ -137,14 +135,14 @@ export default abstract class HoursCalculator {
     );
   }
 
-  private setAttributes({
+  protected setAttributes({
     calculations,
     year,
     official,
     hourlyBalances,
     calculationsFromPersistence,
-  }: CalculationParam): CalculationParam {
-    this.calculations = calculations;
+  }: CalculationParam<Calculation>): CalculationParam<Calculation> {
+    this.calculations = new Calculations(...calculations);
     this.year = year;
     this.official = official;
     this.hourlyBalances = hourlyBalances;

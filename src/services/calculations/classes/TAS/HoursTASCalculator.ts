@@ -1,5 +1,6 @@
 import { CalculationCalculated } from "@/@types/calculations";
 import { TypeOfHourDecimal } from "@/@types/typeOfHours";
+import Calculations from "@/collections/Calculations";
 import CalculationTAS from "@/entities/CalculationTAS";
 import HourlyBalanceTAS from "@/entities/HourlyBalanceTAS";
 import {
@@ -15,8 +16,8 @@ import CalculationTASCreator from "./CalculationTASCreator";
 import { hoursOfYearEnricher } from "./hourEnrich";
 
 export default class HoursTASCalculator extends HoursCalculator {
-  protected declare calculations: CalculationTAS[];
-  protected declare hourlyBalances: HourlyBalanceTAS[];
+  protected declare calculations: Calculations<CalculationTAS>;
+  protected declare hourlyBalances: Array<HourlyBalanceTAS>;
   private balancesPerYearCalculator: YearsCalculator;
 
   constructor(
@@ -30,6 +31,7 @@ export default class HoursTASCalculator extends HoursCalculator {
       includeCalculationsTAS(),
       validator
     );
+
     this.balancesPerYearCalculator =
       balancesPerYearCalculator ?? new YearsCalculator();
   }
@@ -84,7 +86,7 @@ export default class HoursTASCalculator extends HoursCalculator {
     });
 
     return {
-      calculations: this.calculations,
+      calculations: this.calculations.toPrimitiveArray(),
       totalBalance,
       totalWorkingHours,
       totalNonWorkingHours,
@@ -96,7 +98,7 @@ export default class HoursTASCalculator extends HoursCalculator {
   }
 
   getTotalWorkingHours(): Promise<TypeOfHourDecimal> {
-    const total = this.calculations.reduce(
+    const total = this.calculations.calc(
       (total, { surplusBusiness }) => total.plus(surplusBusiness),
       new Decimal(0)
     );
@@ -109,7 +111,7 @@ export default class HoursTASCalculator extends HoursCalculator {
   }
 
   getTotalNonWorkingHours(): Promise<TypeOfHourDecimal> {
-    const total = this.calculations.reduce(
+    const total = this.calculations.calc(
       (total, { surplusNonWorking }) => total.plus(surplusNonWorking),
       new Decimal(0)
     );
@@ -122,7 +124,7 @@ export default class HoursTASCalculator extends HoursCalculator {
   }
 
   getTotalSimpleHours(): Promise<TypeOfHourDecimal> {
-    const total = this.calculations.reduce(
+    const total = this.calculations.calc(
       (total, { surplusSimple }) => total.plus(surplusSimple),
       new Decimal(0)
     );

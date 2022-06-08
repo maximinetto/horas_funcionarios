@@ -1,5 +1,4 @@
 import { CalculationCalculated } from "@/@types/calculations";
-import Calculations from "@/collections/Calculations";
 import BalanceConverter from "@/converters/BalanceConverter";
 import ActualBalance from "@/entities/ActualBalance";
 import CalculationTAS from "@/entities/CalculationTAS";
@@ -29,7 +28,7 @@ export default async function calculateForTAS({
   ),
   calculateService = new HoursTASCalculator(
     calculationRepository,
-    new CalculationValidator(new Calculations())
+    new CalculationValidator()
   ),
   recalculateService = new RecalculateService(
     calculationRepository,

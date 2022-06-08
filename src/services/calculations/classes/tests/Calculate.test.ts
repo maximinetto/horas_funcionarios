@@ -49,11 +49,11 @@ describe("Sorters and getters", () => {
 
     const expected = enrich([january, march, may, december]);
 
-    const { getBiggestCalculation } = new Calculations();
+    const { getBiggestCalculation } = new Calculations(...calculations);
 
     testSortLowestToHighest();
 
-    const biggestCalculation = getBiggestCalculation(calculations);
+    const biggestCalculation = getBiggestCalculation();
 
     expect(biggestCalculation).toEqual(expected[expected.length - 1]);
 

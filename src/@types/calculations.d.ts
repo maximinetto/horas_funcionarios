@@ -40,9 +40,9 @@ export interface NotNullableCalculationWithTeacher
   calculationTeacher: CalculationTeacher;
 }
 
-export interface CalculationParam {
-  calculations: Calculation[];
-  calculationsFromPersistence: Calculation[];
+export interface CalculationParam<T extends Calculation> {
+  calculations: T[];
+  calculationsFromPersistence: T[];
   year: number;
   official: Official;
   hourlyBalances: HourlyBalance[];

@@ -1,62 +1,81 @@
 import Calculation from "@/entities/Calculation";
 import CalculationSorter from "@/sorters/CalculationSorter";
+import Decimal from "decimal.js";
 import _cloneDeep from "lodash/cloneDeep";
 import _differenceBy from "lodash/differenceBy";
 import _xorBy from "lodash/xorBy";
 
-export default class Calculations {
+export default class Calculations<E extends Calculation> {
   private calculationsSorter: CalculationSorter;
-  private _calculations: Calculation[];
-  constructor() {
+  private calculations: E[];
+
+  constructor(...items: E[]) {
+    this.calculations = items ?? [];
     this.calculationsSorter = new CalculationSorter();
-    this._calculations = [];
+    this.toPrimitiveArray.bind(this);
   }
 
-  getBiggestCalculation = (calculations?: Calculation[]): Calculation => {
-    const _calculations = calculations ?? this._calculations;
-    if (_calculations.length === 0) {
+  getBiggestCalculation = (): Calculation => {
+    if (this.calculations.length === 0) {
       throw new Error("calculations must be not empty");
     }
 
-    return _calculations
+    return this.calculations
       .slice()
       .sort(
         (a, b) => this.calculationsSorter.sortFromLowestToHighestDate(a, b) * -1
       )[0];
   };
 
-  getSmallestCalculation(calculations?: Calculation[]): Calculation {
-    const _calculations = calculations ?? this._calculations;
-    if (_calculations.length === 0) {
+  getSmallestCalculation(): Calculation {
+    if (this.calculations.length === 0) {
       throw new Error("calculations must be not empty");
     }
 
-    return _cloneDeep(_calculations).sort(
+    return _cloneDeep(this.calculations).sort(
       this.calculationsSorter.sortFromLowestToHighestDate
     )[0];
   }
 
+  public calc<T extends Decimal | number | number>(
+    callbackfn: (
+      previousValue: T,
+      currentValue: E,
+      currentIndex: number,
+      array: E[]
+    ) => T,
+    initialValue: T
+  ) {
+    return this.calculations.reduce(callbackfn, initialValue);
+  }
+
+  public every(callbackfn: (value: E, index: number, array: E[]) => boolean) {
+    return this.calculations.every(callbackfn);
+  }
+
+  public isEmpty() {
+    return this.calculations.length === 0;
+  }
+
   mergeCalculations({
     origin,
-    replace,
     replacer,
   }: {
-    replacer: (calculation: Calculation, id: string) => Calculation;
-    replace: Calculation[];
-    origin?: Calculation[];
-  }): Calculation[] {
-    const _origin = origin ?? this._calculations;
+    replacer: <T extends E>(replacement: T, id: string) => E;
+    origin: E[];
+  }): void {
+    const replace = this.calculations;
 
-    const symmetricDifference = _xorBy(replace, _origin, "month");
+    const symmetricDifference = _xorBy(replace, origin, "month");
     const differenceCalculations = _differenceBy(
       replace,
       symmetricDifference,
       "month"
     );
 
-    const differenceCalculationsSource: Calculation[] =
-      differenceCalculations.map((calculation) => {
-        const calculationFromSource = _origin.find(
+    const differenceCalculationsSource = differenceCalculations.map(
+      (calculation) => {
+        const calculationFromSource = origin.find(
           (calculationFromSource) =>
             calculationFromSource.month === calculation.month
         );
@@ -67,27 +86,30 @@ export default class Calculations {
 
         const { id } = calculationFromSource;
         return replacer(calculation, id);
-      });
+      }
+    );
 
-    return [...symmetricDifference, ...differenceCalculationsSource].sort(
+    const result = [...symmetricDifference, ...differenceCalculationsSource];
+
+    this.calculations = result.sort(
       this.calculationsSorter.sortFromLowestToHighestDate
     );
   }
 
-  calculationsWithId(calculations?: Calculation[]) {
-    const _calculations = calculations ?? this._calculations;
-
-    return _calculations.filter(this.idIsPresent);
+  public toPrimitiveArray(): E[] {
+    return this.calculations;
   }
 
-  calculationsWithoutId(calculations?: Calculation[]) {
-    const _calculations = calculations ?? this._calculations;
+  // calculationsWithId() {
+  //   return this.this.filter(this.idIsPresent);
+  // }
 
-    return _calculations.filter(
-      (calculation) => !this.idIsPresent(calculation)
-    );
-  }
+  // calculationsWithoutId() {
+  //   return this.this.filter(
+  //     (calculation) => !this.idIsPresent(calculation)
+  //   );
+  // }
 
-  private idIsPresent = (calculation: Calculation): boolean =>
-    calculation.id != null;
+  // private idIsPresent = (calculation: Calculation): boolean =>
+  //   calculation.id != null;
 }

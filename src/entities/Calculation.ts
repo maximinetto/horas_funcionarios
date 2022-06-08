@@ -1,3 +1,4 @@
+import Calculations from "@/collections/Calculations";
 import Nullable from "@/entities/null_object/Nullable";
 import Comparable from "@/utils/Comparator";
 import { Month } from "@prisma/client";
@@ -61,7 +62,12 @@ export default class Calculation
     return new Decimal(0);
   }
 
-  public static calculationsHasMoreLaterHours(calculations: Calculation[]) {
+  public static calculationsHasMoreLaterHours(
+    calculations: Calculation[] | Calculations<Calculation>
+  ) {
+    if (calculations instanceof Calculations) {
+      return !calculations.isEmpty();
+    }
     return calculations.length > 0;
   }
 

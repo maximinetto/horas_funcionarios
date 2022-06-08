@@ -8,12 +8,11 @@ import { Month } from "@prisma/client";
 import { DateTime } from "luxon";
 
 export default class CalculationValidator {
-  constructor(
-    private calculationsCollection: Calculations,
-    private year: number = 0,
-    private official: Official = Official.default(),
-    private calculations: Calculation[] = []
-  ) {}
+  private year: number = 0;
+  private official: Official = Official.default();
+  private calculations: Calculations<Calculation> = new Calculations();
+
+  constructor() {}
 
   async validate(
     {
@@ -21,11 +20,11 @@ export default class CalculationValidator {
       official,
       year,
     }: {
-      calculations: Calculation[] | undefined;
+      calculations: Calculations<Calculation> | undefined;
       official: Official | undefined;
       year: number | undefined;
     },
-    getAndTranformCalculations: () => Promise<Calculation[]>
+    getAndTransformCalculations: () => Promise<Calculations<Calculation>>
   ): Promise<void> {
     this.entryPointIsValid({
       calculations,
@@ -37,15 +36,14 @@ export default class CalculationValidator {
       this.checkCalculationsAreAfterDateOfEntry();
     }
 
-    this.calculations = await getAndTranformCalculations();
+    this.calculations = await getAndTransformCalculations();
 
     this.tryAllMonthsHaveHours();
   }
 
   checkCalculationsAreAfterDateOfEntry(): void {
-    const { calculations, official, year } = this;
-    const slowestCalculation =
-      this.calculationsCollection.getSmallestCalculation(calculations);
+    const { official, year } = this;
+    const slowestCalculation = this.calculations.getSmallestCalculation();
 
     if (
       !this.calculationIsAfterOfDateOfEntry(
@@ -65,12 +63,12 @@ export default class CalculationValidator {
     official,
     year,
   }: {
-    calculations?: Calculation[];
+    calculations?: Calculations<Calculation>;
     year?: number;
     official?: Official;
   }) {
-    if (!calculations || !Array.isArray(calculations)) {
-      throw new Error("calculations must be an array");
+    if (!calculations || !(calculations instanceof Calculations)) {
+      throw new Error("calculations must be an instance of Calculation");
     }
 
     this.officialIsDefined(official);
@@ -85,7 +83,7 @@ export default class CalculationValidator {
   }
 
   public allMonthsHaveHours(): boolean {
-    if (this.calculations.length === 0) {
+    if (this.calculations.isEmpty()) {
       throw new Error("calculations must have at least one element");
     }
 
@@ -93,12 +91,10 @@ export default class CalculationValidator {
     const dateOfEntryYear = dateOfEntry.year;
     const dateOfEntryMonth = dateOfEntry.month;
     const firstMonth =
-      dateOfEntryYear === this.calculations[0].year
+      dateOfEntryYear === this.calculations.getSmallestCalculation().year
         ? dateOfEntryMonth
         : getNumberByMonth(Month.JANUARY);
-    const lastMonthName = this.calculationsCollection.getBiggestCalculation(
-      this.calculations
-    ).month;
+    const lastMonthName = this.calculations.getBiggestCalculation().month;
     const lastMonthNumber = getNumberByMonth(lastMonthName);
     return this.calculations.every((calculation) => {
       const month = getNumberByMonth(calculation.month);

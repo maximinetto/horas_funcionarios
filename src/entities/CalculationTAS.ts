@@ -4,6 +4,23 @@ import { Decimal } from "decimal.js";
 import ActualBalance from "./ActualBalance";
 import Calculation from "./Calculation";
 
+interface Model {
+  id: string;
+  year: number;
+  month: Month;
+  surplusBusiness: Decimal;
+  surplusNonWorking: Decimal;
+  surplusSimple: Decimal;
+  discount: Decimal;
+  workingOvertime: Decimal;
+  workingNightOvertime: Decimal;
+  nonWorkingOvertime: Decimal;
+  nonWorkingNightOvertime: Decimal;
+  compensatedNightOvertime: Decimal;
+  calculationId: string;
+  observations?: string;
+  actualBalance: ActualBalance;
+}
 export default class CalculationTAS extends Calculation implements Nullable {
   private _surplusBusiness: Decimal;
   private _surplusNonWorking: Decimal;
@@ -35,23 +52,7 @@ export default class CalculationTAS extends Calculation implements Nullable {
     calculationId,
     observations,
     actualBalance,
-  }: {
-    id: string;
-    year: number;
-    month: Month;
-    surplusBusiness: Decimal;
-    surplusNonWorking: Decimal;
-    surplusSimple: Decimal;
-    discount: Decimal;
-    workingOvertime: Decimal;
-    workingNightOvertime: Decimal;
-    nonWorkingOvertime: Decimal;
-    nonWorkingNightOvertime: Decimal;
-    compensatedNightOvertime: Decimal;
-    calculationId: string;
-    observations?: string;
-    actualBalance: ActualBalance;
-  }): CalculationTAS {
+  }: Model): CalculationTAS {
     return new CalculationTAS(
       id,
       year,
@@ -154,5 +155,43 @@ export default class CalculationTAS extends Calculation implements Nullable {
 
   public isDefault(): boolean {
     return false;
+  }
+
+  public copy({
+    id,
+    year,
+    month,
+    surplusBusiness,
+    surplusNonWorking,
+    surplusSimple,
+    discount,
+    workingOvertime,
+    workingNightOvertime,
+    nonWorkingOvertime,
+    nonWorkingNightOvertime,
+    compensatedNightOvertime,
+    calculationId,
+    observations,
+    actualBalance,
+  }: Partial<Model>): CalculationTAS {
+    return CalculationTAS.from({
+      id: id ?? this.id,
+      year: year ?? this.year,
+      month: month ?? this.month,
+      surplusBusiness: surplusBusiness ?? this.surplusBusiness,
+      surplusNonWorking: surplusNonWorking ?? this.surplusNonWorking,
+      surplusSimple: surplusSimple ?? this.surplusSimple,
+      discount: discount ?? this.discount,
+      workingOvertime: workingOvertime ?? this.workingOvertime,
+      workingNightOvertime: workingNightOvertime ?? this.workingNightOvertime,
+      nonWorkingOvertime: nonWorkingOvertime ?? this.nonWorkingOvertime,
+      nonWorkingNightOvertime:
+        nonWorkingNightOvertime ?? this.nonWorkingNightOvertime,
+      compensatedNightOvertime:
+        compensatedNightOvertime ?? this.compensatedNightOvertime,
+      calculationId: calculationId ?? this.calculationId,
+      observations: observations ?? this.observations,
+      actualBalance: actualBalance ?? this.actualBalance.get(),
+    });
   }
 }

@@ -1,9 +1,8 @@
-import Calculation from "@/entities/Calculation";
 import CalculationTAS from "@/entities/CalculationTAS";
 import CalculationCreator from "@/services/calculations/classes/CalculationCreator";
 
 export default class CalculationTASCreator implements CalculationCreator {
-  create(calculation: CalculationTAS, id: string): Calculation {
+  create(calculation: CalculationTAS, id: string): CalculationTAS {
     return CalculationTAS.from({
       id,
       month: calculation.month,
