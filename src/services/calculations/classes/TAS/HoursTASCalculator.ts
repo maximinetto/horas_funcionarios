@@ -6,7 +6,7 @@ import {
   CalculationRepository,
   includeCalculationsTAS,
 } from "@/persistence/calculations";
-import Calculator from "@/services/calculations/classes/Calculator";
+import HoursCalculator from "@/services/calculations/classes/HoursCalculator";
 import YearsCalculator from "@/services/calculations/classes/TAS/YearsCalculator";
 import HoursClass from "@/services/calculations/classes/typeOfHours";
 import { Decimal } from "decimal.js";
@@ -14,7 +14,7 @@ import CalculationValidator from "../CalculationValidator";
 import CalculationTASCreator from "./CalculationTASCreator";
 import { hoursOfYearEnricher } from "./hourEnrich";
 
-export default class HoursTASCalculator extends Calculator {
+export default class HoursTASCalculator extends HoursCalculator {
   protected declare calculations: CalculationTAS[];
   protected declare hourlyBalances: HourlyBalanceTAS[];
   private balancesPerYearCalculator: YearsCalculator;
