@@ -1,4 +1,5 @@
 import { CalculationCalculated } from "@/@types/calculations";
+import Calculations from "@/collections/Calculations";
 import ActualBalance from "@/entities/ActualBalance";
 import Calculation from "@/entities/Calculation";
 import CalculationTAS from "@/entities/CalculationTAS";
@@ -16,9 +17,9 @@ export default class CalculationRowService {
     }: {
       year: number;
       official: Official;
-      calculations: CalculationTAS[];
+      calculations: Calculations<CalculationTAS>;
       actualHourlyBalance?: ActualBalance;
-      calculationsFromPersistence?: Calculation[];
+      calculationsFromPersistence?: Calculations<Calculation>;
     },
     calculateService: HoursTASCalculator
   ): Promise<CalculationCalculated> {
@@ -43,11 +44,11 @@ export default class CalculationRowService {
       year,
       calculationsFromPersistence,
     }: {
-      calculations: CalculationTAS[];
+      calculations: Calculations<CalculationTAS>;
       official: Official;
       actualHourlyBalance: ActualBalance;
       year: number;
-      calculationsFromPersistence: Calculation[];
+      calculationsFromPersistence: Calculations<CalculationTAS>;
     },
     calculateService: HoursTASCalculator
   ) {

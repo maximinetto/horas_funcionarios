@@ -51,6 +51,33 @@ export default abstract class HoursCalculator {
 
   abstract calculateAccumulateHoursByYear(hours: CalculatePerMonth);
 
+  async calculate({
+    calculations: _calculations,
+    calculationsFromPersistence = [],
+    year: _year,
+    official: _official,
+    hourlyBalances: _hourlyBalances,
+  }: CalculationParam<Calculation>): Promise<CalculationCalculated> {
+    this.setAttributes({
+      calculations: _calculations,
+      year: _year,
+      official: _official,
+      hourlyBalances: _hourlyBalances,
+      calculationsFromPersistence,
+    });
+
+    await this.calculationValidator.validate(
+      {
+        calculations: this.calculations,
+        official: this.official,
+        year: this.year,
+      },
+      this.getCalculationsAndTransform
+    );
+    const result = await this.calculatePerMonth(_hourlyBalances);
+    return this.calculateAccumulateHoursByYear(result);
+  }
+
   async calculatePerMonth(
     hourlyBalances: HourlyBalance[]
   ): Promise<CalculatePerMonth> {
@@ -80,33 +107,6 @@ export default abstract class HoursCalculator {
     });
 
     return this.calculations;
-  }
-
-  async calculate({
-    calculations: _calculations,
-    calculationsFromPersistence = [],
-    year: _year,
-    official: _official,
-    hourlyBalances: _hourlyBalances,
-  }: CalculationParam<Calculation>): Promise<CalculationCalculated> {
-    this.setAttributes({
-      calculations: _calculations,
-      year: _year,
-      official: _official,
-      hourlyBalances: _hourlyBalances,
-      calculationsFromPersistence,
-    });
-
-    await this.calculationValidator.validate(
-      {
-        calculations: this.calculations,
-        official: this.official,
-        year: this.year,
-      },
-      this.getCalculationsAndTransform
-    );
-    const result = await this.calculatePerMonth(_hourlyBalances);
-    return this.calculateAccumulateHoursByYear(result);
   }
 
   getTotalBalance(hourlyBalances: HourlyBalance[]): Promise<Decimal> {

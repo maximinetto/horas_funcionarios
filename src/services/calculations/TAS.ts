@@ -1,4 +1,5 @@
 import { CalculationCalculated } from "@/@types/calculations";
+import Calculations from "@/collections/Calculations";
 import BalanceConverter from "@/converters/BalanceConverter";
 import ActualBalance from "@/entities/ActualBalance";
 import CalculationTAS from "@/entities/CalculationTAS";
@@ -39,7 +40,7 @@ export default async function calculateForTAS({
 }: {
   year: number;
   official: Official;
-  calculations: CalculationTAS[];
+  calculations: Calculations<CalculationTAS>;
   calculationRowService?: CalculationRowService;
   calculationRepository?: CalculationRepository;
   actualBalanceRepository?: ActualBalanceRepository;
@@ -48,8 +49,16 @@ export default async function calculateForTAS({
   balanceConverter?: BalanceConverter;
   calculateService?: HoursTASCalculator;
   recalculateService?: RecalculateService;
-}) {
-  async function main() {
+}): Promise<{
+  currentYear: CalculationCalculated;
+  others: CalculationCalculated[];
+  actualHourlyBalances: ActualBalance[];
+}> {
+  async function main(): Promise<{
+    currentYear: CalculationCalculated;
+    others: CalculationCalculated[];
+    actualHourlyBalances: ActualBalance[];
+  }> {
     const previousYear = currentYear - 1;
     const previousActualHourlyBalances = await balances({
       year: previousYear,
