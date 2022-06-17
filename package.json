@@ -4,7 +4,7 @@
   "description": "Un proyecto para conteo de horas de funcionarios",
   "main": "index.js",
   "scripts": {
-    "test": "npm run unit && npm run integration",
+    "test": "npm-run-all unit integration",
     "test:watch": "npm-run-all --parallel unit:watch integration:watch",
     "unit:watch": "npm run unit -- --watchAll",
     "unit": "jest -c jest.config.unit.ts",
