@@ -197,3 +197,8 @@ describe("Officials controller tests", () => {
     expect(prismaMock.official.delete).toHaveBeenCalledTimes(1);
   });
 });
+
+afterEach(() => {
+  prismaMock.$disconnect();
+  jest.clearAllMocks();
+});

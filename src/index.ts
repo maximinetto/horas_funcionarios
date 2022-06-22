@@ -1,10 +1,24 @@
-import { logger, OFFICIALS_SCHEDULES_PORT, configureDotEnv } from "@/config";
 import app from "@/app";
+import { configureDotEnv, logger } from "@/config";
+import { debug } from "winston";
+import { memoryUsage } from "./memory";
+import prisma from "./persistence/persistence.config";
 
-configureDotEnv();
+const { OFFICIALS_SCHEDULES_PORT } = configureDotEnv();
+logger.info("\n\nMemory usage:", {
+  ...memoryUsage(),
+});
 
-app.listen(OFFICIALS_SCHEDULES_PORT, () => {
-  logger.info(`Server is listening on port ${OFFICIALS_SCHEDULES_PORT}`);
+const server = app.listen(OFFICIALS_SCHEDULES_PORT, () => {
+  logger.info(`\n\nServer is listening on port ${OFFICIALS_SCHEDULES_PORT}`);
+});
+
+process.on("SIGTERM", () => {
+  debug("SIGTERM signal received: closing HTTP server");
+  server.close(() => {
+    prisma.$disconnect();
+    debug("HTTP server closed");
+  });
 });
 
 process.on("unhandledRejection", (reason) => {
@@ -12,28 +26,28 @@ process.on("unhandledRejection", (reason) => {
   throw reason;
 });
 
-const resolveRoutes = (stack) => {
-  return stack
-    .map(function (layer) {
-      if (layer.route && layer.route.path.isString()) {
-        let methods = Object.keys(layer.route.methods);
-        if (methods.length > 20) methods = ["ALL"];
+// const resolveRoutes = (stack) => {
+//   return stack
+//     .map(function (layer) {
+//       if (layer.route && layer.route.path.isString()) {
+//         let methods = Object.keys(layer.route.methods);
+//         if (methods.length > 20) methods = ["ALL"];
 
-        return { methods: methods, path: layer.route.path };
-      }
+//         return { methods: methods, path: layer.route.path };
+//       }
 
-      if (layer.name === "router")
-        // router middleware
-        return resolveRoutes(layer.handle.stack);
-    })
-    .filter((route) => route);
-};
+//       if (layer.name === "router")
+//         // router middleware
+//         return resolveRoutes(layer.handle.stack);
+//     })
+//     .filter((route) => route);
+// };
 
-const paths = resolveRoutes(app._router.stack);
-const printRoute = (route) => {
-  if (Array.isArray(route)) return route.forEach((route) => printRoute(route));
+// const paths = resolveRoutes(app._router.stack);
+// const printRoute = (route) => {
+//   if (Array.isArray(route)) return route.forEach((route) => printRoute(route));
 
-  logger.info(JSON.stringify(route.methods) + " " + route.path);
-};
+//   logger.info(JSON.stringify(route.methods) + " " + route.path);
+// };
 
-printRoute(paths);
+// printRoute(paths);

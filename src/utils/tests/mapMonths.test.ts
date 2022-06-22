@@ -1,3 +1,5 @@
+import prisma from "@/persistence/persistence.config";
+import { prismaMock } from "@/singleton";
 import { getMonthByNumber, getNumberByMonth } from "@/utils/mapMonths";
 import { Month } from "@prisma/client";
 
@@ -46,4 +48,9 @@ test("Test get month name by month number", () => {
   const result = monthsNumber.map((month) => getMonthByNumber(month));
 
   expect(result).toEqual(monthsUpperCaseExpected);
+});
+
+afterEach(() => {
+  prismaMock.$disconnect();
+  prisma.$disconnect();
 });

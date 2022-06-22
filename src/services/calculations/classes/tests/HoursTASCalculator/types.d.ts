@@ -4,7 +4,7 @@ import HourlyBalanceTAS from "@/entities/HourlyBalanceTAS";
 import Official from "@/entities/Official";
 
 export type Data = {
-  calculations: CalculationTAS[];
+  calculations: Calculations<CalculationTAS>;
   official: Official;
   year: number;
 };
