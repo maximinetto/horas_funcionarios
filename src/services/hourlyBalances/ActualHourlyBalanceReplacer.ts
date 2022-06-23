@@ -1,3 +1,5 @@
+import type Decimal from "decimal.js";
+
 import {
   TypeOfHoursByYear,
   TypeOfHoursByYearDecimal,
@@ -5,7 +7,7 @@ import {
 import BalanceConverter from "@/converters/BalanceConverter";
 import { convertTypesOfYearsToActualBalance } from "@/converters/TypeOfYearToBalanceConverter";
 import ActualBalance from "@/entities/ActualBalance";
-import type Decimal from "decimal.js";
+
 import ActualHourlyBalanceCreator from "./ActualHourlyBalanceCreator";
 
 export default class ActualHourlyBalanceReplacer {

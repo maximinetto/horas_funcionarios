@@ -1,7 +1,8 @@
+import { Month } from "@prisma/client";
+
 import prisma from "@/persistence/persistence.config";
 import { prismaMock } from "@/singleton";
 import { getMonthByNumber, getNumberByMonth } from "@/utils/mapMonths";
-import { Month } from "@prisma/client";
 
 test("Test get month number by month name.", () => {
   const months = [

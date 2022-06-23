@@ -1,8 +1,10 @@
+import Decimal from "decimal.js";
+
 import ActualBalance from "@/entities/ActualBalance";
 import CalculationTAS from "@/entities/CalculationTAS";
 import HourlyBalanceTAS from "@/entities/HourlyBalanceTAS";
 import { generateRandomUUIDV4 } from "@/utils/strings";
-import Decimal from "decimal.js";
+
 import subtractHoursFromBalance from "./calculateBalance";
 import { calculate } from "./calculateForMonth";
 import { CalculationDataTAS } from "./HoursTASCalculator.test";
@@ -68,7 +70,7 @@ export default function calculation({
     calculationsCalculated.discount
   );
 
-  let total = new Decimal(0);
+  const total = new Decimal(0);
   results.balances.reduce(
     (total, { simple, working, nonWorking }) =>
       total.plus(simple).plus(working).plus(nonWorking),

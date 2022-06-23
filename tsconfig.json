@@ -3,7 +3,6 @@
     "target": "es2020",
     "lib": ["ES6"],
     "module": "commonjs",
-    "rootDir": "./src",
     "types": ["node"],
     "baseUrl": "./",
     "paths": {
@@ -20,5 +19,5 @@
     "skipLibCheck": true,
     "sourceMap": true
   },
-  "include": ["./src/**/*"]
+  "exclude": ["node_modules", "dist"]
 }

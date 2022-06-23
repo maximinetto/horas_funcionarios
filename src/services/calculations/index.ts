@@ -1,9 +1,10 @@
+import { TypeOfOfficials } from "@prisma/client";
+
 import Calculations from "@/collections/Calculations";
 import CalculationTAS from "@/entities/CalculationTAS";
 import NotExistsError from "@/errors/NotExistsError";
 import { operations } from "@/persistence/officials";
 import calculateForTAS from "@/services/calculations/TAS";
-import { TypeOfOfficials } from "@prisma/client";
 
 // TODO si el año ya está calculado y existen posteriores lo mejor es mandarlo a una cola
 export async function calculate({
@@ -28,18 +29,18 @@ export async function calculate({
   const official = officialInstance.get();
 
   if (official.type === TypeOfOfficials.TEACHER) {
-    // TODO: calculateForTeacher
+    calculateForTeacher({
+      officialId,
+      year,
+    });
   }
 
   return calculateForTAS({ official, calculations, year });
 }
 
-function calculateForTeacher({
-  id,
-  officialId,
-  year,
-  month,
-  observations,
-  discount,
-  surplus,
-}) {}
+function calculateForTeacher({ officialId, year }) {
+  console.log({
+    officialId,
+    year,
+  });
+}

@@ -1,3 +1,5 @@
+import { Decimal } from "decimal.js";
+
 import { CalculationCalculated } from "@/@types/calculations";
 import { TypeOfHourDecimal } from "@/@types/typeOfHours";
 import Calculations from "@/collections/Calculations";
@@ -10,7 +12,7 @@ import {
 import HoursCalculator from "@/services/calculations/classes/HoursCalculator";
 import YearsCalculator from "@/services/calculations/classes/TAS/YearsCalculator";
 import HoursClass from "@/services/calculations/classes/typeOfHours";
-import { Decimal } from "decimal.js";
+
 import CalculationValidator from "../CalculationValidator";
 import CalculationTASCreator from "./CalculationTASCreator";
 import { hoursOfYearEnricher } from "./hourEnrich";

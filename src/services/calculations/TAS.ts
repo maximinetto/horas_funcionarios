@@ -6,6 +6,7 @@ import CalculationTAS from "@/entities/CalculationTAS";
 import Official from "@/entities/Official";
 import { ActualBalanceRepository } from "@/persistence/actualBalance";
 import { CalculationRepository } from "@/persistence/calculations";
+
 import { balances, getCurrentActualHourlyBalance } from "../hourlyBalances";
 import ActualHourlyBalanceCreator from "../hourlyBalances/ActualHourlyBalanceCreator";
 import ActualHourlyBalanceReplacer from "../hourlyBalances/ActualHourlyBalanceReplacer";
@@ -165,4 +166,6 @@ export default async function calculateForTAS({
   return main();
 }
 
-function save(calculations: CalculationCalculated[]) {}
+function save(calculations: CalculationCalculated[]) {
+  console.log(calculations);
+}

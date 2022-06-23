@@ -1,7 +1,8 @@
+import { Decimal } from "decimal.js";
+
 import { TypeOfHoursByYear } from "@/@types/typeOfHours";
 import { TYPES_OF_HOURS } from "@/enums/typeOfHours";
 import { instance as Hours } from "@/services/calculations/classes/typeOfHours";
-import { Decimal } from "decimal.js";
 
 export const hoursOfYearEnricher = (
   {

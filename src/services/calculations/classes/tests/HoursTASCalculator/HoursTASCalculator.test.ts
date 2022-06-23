@@ -1,3 +1,6 @@
+import Decimal from "decimal.js";
+import { Dictionary } from "lodash";
+
 import ActualBalance from "@/entities/ActualBalance";
 import CalculationTAS from "@/entities/CalculationTAS";
 import HourlyBalanceTAS from "@/entities/HourlyBalanceTAS";
@@ -6,8 +9,7 @@ import { CalculationRepository } from "@/persistence/calculations";
 import prisma from "@/persistence/persistence.config";
 import { prismaMock } from "@/singleton";
 import { generateRandomUUIDV4 } from "@/utils/strings";
-import Decimal from "decimal.js";
-import { Dictionary } from "lodash";
+
 import {
   expectCalculationEquals,
   expectCurrentActualBalanceEquals,
@@ -79,12 +81,6 @@ function prepareCalculationsToReplace() {
 }
 
 describe("Test calculations", () => {
-  beforeEach(() => {
-    BigInt.prototype["toJSON"] = function () {
-      return this.toString();
-    };
-  });
-
   afterEach(() => {
     prismaMock.$disconnect();
     prisma.$disconnect();
@@ -163,7 +159,6 @@ describe("Test calculations", () => {
     function reCalculate() {
       const values = Object.values(calculations);
 
-      let i = 0;
       let balances: HourlyBalanceTAS[] = [];
       for (const c of values) {
         const nextBalance = calculation({
@@ -173,7 +168,6 @@ describe("Test calculations", () => {
 
         balances = nextBalance.balances;
         balancesRecalculated.push(nextBalance);
-        i++;
       }
     }
 

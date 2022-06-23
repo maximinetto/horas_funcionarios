@@ -22,7 +22,7 @@ export default class Hours {
     return TYPES_OF_HOURS[key];
   };
   getTypeOfHourByValue = (value: string) =>
-    Object.values(TYPES_OF_HOURS).find((_value) => value);
+    Object.values(TYPES_OF_HOURS).find(() => value);
   arrayOftypeOfHours = () => Object.values(TYPES_OF_HOURS);
   getPreviousTypeOfHour = (typeOfHour: TYPES_OF_HOURS) => {
     const reverse = Object.values(TYPES_OF_HOURS).reverse();

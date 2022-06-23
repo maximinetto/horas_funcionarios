@@ -1,24 +1,24 @@
 module.exports = {
   presets: [
     [
-      '@babel/preset-env',
+      "@babel/preset-env",
       {
         targets: {
-          node: 'current',
+          node: "current",
         },
       },
     ],
-    ['@babel/preset-typescript', {allowDeclareFields: true}],
+    ["@babel/preset-typescript", { allowDeclareFields: true }],
   ],
   plugins: [
     [
-      'module-resolver',
+      "module-resolver",
       {
         alias: {
-          '@': './src',
+          "@": "./src",
         },
       },
     ],
   ],
-  ignore: ['**/*.test.ts', 'src/singleton.ts'],
+  ignore: ["**/*.test.ts", "src/singleton.ts"],
 };

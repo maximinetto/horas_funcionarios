@@ -1,6 +1,7 @@
 import { CalculationCalculated } from "@/@types/calculations";
 import CalculationTAS from "@/entities/CalculationTAS";
 import HourlyBalanceTAS from "@/entities/HourlyBalanceTAS";
+
 import calculateForTAS from "../../TAS";
 import calculation from "./HoursTASCalculator/calculate";
 import { calculateTotalBalance } from "./HoursTASCalculator/calculateBalance";

@@ -1,3 +1,5 @@
+import Decimal from "decimal.js";
+
 import {
   CalculationCalculated,
   CalculationParam,
@@ -10,7 +12,7 @@ import ICalculation from "@/entities/ICalculation";
 import Official from "@/entities/Official";
 import type { CalculationRepository } from "@/persistence/calculations";
 import CalculationSorter from "@/sorters/CalculationSorter";
-import Decimal from "decimal.js";
+
 import CalculatePerMonth, {
   CalculatePerMonthAlternative,
 } from "./CalculatePerMonth";

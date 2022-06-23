@@ -1,7 +1,9 @@
+import faker from "@faker-js/faker";
+import { Contract, Official, TypeOfOfficials } from "@prisma/client";
+import _omit from "lodash/omit";
+
 import prisma from "@/persistence/persistence.config";
 import officialService from "@/services/officials";
-import faker from "@faker-js/faker";
-import { Contract, TypeOfOfficials } from "@prisma/client";
 
 afterEach(async () => {
   const deleteOfficial = prisma.official.deleteMany();
@@ -15,17 +17,15 @@ it("Should get all instance of officials", async () => {
   const officials = await createFakeOfficials();
   const response = await officialService.get({});
 
-  expect(
-    response.map(({ id, ...restOfProperties }) => ({ ...restOfProperties }))
-  ).toEqual(officials);
+  const result = (res: Official) => _omit(res, ["id"]);
+
+  expect(response.map(result)).toEqual(officials);
 
   const response2 = await officialService.get({
     contract: Contract.PERMANENT,
   });
 
-  expect(
-    response2.map(({ id, ...restOfProperties }) => ({ ...restOfProperties }))
-  ).toEqual(
+  expect(response2.map(result)).toEqual(
     officials.filter(({ contract }) => contract === Contract.PERMANENT)
   );
 
@@ -33,17 +33,15 @@ it("Should get all instance of officials", async () => {
     type: TypeOfOfficials.TEACHER,
   });
 
-  expect(
-    response3.map(({ id, ...restOfProperties }) => ({ ...restOfProperties }))
-  ).toEqual(officials.filter(({ type }) => type === TypeOfOfficials.TEACHER));
+  expect(response3.map(result)).toEqual(
+    officials.filter(({ type }) => type === TypeOfOfficials.TEACHER)
+  );
 
   const response4 = await officialService.get({
     type: TypeOfOfficials.NOT_TEACHER,
   });
 
-  expect(
-    response4.map(({ id, ...restOfProperties }) => ({ ...restOfProperties }))
-  ).toEqual(
+  expect(response4.map(result)).toEqual(
     officials.filter(({ type }) => type === TypeOfOfficials.NOT_TEACHER)
   );
 
@@ -51,9 +49,7 @@ it("Should get all instance of officials", async () => {
     year: 2018,
   });
 
-  expect(
-    response5.map(({ id, ...restOfProperties }) => ({ ...restOfProperties }))
-  ).toEqual(
+  expect(response5.map(result)).toEqual(
     officials.filter(({ dateOfEntry }) => dateOfEntry.getFullYear() === 2018)
   );
 });

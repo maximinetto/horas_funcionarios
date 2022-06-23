@@ -1,10 +1,12 @@
+import { Decimal } from "decimal.js";
+
 import {
   TypeOfHour,
   TypeOfHourDecimal,
   TypeOfHoursByYearDecimal,
 } from "@/@types/typeOfHours";
 import HourlyBalanceTAS from "@/entities/HourlyBalanceTAS";
-import { Decimal } from "decimal.js";
+
 import Hours from "../../typeOfHours";
 import { Total } from "./types";
 
@@ -16,7 +18,7 @@ export default function subtractHoursFromBalance(
 
   const result: { year: number; hours: TypeOfHourDecimal[] }[] = [];
 
-  balances.forEach((balance, index) => {
+  balances.forEach((balance) => {
     const { year } = balance;
     const { simple, working, nonWorking } = balance;
     const calculatedBalance = calculateRow(
