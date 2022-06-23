@@ -1,3 +1,5 @@
+import { Calculation as CalculationModel } from "@prisma/client";
+
 import {
   CalculationWithTAS,
   CalculationWithTeacher,
@@ -8,7 +10,7 @@ import ActualBalance from "@/entities/ActualBalance";
 import Calculation from "@/entities/Calculation";
 import CalculationTAS from "@/entities/CalculationTAS";
 import CalculationTeacherEntity from "@/entities/CalculationTeacher";
-import { Calculation as CalculationModel } from "@prisma/client";
+
 import CalculationTASConverter from "./CalculationTASConverter";
 import CalculationTeacherConverter from "./CalculationTeacherConverter";
 import { AbstractConverter } from "./converter";

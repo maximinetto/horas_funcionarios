@@ -1,9 +1,10 @@
+import { Request, Response } from "express";
+
 import { logger } from "@/config";
 import { asyncHandler } from "@/dependencies";
 import { operations } from "@/persistence/officials";
 import service from "@/services/officials";
 import response from "@/utils/response";
-import { Request, Response } from "express";
 
 export const getOfficials = asyncHandler(async (_req: Request, res) => {
   const value = res.locals.value;

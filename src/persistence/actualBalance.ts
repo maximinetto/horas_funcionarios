@@ -1,3 +1,6 @@
+import { Prisma } from "@prisma/client";
+import Decimal from "decimal.js";
+
 import {
   ActualBalanceDTO,
   ActualBalanceFindManyOptions,
@@ -8,8 +11,6 @@ import ActualBalance from "@/entities/ActualBalance";
 import Official from "@/entities/Official";
 import database from "@/persistence/persistence.config";
 import { serializeBalancesTAS } from "@/serializers/persistence/balance";
-import { Prisma } from "@prisma/client";
-import Decimal from "decimal.js";
 
 export class ActualBalanceRepository {
   private hourlyBalanceConverter: HourlyBalanceTASConverter;

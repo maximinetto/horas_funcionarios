@@ -9,6 +9,13 @@ module.exports = {
     ecmaVersion: "latest",
     sourceType: "module",
   },
-  plugins: ["@typescript-eslint", "prettier"],
-  rules: { "require-jsdoc": 0, "prettier/prettier": "error" },
+  plugins: ["@typescript-eslint", "prettier", "simple-import-sort"],
+  rules: {
+    "require-jsdoc": 0,
+    "prettier/prettier": "error",
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error",
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": "error",
+  },
 };

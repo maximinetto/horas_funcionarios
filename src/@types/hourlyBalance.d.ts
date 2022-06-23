@@ -3,6 +3,7 @@ import {
   Prisma,
 } from "@prisma/client";
 import { Optional } from "typescript-optional";
+
 import { ActualBalanceWithHourlyBalancesSimple } from "./actualBalance";
 
 export type HourlyBalanceTAS = Prisma.HourlyBalanceGetPayload<{

@@ -1,8 +1,10 @@
+import type Decimal from "decimal.js";
+import { Optional } from "typescript-optional";
+
 import { HourlyBalanceSimple } from "@/@types/hourlyBalance";
 import Nullable from "@/entities/null_object/Nullable";
 import Comparable from "@/utils/Comparator";
-import type Decimal from "decimal.js";
-import { Optional } from "typescript-optional";
+
 import type ActualBalance from "./ActualBalance";
 
 export default abstract class HourlyBalance

@@ -1,7 +1,9 @@
+import { Decimal } from "decimal.js";
+
 import { CalculationTAS as CalculationTASModel } from "@/@types/calculations";
 import CalculationTASEntity from "@/entities/CalculationTAS";
 import NullActualBalance from "@/entities/null_object/NullActualBalance";
-import { Decimal } from "decimal.js";
+
 import { AbstractConverter } from "./converter";
 
 export default class CalculationTASConverter extends AbstractConverter<

@@ -1,9 +1,10 @@
-import { OfficialWithoutId } from "@/@types/officials";
-import Official from "@/entities/Official";
-import database from "@/persistence/persistence.config";
 import { Prisma } from "@prisma/client";
 import { DateTime } from "luxon";
 import { Optional } from "typescript-optional";
+
+import { OfficialWithoutId } from "@/@types/officials";
+import Official from "@/entities/Official";
+import database from "@/persistence/persistence.config";
 
 export const operations = {
   getOne: (id: number): Promise<Optional<Official>> =>

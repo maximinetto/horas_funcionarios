@@ -1,6 +1,8 @@
-import OfficialEntity from "@/entities/Official";
 import { Official as OfficialModel } from "@prisma/client";
 import { DateTime } from "luxon";
+
+import OfficialEntity from "@/entities/Official";
+
 import { AbstractConverter } from "./converter";
 
 export default class OfficialConverter extends AbstractConverter<

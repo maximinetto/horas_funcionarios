@@ -1,7 +1,9 @@
+import { Decimal } from "decimal.js";
+
 import { HourlyBalanceTAS as HourlyBalanceTASModel } from "@/@types/hourlyBalance";
 import HourlyBalanceEntity from "@/entities/HourlyBalanceTAS";
 import NullActualBalance from "@/entities/null_object/NullActualBalance";
-import { Decimal } from "decimal.js";
+
 import { AbstractConverter } from "./converter";
 
 export default class HourlyBalanceTASConverter extends AbstractConverter<

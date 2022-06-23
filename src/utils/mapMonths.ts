@@ -11,7 +11,7 @@ const Months = new Map<string, { month: Month; number: number }>(
 function months(): MonthArray {
   let i = 0;
 
-  return Object.entries(Month).map(([key, value]) => {
+  return Object.entries(Month).map(([, value]) => {
     i++;
     return { key: i.toString(), month: value, number: i };
   });

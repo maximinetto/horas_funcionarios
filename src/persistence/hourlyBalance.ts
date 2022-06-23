@@ -1,5 +1,6 @@
-import database from "@/persistence/persistence.config";
 import { Prisma } from "@prisma/client";
+
+import database from "@/persistence/persistence.config";
 
 // TODO revisar luego el create, update y delete
 export const operations = {

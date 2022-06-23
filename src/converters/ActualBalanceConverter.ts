@@ -1,9 +1,3 @@
-import { ActualBalanceWithHourlyBalancesTAS } from "@/@types/actualBalance";
-import ActualBalanceEntity from "@/entities/ActualBalance";
-import HourlyBalance from "@/entities/HourlyBalance";
-import HourlyBalanceTAS from "@/entities/HourlyBalanceTAS";
-import NullOfficial from "@/entities/null_object/NullOfficial";
-import Official from "@/entities/Official";
 import {
   ActualBalance as ActualBalanceModel,
   Contract,
@@ -12,6 +6,14 @@ import {
 import { Decimal } from "decimal.js";
 import { DateTime } from "luxon";
 import { Optional } from "typescript-optional";
+
+import { ActualBalanceWithHourlyBalancesTAS } from "@/@types/actualBalance";
+import ActualBalanceEntity from "@/entities/ActualBalance";
+import HourlyBalance from "@/entities/HourlyBalance";
+import HourlyBalanceTAS from "@/entities/HourlyBalanceTAS";
+import NullOfficial from "@/entities/null_object/NullOfficial";
+import Official from "@/entities/Official";
+
 import { AbstractConverter } from "./converter";
 
 export default class ActualBalanceConverter extends AbstractConverter<
@@ -46,7 +48,7 @@ export default class ActualBalanceConverter extends AbstractConverter<
   }
 
   fromModelToEntityWithTAS(model: ActualBalanceWithHourlyBalancesTAS) {
-    let hourlyBalances: HourlyBalance[] = model.hourlyBalances.map(
+    const hourlyBalances: HourlyBalance[] = model.hourlyBalances.map(
       (hourlyBalance) => {
         return new HourlyBalanceTAS(
           hourlyBalance.id,
@@ -87,7 +89,7 @@ export default class ActualBalanceConverter extends AbstractConverter<
   }
 
   fromModelsToEntitiesWithTAS(models: ActualBalanceWithHourlyBalancesTAS[]) {
-    let actualBalances: ActualBalanceEntity[] = models.map((model) => {
+    const actualBalances: ActualBalanceEntity[] = models.map((model) => {
       return this.fromModelToEntityWithTAS(model);
     });
 

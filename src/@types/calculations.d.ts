@@ -1,6 +1,3 @@
-import Calculation from "@/entities/Calculation";
-import CalculationTASEntity from "@/entities/CalculationTAS";
-import Official from "@/entities/Official";
 import {
   Calculation as CalculationModel,
   CalculationTAS as CalculationTASModel,
@@ -8,20 +5,16 @@ import {
   Prisma,
 } from "@prisma/client";
 import Decimal from "decimal.js";
+
+import Calculation from "@/entities/Calculation";
+import CalculationTASEntity from "@/entities/CalculationTAS";
+import Official from "@/entities/Official";
+
 import {
   TypeOfHourDecimal,
   TypeOfHoursByYear,
   TypeOfHoursByYearDecimal,
 } from "./typeOfHours";
-
-type Seconds = number | bigInt;
-
-interface CalculationTASData
-  extends Omit<CalculationModel, "id">,
-    Omit<CalculationTASModel, "calculationId" | "id"> {}
-interface CalculationTeacherData
-  extends Omit<CalculationModel, "id">,
-    Omit<CalculationTeacher, "calculationId" | "id"> {}
 
 export type CalculationWithTAS = Prisma.CalculationGetPayload<{
   include: { calculationTAS: true };

@@ -1,12 +1,19 @@
+import { DateTime } from "luxon";
+
+import { logger } from "@/config";
 import Calculation from "@/entities/Calculation";
 import { resetDateFromFirstDay } from "@/utils/date";
 import { getNumberByMonth } from "@/utils/mapMonths";
 import numberSorter from "@/utils/numberSorter";
-import { DateTime } from "luxon";
+
 import Sorter from "./Sorter";
 
 export default class CalculationSorter extends Sorter<Calculation> {
-  sort(calculations: Calculation[]) {}
+  sort(calculations: Calculation[]) {
+    logger.info("sort", {
+      calculations,
+    });
+  }
 
   sortFromLowestToHighestDate(a: Calculation, b: Calculation) {
     const monthA = getNumberByMonth(a.month);

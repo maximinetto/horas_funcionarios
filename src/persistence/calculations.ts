@@ -1,10 +1,11 @@
+import { Prisma } from "@prisma/client";
+
 import {
   CalculationTASData,
   CalculationTeacherData,
 } from "@/@types/calculations";
 import CalculationConverter from "@/converters/CalculationConverter";
 import database from "@/persistence/persistence.config";
-import { Prisma } from "@prisma/client";
 
 export const includeCalculationsTAS = () => ({
   include: {

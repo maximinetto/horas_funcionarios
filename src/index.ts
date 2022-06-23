@@ -1,6 +1,8 @@
+import { debug } from "winston";
+
 import app from "@/app";
 import { configureDotEnv, logger } from "@/config";
-import { debug } from "winston";
+
 import { memoryUsage } from "./memory";
 import prisma from "./persistence/persistence.config";
 

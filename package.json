@@ -15,7 +15,7 @@
     "dev": "dotenv -e .env.development npm run watch",
     "watch": "ts-node-dev -r tsconfig-paths/register --transpile-only --respawn --watch --ignore-watch node_modules src/index.ts",
     "lint": "npm run lint:fix",
-    "lint:fix": "eslint  src/**.ts --fix",
+    "lint:fix": "eslint  src/**/**.ts --fix",
     "format": "prettier --write .",
     "migrate:dev": "dotenv -e .env.development -- prisma migrate dev --name init",
     "migrate:test": "dotenv -e .env.test -- prisma migrate dev --name test-init"
@@ -60,6 +60,7 @@
     "eslint-config-google": "0.14.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-prettier": "4.0.0",
+    "eslint-plugin-simple-import-sort": "7.0.0",
     "jest": "28.1.1",
     "jest-mock-extended": "2.0.6",
     "jest-when": "3.5.1",
