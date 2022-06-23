@@ -15,5 +15,4 @@ app.use((req, res, next) => {
     error: "Not found",
   });
 });
-
 export default app;

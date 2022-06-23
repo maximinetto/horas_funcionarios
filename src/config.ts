@@ -29,7 +29,7 @@ export function configureDotEnv(env = ".env") {
 const combineMessageAndSplat = () => {
   return {
     transform: (info, opts) => {
-      //combine message and args if any
+      // combine message and args if any
       info.message = util.format(
         info.message,
         ...(info[Symbol.for("splat")] || [])

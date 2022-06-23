@@ -15,7 +15,7 @@
     "dev": "dotenv -e .env.development npm run watch",
     "watch": "ts-node-dev -r tsconfig-paths/register --transpile-only --respawn --watch --ignore-watch node_modules src/index.ts",
     "lint": "npm run lint:fix",
-    "lint:fix": "eslint  . --fix",
+    "lint:fix": "eslint  src/**.ts --fix",
     "format": "prettier --write .",
     "migrate:dev": "dotenv -e .env.development -- prisma migrate dev --name init",
     "migrate:test": "dotenv -e .env.test -- prisma migrate dev --name test-init"
@@ -23,18 +23,18 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@prisma/client": "3.12.0",
+    "@prisma/client": "3.15.2",
     "cors": "2.8.5",
     "decimal.js": "10.3.1",
-    "dotenv": "16.0.0",
-    "express": "4.17.3",
+    "dotenv": "16.0.1",
+    "express": "4.18.1",
     "joi": "17.6.0",
     "lodash": "4.17.21",
-    "luxon": "2.3.1",
+    "luxon": "2.4.0",
     "mysql": "2.18.1",
-    "prisma": "3.12.0",
+    "prisma": "3.15.2",
     "typescript-optional": "3.0.0-alpha.3",
-    "winston": "3.7.2"
+    "winston": "3.8.0"
   },
   "devDependencies": {
     "@babel/cli": "7.17.10",
@@ -56,7 +56,7 @@
     "babel-plugin-module-resolver": "4.1.0",
     "cross-env": "7.0.3",
     "dotenv-cli": "5.1.0",
-    "eslint": "8.13.0",
+    "eslint": "8.18.0",
     "eslint-config-google": "0.14.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-prettier": "4.0.0",

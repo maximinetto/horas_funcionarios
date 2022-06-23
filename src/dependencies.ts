@@ -1,6 +1,7 @@
 import express, { NextFunction } from "express";
 import core from "express-serve-static-core";
 
+// eslint-disable-next-line
 export const createRouter = () => express.Router();
 export const app = express();
 export const asyncHandler =

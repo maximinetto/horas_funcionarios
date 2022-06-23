@@ -2,23 +2,13 @@ module.exports = {
   env: {
     es2021: true,
     node: true,
-    jest: true,
   },
   extends: ["google", "prettier"],
+  parser: "@typescript-eslint/parser",
   parserOptions: {
-    proyect: "./tsconfig.json",
+    ecmaVersion: "latest",
     sourceType: "module",
   },
   plugins: ["@typescript-eslint", "prettier"],
-  rules: {
-    "require-jsdoc": "off",
-    "prettier/prettier": [
-      "error",
-      {
-        endOfLine: "auto",
-      },
-    ],
-    semi: ["error", "always"],
-    "no-undef": "error",
-  },
+  rules: { "require-jsdoc": 0, "prettier/prettier": "error" },
 };
