@@ -35,4 +35,8 @@ export default class HourlyBalanceTeacher
   public isDefault(): boolean {
     return false;
   }
+
+  public calculateTotal(): Decimal {
+    throw new Error("Method not implemented.");
+  }
 }

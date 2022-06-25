@@ -63,14 +63,14 @@ const config: Config.InitialOptions = {
   // globalTeardown: undefined,
 
   // A set of global variables that need to be available in all test environments
-  globals: {
-    "ts-jest": {
-      isolatedModules: true,
-    },
-  },
+  // globals: {
+  //   "ts-jest": {
+  //     isolatedModules: true,
+  //   },
+  // },
 
   // The maximum amount of workers used to run your tests. Can be specified as % or a number. E.g. maxWorkers: 10% will use 10% of your CPU amount + 1 as the maximum worker number. maxWorkers: 2 will use a maximum of 2 workers.
-  maxWorkers: "50%",
+  // maxWorkers: "50%",
 
   // An array of directory names to be searched recursively up from the requiring module's location
   // moduleDirectories: [
@@ -78,14 +78,14 @@ const config: Config.InitialOptions = {
   // ],
 
   // An array of file extensions your modules use
-  moduleFileExtensions: [
-    "js",
-    //   "jsx",
-    "ts",
-    //   "tsx",
-    //   "json",
-    //   "node"
-  ],
+  // moduleFileExtensions: [
+  //   "js",
+  //   //   "jsx",
+  //   "ts",
+  //   //   "tsx",
+  //   //   "json",
+  //   //   "node"
+  // ],
 
   // A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
@@ -102,7 +102,7 @@ const config: Config.InitialOptions = {
   // notifyMode: "failure-change",
 
   // A preset that is used as a base for Jest's configuration
-  preset: "ts-jest",
+  // preset: "ts-jest",
 
   // Run tests from one or more projects
   // projects: undefined,
@@ -155,16 +155,13 @@ const config: Config.InitialOptions = {
   // testLocationInResults: false,
 
   // The glob patterns Jest uses to detect test files
-  // testMatch: [
-  //   "**/__tests__/**/*.[jt]s?(x)",
-  //   "**/?(*.)+(spec|test).[tj]s?(x)"
-  // ],
+  testMatch: ["**/tests/**/*.test.ts"],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
   testPathIgnorePatterns: ["\\\\node_modules\\\\", "tests/integration"],
 
   // The regexp pattern or array of patterns that Jest uses to detect test files
-  testRegex: ["\\.test\\.ts$"],
+  // testRegex: ["\\.test\\.ts$"],
 
   // This option allows the use of a custom results processor
   // testResultsProcessor: undefined,
@@ -179,7 +176,9 @@ const config: Config.InitialOptions = {
   // timers: "real",
 
   // A map from regular expressions to paths to transformers
-  // transform: undefined,
+  transform: {
+    "^.+\\.ts?$": "@swc/jest",
+  },
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
   transformIgnorePatterns: ["\\\\node_modules\\\\"],

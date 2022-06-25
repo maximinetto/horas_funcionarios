@@ -10,7 +10,6 @@ const { OFFICIALS_SCHEDULES_PORT } = configureDotEnv();
 logger.info("\n\nMemory usage:", {
   ...memoryUsage(),
 });
-
 const server = app.listen(OFFICIALS_SCHEDULES_PORT, () => {
   logger.info(`\n\nServer is listening on port ${OFFICIALS_SCHEDULES_PORT}`);
 });
@@ -28,28 +27,28 @@ process.on("unhandledRejection", (reason) => {
   throw reason;
 });
 
-// const resolveRoutes = (stack) => {
-//   return stack
-//     .map(function (layer) {
-//       if (layer.route && layer.route.path.isString()) {
-//         let methods = Object.keys(layer.route.methods);
-//         if (methods.length > 20) methods = ["ALL"];
+const resolveRoutes = (stack) => {
+  return stack
+    .map(function (layer) {
+      if (layer.route && layer.route.path.isString()) {
+        let methods = Object.keys(layer.route.methods);
+        if (methods.length > 20) methods = ["ALL"];
 
-//         return { methods: methods, path: layer.route.path };
-//       }
+        return { methods: methods, path: layer.route.path };
+      }
 
-//       if (layer.name === "router")
-//         // router middleware
-//         return resolveRoutes(layer.handle.stack);
-//     })
-//     .filter((route) => route);
-// };
+      if (layer.name === "router")
+        // router middleware
+        return resolveRoutes(layer.handle.stack);
+    })
+    .filter((route) => route);
+};
 
-// const paths = resolveRoutes(app._router.stack);
-// const printRoute = (route) => {
-//   if (Array.isArray(route)) return route.forEach((route) => printRoute(route));
+const paths = resolveRoutes(app._router.stack);
+const printRoute = (route) => {
+  if (Array.isArray(route)) return route.forEach((route) => printRoute(route));
 
-//   logger.info(JSON.stringify(route.methods) + " " + route.path);
-// };
+  logger.info(JSON.stringify(route.methods) + " " + route.path);
+};
 
-// printRoute(paths);
+printRoute(paths);
