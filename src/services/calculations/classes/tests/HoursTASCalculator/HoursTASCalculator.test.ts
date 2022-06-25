@@ -1,6 +1,7 @@
 import Decimal from "decimal.js";
 import { Dictionary } from "lodash";
 
+import Calculations from "@/collections/Calculations";
 import ActualBalance from "@/entities/ActualBalance";
 import CalculationTAS from "@/entities/CalculationTAS";
 import HourlyBalanceTAS from "@/entities/HourlyBalanceTAS";
@@ -88,24 +89,34 @@ describe("Test calculations", () => {
   });
 
   test("Should calculate right the passed values", async () => {
-    CalculationRepository.prototype.get = jest.fn().mockResolvedValue([]);
-    let data = preset(calculationsFirstTest, yearFirstTest);
+    CalculationRepository.prototype.get = jest
+      .fn()
+      .mockResolvedValue(new Calculations());
+
+    const firstData = new Calculations(...calculationsFirstTest);
+
+    let data = preset(firstData, yearFirstTest);
     ActualBalanceRepository.prototype.getTAS = jest
       .fn()
       .mockResolvedValue([convert(data.lastBalances, data.data.official)]);
 
-    await expectCalculationEquals(data, calculationsFirstTest);
+    await expectCalculationEquals(
+      data,
+      new Calculations(...calculationsFirstTest)
+    );
 
     CalculationRepository.prototype.get = jest
       .fn()
-      .mockResolvedValue(calculationsFirstTest);
-    data = preset(otherCalculations, yearFirstTest);
+      .mockResolvedValue(new Calculations(...calculationsFirstTest));
+
+    const otherData = new Calculations(...otherCalculations);
+    data = preset(otherData, yearFirstTest);
     const actual = convert(data.lastBalances, data.data.official);
     ActualBalanceRepository.prototype.getTAS = jest
       .fn()
       .mockResolvedValue([actual]);
     const allCalculations = [...calculationsFirstTest, ...otherCalculations];
-    await expectCalculationEquals(data, allCalculations);
+    await expectCalculationEquals(data, new Calculations(...allCalculations));
   });
 
   test("Should calculate right previous balances and next balances", async () => {
@@ -116,7 +127,7 @@ describe("Test calculations", () => {
     function generate() {
       const balances2019 = calculation({
         balances: [],
-        calculations: calculationsSecondTest,
+        calculations: new Calculations(...calculationsSecondTest),
       });
 
       balances.push(balances2019);
@@ -134,7 +145,7 @@ describe("Test calculations", () => {
 
       const balances2020 = calculation({
         balances: balances2019.balances,
-        calculations: calculation2020,
+        calculations: new Calculations(...calculation2020),
       });
 
       const actualBalance2020 = balances2020.actualBalance;
@@ -149,7 +160,7 @@ describe("Test calculations", () => {
 
       const balances2021 = calculation({
         balances: balances2020.balances,
-        calculations: nextNextCalculations,
+        calculations: new Calculations(...nextNextCalculations),
       });
 
       calculations[balances2021.actualBalance.year] = [...nextNextCalculations];
@@ -163,7 +174,7 @@ describe("Test calculations", () => {
       for (const c of values) {
         const nextBalance = calculation({
           balances,
-          calculations: c,
+          calculations: new Calculations(...c),
         });
 
         balances = nextBalance.balances;
@@ -191,14 +202,15 @@ describe("Test calculations", () => {
       .fn()
       .mockResolvedValue(balancesEnriched);
 
+    const firstCalculationsMock = calculationFromPersistence.flat();
+    const secondCalculationsMock = calculationFromPersistence
+      .flat()
+      .filter((c) => c.year > actualBalanceSecondTest.year);
+
     CalculationRepository.prototype.get = jest
       .fn()
-      .mockResolvedValueOnce(calculationFromPersistence.flat())
-      .mockResolvedValueOnce(
-        calculationFromPersistence
-          .flat()
-          .filter((c) => c.year > actualBalanceSecondTest.year)
-      );
+      .mockResolvedValueOnce(new Calculations(...firstCalculationsMock))
+      .mockResolvedValueOnce(new Calculations(...secondCalculationsMock));
 
     const calculationsModified = [
       ...arrayWithoutElementAtIndex(calculationsSecondTest, [2, 5, 11]),
@@ -207,7 +219,7 @@ describe("Test calculations", () => {
 
     const result = await expectCalculationEquals(
       { data, lastBalances: [] },
-      calculationsModified
+      new Calculations(...calculationsModified)
     );
 
     calculations[actualBalanceSecondTest.year] = calculationsModified;
@@ -216,13 +228,13 @@ describe("Test calculations", () => {
     expectCurrentActualBalanceEquals(
       balancesRecalculated[0].balances,
       result.others[0],
-      calculations[actualBalanceSecondTest.year + 1]
+      new Calculations(...calculations[actualBalanceSecondTest.year + 1])
     );
 
     expectCurrentActualBalanceEquals(
       balancesRecalculated[1].balances,
       result.others[1],
-      calculations[actualBalanceSecondTest.year + 2]
+      new Calculations(...calculations[actualBalanceSecondTest.year + 2])
     );
   });
 });

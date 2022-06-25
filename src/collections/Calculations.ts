@@ -54,6 +54,13 @@ export default class Calculations<E extends Calculation> {
     return this.calculations.every(callbackfn);
   }
 
+  public forEach(
+    callbackfn: (value: E, index: number, array: E[]) => void,
+    thisArg?: any
+  ) {
+    this.calculations.forEach(callbackfn, thisArg);
+  }
+
   public isEmpty() {
     return this.calculations.length === 0;
   }

@@ -77,6 +77,7 @@ export default async function calculateForTAS({
         official,
         calculations,
         actualHourlyBalance: previousActualBalance,
+        calculationsFromPersistence: new Calculations(),
       },
       calculateService
     );

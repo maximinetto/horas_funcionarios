@@ -10,7 +10,7 @@
     "unit": "jest -c jest.config.unit.ts --logHeapUsage",
     "integration": "jest -c jest.config.integration.ts --logHeapUsage",
     "integration:watch": "npm run integration -- --watchAll",
-    "build": "rimraf dist && babel src --extensions .ts --out-dir dist --copy-files --no-copy-ignored ",
+    "build": "rimraf dist && babel . --ignore=node_modules,dist --extensions .ts --out-dir dist --copy-files --no-copy-ignored ",
     "start": "npm run build && cross-env NODE_ENV=production node dist/index.js",
     "dev": "dotenv -e .env.development npm run watch",
     "watch": "ts-node-dev -r tsconfig-paths/register --transpile-only --respawn --watch --ignore-watch node_modules src/index.ts",

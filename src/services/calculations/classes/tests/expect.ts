@@ -1,4 +1,5 @@
 import { CalculationCalculated } from "@/@types/calculations";
+import Calculations from "@/collections/Calculations";
 import CalculationTAS from "@/entities/CalculationTAS";
 import HourlyBalanceTAS from "@/entities/HourlyBalanceTAS";
 
@@ -18,7 +19,7 @@ export async function expectCalculationEquals(
     lastBalances: HourlyBalanceTAS[];
     data: Data;
   },
-  _calculations: CalculationTAS[]
+  _calculations: Calculations<CalculationTAS>
 ) {
   const response = await calculateForTAS({
     calculations: data.calculations,
@@ -44,7 +45,7 @@ export async function expectCalculationEquals(
 export function expectCurrentActualBalanceEquals(
   lastBalances: HourlyBalanceTAS[],
   currentCalculation: CalculationCalculated,
-  _calculations: CalculationTAS[]
+  _calculations: Calculations<CalculationTAS>
 ): CalculationDataTAS {
   const totalCalculationsCurrentYear = calculate(_calculations);
   const total = calculateTotalBalance(
@@ -69,6 +70,7 @@ export function expectCurrentActualBalanceEquals(
       currentCalculation.totalNonWorkingHours.value
     )
   ).toBeTruthy();
+  console.log("Total Balances:", currentCalculation.totalBalance);
   expect(currentCalculation.totalBalance.toString()).toBe(
     total.totalHours.toString()
   );

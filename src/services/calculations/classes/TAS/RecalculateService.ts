@@ -1,6 +1,8 @@
 import { CalculationCalculated } from "@/@types/calculations";
+import Calculations from "@/collections/Calculations";
 import ActualBalance from "@/entities/ActualBalance";
 import Calculation from "@/entities/Calculation";
+import CalculationTAS from "@/entities/CalculationTAS";
 import Official from "@/entities/Official";
 import { CalculationRepository } from "@/persistence/calculations";
 import { getCurrentActualHourlyBalance } from "@/services/hourlyBalances";
@@ -40,7 +42,7 @@ export default class RecalculateService {
     previousActualHourlyBalances: ActualBalance[];
     actualHourlyBalanceCalculated: ActualBalance;
   }) {
-    const calculations = await this.calculationRepository.get(
+    const calculations = (await this.calculationRepository.get(
       {
         year: {
           gte: year,
@@ -54,13 +56,13 @@ export default class RecalculateService {
           calculationTAS: true,
         },
       }
-    );
+    )) as Calculations<CalculationTAS>;
 
     if (!Calculation.calculationsHasMoreLaterHours(calculations)) return;
 
     this.actualHourlyBalances.push(actualHourlyBalanceCalculated);
 
-    const entries = groupAndSortCalculations(calculations);
+    const entries = groupAndSortCalculations(calculations.toPrimitiveArray());
 
     return this.recalculateLaterHours(
       entries,
@@ -74,7 +76,7 @@ export default class RecalculateService {
   }
 
   async recalculateLaterHours(
-    entries: [string, Calculation[]][],
+    entries: [string, CalculationTAS[]][],
     official: Official,
     previousActualHourlyBalances: ActualBalance[]
   ) {
@@ -84,7 +86,7 @@ export default class RecalculateService {
       dataToSave.push(
         await this.recalculateRow({
           year,
-          calculations,
+          calculations: new Calculations(...calculations),
           official,
           previousActualHourlyBalances,
           dataToSave,
@@ -108,7 +110,7 @@ export default class RecalculateService {
     official,
   }: {
     year: string;
-    calculations: Calculation[];
+    calculations: Calculations<CalculationTAS>;
     official: Official;
     previousActualHourlyBalances: ActualBalance[];
     dataToSave: CalculationCalculated[];
@@ -119,7 +121,7 @@ export default class RecalculateService {
 
     const data = await this.calculationRowService.reCalculate(
       {
-        calculations: [],
+        calculations: new Calculations(),
         official,
         actualHourlyBalance: previousActualHourlyBalanceCalculated,
         year: yearNumber,

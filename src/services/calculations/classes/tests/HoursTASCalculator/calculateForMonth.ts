@@ -1,10 +1,11 @@
 import { Decimal } from "decimal.js";
 
+import Calculations from "@/collections/Calculations";
 import CalculationTAS from "@/entities/CalculationTAS";
 
 import { Total } from "./types";
 
-export function calculate(calculations: CalculationTAS[]) {
+export function calculate(calculations: Calculations<CalculationTAS>) {
   const totalCurrentYear: Omit<Total, "totalHours"> = {
     simple: new Decimal(0),
     working: new Decimal(0),

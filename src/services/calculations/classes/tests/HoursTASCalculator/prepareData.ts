@@ -3,6 +3,7 @@ import { Contract, TypeOfOfficials } from "@prisma/client";
 import { DateTime } from "luxon";
 
 import { CalculationTAS as CalculationTASModel } from "@/@types/calculations";
+import Calculations from "@/collections/Calculations";
 import CalculationTAS from "@/entities/CalculationTAS";
 import HourlyBalanceTAS from "@/entities/HourlyBalanceTAS";
 import Official from "@/entities/Official";
@@ -10,10 +11,13 @@ import { getMonthByNumber } from "@/utils/mapMonths";
 
 import { buildCalculation, buildHourlyBalance } from "./buildCalculation";
 import { actualBalance } from "./initialValues";
-import { Result } from "./types";
+import { Data, Result } from "./types";
 import { hoursToSeconds } from "./util";
 
-export function preset(calculations: CalculationTAS[], year: number): Result {
+export function preset(
+  calculations: Calculations<CalculationTAS>,
+  year: number
+): Result {
   const data = {
     calculations,
     official: new Official(
@@ -77,10 +81,10 @@ export const buildOfficial = ({
   date: Date;
   officialId: number;
   year: number;
-}) => {
+}): Data & { actualDate: Date } => {
   return {
     actualDate: date,
-    calculations,
+    calculations: new Calculations(...calculations),
     official: new Official(
       officialId ?? faker.datatype.number(),
       faker.datatype.number(),

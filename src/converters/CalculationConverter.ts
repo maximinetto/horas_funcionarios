@@ -66,7 +66,7 @@ export default class CalculationConverter extends AbstractConverter<
     return entity instanceof CalculationTeacherEntity;
   }
 
-  fromModelToEntity(model: AllCalculationTypes): Calculation {
+  fromModelToEntity(model: AllCalculationTypes) {
     if (this.isTASModel(model)) {
       return this.calculationTASConverter.fromModelToEntity({
         id: model.id,

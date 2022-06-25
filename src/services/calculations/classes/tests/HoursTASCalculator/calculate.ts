@@ -1,5 +1,6 @@
 import Decimal from "decimal.js";
 
+import Calculations from "@/collections/Calculations";
 import ActualBalance from "@/entities/ActualBalance";
 import CalculationTAS from "@/entities/CalculationTAS";
 import HourlyBalanceTAS from "@/entities/HourlyBalanceTAS";
@@ -14,9 +15,9 @@ export default function calculation({
   calculations,
 }: {
   balances: HourlyBalanceTAS[];
-  calculations: CalculationTAS[];
+  calculations: Calculations<CalculationTAS>;
 }): CalculationDataTAS {
-  if (balances.length === 0 && calculations.length === 0) {
+  if (balances.length === 0 && calculations.isEmpty()) {
     return {
       result: [],
       resultSanitized: [],
@@ -34,9 +35,11 @@ export default function calculation({
 
   const calculationsCalculated = calculate(calculations);
 
-  const actualBalanceAux = calculations[0].actualBalance.get();
+  const actualBalanceAux = calculations
+    .getSmallestCalculation()
+    .actualBalance.get();
 
-  const year = calculations[0].year;
+  const year = calculations.getSmallestCalculation().year;
   const balanceId = generateRandomUUIDV4();
 
   const newBalances: HourlyBalanceTAS[] = balances.map((b) => {

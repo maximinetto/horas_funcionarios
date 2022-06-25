@@ -21,7 +21,7 @@ import CalculationValidator from "./CalculationValidator";
 
 export default abstract class HoursCalculator {
   protected calculationRepository: CalculationRepository;
-  protected calculationsFromPersistence: Calculation[];
+  protected calculationsFromPersistence: Calculations<Calculation>;
   protected calculations: Calculations<Calculation>;
   protected year?: number;
   protected official?: Official;
@@ -40,7 +40,7 @@ export default abstract class HoursCalculator {
     this.calculationRepository = calculationRepository;
     this.calculationCreator = calculationCreator;
     this.calculations = new Calculations();
-    this.calculationsFromPersistence = [];
+    this.calculationsFromPersistence = new Calculations<Calculation>();
     this.hourlyBalances = [];
     this.calculationsSorter = new CalculationSorter();
     this.selectOptions = selectOptions;
@@ -55,7 +55,7 @@ export default abstract class HoursCalculator {
 
   async calculate({
     calculations: _calculations,
-    calculationsFromPersistence = [],
+    calculationsFromPersistence,
     year: _year,
     official: _official,
     hourlyBalances: _hourlyBalances,
@@ -104,7 +104,7 @@ export default abstract class HoursCalculator {
     }
 
     this.calculations.mergeCalculations({
-      origin: this.calculationsFromPersistence,
+      origin: this.calculationsFromPersistence.toPrimitiveArray(),
       replacer: this.calculationCreator.create,
     });
 
@@ -144,11 +144,11 @@ export default abstract class HoursCalculator {
     hourlyBalances,
     calculationsFromPersistence,
   }: CalculationParam<Calculation>): CalculationParam<Calculation> {
-    this.calculations = new Calculations(...calculations);
+    this.calculations = calculations;
     this.year = year;
     this.official = official;
     this.hourlyBalances = hourlyBalances;
-    this.calculationsFromPersistence = calculationsFromPersistence ?? [];
+    this.calculationsFromPersistence = calculationsFromPersistence;
 
     return {
       calculations,
@@ -172,6 +172,6 @@ export default abstract class HoursCalculator {
   }
 
   private isOutsidePersistenceSet() {
-    return this.calculationsFromPersistence.length === 0;
+    return this.calculationsFromPersistence.isEmpty();
   }
 }

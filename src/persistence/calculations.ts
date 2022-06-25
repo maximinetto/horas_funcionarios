@@ -1,10 +1,15 @@
 import { Prisma } from "@prisma/client";
+import _omit from "lodash/omit";
 
 import {
-  CalculationTASData,
-  CalculationTeacherData,
+  NotNullableCalculationWithTAS,
+  NotNullableCalculationWithTeacher,
 } from "@/@types/calculations";
+import Calculations from "@/collections/Calculations";
 import CalculationConverter from "@/converters/CalculationConverter";
+import Calculation from "@/entities/Calculation";
+import CalculationTAS from "@/entities/CalculationTAS";
+import CalculationTeacher from "@/entities/CalculationTeacher";
 import database from "@/persistence/persistence.config";
 
 export const includeCalculationsTAS = () => ({
@@ -18,6 +23,8 @@ export class CalculationRepository {
   constructor(calculationConverter?: CalculationConverter) {
     this.calculationConverter =
       calculationConverter || new CalculationConverter();
+
+    this.get.bind(this);
   }
 
   getOne(
@@ -30,74 +37,52 @@ export class CalculationRepository {
     });
   }
 
-  get(
+  async get(
     where: Prisma.CalculationWhereInput,
     options?: Omit<Prisma.CalculationFindManyArgs, "where">
-  ) {
-    return database.calculation
-      .findMany({
-        where,
-        ...options,
-      })
-      .then((c) => {
-        return c.map((c: any) => {
-          const aux = { ...c };
-          c.calculationTAS ? (aux.calculationTAS = c.calculationTAS) : null;
-          c.calculationTeacher
-            ? (aux.calculationTeacher = c.calculationTeacher)
-            : null;
+  ): Promise<Calculations<Calculation>> {
+    const calculations = await database.calculation.findMany({
+      where,
+      ...options,
+    });
 
-          return this.calculationConverter.fromModelToEntity(aux);
-        });
-      });
+    const calculationsArray =
+      this.calculationConverter.fromModelsToEntities(calculations);
+
+    return new Calculations(...calculationsArray);
   }
 
-  createTAS({
-    year,
-    month,
-    observations,
-    actualBalanceId,
-    compensatedNightOvertime,
-    nonWorkingNightOvertime,
-    nonWorkingOvertime,
-    surplusBusiness,
-    surplusNonWorking,
-    surplusSimple,
-    workingNightOvertime,
-    workingOvertime,
-    discount,
-  }: CalculationTASData) {
+  createTAS(entity: CalculationTAS) {
+    const { year, month, observations, actualBalanceId, calculationTAS } =
+      this.calculationConverter.fromEntityToModel(
+        entity
+      ) as NotNullableCalculationWithTAS;
+
+    const restOfProps = _omit(calculationTAS, ["calculationId", "id"]);
+
     return database.calculationTAS.create({
       data: {
         calculation: {
           create: {
             observations,
-            year,
             month,
+            year,
             actualBalanceId,
           },
         },
-        compensatedNightOvertime,
-        nonWorkingNightOvertime,
-        nonWorkingOvertime,
-        surplusBusiness,
-        surplusNonWorking,
-        surplusSimple,
-        workingNightOvertime,
-        workingOvertime,
-        discount,
+        ...restOfProps,
       },
     });
   }
 
-  createTeacher({
-    year,
-    month,
-    observations,
-    actualBalanceId,
-    discount,
-    surplus,
-  }: CalculationTeacherData) {
+  createTeacher(entity: CalculationTeacher) {
+    const { calculationTeacher, month, actualBalanceId, observations, year } =
+      this.calculationConverter.fromEntityToModel(
+        entity
+      ) as NotNullableCalculationWithTeacher;
+
+    const { discount, surplus } = calculationTeacher;
+
     return database.calculationTeacher.create({
       data: {
         calculation: {
@@ -114,24 +99,13 @@ export class CalculationRepository {
     });
   }
 
-  updateTAS(
-    id: string,
-    {
-      year,
-      month,
-      observations,
-      actualBalanceId,
-      discount,
-      compensatedNightOvertime,
-      nonWorkingNightOvertime,
-      nonWorkingOvertime,
-      surplusBusiness,
-      surplusNonWorking,
-      surplusSimple,
-      workingNightOvertime,
-      workingOvertime,
-    }: CalculationTASData
-  ) {
+  updateTAS(entity: CalculationTAS) {
+    const { id, year, month, observations, actualBalanceId, calculationTAS } =
+      this.calculationConverter.fromEntityToModel(
+        entity
+      ) as NotNullableCalculationWithTAS;
+
+    const restOfProps = _omit(calculationTAS, ["calculationId", "id"]);
     return database.calculationTAS.update({
       where: {
         id,
@@ -145,30 +119,25 @@ export class CalculationRepository {
             actualBalanceId,
           },
         },
-        compensatedNightOvertime,
-        nonWorkingNightOvertime,
-        nonWorkingOvertime,
-        surplusBusiness,
-        surplusNonWorking,
-        surplusSimple,
-        workingNightOvertime,
-        workingOvertime,
-        discount,
+        ...restOfProps,
       },
     });
   }
 
-  updateTeacher(
-    id: string,
-    {
-      year,
+  updateTeacher(entity: CalculationTeacher) {
+    const {
+      id,
+      calculationTeacher,
       month,
-      observations,
       actualBalanceId,
-      discount,
-      surplus,
-    }: CalculationTeacherData
-  ) {
+      observations,
+      year,
+    } = this.calculationConverter.fromEntityToModel(
+      entity
+    ) as NotNullableCalculationWithTeacher;
+
+    const { discount, surplus } = calculationTeacher;
+
     return database.calculationTeacher.update({
       where: {
         id,

@@ -20,7 +20,7 @@ export default class CalculationRowService {
       official: Official;
       calculations: Calculations<CalculationTAS>;
       actualHourlyBalance?: ActualBalance;
-      calculationsFromPersistence?: Calculations<Calculation>;
+      calculationsFromPersistence: Calculations<Calculation>;
     },
     calculateService: HoursTASCalculator
   ): Promise<CalculationCalculated> {
@@ -33,7 +33,7 @@ export default class CalculationRowService {
       official,
       calculations,
       hourlyBalances,
-      calculationsFromPersistence: calculationsFromPersistence ?? [],
+      calculationsFromPersistence,
     });
   }
 
