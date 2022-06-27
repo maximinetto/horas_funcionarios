@@ -1,10 +1,9 @@
+import prisma from "persistence/persistence.config";
 import { debug } from "winston";
 
 import app from "@/app";
 import { configureDotEnv, logger } from "@/config";
-
-import { memoryUsage } from "./memory";
-import prisma from "./persistence/persistence.config";
+import { memoryUsage } from "@/memory";
 
 const { OFFICIALS_SCHEDULES_PORT } = configureDotEnv();
 logger.info("\n\nMemory usage:", {

@@ -14,11 +14,11 @@ module.exports = {
     [
       "module-resolver",
       {
+        root: ["."],
         alias: {
           "@": "./src",
         },
       },
     ],
   ],
-  ignore: ["**/*.test.ts", "src/singleton.ts"],
 };

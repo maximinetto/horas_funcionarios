@@ -3,12 +3,14 @@
     "target": "es2020",
     "lib": ["ES6"],
     "module": "commonjs",
-    "types": ["node"],
-    "baseUrl": "./",
+    "types": ["node", "jest"],
+    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     },
+    "isolatedModules": true,
     "resolveJsonModule": true,
+    "moduleResolution": "node",
     "allowJs": true,
     "outDir": "./dist",
     "removeComments": true,
@@ -17,7 +19,8 @@
     "strict": true,
     "noImplicitAny": false,
     "skipLibCheck": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "rootDir": "./src"
   },
-  "exclude": ["node_modules", "dist"]
+  "include": ["src"]
 }

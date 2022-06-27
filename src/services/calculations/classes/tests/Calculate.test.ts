@@ -4,7 +4,6 @@ import { Month } from "@prisma/client";
 import Calculations from "@/collections/Calculations";
 import ActualBalance from "@/entities/ActualBalance";
 import Calculation from "@/entities/Calculation";
-import { prismaMock } from "@/singleton";
 import CalculationSorter from "@/sorters/CalculationSorter";
 
 describe("Sorters and getters", () => {
@@ -62,9 +61,9 @@ describe("Sorters and getters", () => {
     testSortLowestToHighest();
 
     function testSortLowestToHighest() {
-      const result = calculations.sort(
-        calculationsSorter.sortFromLowestToHighestDate
-      );
+      const result = calculations
+        .slice()
+        .sort(calculationsSorter.sortFromLowestToHighestDate);
       result.forEach((calculation, index) => {
         const current = expected[index];
         expect(calculation.month).toBe(current.month);
@@ -93,9 +92,4 @@ describe("Sorters and getters", () => {
         )
     );
   }
-});
-
-afterEach(() => {
-  prismaMock.$disconnect();
-  jest.clearAllMocks();
 });

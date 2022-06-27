@@ -7,8 +7,6 @@ import CalculationTAS from "@/entities/CalculationTAS";
 import HourlyBalanceTAS from "@/entities/HourlyBalanceTAS";
 import { ActualBalanceRepository } from "@/persistence/actualBalance";
 import { CalculationRepository } from "@/persistence/calculations";
-import prisma from "@/persistence/persistence.config";
-import { prismaMock } from "@/singleton";
 import { generateRandomUUIDV4 } from "@/utils/strings";
 
 import {
@@ -82,12 +80,6 @@ function prepareCalculationsToReplace() {
 }
 
 describe("Test calculations", () => {
-  afterEach(() => {
-    prismaMock.$disconnect();
-    prisma.$disconnect();
-    jest.clearAllMocks();
-  });
-
   test("Should calculate right the passed values", async () => {
     CalculationRepository.prototype.get = jest
       .fn()
