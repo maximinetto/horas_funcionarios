@@ -61,6 +61,13 @@ export default class Calculations<E extends Calculation> {
     this.calculations.forEach(callbackfn, thisArg);
   }
 
+  public filter(
+    predicate: (value: E, index: number, array: E[]) => boolean,
+    thisArg?: any
+  ) {
+    return this.calculations.filter(predicate, thisArg);
+  }
+
   public isEmpty() {
     return this.calculations.length === 0;
   }

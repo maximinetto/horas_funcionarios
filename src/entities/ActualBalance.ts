@@ -6,6 +6,7 @@ import Nullable from "@/entities/null_object/Nullable";
 import Comparable from "@/utils/Comparator";
 import { generateRandomUUIDV4 } from "@/utils/strings";
 
+import Calculation from "./Calculation";
 import type HourlyBalance from "./HourlyBalance";
 import Official from "./Official";
 
@@ -20,19 +21,22 @@ export default class ActualBalance
   private _total: Decimal;
   private _official: Optional<Official>;
   private _hourlyBalances: HourlyBalance[];
+  private _calculations: Calculation[];
 
   public constructor(
     id: string,
     year: number,
     total?: Decimal,
     official?: Official,
-    hourlyBalances?: HourlyBalance[]
+    hourlyBalances?: HourlyBalance[],
+    calculations?: Calculation[]
   ) {
     this._id = id;
     this._year = year;
     this._total = total ?? new Decimal(0);
     this._official = Optional.ofNullable(official);
     this._hourlyBalances = hourlyBalances ?? [];
+    this._calculations = calculations ?? [];
   }
 
   public get id(): string {
@@ -57,6 +61,14 @@ export default class ActualBalance
 
   public set hourlyBalances(hourlyBalances: HourlyBalance[]) {
     this._hourlyBalances = hourlyBalances;
+  }
+
+  public get calculations(): Calculation[] {
+    return this._calculations;
+  }
+
+  public set calculations(calculations: Calculation[]) {
+    this._calculations = calculations;
   }
 
   isDefault(): boolean {
