@@ -116,13 +116,24 @@ export default abstract class HoursCalculator {
       return total.plus(hourlyBalance.calculateTotal());
     }, new Decimal(0));
 
+    console.log("totalHours:", totalHours);
+
     const totalBalance = this.calculations.calc(
       (total, calculation: ICalculation) => {
         const hours = calculation.getTotalHoursPerCalculation();
+        console.log("\n\ntotal:", total);
+        console.log("hours:", hours);
+        console.log("discount:", calculation.discountPerCalculation());
+        console.log(
+          "total left:",
+          total.add(hours).sub(calculation.discountPerCalculation())
+        );
         return total.add(hours).sub(calculation.discountPerCalculation());
       },
       new Decimal(totalHours)
     );
+
+    console.log("totalBalance:", totalBalance);
 
     return Promise.resolve(totalBalance);
   }

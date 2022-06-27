@@ -53,4 +53,16 @@ export default class HourlyBalanceTAS
   public calculateTotal(): Decimal {
     return this.working.plus(this.nonWorking).plus(this.simple);
   }
+
+  public toJSON() {
+    const result = super.toJSON();
+    return {
+      ...result,
+      id: this.id,
+      working: this.working,
+      simple: this.simple,
+      nonWorking: this.nonWorking,
+      hourlyBalanceId: this.hourlyBalanceId,
+    };
+  }
 }

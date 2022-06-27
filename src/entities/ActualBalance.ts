@@ -80,4 +80,14 @@ export default class ActualBalance
 
     return this.id.localeCompare(other.id);
   }
+
+  toJSON() {
+    return {
+      hourlyBalances: this.hourlyBalances.map((h) => h.toJSON()),
+      id: this.id,
+      official: this.official,
+      total: this.total.toString(),
+      year: this.year,
+    };
+  }
 }

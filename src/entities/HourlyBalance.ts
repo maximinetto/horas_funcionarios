@@ -55,4 +55,11 @@ export default abstract class HourlyBalance
 
     return this.id.localeCompare(other.id);
   }
+
+  toJSON() {
+    return {
+      id: this.id,
+      year: this.year,
+    };
+  }
 }

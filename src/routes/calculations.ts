@@ -1,5 +1,8 @@
+import Calculations from "@/collections/Calculations";
 import { createHours } from "@/controllers/calculations";
 import { createRouter } from "@/dependencies";
+import { calculate } from "@/services/calculations";
+import { calculationsFirstTest } from "@/services/calculations/classes/tests/HoursTASCalculator/initialValues";
 import middleware, { exists } from "@/validation/middlewares/validation";
 import { schemas } from "@/validation/schemas/calculations";
 
@@ -14,6 +17,21 @@ const get = function (key: string, value: any[]) {
   }
   return values.map((v) => v[key]);
 };
+
+router.get("/", async (req, res) => {
+  const result = await calculate({
+    calculations: new Calculations(...calculationsFirstTest),
+    officialId: 1,
+    year: 2022,
+  });
+
+  res.json({
+    result: {
+      ...result,
+      ...result.actualHourlyBalances.map((a) => a.toJSON()),
+    },
+  });
+});
 
 router.post(
   "/year/:year/officials/:officialId",

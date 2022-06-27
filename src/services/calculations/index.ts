@@ -16,10 +16,6 @@ export async function calculate({
   year: number;
   officialId: number;
 }) {
-  if (!Array.isArray(calculations)) {
-    throw new Error("Calculations must be an array");
-  }
-
   officialId = Number(officialId);
   const officialInstance = await operations.getOne(officialId);
   if (officialInstance.isEmpty()) {
