@@ -16,8 +16,8 @@ import CalculationTeacherConverter from "./CalculationTeacherConverter";
 import { AbstractConverter } from "./converter";
 
 type AllCalculationTypes =
-  | CalculationWithTAS
-  | CalculationWithTeacher
+  | NotNullableCalculationWithTAS
+  | NotNullableCalculationWithTeacher
   | CalculationModel;
 type AllCalculationEntities =
   | CalculationTeacherEntity
@@ -68,49 +68,10 @@ export default class CalculationConverter extends AbstractConverter<
 
   fromModelToEntity(model: AllCalculationTypes) {
     if (this.isTASModel(model)) {
-      return this.calculationTASConverter.fromModelToEntity({
-        id: model.id,
-        year: model.year,
-        month: model.month,
-        surplusBusiness: BigInt(
-          model.calculationTAS.surplusBusiness.toString()
-        ),
-        discount: BigInt(model.calculationTAS.discount.toString()),
-        workingOvertime: BigInt(
-          model.calculationTAS.workingOvertime.toString()
-        ),
-        workingNightOvertime: BigInt(
-          model.calculationTAS.workingNightOvertime.toString()
-        ),
-        nonWorkingOvertime: BigInt(
-          model.calculationTAS.nonWorkingOvertime.toString()
-        ),
-        nonWorkingNightOvertime: BigInt(
-          model.calculationTAS.nonWorkingNightOvertime.toString()
-        ),
-        surplusSimple: BigInt(model.calculationTAS.surplusSimple.toString()),
-        surplusNonWorking: BigInt(
-          model.calculationTAS.surplusNonWorking.toString()
-        ),
-        compensatedNightOvertime: BigInt(
-          model.calculationTAS.compensatedNightOvertime.toString()
-        ),
-        observations: model.observations,
-        actualBalanceId: model.actualBalanceId,
-        calculationId: model.calculationTAS.calculationId,
-      });
+      return this.calculationTASConverter.fromModelToEntity(model);
     }
     if (this.isTeacherModel(model)) {
-      return this.calculationTeacherConverter.fromModelToEntity({
-        id: model.id,
-        year: model.year,
-        month: model.month,
-        actualBalanceId: model.actualBalanceId,
-        calculationId: model.calculationTeacher.calculationId,
-        discount: model.calculationTeacher.discount,
-        observations: model.observations,
-        surplus: BigInt(model.calculationTeacher.surplus.toString()),
-      });
+      return this.calculationTeacherConverter.fromModelToEntity(model);
     }
 
     const actualBalance = model.actualBalanceId
@@ -126,45 +87,11 @@ export default class CalculationConverter extends AbstractConverter<
   }
   fromEntityToModel(entity: AllCalculationEntities): AllCalculationTypes {
     if (this.isTASEntity(entity)) {
-      const model = this.calculationTASConverter.fromEntityToModel(entity);
-      return {
-        actualBalanceId: model.actualBalanceId,
-        calculationTAS: {
-          calculationId: model.calculationId,
-          discount: model.discount,
-          id: model.id,
-          compensatedNightOvertime: model.compensatedNightOvertime,
-          nonWorkingNightOvertime: model.nonWorkingNightOvertime,
-          nonWorkingOvertime: model.nonWorkingOvertime,
-          surplusBusiness: model.surplusBusiness,
-          surplusNonWorking: model.surplusNonWorking,
-          surplusSimple: model.surplusSimple,
-          workingNightOvertime: model.workingNightOvertime,
-          workingOvertime: model.workingOvertime,
-        },
-        id: model.calculationId,
-        month: model.month,
-        observations: model.observations,
-        year: model.year,
-      };
+      return this.calculationTASConverter.fromEntityToModel(entity);
     }
 
     if (this.isTeacherEntity(entity)) {
-      const model = this.calculationTeacherConverter.fromEntityToModel(entity);
-      return {
-        actualBalanceId: model.actualBalanceId,
-        calculationTeacher: {
-          calculationId: model.calculationId,
-          discount: model.discount,
-          id: model.id,
-
-          surplus: model.surplus,
-        },
-        id: model.calculationId,
-        month: model.month,
-        observations: model.observations,
-        year: model.year,
-      };
+      return this.calculationTeacherConverter.fromEntityToModel(entity);
     }
 
     return {
@@ -172,8 +99,6 @@ export default class CalculationConverter extends AbstractConverter<
       month: entity.month,
       observations: entity.observations ?? null,
       year: entity.year,
-      calculationTAS: null,
-      calculationTeacher: null,
       actualBalanceId: entity.actualBalance
         .map((actualBalance) => actualBalance.id)
         .orElseGet(() => ""),

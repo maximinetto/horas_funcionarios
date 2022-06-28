@@ -1,35 +1,44 @@
 import { Decimal } from "decimal.js";
 
-import { CalculationTeacher as CalculationTeacherModel } from "@/@types/calculations";
+import { NotNullableCalculationWithTeacher } from "@/@types/calculations";
 import CalculationTeacherEntity from "@/entities/CalculationTeacher";
 import NullActualBalance from "@/entities/null_object/NullActualBalance";
 
 import { AbstractConverter } from "./converter";
 
 export default class CalculationTeacherConverter extends AbstractConverter<
-  CalculationTeacherModel,
+  NotNullableCalculationWithTeacher,
   CalculationTeacherEntity
 > {
-  fromModelToEntity(model: CalculationTeacherModel): CalculationTeacherEntity {
+  fromModelToEntity(
+    model: NotNullableCalculationWithTeacher
+  ): CalculationTeacherEntity {
+    const { surplus, discount, calculationId } = model.calculationTeacher;
+
     return new CalculationTeacherEntity(
       model.id,
       model.year,
       model.month,
-      new Decimal(model.surplus.toString()),
-      new Decimal(model.discount.toString()),
-      model.calculationId,
+      new Decimal(surplus.toString()),
+      new Decimal(discount.toString()),
+      calculationId,
       model.observations ?? undefined,
       new NullActualBalance(model.actualBalanceId)
     );
   }
-  fromEntityToModel(entity: CalculationTeacherEntity): CalculationTeacherModel {
+  fromEntityToModel(
+    entity: CalculationTeacherEntity
+  ): NotNullableCalculationWithTeacher {
     return {
-      id: entity.id,
+      id: entity.calculationId,
       year: entity.year,
       month: entity.month,
-      surplus: BigInt(entity.getSurplus().toString()),
-      discount: BigInt(entity.getDiscount().toString()),
-      calculationId: entity.getCalculationId(),
+      calculationTeacher: {
+        id: entity.id,
+        calculationId: entity.calculationId,
+        surplus: BigInt(entity.getSurplus().toString()),
+        discount: BigInt(entity.getDiscount().toString()),
+      },
       observations: entity.observations ?? null,
       actualBalanceId: entity.actualBalance.orElse(new NullActualBalance()).id,
     };

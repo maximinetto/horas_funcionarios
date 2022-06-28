@@ -23,7 +23,6 @@ export type CalculationWithTAS = Prisma.CalculationGetPayload<{
 export interface NotNullableCalculationWithTAS extends CalculationWithTAS {
   calculationTAS: CalculationTASModel;
 }
-
 export type CalculationWithTeacher = Prisma.CalculationGetPayload<{
   include: { calculationTeacher: true };
 }>;

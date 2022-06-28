@@ -2,6 +2,7 @@ import { Prisma } from "@prisma/client";
 import _omit from "lodash/omit";
 
 import {
+  CalculationWithTAS,
   NotNullableCalculationWithTAS,
   NotNullableCalculationWithTeacher,
 } from "@/@types/calculations";
@@ -41,10 +42,10 @@ export class CalculationRepository {
     where: Prisma.CalculationWhereInput,
     options?: Omit<Prisma.CalculationFindManyArgs, "where">
   ): Promise<Calculations<Calculation>> {
-    const calculations = await database.calculation.findMany({
+    const calculations = (await database.calculation.findMany({
       where,
       ...options,
-    });
+    })) as CalculationWithTAS[];
 
     const calculationsArray =
       this.calculationConverter.fromModelsToEntities(calculations);

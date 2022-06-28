@@ -1,53 +1,76 @@
 import { Decimal } from "decimal.js";
 
-import { CalculationTAS as CalculationTASModel } from "@/@types/calculations";
+import { NotNullableCalculationWithTAS } from "@/@types/calculations";
 import CalculationTASEntity from "@/entities/CalculationTAS";
 import NullActualBalance from "@/entities/null_object/NullActualBalance";
 
 import { AbstractConverter } from "./converter";
 
 export default class CalculationTASConverter extends AbstractConverter<
-  CalculationTASModel,
+  NotNullableCalculationWithTAS,
   CalculationTASEntity
 > {
-  fromModelToEntity(model: CalculationTASModel): CalculationTASEntity {
+  fromModelToEntity(
+    model: NotNullableCalculationWithTAS
+  ): CalculationTASEntity {
+    const { observations, actualBalanceId, month, year } = model;
+
+    const {
+      calculationId,
+      compensatedNightOvertime,
+      discount,
+      nonWorkingNightOvertime,
+      nonWorkingOvertime,
+      surplusBusiness,
+      surplusNonWorking,
+      surplusSimple,
+      workingNightOvertime,
+      workingOvertime,
+      id,
+    } = model.calculationTAS;
+
     return new CalculationTASEntity(
-      model.id,
-      model.year,
-      model.month,
-      new Decimal(model.surplusBusiness.toString()),
-      new Decimal(model.surplusNonWorking.toString()),
-      new Decimal(model.surplusSimple.toString()),
-      new Decimal(model.discount.toString()),
-      new Decimal(model.workingOvertime.toString()),
-      new Decimal(model.workingNightOvertime.toString()),
-      new Decimal(model.nonWorkingOvertime.toString()),
-      new Decimal(model.nonWorkingNightOvertime.toString()),
-      new Decimal(model.compensatedNightOvertime.toString()),
-      model.calculationId,
-      model.observations ?? undefined,
-      new NullActualBalance(model.actualBalanceId)
+      id,
+      year,
+      month,
+      new Decimal(surplusBusiness.toString()),
+      new Decimal(surplusNonWorking.toString()),
+      new Decimal(surplusSimple.toString()),
+      new Decimal(discount.toString()),
+      new Decimal(workingOvertime.toString()),
+      new Decimal(workingNightOvertime.toString()),
+      new Decimal(nonWorkingOvertime.toString()),
+      new Decimal(nonWorkingNightOvertime.toString()),
+      new Decimal(compensatedNightOvertime.toString()),
+      calculationId,
+      observations ?? undefined,
+      new NullActualBalance(actualBalanceId)
     );
   }
-  fromEntityToModel(entity: CalculationTASEntity): CalculationTASModel {
+  fromEntityToModel(
+    entity: CalculationTASEntity
+  ): NotNullableCalculationWithTAS {
     return {
-      id: entity.id,
       year: entity.year,
       month: entity.month,
-      surplusBusiness: BigInt(entity.surplusBusiness.toString()),
-      surplusNonWorking: BigInt(entity.surplusNonWorking.toString()),
-      surplusSimple: BigInt(entity.surplusSimple.toString()),
-      discount: BigInt(entity.discount.toString()),
-      workingOvertime: BigInt(entity.workingOvertime.toString()),
-      workingNightOvertime: BigInt(entity.workingNightOvertime.toString()),
-      nonWorkingOvertime: BigInt(entity.nonWorkingOvertime.toString()),
-      nonWorkingNightOvertime: BigInt(
-        entity.nonWorkingNightOvertime.toString()
-      ),
-      compensatedNightOvertime: BigInt(
-        entity.compensatedNightOvertime.toString()
-      ),
-      calculationId: entity.calculationId,
+      calculationTAS: {
+        id: entity.id,
+        surplusBusiness: BigInt(entity.surplusBusiness.toString()),
+        surplusNonWorking: BigInt(entity.surplusNonWorking.toString()),
+        surplusSimple: BigInt(entity.surplusSimple.toString()),
+        workingOvertime: BigInt(entity.workingOvertime.toString()),
+        workingNightOvertime: BigInt(entity.workingNightOvertime.toString()),
+        nonWorkingOvertime: BigInt(entity.nonWorkingOvertime.toString()),
+        nonWorkingNightOvertime: BigInt(
+          entity.nonWorkingNightOvertime.toString()
+        ),
+        compensatedNightOvertime: BigInt(
+          entity.compensatedNightOvertime.toString()
+        ),
+        discount: BigInt(entity.discount.toString()),
+        calculationId: entity.calculationId,
+      },
+      id: entity.calculationId,
       observations: entity.observations ?? null,
       actualBalanceId: entity.actualBalance.orElse(new NullActualBalance()).id,
     };
