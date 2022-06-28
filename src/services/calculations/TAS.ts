@@ -61,14 +61,14 @@ export default async function calculateForTAS({
     actualHourlyBalances: ActualBalance[];
   }> {
     const previousYear = currentYear - 1;
-    const previousActualHourlyBalances = await balances({
+    const actualHourlyBalancesAfterPreviousYear = await balances({
       year: previousYear,
       officialId: official.id,
       actualBalanceRepository,
     });
 
     const previousActualBalance = getCurrentActualHourlyBalance(
-      previousActualHourlyBalances,
+      actualHourlyBalancesAfterPreviousYear,
       previousYear
     );
     const dataCalculated = await calculationRowService.calculate(
@@ -83,7 +83,7 @@ export default async function calculateForTAS({
     );
 
     const actualBalanceCurrentYear = getCurrentActualHourlyBalance(
-      previousActualHourlyBalances,
+      actualHourlyBalancesAfterPreviousYear,
       currentYear
     );
 
@@ -101,7 +101,7 @@ export default async function calculateForTAS({
 
     const others = await recalculate(
       nextYear,
-      previousActualHourlyBalances,
+      actualHourlyBalancesAfterPreviousYear,
       actualHourlyBalanceCalculated
     );
     return {
@@ -116,14 +116,14 @@ export default async function calculateForTAS({
 
   async function recalculate(
     nextYear: number,
-    previousActualHourlyBalances: ActualBalance[],
+    actualHourlyBalancesAfterPreviousYear: ActualBalance[],
     actualHourlyBalanceCalculated: ActualBalance
   ) {
     const postCalculatedData =
       await recalculateService.tryToRecalculateLaterHours({
         official,
         year: nextYear,
-        previousActualHourlyBalances,
+        currentActualHourlyBalances: actualHourlyBalancesAfterPreviousYear,
         actualHourlyBalanceCalculated,
       });
     if (!postCalculatedData)

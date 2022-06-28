@@ -5,9 +5,7 @@ import Calculation from "@/entities/Calculation";
 import CalculationTAS from "@/entities/CalculationTAS";
 import Official from "@/entities/Official";
 import { CalculationRepository } from "@/persistence/calculations";
-import { getCurrentActualHourlyBalance } from "@/services/hourlyBalances";
 import ActualHourlyBalanceReplacer from "@/services/hourlyBalances/ActualHourlyBalanceReplacer";
-import groupAndSortCalculations from "@/sorters/CalculationSorterAndGrouper";
 
 import CalculationRowService from "./CalculationRowService";
 import HoursTASCalculator from "./HoursTASCalculator";
@@ -18,6 +16,7 @@ export default class RecalculateService {
   private calculateService: HoursTASCalculator;
   private actualBalanceReplacer: ActualHourlyBalanceReplacer;
   private actualHourlyBalances: ActualBalance[] = [];
+  f;
 
   constructor(
     calculationRepository: CalculationRepository,
@@ -34,14 +33,16 @@ export default class RecalculateService {
   async tryToRecalculateLaterHours({
     official,
     year,
-    previousActualHourlyBalances,
+    currentActualHourlyBalances,
     actualHourlyBalanceCalculated,
   }: {
     official: Official;
     year: number;
-    previousActualHourlyBalances: ActualBalance[];
+    currentActualHourlyBalances: ActualBalance[];
     actualHourlyBalanceCalculated: ActualBalance;
   }) {
+    this.actualHourlyBalances = currentActualHourlyBalances;
+
     const calculations = (await this.calculationRepository.get(
       {
         year: {
@@ -60,36 +61,19 @@ export default class RecalculateService {
 
     if (!Calculation.calculationsHasMoreLaterHours(calculations)) return;
 
-    this.actualHourlyBalances.push(actualHourlyBalanceCalculated);
+    this.assignCalculations(actualHourlyBalanceCalculated, calculations);
 
-    const entries = groupAndSortCalculations(calculations.toPrimitiveArray());
-
-    return this.recalculateLaterHours(
-      entries,
-      official,
-      previousActualHourlyBalances
-    );
+    return this.recalculateLaterHours(official);
   }
 
-  hasMoreLaterHours(calculations: Calculation[]) {
-    return calculations.length > 0;
-  }
-
-  async recalculateLaterHours(
-    entries: [string, CalculationTAS[]][],
-    official: Official,
-    previousActualHourlyBalances: ActualBalance[]
-  ) {
+  async recalculateLaterHours(official: Official) {
     const dataToSave: CalculationCalculated[] = [];
 
-    for (const [year, calculations] of entries) {
+    for (let i = 1; i < this.actualHourlyBalances.length; i++) {
       dataToSave.push(
         await this.recalculateRow({
-          year,
-          calculations: new Calculations(...calculations),
           official,
-          previousActualHourlyBalances,
-          dataToSave,
+          index: i,
         })
       );
     }
@@ -104,47 +88,48 @@ export default class RecalculateService {
   }
 
   async recalculateRow({
-    year,
-    calculations,
-    previousActualHourlyBalances,
     official,
+    index,
   }: {
-    year: string;
-    calculations: Calculations<CalculationTAS>;
     official: Official;
-    previousActualHourlyBalances: ActualBalance[];
-    dataToSave: CalculationCalculated[];
+    index: number;
   }) {
-    const yearNumber = Number(year);
-    const previousActualHourlyBalanceCalculated =
-      this.actualHourlyBalances[this.actualHourlyBalances.length - 1];
+    const previous = this.actualHourlyBalances[index - 1];
+    const next = this.actualHourlyBalances[index];
+
+    const yearNumber = Number(next.year);
+    const calculations = next.calculations as CalculationTAS[];
 
     const data = await this.calculationRowService.reCalculate(
       {
         calculations: new Calculations(),
         official,
-        actualHourlyBalance: previousActualHourlyBalanceCalculated,
+        actualHourlyBalance: previous,
         year: yearNumber,
-        calculationsFromPersistence: calculations,
+        calculationsFromPersistence: new Calculations(...calculations),
       },
       this.calculateService
     );
 
-    const actualHourlyBalanceToReplace = getCurrentActualHourlyBalance(
-      previousActualHourlyBalances,
-      yearNumber
-    );
-    if (!actualHourlyBalanceToReplace) {
-      throw new Error(
-        "Internal error: no actual hourly balance found for year " + yearNumber
-      );
-    }
     const actualHourlyBalance = this.actualBalanceReplacer.replace({
-      actualBalance: actualHourlyBalanceToReplace,
+      actualBalance: next,
       balances: data.balances,
       totalBalance: data.totalBalance,
     });
-    this.actualHourlyBalances.push(actualHourlyBalance);
+    this.actualHourlyBalances[index] = actualHourlyBalance;
     return data;
+  }
+
+  assignCalculations(
+    actualHourlyBalanceCalculated: ActualBalance,
+    calculations: Calculations<Calculation>
+  ) {
+    this.actualHourlyBalances[0] = actualHourlyBalanceCalculated;
+
+    for (const a of this.actualHourlyBalances) {
+      const { year } = a;
+      const rest = calculations.filter((c) => c.year === year);
+      a.calculations = rest;
+    }
   }
 }

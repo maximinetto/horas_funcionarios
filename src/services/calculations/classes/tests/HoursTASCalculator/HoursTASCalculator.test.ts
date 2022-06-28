@@ -81,8 +81,9 @@ function prepareCalculationsToReplace() {
 
 describe("Test calculations", () => {
   test("Should calculate right the passed values", async () => {
-    CalculationRepository.prototype.get = jest
-      .fn()
+    jest
+      .spyOn(CalculationRepository.prototype, "get")
+
       .mockResolvedValue(new Calculations());
 
     const firstData = new Calculations(...calculationsFirstTest);
@@ -97,15 +98,16 @@ describe("Test calculations", () => {
       new Calculations(...calculationsFirstTest)
     );
 
-    CalculationRepository.prototype.get = jest
-      .fn()
+    jest
+      .spyOn(CalculationRepository.prototype, "get")
+
       .mockResolvedValue(new Calculations(...calculationsFirstTest));
 
     const otherData = new Calculations(...otherCalculations);
     data = preset(otherData, yearFirstTest);
     const actual = convert(data.lastBalances, data.data.official);
-    ActualBalanceRepository.prototype.getTAS = jest
-      .fn()
+    jest
+      .spyOn(ActualBalanceRepository.prototype, "getTAS")
       .mockResolvedValue([actual]);
     const allCalculations = [...calculationsFirstTest, ...otherCalculations];
     await expectCalculationEquals(data, new Calculations(...allCalculations));
@@ -190,8 +192,8 @@ describe("Test calculations", () => {
 
     const balancesEnriched = balances.map((b) => b.actualBalance);
 
-    ActualBalanceRepository.prototype.getTAS = jest
-      .fn()
+    jest
+      .spyOn(ActualBalanceRepository.prototype, "getTAS")
       .mockResolvedValue(balancesEnriched);
 
     const firstCalculationsMock = calculationFromPersistence.flat();
@@ -199,8 +201,8 @@ describe("Test calculations", () => {
       .flat()
       .filter((c) => c.year > actualBalanceSecondTest.year);
 
-    CalculationRepository.prototype.get = jest
-      .fn()
+    jest
+      .spyOn(CalculationRepository.prototype, "get")
       .mockResolvedValueOnce(new Calculations(...firstCalculationsMock))
       .mockResolvedValueOnce(new Calculations(...secondCalculationsMock));
 
