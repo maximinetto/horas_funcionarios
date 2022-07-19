@@ -1,7 +1,7 @@
 import Joi from "joi";
 
 const time = Joi.string()
-  .regex(/^([0-9]+)\:([0-5]\d)$/)
+  .regex(/^(\d+)\:([0-5]\d)$/)
   .default("00:00");
 
 const base = {
@@ -30,10 +30,10 @@ const teacher = {
 
 export const schemas = {
   create: Joi.object({
-    calculations: Joi.array().items(
-      { ...base, ...tas },
-      { ...base, ...teacher }
-    ),
+    calculations: Joi.array()
+      .items({ ...base, ...tas }, { ...base, ...teacher })
+      .min(1)
+      .required(),
   }),
   year: Joi.number().integer().min(2000).required(),
   officialId: Joi.number().integer().min(1).required(),

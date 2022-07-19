@@ -14,15 +14,15 @@ export default function middleware(
   property: Property = "body"
 ) {
   return asyncHandler(async (req, res, next) => {
+    console.log(req[property]);
     const { value, error } = await schema.validate(req[property], {
       abortEarly: false,
       convert: true,
     });
     const valid = error == null;
-
-    valid
-      ? callToNextHandler(value, res, next)
-      : throwErrorWhenDataIsNotValid(error, res);
+    console.log("valid", valid);
+    if (valid) callToNextHandler(value, res, next);
+    else throwErrorWhenDataIsNotValid(error, res);
   });
 }
 
