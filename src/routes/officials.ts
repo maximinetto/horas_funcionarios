@@ -17,14 +17,14 @@ router.post("/", middleware(schemas.create), createOfficials);
 router.put(
   "/:id",
   middleware(schemas.id, "params"),
-  exists({ key: "id", entity, property: "value" }),
+  exists({ key: "id", entity, property: "value", mustExists: true }),
   middleware(schemas.update, "body"),
   updateOfficial
 );
 router.delete(
   "/:id",
   middleware(schemas.id, "params"),
-  exists({ key: "id", entity, property: "value" }),
+  exists({ key: "id", entity, property: "value", mustExists: true }),
   deleteOfficial
 );
 

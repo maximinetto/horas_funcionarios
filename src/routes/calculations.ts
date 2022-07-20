@@ -6,19 +6,9 @@ import { calculationsFirstTest } from "@/services/calculations/classes/tests/Hou
 import middleware, { exists } from "@/validation/middlewares/validation";
 import { schemas } from "@/validation/schemas/calculations";
 
-const entity = "calculation";
-
 const router = createRouter();
 
-const get = function (key: string, value: any[]) {
-  const values = value.filter((item) => item[key] !== undefined);
-  if (values.length === 0) {
-    return false;
-  }
-  return values.map((v) => v[key]);
-};
-
-router.get("/", async (req, res) => {
+router.get("/", async (_req, res) => {
   const result = await calculate({
     calculations: new Calculations(...calculationsFirstTest),
     officialId: 1,
@@ -38,16 +28,11 @@ router.post(
   middleware(schemas.create),
   middleware(schemas.paramsCreate, "params"),
   exists({
-    key: "id",
-    entity,
-    property: "value.calculations",
-    find: get,
-  }),
-  exists({
     key: "officialId",
     relatedKey: "id",
     entity: "official",
     property: "params",
+    mustExists: true,
   }),
   createHours
 );

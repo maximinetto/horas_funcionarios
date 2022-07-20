@@ -7,7 +7,7 @@ import _merge from "lodash/merge";
 import { Property } from "@/@types/common";
 import { asyncHandler } from "@/dependencies";
 import NotExistsError from "@/errors/NotExistsError";
-import persistence from "@/persistence/persistence.config";
+import { valueExistsInPersistence } from "@/persistence/entity";
 
 export default function middleware(
   schema: AnySchema,
@@ -33,16 +33,17 @@ export const exists = ({
   property = "params",
   find = undefined,
   relatedKey = undefined,
+  mustExists = false,
 }: {
   key: string;
   entity: string;
   property?: string;
   find?: (key: string, obj: any) => any;
   relatedKey?: string;
+  mustExists?: boolean;
 }) =>
   asyncHandler(async (req, res, next) => {
     let value = getValue(key, req, property, find);
-
     if (typeof value === "undefined") {
       throw new NotExistsError(`${key} does not exists`);
     }
@@ -52,13 +53,19 @@ export const exists = ({
     }
 
     try {
-      const exists = await valueExistsInPersistence({
+      console.log("mustExists:", mustExists);
+      const valueAlreadyExists = await valueExistsInPersistence({
         value,
         key,
         entity,
         relatedKey,
       });
-      if (exists) {
+      console.log("valueAlreadyExists:", valueAlreadyExists);
+      if (
+        (valueAlreadyExists && mustExists) ||
+        (!valueAlreadyExists && !mustExists)
+      ) {
+        console.log("next");
         return next();
       }
 
@@ -76,6 +83,7 @@ export const exists = ({
         })
         .end();
     } catch (err) {
+      console.log(err);
       if (!(err instanceof NotExistsError)) {
         return next(err);
       }
@@ -94,45 +102,6 @@ export const exists = ({
         .end();
     }
   });
-
-const valueExistsInPersistence = ({
-  value,
-  key,
-  entity,
-  relatedKey,
-}: {
-  value: unknown;
-  key: string;
-  entity: string;
-  relatedKey?: string;
-}) => {
-  const exists = Object.keys(persistence).find((k) => k === entity);
-  if (!exists) {
-    throw new NotExistsError(`${entity} does not exists`);
-  }
-
-  const keyToFind = relatedKey ?? key;
-
-  if (!Array.isArray(value)) {
-    return persistence[entity].findUnique({
-      where: { [keyToFind]: value },
-      select: {
-        [keyToFind]: true,
-      },
-    });
-  }
-
-  return persistence[entity]
-    .findMany({
-      where: { [keyToFind]: { in: value } },
-      select: {
-        [keyToFind]: true,
-      },
-    })
-    .then((result) => {
-      return result.length === value.length;
-    });
-};
 
 function callToNextHandler(value, res: Response, next: NextFunction) {
   if (res.locals.value == null && Array.isArray(value)) {
