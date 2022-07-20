@@ -53,19 +53,16 @@ export const exists = ({
     }
 
     try {
-      console.log("mustExists:", mustExists);
       const valueAlreadyExists = await valueExistsInPersistence({
         value,
         key,
         entity,
         relatedKey,
       });
-      console.log("valueAlreadyExists:", valueAlreadyExists);
       if (
         (valueAlreadyExists && mustExists) ||
         (!valueAlreadyExists && !mustExists)
       ) {
-        console.log("next");
         return next();
       }
 
@@ -83,7 +80,6 @@ export const exists = ({
         })
         .end();
     } catch (err) {
-      console.log(err);
       if (!(err instanceof NotExistsError)) {
         return next(err);
       }
