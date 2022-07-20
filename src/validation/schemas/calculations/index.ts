@@ -35,6 +35,8 @@ export const schemas = {
       .min(1)
       .required(),
   }),
-  year: Joi.number().integer().min(2000).required(),
-  officialId: Joi.number().integer().min(1).required(),
+  paramsCreate: Joi.object({
+    year: Joi.number().integer().min(2000).required(),
+    officialId: Joi.number().integer().min(1).required(),
+  }),
 };

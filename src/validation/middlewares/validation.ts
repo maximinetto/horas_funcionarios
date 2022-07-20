@@ -21,6 +21,7 @@ export default function middleware(
     });
     const valid = error == null;
     console.log("valid", valid);
+    console.log("error", error);
     if (valid) callToNextHandler(value, res, next);
     else throwErrorWhenDataIsNotValid(error, res);
   });

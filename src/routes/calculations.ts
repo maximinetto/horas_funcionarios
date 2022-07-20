@@ -36,8 +36,7 @@ router.get("/", async (req, res) => {
 router.post(
   "/year/:year/officials/:officialId",
   middleware(schemas.create),
-  middleware(schemas.year, "params"),
-  middleware(schemas.officialId, "params"),
+  middleware(schemas.paramsCreate, "params"),
   exists({
     key: "id",
     entity,
