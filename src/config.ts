@@ -40,7 +40,7 @@ const combineMessageAndSplat = () => {
 };
 
 const configLogger = {
-  filename: path.resolve(baseDir, "logs", "server.log"),
+  filename: path.resolve(baseDir, "..", "logs", "server.log"),
   format: format.combine(
     format.timestamp({ format: "MMM-DD-YYYY HH:mm:ss" }),
     combineMessageAndSplat(),

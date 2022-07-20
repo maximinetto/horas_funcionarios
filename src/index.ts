@@ -1,4 +1,4 @@
-import prisma from "persistence/persistence.config";
+import prisma from "@/persistence/persistence.config";
 import { debug } from "winston";
 
 import app from "@/app";
