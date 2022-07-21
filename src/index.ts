@@ -9,6 +9,7 @@ const { OFFICIALS_SCHEDULES_PORT } = configureDotEnv();
 logger.info("\n\nMemory usage:", {
   ...memoryUsage(),
 });
+
 const server = app.listen(OFFICIALS_SCHEDULES_PORT, () => {
   logger.info(`\n\nServer is listening on port ${OFFICIALS_SCHEDULES_PORT}`);
 });
