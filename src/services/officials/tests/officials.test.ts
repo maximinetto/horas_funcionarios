@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { Contract, TypeOfOfficials } from "@prisma/client";
 
-import service from "@/services/officials";
+import { officialService } from "@/dependencies/container";
 import { prismaMock } from "@/singleton";
 
 describe("Officials controller tests", () => {
@@ -45,7 +45,7 @@ describe("Officials controller tests", () => {
 
     prismaMock.official.findMany.mockResolvedValue(officials);
 
-    const result = await service.get({});
+    const result = await officialService.get({});
     expect(result).toEqual(officials);
   });
 
@@ -99,12 +99,12 @@ describe("Officials controller tests", () => {
 
     prismaMock.official.findMany.mockResolvedValue(mockOfficialByYear);
 
-    const result = await service.get({ year });
+    const result = await officialService.get({ year });
     expect(result).toEqual(mockOfficialByYear);
 
     prismaMock.official.findMany.mockResolvedValue(mockContract);
 
-    const result2 = await service.get({ contract: Contract.PERMANENT });
+    const result2 = await officialService.get({ contract: Contract.PERMANENT });
     expect(result2).toEqual(mockContract);
   });
 
@@ -123,7 +123,7 @@ describe("Officials controller tests", () => {
 
     prismaMock.official.create.mockResolvedValue(official);
 
-    await expect(service.create(official)).resolves.toEqual({
+    await expect(officialService.create(official)).resolves.toEqual({
       id: 1,
       recordNumber: 3333,
       firstName: "Maximiliano",
@@ -151,7 +151,9 @@ describe("Officials controller tests", () => {
 
     prismaMock.official.update.mockResolvedValue(official);
 
-    await expect(service.update(official.id, official)).resolves.toEqual({
+    await expect(
+      officialService.update(official.id, official)
+    ).resolves.toEqual({
       id: 1,
       recordNumber: 3333,
       firstName: "Maximiliano",
@@ -179,7 +181,7 @@ describe("Officials controller tests", () => {
 
     prismaMock.official.delete.mockResolvedValue(official);
 
-    await expect(service.delete(official.id)).resolves.toEqual({
+    await expect(officialService.delete(official.id)).resolves.toEqual({
       id: 1,
       recordNumber: 3333,
       firstName: "Maximiliano",
