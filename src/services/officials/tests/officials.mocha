@@ -1,0 +1,212 @@
+import OfficialRepository from "@/persistence/officials";
+import prisma from "@/persistence/persistence.config";
+import OfficialService from "@/services/officials";
+import faker from "@faker-js/faker";
+import { Contract, TypeOfOfficials } from "@prisma/client";
+import chai from "chai";
+import sinon from "sinon";
+
+describe("Officials controller tests", () => {
+  afterEach(() => {
+    sinon.restore();
+  });
+
+  it("Should get multiples official models", async () => {
+    const officials = [
+      {
+        id: faker.datatype.number(),
+        recordNumber: faker.datatype.number(),
+        firstName: faker.name.firstName(),
+        lastName: faker.name.lastName(),
+        position: faker.name.jobTitle(),
+        dateOfEntry: faker.date.past(),
+        chargeNumber: faker.datatype.number(),
+        type: faker.random.arrayElement([
+          TypeOfOfficials.TEACHER,
+          TypeOfOfficials.NOT_TEACHER,
+        ]),
+        contract: faker.random.arrayElement([
+          Contract.PERMANENT,
+          Contract.TEMPORARY,
+        ]),
+      },
+      {
+        id: faker.datatype.number(),
+        recordNumber: faker.datatype.number(),
+        firstName: faker.name.firstName(),
+        lastName: faker.name.lastName(),
+        position: faker.name.jobTitle(),
+        dateOfEntry: faker.date.past(),
+        chargeNumber: faker.datatype.number(),
+        type: faker.random.arrayElement([
+          TypeOfOfficials.TEACHER,
+          TypeOfOfficials.NOT_TEACHER,
+        ]),
+        contract: faker.random.arrayElement([
+          Contract.PERMANENT,
+          Contract.TEMPORARY,
+        ]),
+      },
+    ];
+
+    const { officialService, stubOfficialRepository } = stubRepository(
+      officials,
+      "get"
+    );
+
+    const result = await officialService.get({});
+    chai.expect(result).to.equal(officials);
+    chai.expect(stubOfficialRepository.calledOnce).to.be.true;
+  });
+
+  it("Should filter officials", async () => {
+    const date = faker.date.past();
+    const year = date.getFullYear();
+    const officials = [
+      {
+        id: faker.datatype.number(),
+        recordNumber: faker.datatype.number(),
+        firstName: faker.name.firstName(),
+        lastName: faker.name.lastName(),
+        position: faker.name.jobTitle(),
+        dateOfEntry: faker.date.past(),
+        chargeNumber: faker.datatype.number(),
+        type: faker.random.arrayElement([
+          TypeOfOfficials.TEACHER,
+          TypeOfOfficials.NOT_TEACHER,
+        ]),
+        contract: faker.random.arrayElement([
+          Contract.PERMANENT,
+          Contract.TEMPORARY,
+        ]),
+      },
+      {
+        id: faker.datatype.number(),
+        recordNumber: faker.datatype.number(),
+        firstName: faker.name.firstName(),
+        lastName: faker.name.lastName(),
+        position: faker.name.jobTitle(),
+        dateOfEntry: date,
+        chargeNumber: faker.datatype.number(),
+        type: faker.random.arrayElement([
+          TypeOfOfficials.TEACHER,
+          TypeOfOfficials.NOT_TEACHER,
+        ]),
+        contract: faker.random.arrayElement([
+          Contract.PERMANENT,
+          Contract.TEMPORARY,
+        ]),
+      },
+    ];
+
+    const filterOfficialByYear = officials.filter(
+      (official) => official.dateOfEntry.getFullYear() === year
+    );
+
+    const filterByContract = officials.filter(
+      (official) => official.contract === Contract.PERMANENT
+    );
+
+    let { officialService, stubOfficialRepository } = stubRepository(
+      filterOfficialByYear,
+      "get"
+    );
+
+    const result = await officialService.get({ year });
+    chai.expect(result).to.equal(filterOfficialByYear);
+    chai.expect(stubOfficialRepository.calledOnce).to.be.true;
+
+    const {
+      officialService: officialService2,
+      stubOfficialRepository: stubOfficialRepository2,
+    } = stubRepository(filterByContract, "get");
+
+    const result2 = await officialService2.get({
+      contract: Contract.PERMANENT,
+    });
+    chai.expect(result2).to.equal(filterByContract);
+    chai.expect(stubOfficialRepository2.calledOnce).to.be.true;
+  });
+
+  it("Should create a new official", async () => {
+    const official = {
+      id: 1,
+      recordNumber: 3333,
+      firstName: "Maximiliano",
+      lastName: "Minetto",
+      position: "Director",
+      dateOfEntry: new Date("2020-01-01"),
+      chargeNumber: 333333,
+      type: TypeOfOfficials.TEACHER,
+      contract: Contract.PERMANENT,
+    };
+
+    const { officialService, stubOfficialRepository } = stubRepository(
+      official,
+      "create"
+    );
+    const result = await officialService.create(official);
+    chai.expect(result).to.equal(official);
+    chai.expect(stubOfficialRepository.calledOnce).to.be.true;
+  });
+
+  it("Should update an existing official record", async () => {
+    const official = {
+      id: 1,
+      recordNumber: 3333,
+      firstName: "Maximiliano",
+      lastName: "Minetto",
+      position: "Director",
+      dateOfEntry: new Date("2020-01-01"),
+      chargeNumber: 333333,
+      type: TypeOfOfficials.TEACHER,
+      contract: Contract.PERMANENT,
+    };
+
+    const { officialService, stubOfficialRepository } = stubRepository(
+      official,
+      "update"
+    );
+    const result = await officialService.update(official.id, official);
+    await chai.expect(result).to.equal(official);
+  });
+
+  it("Should delete a official record", async () => {
+    const official = {
+      id: 1,
+      recordNumber: 3333,
+      firstName: "Maximiliano",
+      lastName: "Minetto",
+      position: "Director",
+      dateOfEntry: new Date("2020-01-01"),
+      chargeNumber: 333333,
+      type: TypeOfOfficials.TEACHER,
+      contract: Contract.PERMANENT,
+    };
+
+    const officialRepository = new OfficialRepository({ database: prisma });
+
+    const stubOfficialRepository = sinon
+      .stub(officialRepository, "delete")
+      .resolves(official);
+    const officialService = new OfficialService({ officialRepository });
+    const result = await officialService.delete(official.id);
+    chai.expect(result).to.equal(official);
+
+    chai.expect(stubOfficialRepository.calledWith(official.id)).to.be.true;
+
+    chai.expect(stubOfficialRepository.calledOnce).to.be.true;
+  });
+});
+
+function stubRepository(object: any, method: keyof OfficialRepository) {
+  const officialRepository = new OfficialRepository({ database: prisma });
+  const stubOfficialRepository = sinon
+    .stub(officialRepository, method)
+    .resolves(object);
+
+  return {
+    officialService: new OfficialService({ officialRepository }),
+    stubOfficialRepository,
+  };
+}
