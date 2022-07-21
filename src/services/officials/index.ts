@@ -1,11 +1,21 @@
 import { Contract, TypeOfOfficials } from "@prisma/client";
 
-import { operations } from "@/persistence/officials";
+import OfficialRepository from "@/persistence/officials";
 import { lastDateOfTheYear } from "@/utils/date";
 import removeKeyIfValueDoesNotDefined from "@/utils/removeKeyIfValueDoesNotDefined";
 
-const service = {
-  get: async ({
+export default class OfficialService {
+  private officialRepository: OfficialRepository;
+
+  constructor({
+    officialRepository,
+  }: {
+    officialRepository: OfficialRepository;
+  }) {
+    this.officialRepository = officialRepository;
+  }
+
+  async get({
     type,
     contract,
     year,
@@ -13,7 +23,7 @@ const service = {
     type?: TypeOfOfficials;
     contract?: Contract;
     year?: number;
-  }) => {
+  }) {
     const date = lastDateOfTheYear(year);
     const where = {
       type,
@@ -26,11 +36,11 @@ const service = {
         : undefined,
     };
 
-    const officials = await operations.get(where);
+    const officials = await this.officialRepository.get(where);
 
     return officials;
-  },
-  create: async ({
+  }
+  async create({
     recordNumber,
     firstName,
     lastName,
@@ -39,8 +49,8 @@ const service = {
     chargeNumber,
     type,
     contract,
-  }) => {
-    return operations.create({
+  }) {
+    return this.officialRepository.create({
       recordNumber,
       firstName,
       lastName,
@@ -50,8 +60,8 @@ const service = {
       type,
       contract,
     });
-  },
-  update: async (
+  }
+  async update(
     id,
     {
       recordNumber,
@@ -63,7 +73,7 @@ const service = {
       type,
       contract,
     }
-  ) => {
+  ) {
     const fields = {
       recordNumber,
       firstName,
@@ -76,11 +86,9 @@ const service = {
     };
     removeKeyIfValueDoesNotDefined(fields);
 
-    return operations.update(id, fields);
-  },
-  delete: async (id) => {
-    return operations.delete(id);
-  },
-};
-
-export default service;
+    return this.officialRepository.update(id, fields);
+  }
+  async delete(id) {
+    return this.officialRepository.delete(id);
+  }
+}
