@@ -6,7 +6,7 @@ export const arrayWithoutElementAtIndex = function <T>(
   arr: Array<T>,
   indexs: number[]
 ) {
-  return arr.filter(function (value, arrIndex) {
+  return arr.filter(function (_value, arrIndex) {
     return indexs.includes(arrIndex) === false;
   });
 };

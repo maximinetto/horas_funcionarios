@@ -10,7 +10,7 @@ app.use(express.json());
 
 app.use("/api/v1", routes);
 
-app.use((req, res) => {
+app.use((_req, res) => {
   res.status(404);
   res.send({
     error: "Not found",

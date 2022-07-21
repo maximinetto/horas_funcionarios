@@ -17,7 +17,7 @@ test("Test get month number by month name.", () => {
     "November",
     "December",
   ];
-  const expected = months.map((month, index) => index + 1);
+  const expected = months.map((_month, index) => index + 1);
 
   const result = months.map((month) =>
     getNumberByMonth(month.toUpperCase() as Month)

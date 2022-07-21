@@ -9,8 +9,7 @@
     "target": "es2020",
     "paths": {
       "@/*": ["./src/*"]
-    },
-    "baseUrl": "."
+    }
   },
   "module": {
     "type": "commonjs"
