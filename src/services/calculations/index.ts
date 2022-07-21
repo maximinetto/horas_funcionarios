@@ -3,17 +3,17 @@ import { TypeOfOfficials } from "@prisma/client";
 import Calculations from "@/collections/Calculations";
 import CalculationTAS from "@/entities/CalculationTAS";
 import NotExistsError from "@/errors/NotExistsError";
-import OfficialRepository from "@/persistence/officials";
+import { IOfficialRepository } from "@/persistence/officials";
 import calculateForTAS from "@/services/calculations/TAS";
 
 // TODO si el año ya está calculado y existen posteriores lo mejor es mandarlo a una cola
 export default class Calculator {
-  private officialRepository: OfficialRepository;
+  private officialRepository: IOfficialRepository;
 
   constructor({
     officialRepository,
   }: {
-    officialRepository: OfficialRepository;
+    officialRepository: IOfficialRepository;
   }) {
     this.officialRepository = officialRepository;
   }

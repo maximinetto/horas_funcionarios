@@ -6,7 +6,36 @@ import { OfficialWithoutId } from "@/@types/officials";
 import Official from "@/entities/Official";
 import type prisma from "@/persistence/persistence.config";
 
-export default class OfficialRepository {
+export interface IOfficialRepository {
+  getOne(id: number): Promise<Optional<Official>>;
+  get(where: Prisma.OfficialWhereInput);
+  create({
+    recordNumber,
+    firstName,
+    lastName,
+    position,
+    dateOfEntry,
+    chargeNumber,
+    type,
+    contract,
+  }: OfficialWithoutId);
+  update(
+    id: number,
+    {
+      recordNumber,
+      firstName,
+      lastName,
+      position,
+      dateOfEntry,
+      chargeNumber,
+      type,
+      contract,
+    }: OfficialWithoutId
+  );
+  delete(id: number);
+}
+
+export default class OfficialRepository implements IOfficialRepository {
   private database: typeof prisma;
 
   constructor({ database }: { database: typeof prisma }) {

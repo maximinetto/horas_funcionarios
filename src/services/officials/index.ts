@@ -1,16 +1,16 @@
 import { Contract, TypeOfOfficials } from "@prisma/client";
 
-import OfficialRepository from "@/persistence/officials";
+import { IOfficialRepository } from "@/persistence/officials";
 import { lastDateOfTheYear } from "@/utils/date";
 import removeKeyIfValueDoesNotDefined from "@/utils/removeKeyIfValueDoesNotDefined";
 
 export default class OfficialService {
-  private officialRepository: OfficialRepository;
+  private officialRepository: IOfficialRepository;
 
   constructor({
     officialRepository,
   }: {
-    officialRepository: OfficialRepository;
+    officialRepository: IOfficialRepository;
   }) {
     this.officialRepository = officialRepository;
   }
