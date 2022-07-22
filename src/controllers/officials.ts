@@ -2,13 +2,12 @@ import { Request, Response } from "express";
 
 import { logger } from "@/config";
 import { asyncHandler } from "@/dependencies";
-import { operations } from "@/persistence/officials";
-import service from "@/services/officials";
+import { officialService } from "@/dependencies/container";
 import response from "@/utils/response";
 
 export const getOfficials = asyncHandler(async (_req: Request, res) => {
   const value = res.locals.value;
-  const officials = await service.get(value);
+  const officials = await officialService.get(value);
   return response(res, {
     status: 200,
     data: officials,
@@ -40,7 +39,7 @@ export const createOfficials = asyncHandler(
     };
 
     try {
-      const official = await operations.create(newOfficial);
+      const official = await officialService.create(newOfficial);
       response(res, {
         status: 201,
         data: official,
@@ -75,7 +74,7 @@ export const updateOfficial = asyncHandler(
     } = res.locals.value;
 
     try {
-      const official = await operations.update(id, {
+      const official = await officialService.update(id, {
         recordNumber,
         firstName,
         lastName,
@@ -105,7 +104,7 @@ export const deleteOfficial = asyncHandler(
   async (req: Request, res: Response) => {
     const { id } = res.locals.value;
     try {
-      const official = await operations.delete(id);
+      const official = await officialService.delete(id);
       response(res, {
         status: 200,
         data: official,

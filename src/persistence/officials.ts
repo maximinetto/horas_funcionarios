@@ -4,11 +4,46 @@ import { Optional } from "typescript-optional";
 
 import { OfficialWithoutId } from "@/@types/officials";
 import Official from "@/entities/Official";
-import database from "@/persistence/persistence.config";
+import type prisma from "@/persistence/persistence.config";
 
-export const operations = {
-  getOne: (id: number): Promise<Optional<Official>> =>
-    database.official
+export interface IOfficialRepository {
+  getOne(id: number): Promise<Optional<Official>>;
+  get(where: Prisma.OfficialWhereInput);
+  create({
+    recordNumber,
+    firstName,
+    lastName,
+    position,
+    dateOfEntry,
+    chargeNumber,
+    type,
+    contract,
+  }: OfficialWithoutId);
+  update(
+    id: number,
+    {
+      recordNumber,
+      firstName,
+      lastName,
+      position,
+      dateOfEntry,
+      chargeNumber,
+      type,
+      contract,
+    }: OfficialWithoutId
+  );
+  delete(id: number);
+}
+
+export default class OfficialRepository implements IOfficialRepository {
+  private database: typeof prisma;
+
+  constructor({ database }: { database: typeof prisma }) {
+    this.database = database;
+  }
+
+  getOne(id: number): Promise<Optional<Official>> {
+    return this.database.official
       .findUnique({
         where: {
           id,
@@ -31,15 +66,18 @@ export const operations = {
             official.chargeNumber
           )
         );
-      }),
-  get: (where: Prisma.OfficialWhereInput) => {
-    return database.official.findMany({
+      });
+  }
+
+  get(where: Prisma.OfficialWhereInput) {
+    return this.database.official.findMany({
       where: {
         ...where,
       },
     });
-  },
-  create: ({
+  }
+
+  create({
     recordNumber,
     firstName,
     lastName,
@@ -48,8 +86,8 @@ export const operations = {
     chargeNumber,
     type,
     contract,
-  }: OfficialWithoutId) => {
-    return database.official.create({
+  }: OfficialWithoutId) {
+    return this.database.official.create({
       data: {
         recordNumber,
         firstName,
@@ -61,8 +99,9 @@ export const operations = {
         contract,
       },
     });
-  },
-  update: (
+  }
+
+  update(
     id: number,
     {
       recordNumber,
@@ -74,8 +113,8 @@ export const operations = {
       type,
       contract,
     }: OfficialWithoutId
-  ) => {
-    return database.official.update({
+  ) {
+    return this.database.official.update({
       where: { id },
       data: {
         recordNumber,
@@ -88,10 +127,10 @@ export const operations = {
         contract,
       },
     });
-  },
-  delete: (id: number) => {
-    return database.official.delete({
+  }
+  delete(id: number) {
+    return this.database.official.delete({
       where: { id },
     });
-  },
-};
+  }
+}
