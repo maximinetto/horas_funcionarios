@@ -1,8 +1,9 @@
+import { asClass, asValue, createContainer } from "awilix";
+
 import OfficialRepository from "@/persistence/officials";
 import prisma from "@/persistence/persistence.config";
 import Calculator from "@/services/calculations";
 import OfficialService from "@/services/officials";
-import { asClass, asValue, createContainer } from "awilix";
 
 const container = createContainer();
 
