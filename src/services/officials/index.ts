@@ -36,9 +36,7 @@ export default class OfficialService {
         : undefined,
     };
 
-    const officials = await this.officialRepository.get(where);
-
-    return officials;
+    return this.officialRepository.get(where);
   }
   async create({
     recordNumber,
