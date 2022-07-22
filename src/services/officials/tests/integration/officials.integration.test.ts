@@ -5,6 +5,7 @@ import _omit from "lodash/omit";
 import prisma from "@/persistence/persistence.config";
 import officialService from "@/services/officials";
 
+let officials;
 afterEach(async () => {
   const deleteOfficial = prisma.official.deleteMany();
 
@@ -13,8 +14,11 @@ afterEach(async () => {
   await prisma.$disconnect();
 });
 
+beforeEach(async () => {
+  officials = await createFakeOfficials();
+});
+
 it("Should get all instance of officials", async () => {
-  const officials = await createFakeOfficials();
   const response = await officialService.get({});
 
   const result = (res: Official) => _omit(res, ["id"]);
@@ -98,8 +102,6 @@ it("Should update the existing official", async () => {
     ]),
   };
 
-  await createFakeOfficials();
-
   const official2 = await prisma.official.findFirst({
     orderBy: { id: "desc" },
   });
@@ -110,12 +112,10 @@ it("Should update the existing official", async () => {
 
   const result = await officialService.update(official2.id, official);
 
-  await expect(result).toEqual({ ...official, id: official2.id });
+  expect(result).toEqual({ ...official, id: official2.id });
 });
 
 it("Should delete a existing official record", async () => {
-  await createFakeOfficials();
-
   const official = await prisma.official.findFirst({
     orderBy: { id: "desc" },
   });
@@ -133,7 +133,7 @@ it("Should delete a existing official record", async () => {
 });
 
 async function createFakeOfficials() {
-  const officials = [
+  const _officials = [
     {
       recordNumber: faker.datatype.number(),
       firstName: faker.name.firstName(),
@@ -168,6 +168,6 @@ async function createFakeOfficials() {
     },
   ];
 
-  await prisma.official.createMany({ data: officials });
-  return officials;
+  await prisma.official.createMany({ data: _officials });
+  return _officials;
 }
