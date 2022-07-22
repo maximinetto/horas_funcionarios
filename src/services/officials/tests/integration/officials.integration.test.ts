@@ -2,10 +2,12 @@ import faker from "@faker-js/faker";
 import { Contract, Official, TypeOfOfficials } from "@prisma/client";
 import _omit from "lodash/omit";
 
+import OfficialRepository from "@/persistence/officials";
 import prisma from "@/persistence/persistence.config";
-import officialService from "@/services/officials";
+import OfficialService from "@/services/officials";
 
 let officials;
+let officialService: OfficialService;
 afterEach(async () => {
   const deleteOfficial = prisma.official.deleteMany();
 
@@ -16,6 +18,9 @@ afterEach(async () => {
 
 beforeEach(async () => {
   officials = await createFakeOfficials();
+  officialService = new OfficialService({
+    officialRepository: new OfficialRepository({ database: prisma }),
+  });
 });
 
 it("Should get all instance of officials", async () => {

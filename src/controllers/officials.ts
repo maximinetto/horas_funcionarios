@@ -16,7 +16,7 @@ export const getOfficials = asyncHandler(async (_req: Request, res) => {
 });
 
 export const createOfficials = asyncHandler(
-  async (req: Request, res: Response) => {
+  async (_req: Request, res: Response) => {
     const {
       recordNumber,
       firstName,
@@ -59,7 +59,7 @@ export const createOfficials = asyncHandler(
 );
 
 export const updateOfficial = asyncHandler(
-  async (req: Request, res: Response) => {
+  async (_req: Request, res: Response) => {
     const { id } = res.locals.value;
 
     const {
@@ -101,7 +101,7 @@ export const updateOfficial = asyncHandler(
 );
 
 export const deleteOfficial = asyncHandler(
-  async (req: Request, res: Response) => {
+  async (_req: Request, res: Response) => {
     const { id } = res.locals.value;
     try {
       const official = await officialService.delete(id);
