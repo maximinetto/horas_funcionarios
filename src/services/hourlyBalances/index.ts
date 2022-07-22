@@ -1,51 +1,56 @@
 import ActualBalance from "@/entities/ActualBalance";
 import HourlyBalanceTAS from "@/entities/HourlyBalanceTAS";
-import { ActualBalanceRepository } from "@/persistence/actualBalance";
+import { ActualHourlyBalanceRepository } from "@/persistence/actualBalance";
 
-export async function balances({
-  year,
-  officialId,
-  actualBalanceRepository,
-}: {
-  year: number;
-  officialId: number;
-  actualBalanceRepository: ActualBalanceRepository;
-}) {
-  const lastActualBalances = await actualBalanceRepository.getTAS(
-    {
-      year: {
-        gte: year,
+export default class Balances {
+  private actualHourlyBalanceRepository: ActualHourlyBalanceRepository;
+
+  constructor({
+    actualHourlyBalanceRepository,
+  }: {
+    actualHourlyBalanceRepository: ActualHourlyBalanceRepository;
+  }) {
+    this.actualHourlyBalanceRepository = actualHourlyBalanceRepository;
+  }
+
+  async calculate({ year, officialId }: { year: number; officialId: number }) {
+    const lastActualBalances = await this.actualHourlyBalanceRepository.getTAS(
+      {
+        year: {
+          gte: year,
+        },
+        officialId,
       },
-      officialId,
-    },
-    {
-      include: {
-        hourlyBalances: {
-          include: {
-            hourlyBalanceTAS: true,
+      {
+        include: {
+          hourlyBalances: {
+            include: {
+              hourlyBalanceTAS: true,
+            },
           },
         },
-      },
-    }
-  );
-
-  const result = lastActualBalances.map((ac) => {
-    const min = getMinHourlyBalanceWithSumGreaterThanZero(ac.hourlyBalances);
-    const remainingHourlyBalances = ac.hourlyBalances?.filter((h) => {
-      return min ? h.year >= min.year : false;
-    });
-    return new ActualBalance(
-      ac.id,
-      ac.year,
-      ac.total,
-      ac.official.orUndefined(),
-      remainingHourlyBalances
+      }
     );
-  });
 
-  return result;
+    const result = lastActualBalances.map((ac) => {
+      const min = getMinHourlyBalanceWithSumGreaterThanZero(ac.hourlyBalances);
+      const remainingHourlyBalances = ac.hourlyBalances?.filter((h) => {
+        return min ? h.year >= min.year : false;
+      });
+      return new ActualBalance(
+        ac.id,
+        ac.year,
+        ac.total,
+        ac.official.orUndefined(),
+        remainingHourlyBalances
+      );
+    });
+
+    return result;
+  }
 }
 
+//TODO. Cambiar métodos por la clase ActualBalance o Array
 export function getCurrentActualHourlyBalance(
   actualHourlyBalances: ActualBalance[],
   year: number

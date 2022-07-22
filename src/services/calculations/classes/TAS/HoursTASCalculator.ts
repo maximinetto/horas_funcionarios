@@ -10,9 +10,10 @@ import {
   includeCalculationsTAS,
 } from "@/persistence/calculations";
 import HoursCalculator from "@/services/calculations/classes/HoursCalculator";
-import YearsCalculator from "@/services/calculations/classes/TAS/YearsCalculator";
+import BalancesPerYearCalculator from "@/services/calculations/classes/TAS/YearsCalculator";
 import HoursClass from "@/services/calculations/classes/typeOfHours";
 
+import CalculationSorter from "@/sorters/CalculationSorter";
 import CalculationValidator from "../CalculationValidator";
 import CalculationTASCreator from "./CalculationTASCreator";
 import { hoursOfYearEnricher } from "./hourEnrich";
@@ -20,22 +21,28 @@ import { hoursOfYearEnricher } from "./hourEnrich";
 export default class HoursTASCalculator extends HoursCalculator {
   protected declare calculations: Calculations<CalculationTAS>;
   protected declare hourlyBalances: Array<HourlyBalanceTAS>;
-  private balancesPerYearCalculator: YearsCalculator;
+  private balancesPerYearCalculator: BalancesPerYearCalculator;
 
-  constructor(
-    calculationRepository: CalculationRepository,
-    validator: CalculationValidator,
-    balancesPerYearCalculator?: YearsCalculator
-  ) {
-    super(
+  constructor({
+    balancesPerYearCalculator,
+    calculationRepository,
+    calculationSorter,
+    calculationValidator,
+  }: {
+    calculationRepository: CalculationRepository;
+    calculationValidator: CalculationValidator;
+    calculationSorter: CalculationSorter;
+    balancesPerYearCalculator: BalancesPerYearCalculator;
+  }) {
+    super({
       calculationRepository,
-      new CalculationTASCreator(),
-      includeCalculationsTAS(),
-      validator
-    );
+      calculationValidator,
+      calculationSorter,
+      calculationCreator: new CalculationTASCreator(),
+      selectOptions: includeCalculationsTAS(),
+    });
 
-    this.balancesPerYearCalculator =
-      balancesPerYearCalculator ?? new YearsCalculator();
+    this.balancesPerYearCalculator = balancesPerYearCalculator;
   }
 
   async calculatePerMonthAlternatives() {

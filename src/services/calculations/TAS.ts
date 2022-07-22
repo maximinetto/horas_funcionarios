@@ -1,86 +1,69 @@
 import { CalculationCalculated } from "@/@types/calculations";
 import Calculations from "@/collections/Calculations";
-import BalanceConverter from "@/converters/BalanceConverter";
+import { balances, calculatorRowService } from "@/dependencies/container";
 import ActualBalance from "@/entities/ActualBalance";
 import CalculationTAS from "@/entities/CalculationTAS";
 import Official from "@/entities/Official";
-import { ActualBalanceRepository } from "@/persistence/actualBalance";
-import { CalculationRepository } from "@/persistence/calculations";
+import ValueNotProvidedError from "@/errors/ValueNotProvidedError";
+import RecalculatorService from "@/services/calculations/classes/TAS/RecalculatorService";
+import ActualHourlyBalanceCreator from "@/services/hourlyBalances/ActualHourlyBalanceCreator";
+import ActualHourlyBalanceReplacer from "@/services/hourlyBalances/ActualHourlyBalanceReplacer";
 
-import { balances, getCurrentActualHourlyBalance } from "../hourlyBalances";
-import ActualHourlyBalanceCreator from "../hourlyBalances/ActualHourlyBalanceCreator";
-import ActualHourlyBalanceReplacer from "../hourlyBalances/ActualHourlyBalanceReplacer";
-import CalculationValidator from "./classes/CalculationValidator";
-import CalculationRowService from "./classes/TAS/CalculationRowService";
-import HoursTASCalculator from "./classes/TAS/HoursTASCalculator";
-import RecalculateService from "./classes/TAS/RecalculateService";
+import { getCurrentActualHourlyBalance } from "../hourlyBalances";
 
-export default async function calculateForTAS({
-  year: currentYear,
-  official,
-  calculations,
-  calculationRowService = new CalculationRowService(),
-  calculationRepository = new CalculationRepository(),
-  actualBalanceRepository = new ActualBalanceRepository(),
-  balanceConverter = new BalanceConverter(),
-  actualBalanceCreator = new ActualHourlyBalanceCreator(),
-  actualBalanceReplacer = new ActualHourlyBalanceReplacer(
-    balanceConverter,
-    actualBalanceCreator
-  ),
-  calculateService = new HoursTASCalculator(
-    calculationRepository,
-    new CalculationValidator()
-  ),
-  recalculateService = new RecalculateService(
-    calculationRepository,
-    calculationRowService,
-    calculateService,
-    actualBalanceReplacer
-  ),
-}: {
-  year: number;
-  official: Official;
-  calculations: Calculations<CalculationTAS>;
-  calculationRowService?: CalculationRowService;
-  calculationRepository?: CalculationRepository;
-  actualBalanceRepository?: ActualBalanceRepository;
-  actualBalanceCreator?: ActualHourlyBalanceCreator;
-  actualBalanceReplacer?: ActualHourlyBalanceReplacer;
-  balanceConverter?: BalanceConverter;
-  calculateService?: HoursTASCalculator;
-  recalculateService?: RecalculateService;
-}): Promise<{
-  currentYear: CalculationCalculated;
-  others: CalculationCalculated[];
-  actualHourlyBalances: ActualBalance[];
-}> {
-  async function main(): Promise<{
+export default class TASCalculator {
+  private actualHourlyBalanceReplacer: ActualHourlyBalanceReplacer;
+  private actualHourlyBalanceCreator: ActualHourlyBalanceCreator;
+  private recalculatorService: RecalculatorService;
+  private official?: Official;
+
+  constructor({
+    actualHourlyBalanceReplacer,
+    recalculatorService,
+    actualHourlyBalanceCreator,
+  }: {
+    actualHourlyBalanceReplacer: ActualHourlyBalanceReplacer;
+    recalculatorService: RecalculatorService;
+    actualHourlyBalanceCreator: ActualHourlyBalanceCreator;
+  }) {
+    this.actualHourlyBalanceReplacer = actualHourlyBalanceReplacer;
+    this.recalculatorService = recalculatorService;
+    this.actualHourlyBalanceCreator = actualHourlyBalanceCreator;
+  }
+
+  async calculate({
+    year: currentYear,
+    official,
+    calculations,
+  }: {
+    year: number;
+    official: Official;
+    calculations: Calculations<CalculationTAS>;
+  }): Promise<{
     currentYear: CalculationCalculated;
     others: CalculationCalculated[];
     actualHourlyBalances: ActualBalance[];
   }> {
     const previousYear = currentYear - 1;
-    const actualHourlyBalancesAfterPreviousYear = await balances({
+    this.official = official;
+    this.officialIsDefinite();
+
+    const actualHourlyBalancesAfterPreviousYear = await balances.calculate({
       year: previousYear,
       officialId: official.id,
-      actualBalanceRepository,
     });
 
     const previousActualBalance = getCurrentActualHourlyBalance(
       actualHourlyBalancesAfterPreviousYear,
       previousYear
     );
-    const dataCalculated = await calculationRowService.calculate(
-      {
-        year: currentYear,
-        official,
-        calculations,
-        actualHourlyBalance: previousActualBalance,
-        calculationsFromPersistence: new Calculations(),
-      },
-      calculateService
-    );
+    const dataCalculated = await calculatorRowService.calculate({
+      year: currentYear,
+      official,
+      calculations,
+      actualHourlyBalance: previousActualBalance,
+      calculationsFromPersistence: new Calculations(),
+    });
 
     const actualBalanceCurrentYear = getCurrentActualHourlyBalance(
       actualHourlyBalancesAfterPreviousYear,
@@ -88,18 +71,19 @@ export default async function calculateForTAS({
     );
 
     if (!actualBalanceCurrentYear) {
-      return createActualBalance(dataCalculated, currentYear, official);
+      return this.createActualBalance(dataCalculated, currentYear, official);
     }
 
-    const actualHourlyBalanceCalculated = actualBalanceReplacer.replace({
-      balances: dataCalculated.balances,
-      totalBalance: dataCalculated.totalBalance,
-      actualBalance: actualBalanceCurrentYear,
-    });
+    const actualHourlyBalanceCalculated =
+      this.actualHourlyBalanceReplacer.replace({
+        balances: dataCalculated.balances,
+        totalBalance: dataCalculated.totalBalance,
+        actualBalance: actualBalanceCurrentYear,
+      });
 
-    const nextYear = getNextYear(actualHourlyBalanceCalculated.year);
+    const nextYear = this.getNextYear(actualHourlyBalanceCalculated.year);
 
-    const others = await recalculate(
+    const others = await this.recalculate(
       nextYear,
       actualHourlyBalancesAfterPreviousYear,
       actualHourlyBalanceCalculated
@@ -114,14 +98,14 @@ export default async function calculateForTAS({
     };
   }
 
-  async function recalculate(
+  private async recalculate(
     nextYear: number,
     actualHourlyBalancesAfterPreviousYear: ActualBalance[],
     actualHourlyBalanceCalculated: ActualBalance
   ) {
     const postCalculatedData =
-      await recalculateService.tryToRecalculateLaterHours({
-        official,
+      await this.recalculatorService.tryToRecalculateLaterHours({
+        official: this.official!,
         year: nextYear,
         currentActualHourlyBalances: actualHourlyBalancesAfterPreviousYear,
         actualHourlyBalanceCalculated,
@@ -139,17 +123,18 @@ export default async function calculateForTAS({
     };
   }
 
-  function createActualBalance(
+  createActualBalance(
     dataCalculated: CalculationCalculated,
     nextYear: number,
     official: Official
   ) {
-    const actualHourlyBalanceCalculated = actualBalanceCreator.create({
-      balances: dataCalculated.balances,
-      year: nextYear,
-      officialId: official.id,
-      total: dataCalculated.totalBalance,
-    });
+    const actualHourlyBalanceCalculated =
+      this.actualHourlyBalanceCreator.create({
+        balances: dataCalculated.balances,
+        year: nextYear,
+        officialId: official.id,
+        total: dataCalculated.totalBalance,
+      });
 
     save([dataCalculated]);
 
@@ -160,11 +145,15 @@ export default async function calculateForTAS({
     };
   }
 
-  function getNextYear(year: number) {
+  getNextYear(year: number) {
     return year + 1;
   }
 
-  return main();
+  private officialIsDefinite() {
+    if (!this.official) {
+      throw new ValueNotProvidedError("You must provide a official");
+    }
+  }
 }
 
 function save(calculations: CalculationCalculated[]) {

@@ -12,7 +12,7 @@ import Official from "@/entities/Official";
 import database from "@/persistence/persistence.config";
 import { serializeBalancesTAS } from "@/serializers/persistence/balance";
 
-export class ActualBalanceRepository {
+export class ActualHourlyBalanceRepository {
   private hourlyBalanceConverter: HourlyBalanceTASConverter;
   constructor(hourlyBalanceConverter?: HourlyBalanceTASConverter) {
     this.hourlyBalanceConverter =

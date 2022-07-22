@@ -31,18 +31,25 @@ export default abstract class HoursCalculator {
   private selectOptions: PrismaCalculationFinderOptions;
   private calculationValidator: CalculationValidator;
 
-  constructor(
-    calculationRepository: CalculationRepository,
-    calculationCreator: CalculationCreator,
-    selectOptions: PrismaCalculationFinderOptions,
-    calculationValidator: CalculationValidator
-  ) {
+  constructor({
+    calculationCreator,
+    calculationRepository,
+    calculationSorter,
+    calculationValidator,
+    selectOptions,
+  }: {
+    calculationRepository: CalculationRepository;
+    calculationCreator: CalculationCreator;
+    selectOptions: PrismaCalculationFinderOptions;
+    calculationValidator: CalculationValidator;
+    calculationSorter: CalculationSorter;
+  }) {
     this.calculationRepository = calculationRepository;
     this.calculationCreator = calculationCreator;
     this.calculations = new Calculations();
     this.calculationsFromPersistence = new Calculations<Calculation>();
     this.hourlyBalances = [];
-    this.calculationsSorter = new CalculationSorter();
+    this.calculationsSorter = calculationSorter;
     this.selectOptions = selectOptions;
     this.calculationValidator = calculationValidator;
     this.getCalculationsAndTransform =
@@ -55,10 +62,10 @@ export default abstract class HoursCalculator {
 
   async calculate({
     calculations: _calculations,
-    calculationsFromPersistence,
     year: _year,
     official: _official,
     hourlyBalances: _hourlyBalances,
+    calculationsFromPersistence,
   }: CalculationParam<Calculation>): Promise<CalculationCalculated> {
     this.setAttributes({
       calculations: _calculations,

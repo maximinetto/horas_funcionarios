@@ -9,7 +9,7 @@ import HourlyBalanceTAS from "@/entities/HourlyBalanceTAS";
 import { TYPES_OF_HOURS } from "@/enums/typeOfHours";
 import { instance as Hours } from "@/services/calculations/classes/typeOfHours";
 
-export default class YearsCalculator {
+export default class BalancesPerYearCalculator {
   private hourlyBalances: HourlyBalanceTAS[];
   private hoursActualYear: TypeOfHoursByYear;
   private totalDiscount: Decimal;

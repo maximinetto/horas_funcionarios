@@ -12,14 +12,17 @@ import ActualHourlyBalanceCreator from "./ActualHourlyBalanceCreator";
 
 export default class ActualHourlyBalanceReplacer {
   private balanceConverter: BalanceConverter;
-  private actualBalanceCreator: ActualHourlyBalanceCreator;
+  private actualHourlyBalanceCreator: ActualHourlyBalanceCreator;
 
-  constructor(
-    balanceConverter: BalanceConverter,
-    actualBalanceCreator: ActualHourlyBalanceCreator
-  ) {
+  constructor({
+    actualHourlyBalanceCreator,
+    balanceConverter,
+  }: {
+    balanceConverter: BalanceConverter;
+    actualHourlyBalanceCreator: ActualHourlyBalanceCreator;
+  }) {
     this.balanceConverter = balanceConverter;
-    this.actualBalanceCreator = actualBalanceCreator;
+    this.actualHourlyBalanceCreator = actualHourlyBalanceCreator;
   }
 
   replace({
@@ -54,7 +57,7 @@ export default class ActualHourlyBalanceReplacer {
     const balanceNewer = this.getBalanceNewer(balancesSortedByYear);
     const nextYear = this.getNextYear(balanceNewer);
 
-    this.actualBalanceCreator.create({
+    this.actualHourlyBalanceCreator.create({
       balances: balancesSortedByYear,
       year: nextYear,
       total: totalBalance,

@@ -34,10 +34,10 @@ export interface NotNullableCalculationWithTeacher
 
 export interface CalculationParam<T extends Calculation> {
   calculations: Calculations<T>;
-  calculationsFromPersistence: Calculations<T>;
   year: number;
   official: Official;
   hourlyBalances: HourlyBalance[];
+  calculationsFromPersistence: Calculations<T>;
 }
 
 export interface CalculationTAS extends CalculationModel, CalculationTASModel {}

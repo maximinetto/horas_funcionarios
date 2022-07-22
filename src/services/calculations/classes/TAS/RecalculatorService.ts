@@ -7,27 +7,26 @@ import Official from "@/entities/Official";
 import { CalculationRepository } from "@/persistence/calculations";
 import ActualHourlyBalanceReplacer from "@/services/hourlyBalances/ActualHourlyBalanceReplacer";
 
-import CalculationRowService from "./CalculationRowService";
-import HoursTASCalculator from "./HoursTASCalculator";
+import CalculatorRowService from "./CalculatorRowService";
 
-export default class RecalculateService {
+export default class RecalculatorService {
   private calculationRepository: CalculationRepository;
-  private calculationRowService: CalculationRowService;
-  private calculateService: HoursTASCalculator;
-  private actualBalanceReplacer: ActualHourlyBalanceReplacer;
+  private calculatorRowService: CalculatorRowService;
+  private actualHourlyBalanceReplacer: ActualHourlyBalanceReplacer;
   private actualHourlyBalances: ActualBalance[] = [];
-  f;
 
-  constructor(
-    calculationRepository: CalculationRepository,
-    calculationRowService: CalculationRowService,
-    calculateService: HoursTASCalculator,
-    actualBalanceReplacer: ActualHourlyBalanceReplacer
-  ) {
+  constructor({
+    actualHourlyBalanceReplacer,
+    calculationRepository,
+    calculatorRowService,
+  }: {
+    calculationRepository: CalculationRepository;
+    calculatorRowService: CalculatorRowService;
+    actualHourlyBalanceReplacer: ActualHourlyBalanceReplacer;
+  }) {
     this.calculationRepository = calculationRepository;
-    this.calculationRowService = calculationRowService;
-    this.calculateService = calculateService;
-    this.actualBalanceReplacer = actualBalanceReplacer;
+    this.calculatorRowService = calculatorRowService;
+    this.actualHourlyBalanceReplacer = actualHourlyBalanceReplacer;
   }
 
   async tryToRecalculateLaterHours({
@@ -100,18 +99,15 @@ export default class RecalculateService {
     const yearNumber = Number(next.year);
     const calculations = next.calculations as CalculationTAS[];
 
-    const data = await this.calculationRowService.reCalculate(
-      {
-        calculations: new Calculations(),
-        official,
-        actualHourlyBalance: previous,
-        year: yearNumber,
-        calculationsFromPersistence: new Calculations(...calculations),
-      },
-      this.calculateService
-    );
+    const data = await this.calculatorRowService.reCalculate({
+      calculations: new Calculations(),
+      official,
+      actualHourlyBalance: previous,
+      year: yearNumber,
+      calculationsFromPersistence: new Calculations(...calculations),
+    });
 
-    const actualHourlyBalance = this.actualBalanceReplacer.replace({
+    const actualHourlyBalance = this.actualHourlyBalanceReplacer.replace({
       actualBalance: next,
       balances: data.balances,
       totalBalance: data.totalBalance,
