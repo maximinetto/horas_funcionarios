@@ -8,10 +8,10 @@ import OfficialService from "@/services/officials";
 const container = createContainer();
 
 container.register({
-  officialRepository: asClass(OfficialRepository),
-  officialService: asClass(OfficialService),
+  officialRepository: asClass(OfficialRepository).singleton(),
+  officialService: asClass(OfficialService).singleton(),
   database: asValue(prisma),
-  calculator: asClass(Calculator),
+  calculator: asClass(Calculator).singleton(),
 });
 
 export const officialService = container.resolve(
