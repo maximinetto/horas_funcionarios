@@ -1,4 +1,4 @@
-import { generateRandomUUIDV4 } from "@/utils/strings";
+import { generateRandomUUIDV4 } from "utils/strings";
 
 test("Should generate a valid string uuidv4", () => {
   const string = generateRandomUUIDV4();

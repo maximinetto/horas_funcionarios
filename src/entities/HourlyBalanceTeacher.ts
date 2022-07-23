@@ -1,6 +1,6 @@
 import { Decimal } from "decimal.js";
 
-import Nullable from "@/entities/null_object/Nullable";
+import Nullable from "entities/null_object/Nullable";
 
 import type ActualBalance from "./ActualBalance";
 import HourlyBalance from "./HourlyBalance";

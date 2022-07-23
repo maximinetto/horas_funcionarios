@@ -1,11 +1,11 @@
 import Decimal from "decimal.js";
 
-import { TypeOfHoursByYear } from "@/@types/typeOfHours";
-import ActualBalance from "@/entities/ActualBalance";
-import HourlyBalanceTAS from "@/entities/HourlyBalanceTAS";
-import Official from "@/entities/Official";
-import { TYPES_OF_HOURS } from "@/enums/typeOfHours";
-import { generateRandomUUIDV4 } from "@/utils/strings";
+import ActualBalance from "entities/ActualBalance";
+import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
+import Official from "entities/Official";
+import { TYPES_OF_HOURS } from "enums/typeOfHours";
+import { TypeOfHoursByYear } from "types/typeOfHours";
+import { generateRandomUUIDV4 } from "utils/strings";
 
 export default class ActualHourlyBalanceCreator {
   create({

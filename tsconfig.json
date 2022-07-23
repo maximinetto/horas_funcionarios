@@ -4,13 +4,9 @@
     "lib": ["ES6"],
     "module": "commonjs",
     "types": ["node"],
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"]
-    },
+    "baseUrl": "./src",
     "isolatedModules": true,
     "resolveJsonModule": true,
-    "moduleResolution": "node",
     "allowJs": true,
     "outDir": "./dist",
     "removeComments": true,
@@ -19,8 +15,7 @@
     "strict": true,
     "noImplicitAny": false,
     "skipLibCheck": true,
-    "sourceMap": true,
-    "rootDir": "./src"
+    "sourceMap": true
   },
   "include": ["src"]
 }

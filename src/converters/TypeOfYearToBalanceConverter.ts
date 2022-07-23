@@ -1,11 +1,11 @@
 import Decimal from "decimal.js";
 
-import { TypeOfHoursByYearDecimal } from "@/@types/typeOfHours";
-import ActualBalance from "@/entities/ActualBalance";
-import HourlyBalance from "@/entities/HourlyBalance";
-import HourlyBalanceTAS from "@/entities/HourlyBalanceTAS";
-import { TYPES_OF_HOURS } from "@/enums/typeOfHours";
-import { instance as hours } from "@/services/calculations/classes/typeOfHours";
+import ActualBalance from "entities/ActualBalance";
+import HourlyBalance from "entities/HourlyBalance";
+import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
+import { TYPES_OF_HOURS } from "enums/typeOfHours";
+import { instance as hours } from "services/calculations/classes/typeOfHours";
+import { TypeOfHoursByYearDecimal } from "types/typeOfHours";
 
 export function convertTypesOfYearsToActualBalance(
   actualBalance: ActualBalance,

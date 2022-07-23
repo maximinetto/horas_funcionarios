@@ -1,8 +1,8 @@
-import { CalculationCalculated } from "@/@types/calculations";
-import Calculations from "@/collections/Calculations";
-import { tasCalculator } from "@/dependencies/container";
-import CalculationTAS from "@/entities/CalculationTAS";
-import HourlyBalanceTAS from "@/entities/HourlyBalanceTAS";
+import Calculations from "collections/Calculations";
+import { tasCalculator } from "dependencies/container";
+import CalculationTAS from "entities/CalculationTAS";
+import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
+import { CalculationCalculated } from "types/calculations";
 
 import calculation from "./HoursTASCalculator/calculate";
 import { calculateTotalBalance } from "./HoursTASCalculator/calculateBalance";

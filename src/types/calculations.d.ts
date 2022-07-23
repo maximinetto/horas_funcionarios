@@ -6,9 +6,9 @@ import {
 } from "@prisma/client";
 import Decimal from "decimal.js";
 
-import Calculation from "@/entities/Calculation";
-import CalculationTASEntity from "@/entities/CalculationTAS";
-import Official from "@/entities/Official";
+import Calculation from "entities/Calculation";
+import CalculationTASEntity from "entities/CalculationTAS";
+import Official from "entities/Official";
 
 import {
   TypeOfHourDecimal,

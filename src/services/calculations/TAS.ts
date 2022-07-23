@@ -1,13 +1,13 @@
-import { CalculationCalculated } from "@/@types/calculations";
-import Calculations from "@/collections/Calculations";
-import { balances, calculatorRowService } from "@/dependencies/container";
-import ActualBalance from "@/entities/ActualBalance";
-import CalculationTAS from "@/entities/CalculationTAS";
-import Official from "@/entities/Official";
-import ValueNotProvidedError from "@/errors/ValueNotProvidedError";
-import RecalculatorService from "@/services/calculations/classes/TAS/RecalculatorService";
-import ActualHourlyBalanceCreator from "@/services/hourlyBalances/ActualHourlyBalanceCreator";
-import ActualHourlyBalanceReplacer from "@/services/hourlyBalances/ActualHourlyBalanceReplacer";
+import Calculations from "collections/Calculations";
+import { balances, calculatorRowService } from "dependencies/container";
+import ActualBalance from "entities/ActualBalance";
+import CalculationTAS from "entities/CalculationTAS";
+import Official from "entities/Official";
+import ValueNotProvidedError from "errors/ValueNotProvidedError";
+import RecalculatorService from "services/calculations/classes/TAS/RecalculatorService";
+import ActualHourlyBalanceCreator from "services/hourlyBalances/ActualHourlyBalanceCreator";
+import ActualHourlyBalanceReplacer from "services/hourlyBalances/ActualHourlyBalanceReplacer";
+import { CalculationCalculated } from "types/calculations";
 
 import { getCurrentActualHourlyBalance } from "../hourlyBalances";
 

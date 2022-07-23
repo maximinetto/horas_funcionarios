@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 
-import { logger } from "@/config";
-import { asyncHandler } from "@/dependencies";
-import { officialService } from "@/dependencies/container";
-import response from "@/utils/response";
+import { logger } from "config";
+import { asyncHandler } from "dependencies";
+import { officialService } from "dependencies/container";
+import response from "utils/response";
 
 export const getOfficials = asyncHandler(async (_req: Request, res) => {
   const value = res.locals.value;

@@ -4,11 +4,10 @@ import { AnySchema, ValidationError } from "joi";
 import _get from "lodash/get";
 import _merge from "lodash/merge";
 
-import { Property } from "@/@types/common";
-import { asyncHandler } from "@/dependencies";
-import NotExistsError from "@/errors/NotExistsError";
-import { valueExistsInPersistence } from "@/persistence/entity";
-
+import { asyncHandler } from "dependencies";
+import NotExistsError from "errors/NotExistsError";
+import { valueExistsInPersistence } from "persistence/entity";
+import { Property } from "types/common";
 export default function middleware(
   schema: AnySchema,
   property: Property = "body"

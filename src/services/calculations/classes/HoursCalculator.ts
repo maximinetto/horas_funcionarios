@@ -1,17 +1,17 @@
 import Decimal from "decimal.js";
 
+import Calculations from "collections/Calculations";
+import Calculation from "entities/Calculation";
+import HourlyBalance from "entities/HourlyBalance";
+import ICalculation from "entities/ICalculation";
+import Official from "entities/Official";
+import type { CalculationRepository } from "persistence/calculations";
+import CalculationSorter from "sorters/CalculationSorter";
 import {
   CalculationCalculated,
   CalculationParam,
   PrismaCalculationFinderOptions,
-} from "@/@types/calculations";
-import Calculations from "@/collections/Calculations";
-import Calculation from "@/entities/Calculation";
-import HourlyBalance from "@/entities/HourlyBalance";
-import ICalculation from "@/entities/ICalculation";
-import Official from "@/entities/Official";
-import type { CalculationRepository } from "@/persistence/calculations";
-import CalculationSorter from "@/sorters/CalculationSorter";
+} from "types/calculations";
 
 import CalculatePerMonth, {
   CalculatePerMonthAlternative,

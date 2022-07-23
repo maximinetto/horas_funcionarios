@@ -1,8 +1,8 @@
 import { Decimal } from "decimal.js";
 
-import { NotNullableCalculationWithTAS } from "@/@types/calculations";
-import CalculationTASEntity from "@/entities/CalculationTAS";
-import NullActualBalance from "@/entities/null_object/NullActualBalance";
+import CalculationTASEntity from "entities/CalculationTAS";
+import NullActualBalance from "entities/null_object/NullActualBalance";
+import { NotNullableCalculationWithTAS } from "types/calculations";
 
 import { AbstractConverter } from "./converter";
 

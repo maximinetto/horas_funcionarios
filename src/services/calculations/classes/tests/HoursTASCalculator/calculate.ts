@@ -1,10 +1,10 @@
 import Decimal from "decimal.js";
 
-import Calculations from "@/collections/Calculations";
-import ActualBalance from "@/entities/ActualBalance";
-import CalculationTAS from "@/entities/CalculationTAS";
-import HourlyBalanceTAS from "@/entities/HourlyBalanceTAS";
-import { generateRandomUUIDV4 } from "@/utils/strings";
+import Calculations from "collections/Calculations";
+import ActualBalance from "entities/ActualBalance";
+import CalculationTAS from "entities/CalculationTAS";
+import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
+import { generateRandomUUIDV4 } from "utils/strings";
 
 import subtractHoursFromBalance from "./calculateBalance";
 import { calculate } from "./calculateForMonth";

@@ -1,11 +1,11 @@
 import faker from "@faker-js/faker";
 import { Decimal } from "decimal.js";
 
-import { CalculationTAS as CalculationTASModel } from "@/@types/calculations";
-import ActualBalance from "@/entities/ActualBalance";
-import CalculationTAS from "@/entities/CalculationTAS";
-import HourlyBalanceTAS from "@/entities/HourlyBalanceTAS";
-import { generateRandomUUIDV4 } from "@/utils/strings";
+import ActualBalance from "entities/ActualBalance";
+import CalculationTAS from "entities/CalculationTAS";
+import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
+import { CalculationTAS as CalculationTASModel } from "types/calculations";
+import { generateRandomUUIDV4 } from "utils/strings";
 
 export function buildCalculation(
   calculation: Omit<CalculationTASModel, "id" | "calculationId">

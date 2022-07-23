@@ -1,8 +1,8 @@
 import { Dictionary } from "lodash";
 import _groupBy from "lodash/groupBy";
 
-import Calculation from "@/entities/Calculation";
-import numberSorter from "@/utils/numberSorter";
+import Calculation from "entities/Calculation";
+import numberSorter from "utils/numberSorter";
 
 export default function groupAndSortCalculations<E extends Calculation>(
   calculations: E[]

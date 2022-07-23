@@ -1,6 +1,6 @@
-import ActualBalance from "@/entities/ActualBalance";
-import HourlyBalanceTAS from "@/entities/HourlyBalanceTAS";
-import { ActualHourlyBalanceRepository } from "@/persistence/actualBalance";
+import ActualBalance from "entities/ActualBalance";
+import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
+import { ActualHourlyBalanceRepository } from "persistence/actualBalance";
 
 export default class Balances {
   private actualHourlyBalanceRepository: ActualHourlyBalanceRepository;
@@ -50,7 +50,7 @@ export default class Balances {
   }
 }
 
-//TODO. Cambiar métodos por la clase ActualBalance o Array
+// TODO. Cambiar métodos por la clase ActualBalance o Array
 export function getCurrentActualHourlyBalance(
   actualHourlyBalances: ActualBalance[],
   year: number

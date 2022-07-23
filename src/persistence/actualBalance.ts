@@ -1,16 +1,16 @@
 import { Prisma } from "@prisma/client";
 import Decimal from "decimal.js";
 
+import HourlyBalanceTASConverter from "converters/HourlyBalanceTASConverter";
+import ActualBalance from "entities/ActualBalance";
+import Official from "entities/Official";
+import database from "persistence/persistence.config";
+import { serializeBalancesTAS } from "serializers/persistence/balance";
 import {
   ActualBalanceDTO,
   ActualBalanceFindManyOptions,
   ActualBalanceWithTASEntity,
-} from "@/@types/actualBalance";
-import HourlyBalanceTASConverter from "@/converters/HourlyBalanceTASConverter";
-import ActualBalance from "@/entities/ActualBalance";
-import Official from "@/entities/Official";
-import database from "@/persistence/persistence.config";
-import { serializeBalancesTAS } from "@/serializers/persistence/balance";
+} from "types/actualBalance";
 
 export class ActualHourlyBalanceRepository {
   private hourlyBalanceConverter: HourlyBalanceTASConverter;

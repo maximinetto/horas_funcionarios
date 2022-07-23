@@ -1,22 +1,22 @@
 import { asClass, asValue, createContainer } from "awilix";
 
-import BalanceConverter from "@/converters/BalanceConverter";
-import { ActualHourlyBalanceRepository } from "@/persistence/actualBalance";
-import { CalculationRepository } from "@/persistence/calculations";
-import OfficialRepository from "@/persistence/officials";
-import prisma from "@/persistence/persistence.config";
-import Calculator from "@/services/calculations";
-import CalculationValidator from "@/services/calculations/classes/CalculationValidator";
-import CalculatorRowService from "@/services/calculations/classes/TAS/CalculatorRowService";
-import HoursTASCalculator from "@/services/calculations/classes/TAS/HoursTASCalculator";
-import RecalculatorService from "@/services/calculations/classes/TAS/RecalculatorService";
-import BalancesPerYearCalculator from "@/services/calculations/classes/TAS/YearsCalculator";
-import TASCalculator from "@/services/calculations/TAS";
-import Balances from "@/services/hourlyBalances";
-import ActualHourlyBalanceCreator from "@/services/hourlyBalances/ActualHourlyBalanceCreator";
-import ActualHourlyBalanceReplacer from "@/services/hourlyBalances/ActualHourlyBalanceReplacer";
-import OfficialService from "@/services/officials";
-import CalculationSorter from "@/sorters/CalculationSorter";
+import BalanceConverter from "converters/BalanceConverter";
+import { ActualHourlyBalanceRepository } from "persistence/actualBalance";
+import { CalculationRepository } from "persistence/calculations";
+import OfficialRepository from "persistence/officials";
+import prisma from "persistence/persistence.config";
+import Calculator from "services/calculations";
+import CalculationValidator from "services/calculations/classes/CalculationValidator";
+import CalculatorRowService from "services/calculations/classes/TAS/CalculatorRowService";
+import HoursTASCalculator from "services/calculations/classes/TAS/HoursTASCalculator";
+import RecalculatorService from "services/calculations/classes/TAS/RecalculatorService";
+import BalancesPerYearCalculator from "services/calculations/classes/TAS/YearsCalculator";
+import TASCalculator from "services/calculations/TAS";
+import Balances from "services/hourlyBalances";
+import ActualHourlyBalanceCreator from "services/hourlyBalances/ActualHourlyBalanceCreator";
+import ActualHourlyBalanceReplacer from "services/hourlyBalances/ActualHourlyBalanceReplacer";
+import OfficialService from "services/officials";
+import CalculationSorter from "sorters/CalculationSorter";
 
 const container = createContainer();
 

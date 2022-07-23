@@ -16,7 +16,7 @@
     "integration:watch": "npm run integration -- --watchAll",
     "build": "rimraf dist && babel src --ignore=node_modules,dist --extensions .ts --out-dir dist --copy-files --no-copy-ignored",
     "build:swc": "npm run check && rimraf dist && npm run compile",
-    "start": "cross-env NODE_ENV=production node dist/index.js",
+    "start": "cross-env NODE_ENV=production node -r tsconfig-paths/register -r ts-node/register dist/index.js",
     "dev": "dotenv -e .env.development npm run watch",
     "dev:swc": "dotenv -e .env.development npm run watch:swc",
     "watch": "ts-node-dev -r tsconfig-paths/register --transpile-only --respawn --watch --ignore-watch node_modules src/index.ts",

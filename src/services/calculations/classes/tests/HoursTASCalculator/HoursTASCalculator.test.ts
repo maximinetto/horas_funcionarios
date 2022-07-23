@@ -1,9 +1,9 @@
-import Calculations from "@/collections/Calculations";
-import ActualBalance from "@/entities/ActualBalance";
-import { ActualHourlyBalanceRepository } from "@/persistence/actualBalance";
-import { CalculationRepository } from "@/persistence/calculations";
+import Calculations from "collections/Calculations";
+import ActualBalance from "entities/ActualBalance";
+import { ActualHourlyBalanceRepository } from "persistence/actualBalance";
+import { CalculationRepository } from "persistence/calculations";
+import HoursTASCalculationCreator from "services/calculations/classes/tests/HoursTASCalculator/HoursTASCalculationCreator";
 
-import HoursTASCalculationCreator from "@/services/calculations/classes/tests/HoursTASCalculator/HoursTASCalculationCreator";
 import {
   expectCalculationEquals,
   expectCurrentActualBalanceEquals,
@@ -37,7 +37,7 @@ describe("Test calculations", () => {
 
     const firstData = new Calculations(...calculationsFirstTest);
 
-    let data = preset(firstData, yearFirstTest);
+    const data = preset(firstData, yearFirstTest);
     ActualHourlyBalanceRepository.prototype.getTAS = jest
       .fn()
       .mockResolvedValue([convert(data.lastBalances, data.data.official)]);

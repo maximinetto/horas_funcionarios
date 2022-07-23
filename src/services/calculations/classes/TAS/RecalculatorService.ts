@@ -1,11 +1,11 @@
-import { CalculationCalculated } from "@/@types/calculations";
-import Calculations from "@/collections/Calculations";
-import ActualBalance from "@/entities/ActualBalance";
-import Calculation from "@/entities/Calculation";
-import CalculationTAS from "@/entities/CalculationTAS";
-import Official from "@/entities/Official";
-import { CalculationRepository } from "@/persistence/calculations";
-import ActualHourlyBalanceReplacer from "@/services/hourlyBalances/ActualHourlyBalanceReplacer";
+import Calculations from "collections/Calculations";
+import ActualBalance from "entities/ActualBalance";
+import Calculation from "entities/Calculation";
+import CalculationTAS from "entities/CalculationTAS";
+import Official from "entities/Official";
+import { CalculationRepository } from "persistence/calculations";
+import ActualHourlyBalanceReplacer from "services/hourlyBalances/ActualHourlyBalanceReplacer";
+import { CalculationCalculated } from "types/calculations";
 
 import CalculatorRowService from "./CalculatorRowService";
 

@@ -7,9 +7,7 @@
       "dynamicImport": true
     },
     "target": "es2020",
-    "paths": {
-      "@/*": ["./src/*"]
-    }
+    "baseUrl": "./src"
   },
   "module": {
     "type": "commonjs"

@@ -1,9 +1,9 @@
 import type Decimal from "decimal.js";
 import { Optional } from "typescript-optional";
 
-import { HourlyBalanceSimple } from "@/@types/hourlyBalance";
-import Nullable from "@/entities/null_object/Nullable";
-import Comparable from "@/utils/Comparator";
+import Nullable from "entities/null_object/Nullable";
+import { HourlyBalanceSimple } from "types/hourlyBalance";
+import Comparable from "utils/Comparator";
 
 import type ActualBalance from "./ActualBalance";
 

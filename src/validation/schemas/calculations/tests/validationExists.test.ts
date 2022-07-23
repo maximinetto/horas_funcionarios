@@ -1,10 +1,10 @@
 import { getMockRes } from "@jest-mock/express";
 import { Request } from "express";
 
-import middleware, { exists } from "@/validation/middlewares/validation";
-import { schemas } from "@/validation/schemas/calculations";
+import middleware, { exists } from "validation/middlewares/validation";
+import { schemas } from "validation/schemas/calculations";
 
-jest.mock("@/persistence/entity", () => ({
+jest.mock("persistence/entity", () => ({
   __esModule: true,
   valueExistsInPersistence: jest.fn(() => true),
 }));

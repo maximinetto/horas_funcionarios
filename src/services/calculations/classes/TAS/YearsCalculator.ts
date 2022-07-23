@@ -1,13 +1,10 @@
 import { Decimal } from "decimal.js";
 
-import {
-  TypeOfHoursByYear,
-  TypeOfHoursByYearDecimal,
-} from "@/@types/typeOfHours";
-import { logger } from "@/config";
-import HourlyBalanceTAS from "@/entities/HourlyBalanceTAS";
-import { TYPES_OF_HOURS } from "@/enums/typeOfHours";
-import { instance as Hours } from "@/services/calculations/classes/typeOfHours";
+import { logger } from "config";
+import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
+import { TYPES_OF_HOURS } from "enums/typeOfHours";
+import { instance as Hours } from "services/calculations/classes/typeOfHours";
+import { TypeOfHoursByYear, TypeOfHoursByYearDecimal } from "types/typeOfHours";
 
 export default class BalancesPerYearCalculator {
   private hourlyBalances: HourlyBalanceTAS[];

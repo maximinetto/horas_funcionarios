@@ -1,4 +1,4 @@
-import { TypeOfHourDecimal } from "@/@types/typeOfHours";
+import { TypeOfHourDecimal } from "types/typeOfHours";
 
 import { CalculatePerMonthAlternative } from "../CalculatePerMonth";
 

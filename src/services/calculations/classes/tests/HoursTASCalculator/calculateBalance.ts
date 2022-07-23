@@ -1,11 +1,11 @@
 import { Decimal } from "decimal.js";
 
+import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
 import {
   TypeOfHour,
   TypeOfHourDecimal,
   TypeOfHoursByYearDecimal,
-} from "@/@types/typeOfHours";
-import HourlyBalanceTAS from "@/entities/HourlyBalanceTAS";
+} from "types/typeOfHours";
 
 import Hours from "../../typeOfHours";
 import { Total } from "./types";
