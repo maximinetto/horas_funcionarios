@@ -1,5 +1,4 @@
 import Decimal from "decimal.js";
-
 import ActualBalance from "entities/ActualBalance";
 import HourlyBalance from "entities/HourlyBalance";
 import HourlyBalanceTAS from "entities/HourlyBalanceTAS";

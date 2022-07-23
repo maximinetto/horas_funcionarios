@@ -1,7 +1,6 @@
-import { Request, Response } from "express";
-
 import { asyncHandler } from "dependencies";
 import { calculator } from "dependencies/container";
+import { Request, Response } from "express";
 import response from "utils/response";
 
 export const createHours = asyncHandler(async (req: Request, res: Response) => {

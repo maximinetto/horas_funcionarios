@@ -1,5 +1,4 @@
 import { TypeOfOfficials } from "@prisma/client";
-
 import Calculations from "collections/Calculations";
 import CalculationTAS from "entities/CalculationTAS";
 import NotExistsError from "errors/NotExistsError";

@@ -1,7 +1,6 @@
-import { DateTime } from "luxon";
-
 import { logger } from "config";
 import Calculation from "entities/Calculation";
+import { DateTime } from "luxon";
 import { resetDateFromFirstDay } from "utils/date";
 import { getNumberByMonth } from "utils/mapMonths";
 import numberSorter from "utils/numberSorter";

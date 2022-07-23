@@ -1,7 +1,6 @@
 import { Official as OfficialModel } from "@prisma/client";
-import { DateTime } from "luxon";
-
 import OfficialEntity from "entities/Official";
+import { DateTime } from "luxon";
 
 import { AbstractConverter } from "./converter";
 

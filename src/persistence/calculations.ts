@@ -1,11 +1,10 @@
 import { Prisma } from "@prisma/client";
-import _omit from "lodash/omit";
-
 import Calculations from "collections/Calculations";
 import CalculationConverter from "converters/CalculationConverter";
 import Calculation from "entities/Calculation";
 import CalculationTAS from "entities/CalculationTAS";
 import CalculationTeacher from "entities/CalculationTeacher";
+import _omit from "lodash/omit";
 import database from "persistence/persistence.config";
 import {
   CalculationWithTAS,

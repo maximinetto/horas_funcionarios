@@ -1,6 +1,5 @@
-import Decimal from "decimal.js";
-
 import Calculations from "collections/Calculations";
+import Decimal from "decimal.js";
 import Calculation from "entities/Calculation";
 import HourlyBalance from "entities/HourlyBalance";
 import ICalculation from "entities/ICalculation";

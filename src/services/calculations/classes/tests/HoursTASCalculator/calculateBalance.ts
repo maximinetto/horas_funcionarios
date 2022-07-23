@@ -1,5 +1,4 @@
 import { Decimal } from "decimal.js";
-
 import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
 import {
   TypeOfHour,

@@ -1,5 +1,4 @@
 import { Decimal } from "decimal.js";
-
 import { TypeOfHoursByYear, TypeOfHoursByYearDecimal } from "types/typeOfHours";
 
 const expectBalance = (actual: TypeOfHoursByYear[]) => {

@@ -1,9 +1,8 @@
-import Decimal from "decimal.js";
-import { Dictionary } from "lodash";
-
 import Calculations from "collections/Calculations";
+import Decimal from "decimal.js";
 import CalculationTAS from "entities/CalculationTAS";
 import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
+import { Dictionary } from "lodash";
 import { ActualHourlyBalanceRepository } from "persistence/actualBalance";
 import { CalculationRepository } from "persistence/calculations";
 import { expectCalculationEquals } from "services/calculations/classes/tests/expect";

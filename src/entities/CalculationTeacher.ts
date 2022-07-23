@@ -1,6 +1,5 @@
 import { Month } from "@prisma/client";
 import { Decimal } from "decimal.js";
-
 import Nullable from "entities/null_object/Nullable";
 
 import Calculation from "./Calculation";

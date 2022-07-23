@@ -1,6 +1,5 @@
 import { Month } from "@prisma/client";
 import Decimal from "decimal.js";
-
 import CalculationTAS from "entities/CalculationTAS";
 import { buildCalculation } from "services/calculations/classes/tests/HoursTASCalculator/buildCalculation";
 import { hoursToSeconds } from "services/calculations/classes/tests/HoursTASCalculator/util";

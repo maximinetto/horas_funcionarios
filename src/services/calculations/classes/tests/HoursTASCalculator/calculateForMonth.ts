@@ -1,6 +1,5 @@
-import { Decimal } from "decimal.js";
-
 import Calculations from "collections/Calculations";
+import { Decimal } from "decimal.js";
 import CalculationTAS from "entities/CalculationTAS";
 
 import { Total } from "./types";

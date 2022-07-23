@@ -1,7 +1,6 @@
 import { Contract, TypeOfOfficials } from "@prisma/client";
-import { DateTime } from "luxon";
-
 import Nullable from "entities/null_object/Nullable";
+import { DateTime } from "luxon";
 import { OfficialSimple } from "types/officials";
 import Comparable from "utils/Comparator";
 

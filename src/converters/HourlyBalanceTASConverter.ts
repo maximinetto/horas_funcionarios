@@ -1,5 +1,4 @@
 import { Decimal } from "decimal.js";
-
 import HourlyBalanceEntity from "entities/HourlyBalanceTAS";
 import NullActualBalance from "entities/null_object/NullActualBalance";
 import { HourlyBalanceTAS as HourlyBalanceTASModel } from "types/hourlyBalance";

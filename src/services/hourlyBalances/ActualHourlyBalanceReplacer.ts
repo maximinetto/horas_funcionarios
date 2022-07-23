@@ -1,7 +1,6 @@
-import type Decimal from "decimal.js";
-
 import BalanceConverter from "converters/BalanceConverter";
 import { convertTypesOfYearsToActualBalance } from "converters/TypeOfYearToBalanceConverter";
+import type Decimal from "decimal.js";
 import ActualBalance from "entities/ActualBalance";
 import { TypeOfHoursByYear, TypeOfHoursByYearDecimal } from "types/typeOfHours";
 

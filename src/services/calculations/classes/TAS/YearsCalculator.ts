@@ -1,6 +1,5 @@
-import { Decimal } from "decimal.js";
-
 import { logger } from "config";
+import { Decimal } from "decimal.js";
 import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
 import { TYPES_OF_HOURS } from "enums/typeOfHours";
 import { instance as Hours } from "services/calculations/classes/typeOfHours";

@@ -1,5 +1,4 @@
 import { Calculation as CalculationModel } from "@prisma/client";
-
 import ActualBalance from "entities/ActualBalance";
 import Calculation from "entities/Calculation";
 import CalculationTAS from "entities/CalculationTAS";

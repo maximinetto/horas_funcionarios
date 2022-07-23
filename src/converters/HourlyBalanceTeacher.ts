@@ -1,5 +1,4 @@
 import { Decimal } from "decimal.js";
-
 import HourlyBalanceEntity from "entities/HourlyBalanceTeacher";
 import NullActualBalance from "entities/null_object/NullActualBalance";
 import { HourlyBalanceTeacher as HourlyBalanceTeacherModel } from "types/hourlyBalance";

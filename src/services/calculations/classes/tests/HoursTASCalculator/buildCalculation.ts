@@ -1,6 +1,5 @@
 import faker from "@faker-js/faker";
 import { Decimal } from "decimal.js";
-
 import ActualBalance from "entities/ActualBalance";
 import CalculationTAS from "entities/CalculationTAS";
 import HourlyBalanceTAS from "entities/HourlyBalanceTAS";

@@ -1,5 +1,4 @@
 import { asClass, asValue, createContainer } from "awilix";
-
 import BalanceConverter from "converters/BalanceConverter";
 import { ActualHourlyBalanceRepository } from "persistence/actualBalance";
 import { CalculationRepository } from "persistence/calculations";

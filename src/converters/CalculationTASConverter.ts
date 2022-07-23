@@ -1,5 +1,4 @@
 import { Decimal } from "decimal.js";
-
 import CalculationTASEntity from "entities/CalculationTAS";
 import NullActualBalance from "entities/null_object/NullActualBalance";
 import { NotNullableCalculationWithTAS } from "types/calculations";

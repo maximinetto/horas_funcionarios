@@ -1,7 +1,6 @@
 import { Prisma } from "@prisma/client";
-import Decimal from "decimal.js";
-
 import HourlyBalanceTASConverter from "converters/HourlyBalanceTASConverter";
+import Decimal from "decimal.js";
 import ActualBalance from "entities/ActualBalance";
 import Official from "entities/Official";
 import database from "persistence/persistence.config";
