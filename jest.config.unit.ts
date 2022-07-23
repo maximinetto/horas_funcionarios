@@ -4,6 +4,9 @@
  */
 
 import type { Config } from "@jest/types";
+import path from "path";
+
+import { compilerOptions } from "./tsconfig.json";
 
 const config: Config.InitialOptions = {
   // All imported modules in your tests should be mocked automatically
@@ -91,6 +94,8 @@ const config: Config.InitialOptions = {
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
   // modulePathIgnorePatterns: [],
+
+  modulePaths: [path.join("<rootDir>", compilerOptions.baseUrl)],
 
   // Activates notifications for test results
   // notify: false,
@@ -191,7 +196,6 @@ const config: Config.InitialOptions = {
 
   // Whether to use watchman for file crawling
   // watchman: true,
-  modulePaths: ["<rootDir>/src/"],
 };
 
 export default config;
