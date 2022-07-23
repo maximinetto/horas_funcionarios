@@ -1,8 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { Contract, TypeOfOfficials } from "@prisma/client";
-
-import { officialService } from "@/dependencies/container";
-import { prismaMock } from "@/singleton";
+import { officialService } from "dependencies/container";
+import { prismaMock } from "singleton";
 
 describe("Officials controller tests", () => {
   test("Should get multiples official models", async () => {

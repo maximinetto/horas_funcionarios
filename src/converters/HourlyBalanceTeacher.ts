@@ -1,8 +1,7 @@
 import { Decimal } from "decimal.js";
-
-import { HourlyBalanceTeacher as HourlyBalanceTeacherModel } from "@/@types/hourlyBalance";
-import HourlyBalanceEntity from "@/entities/HourlyBalanceTeacher";
-import NullActualBalance from "@/entities/null_object/NullActualBalance";
+import HourlyBalanceEntity from "entities/HourlyBalanceTeacher";
+import NullActualBalance from "entities/null_object/NullActualBalance";
+import { HourlyBalanceTeacher as HourlyBalanceTeacherModel } from "types/hourlyBalance";
 
 import { AbstractConverter } from "./converter";
 

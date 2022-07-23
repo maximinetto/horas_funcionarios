@@ -1,8 +1,7 @@
 import faker from "@faker-js/faker";
 import { ActualBalance, Month } from "@prisma/client";
+import CalculationTAS from "entities/CalculationTAS";
 import { DateTime } from "luxon";
-
-import CalculationTAS from "@/entities/CalculationTAS";
 
 import { buildCalculation } from "./buildCalculation";
 import { hoursToSeconds } from "./util";

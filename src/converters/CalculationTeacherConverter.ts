@@ -1,8 +1,7 @@
 import { Decimal } from "decimal.js";
-
-import { NotNullableCalculationWithTeacher } from "@/@types/calculations";
-import CalculationTeacherEntity from "@/entities/CalculationTeacher";
-import NullActualBalance from "@/entities/null_object/NullActualBalance";
+import CalculationTeacherEntity from "entities/CalculationTeacher";
+import NullActualBalance from "entities/null_object/NullActualBalance";
+import { NotNullableCalculationWithTeacher } from "types/calculations";
 
 import { AbstractConverter } from "./converter";
 

@@ -1,9 +1,9 @@
-import { CalculationCalculated } from "@/@types/calculations";
-import Calculations from "@/collections/Calculations";
-import CalculationTAS from "@/entities/CalculationTAS";
-import HourlyBalanceTAS from "@/entities/HourlyBalanceTAS";
+import Calculations from "collections/Calculations";
+import { tasCalculator } from "dependencies/container";
+import CalculationTAS from "entities/CalculationTAS";
+import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
+import { CalculationCalculated } from "types/calculations";
 
-import calculateForTAS from "../../TAS";
 import calculation from "./HoursTASCalculator/calculate";
 import { calculateTotalBalance } from "./HoursTASCalculator/calculateBalance";
 import { calculate } from "./HoursTASCalculator/calculateForMonth";
@@ -21,7 +21,7 @@ export async function expectCalculationEquals(
   },
   _calculations: Calculations<CalculationTAS>
 ) {
-  const response = await calculateForTAS({
+  const response = await tasCalculator.calculate({
     calculations: data.calculations,
     official: data.official,
     year: data.year,

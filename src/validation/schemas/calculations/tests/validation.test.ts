@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
 import Joi from "joi";
-
-import middleware from "@/validation/middlewares/validation";
-import { schemas } from "@/validation/schemas/calculations";
+import middleware from "validation/middlewares/validation";
+import { schemas } from "validation/schemas/calculations";
 
 describe("Validate", () => {
   test("middleware create calculations is valid", async () => {

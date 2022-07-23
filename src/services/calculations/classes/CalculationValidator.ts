@@ -1,12 +1,11 @@
 import { Month } from "@prisma/client";
+import Calculations from "collections/Calculations";
+import Calculation from "entities/Calculation";
+import Official from "entities/Official";
+import InvalidValueError from "errors/InvalidValueError";
 import { DateTime } from "luxon";
-
-import Calculations from "@/collections/Calculations";
-import Calculation from "@/entities/Calculation";
-import Official from "@/entities/Official";
-import InvalidValueError from "@/errors/InvalidValueError";
-import { resetDateFromFirstDay } from "@/utils/date";
-import { getNumberByMonth } from "@/utils/mapMonths";
+import { resetDateFromFirstDay } from "utils/date";
+import { getNumberByMonth } from "utils/mapMonths";
 
 export default class CalculationValidator {
   private year: number = 0;

@@ -1,5 +1,5 @@
-import NotExistsError from "@/errors/NotExistsError";
-import persistence from "@/persistence/persistence.config";
+import NotExistsError from "errors/NotExistsError";
+import persistence from "persistence/persistence.config";
 
 export const valueExistsInPersistence = ({
   value,

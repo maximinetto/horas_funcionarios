@@ -1,8 +1,7 @@
 import Decimal from "decimal.js";
-
-import ActualBalance from "@/entities/ActualBalance";
-import HourlyBalanceTAS from "@/entities/HourlyBalanceTAS";
-import Official from "@/entities/Official";
+import ActualBalance from "entities/ActualBalance";
+import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
+import Official from "entities/Official";
 
 export function convert(
   hourlyBalancesTAS: HourlyBalanceTAS[],

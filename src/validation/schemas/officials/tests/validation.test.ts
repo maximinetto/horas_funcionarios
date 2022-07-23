@@ -2,11 +2,10 @@ import { getMockRes } from "@jest-mock/express";
 import { Contract, TypeOfOfficials } from "@prisma/client";
 import { Request, Response } from "express";
 import { DateTime } from "luxon";
+import middleware, { exists } from "validation/middlewares/validation";
+import { schemas } from "validation/schemas/officials";
 
-import middleware, { exists } from "@/validation/middlewares/validation";
-import { schemas } from "@/validation/schemas/officials";
-
-jest.mock("@/persistence/entity", () => ({
+jest.mock("persistence/entity", () => ({
   __esModule: true,
   valueExistsInPersistence: jest.fn(() => true),
 }));

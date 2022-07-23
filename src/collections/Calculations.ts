@@ -1,10 +1,9 @@
 import Decimal from "decimal.js";
+import Calculation from "entities/Calculation";
 import _cloneDeep from "lodash/cloneDeep";
 import _differenceBy from "lodash/differenceBy";
 import _xorBy from "lodash/xorBy";
-
-import Calculation from "@/entities/Calculation";
-import CalculationSorter from "@/sorters/CalculationSorter";
+import CalculationSorter from "sorters/CalculationSorter";
 
 export default class Calculations<E extends Calculation> {
   private calculationsSorter: CalculationSorter;

@@ -1,10 +1,9 @@
 import { Prisma } from "@prisma/client";
+import Official from "entities/Official";
 import { DateTime } from "luxon";
+import type prisma from "persistence/persistence.config";
+import { OfficialWithoutId } from "types/officials";
 import { Optional } from "typescript-optional";
-
-import { OfficialWithoutId } from "@/@types/officials";
-import Official from "@/entities/Official";
-import type prisma from "@/persistence/persistence.config";
 
 export interface IOfficialRepository {
   getOne(id: number): Promise<Optional<Official>>;

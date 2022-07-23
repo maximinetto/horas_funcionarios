@@ -1,10 +1,9 @@
 import faker from "@faker-js/faker";
 import { Month } from "@prisma/client";
-
-import Calculations from "@/collections/Calculations";
-import ActualBalance from "@/entities/ActualBalance";
-import Calculation from "@/entities/Calculation";
-import CalculationSorter from "@/sorters/CalculationSorter";
+import Calculations from "collections/Calculations";
+import ActualBalance from "entities/ActualBalance";
+import Calculation from "entities/Calculation";
+import CalculationSorter from "sorters/CalculationSorter";
 
 describe("Sorters and getters", () => {
   let calculationsSorter: CalculationSorter;

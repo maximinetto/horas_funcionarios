@@ -1,8 +1,7 @@
 import { Contract, TypeOfOfficials } from "@prisma/client";
-
-import { IOfficialRepository } from "@/persistence/officials";
-import { lastDateOfTheYear } from "@/utils/date";
-import removeKeyIfValueDoesNotDefined from "@/utils/removeKeyIfValueDoesNotDefined";
+import { IOfficialRepository } from "persistence/officials";
+import { lastDateOfTheYear } from "utils/date";
+import removeKeyIfValueDoesNotDefinite from "utils/removeKeyIfValueDoesNotDefinite";
 
 export default class OfficialService {
   private officialRepository: IOfficialRepository;
@@ -82,7 +81,7 @@ export default class OfficialService {
       type,
       contract,
     };
-    removeKeyIfValueDoesNotDefined(fields);
+    removeKeyIfValueDoesNotDefinite(fields);
 
     return this.officialRepository.update(id, fields);
   }

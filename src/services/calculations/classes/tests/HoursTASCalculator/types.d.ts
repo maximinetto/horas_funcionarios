@@ -1,7 +1,7 @@
-import ActualBalance from "@/entities/ActualBalance";
-import CalculationTAS from "@/entities/CalculationTAS";
-import HourlyBalanceTAS from "@/entities/HourlyBalanceTAS";
-import Official from "@/entities/Official";
+import ActualBalance from "entities/ActualBalance";
+import CalculationTAS from "entities/CalculationTAS";
+import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
+import Official from "entities/Official";
 
 export type Data = {
   calculations: Calculations<CalculationTAS>;

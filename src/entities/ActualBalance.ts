@@ -1,10 +1,9 @@
 import { Decimal } from "decimal.js";
+import Nullable from "entities/null_object/Nullable";
+import { ActualBalanceWithHourlyBalancesSimple } from "types/actualBalance";
 import { Optional } from "typescript-optional";
-
-import { ActualBalanceWithHourlyBalancesSimple } from "@/@types/actualBalance";
-import Nullable from "@/entities/null_object/Nullable";
-import Comparable from "@/utils/Comparator";
-import { generateRandomUUIDV4 } from "@/utils/strings";
+import Comparable from "utils/Comparator";
+import { generateRandomUUIDV4 } from "utils/strings";
 
 import Calculation from "./Calculation";
 import type HourlyBalance from "./HourlyBalance";

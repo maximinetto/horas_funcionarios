@@ -1,13 +1,11 @@
 import { Month } from "@prisma/client";
+import Calculations from "collections/Calculations";
 import Decimal from "decimal.js";
-
-import CalculationTAS from "@/entities/CalculationTAS";
-import { buildCalculation } from "@/services/calculations/classes/tests/HoursTASCalculator/buildCalculation";
-import { hoursToSeconds } from "@/services/calculations/classes/tests/HoursTASCalculator/util";
-import CalculationSorter from "@/sorters/CalculationSorter";
-import { generateRandomUUIDV4 } from "@/utils/strings";
-
-import Calculations from "../Calculations";
+import CalculationTAS from "entities/CalculationTAS";
+import { buildCalculation } from "services/calculations/classes/tests/HoursTASCalculator/buildCalculation";
+import { hoursToSeconds } from "services/calculations/classes/tests/HoursTASCalculator/util";
+import CalculationSorter from "sorters/CalculationSorter";
+import { generateRandomUUIDV4 } from "utils/strings";
 
 test("Should replace calculations and pass test", () => {
   const year = 2020;

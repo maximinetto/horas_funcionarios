@@ -1,17 +1,16 @@
+import Calculations from "collections/Calculations";
 import Decimal from "decimal.js";
-
+import Calculation from "entities/Calculation";
+import HourlyBalance from "entities/HourlyBalance";
+import ICalculation from "entities/ICalculation";
+import Official from "entities/Official";
+import type { CalculationRepository } from "persistence/calculations";
+import CalculationSorter from "sorters/CalculationSorter";
 import {
   CalculationCalculated,
   CalculationParam,
   PrismaCalculationFinderOptions,
-} from "@/@types/calculations";
-import Calculations from "@/collections/Calculations";
-import Calculation from "@/entities/Calculation";
-import HourlyBalance from "@/entities/HourlyBalance";
-import ICalculation from "@/entities/ICalculation";
-import Official from "@/entities/Official";
-import type { CalculationRepository } from "@/persistence/calculations";
-import CalculationSorter from "@/sorters/CalculationSorter";
+} from "types/calculations";
 
 import CalculatePerMonth, {
   CalculatePerMonthAlternative,
@@ -31,18 +30,25 @@ export default abstract class HoursCalculator {
   private selectOptions: PrismaCalculationFinderOptions;
   private calculationValidator: CalculationValidator;
 
-  constructor(
-    calculationRepository: CalculationRepository,
-    calculationCreator: CalculationCreator,
-    selectOptions: PrismaCalculationFinderOptions,
-    calculationValidator: CalculationValidator
-  ) {
+  constructor({
+    calculationCreator,
+    calculationRepository,
+    calculationSorter,
+    calculationValidator,
+    selectOptions,
+  }: {
+    calculationRepository: CalculationRepository;
+    calculationCreator: CalculationCreator;
+    selectOptions: PrismaCalculationFinderOptions;
+    calculationValidator: CalculationValidator;
+    calculationSorter: CalculationSorter;
+  }) {
     this.calculationRepository = calculationRepository;
     this.calculationCreator = calculationCreator;
     this.calculations = new Calculations();
     this.calculationsFromPersistence = new Calculations<Calculation>();
     this.hourlyBalances = [];
-    this.calculationsSorter = new CalculationSorter();
+    this.calculationsSorter = calculationSorter;
     this.selectOptions = selectOptions;
     this.calculationValidator = calculationValidator;
     this.getCalculationsAndTransform =
@@ -55,10 +61,10 @@ export default abstract class HoursCalculator {
 
   async calculate({
     calculations: _calculations,
-    calculationsFromPersistence,
     year: _year,
     official: _official,
     hourlyBalances: _hourlyBalances,
+    calculationsFromPersistence,
   }: CalculationParam<Calculation>): Promise<CalculationCalculated> {
     this.setAttributes({
       calculations: _calculations,

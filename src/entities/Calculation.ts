@@ -1,10 +1,9 @@
 import { Month } from "@prisma/client";
+import Calculations from "collections/Calculations";
 import Decimal from "decimal.js";
+import Nullable from "entities/null_object/Nullable";
 import { Optional } from "typescript-optional";
-
-import Calculations from "@/collections/Calculations";
-import Nullable from "@/entities/null_object/Nullable";
-import Comparable from "@/utils/Comparator";
+import Comparable from "utils/Comparator";
 
 import ActualBalance from "./ActualBalance";
 import ICalculation from "./ICalculation";

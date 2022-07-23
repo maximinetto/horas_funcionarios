@@ -4,15 +4,14 @@ import {
   TypeOfOfficials,
 } from "@prisma/client";
 import { Decimal } from "decimal.js";
+import ActualBalanceEntity from "entities/ActualBalance";
+import HourlyBalance from "entities/HourlyBalance";
+import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
+import NullOfficial from "entities/null_object/NullOfficial";
+import Official from "entities/Official";
 import { DateTime } from "luxon";
+import { ActualBalanceWithHourlyBalancesTAS } from "types/actualBalance";
 import { Optional } from "typescript-optional";
-
-import { ActualBalanceWithHourlyBalancesTAS } from "@/@types/actualBalance";
-import ActualBalanceEntity from "@/entities/ActualBalance";
-import HourlyBalance from "@/entities/HourlyBalance";
-import HourlyBalanceTAS from "@/entities/HourlyBalanceTAS";
-import NullOfficial from "@/entities/null_object/NullOfficial";
-import Official from "@/entities/Official";
 
 import { AbstractConverter } from "./converter";
 

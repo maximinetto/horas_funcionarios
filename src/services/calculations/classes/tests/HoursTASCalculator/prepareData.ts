@@ -1,13 +1,12 @@
 import faker from "@faker-js/faker";
 import { Contract, TypeOfOfficials } from "@prisma/client";
+import Calculations from "collections/Calculations";
+import CalculationTAS from "entities/CalculationTAS";
+import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
+import Official from "entities/Official";
 import { DateTime } from "luxon";
-
-import { CalculationTAS as CalculationTASModel } from "@/@types/calculations";
-import Calculations from "@/collections/Calculations";
-import CalculationTAS from "@/entities/CalculationTAS";
-import HourlyBalanceTAS from "@/entities/HourlyBalanceTAS";
-import Official from "@/entities/Official";
-import { getMonthByNumber } from "@/utils/mapMonths";
+import { CalculationTAS as CalculationTASModel } from "types/calculations";
+import { getMonthByNumber } from "utils/mapMonths";
 
 import { buildCalculation, buildHourlyBalance } from "./buildCalculation";
 import { actualBalance } from "./initialValues";

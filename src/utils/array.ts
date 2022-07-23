@@ -1,6 +1,5 @@
+import ArrayIsEmptyError from "errors/ArrayIsEmptyError";
 import _keyBy from "lodash/keyBy";
-
-import ArrayIsEmptyError from "@/errors/ArrayIsEmptyError";
 
 export const isFirstValue = (index: number) => index === 0;
 export const previousValue = <T>(array: T[], index: number) => {
