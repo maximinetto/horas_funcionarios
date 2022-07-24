@@ -13,11 +13,12 @@ import { DateTime } from "luxon";
 import { ActualBalanceWithHourlyBalancesTAS } from "types/actualBalance";
 import { Optional } from "typescript-optional";
 
-import { AbstractConverter } from "./converter";
+import { AbstractConverter } from "./AbstractConverter";
 
 export default class ActualBalanceConverter extends AbstractConverter<
   ActualBalanceModel,
-  ActualBalanceEntity
+  ActualBalanceEntity,
+  {}
 > {
   fromModelToEntity(model: ActualBalanceModel): ActualBalanceEntity {
     return new ActualBalanceEntity(

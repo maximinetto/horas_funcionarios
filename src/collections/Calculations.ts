@@ -9,7 +9,7 @@ export default class Calculations<E extends Calculation> {
   private calculationsSorter: CalculationSorter;
   private calculations: E[];
 
-  constructor(...items: E[]) {
+  constructor(...items: Array<E>) {
     this.calculations = items ?? [];
     this.calculationsSorter = new CalculationSorter();
     this.toPrimitiveArray.bind(this);

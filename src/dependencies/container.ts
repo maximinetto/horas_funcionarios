@@ -1,5 +1,6 @@
 import { asClass, asValue, createContainer } from "awilix";
 import BalanceConverter from "converters/BalanceConverter";
+import CalculationTASConverter from "converters/CalculationTASConverter";
 import { ActualHourlyBalanceRepository } from "persistence/actualBalance";
 import { CalculationRepository } from "persistence/calculations";
 import OfficialRepository from "persistence/officials";
@@ -39,6 +40,7 @@ container.register({
   balances: asClass(Balances).singleton(),
   calculationSorter: asClass(CalculationSorter).singleton(),
   tasCalculator: asClass(TASCalculator).singleton(),
+  calculationTASConverter: asClass(CalculationTASConverter).singleton(),
 });
 
 export const officialService = container.resolve(

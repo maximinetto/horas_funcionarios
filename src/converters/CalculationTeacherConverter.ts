@@ -3,11 +3,12 @@ import CalculationTeacherEntity from "entities/CalculationTeacher";
 import NullActualBalance from "entities/null_object/NullActualBalance";
 import { NotNullableCalculationWithTeacher } from "types/calculations";
 
-import { AbstractConverter } from "./converter";
+import { AbstractConverter } from "./AbstractConverter";
 
 export default class CalculationTeacherConverter extends AbstractConverter<
   NotNullableCalculationWithTeacher,
-  CalculationTeacherEntity
+  CalculationTeacherEntity,
+  {}
 > {
   fromModelToEntity(
     model: NotNullableCalculationWithTeacher

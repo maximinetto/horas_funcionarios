@@ -3,11 +3,12 @@ import HourlyBalanceEntity from "entities/HourlyBalanceTAS";
 import NullActualBalance from "entities/null_object/NullActualBalance";
 import { HourlyBalanceTAS as HourlyBalanceTASModel } from "types/hourlyBalance";
 
-import { AbstractConverter } from "./converter";
+import { AbstractConverter } from "./AbstractConverter";
 
 export default class HourlyBalanceTASConverter extends AbstractConverter<
   HourlyBalanceTASModel,
-  HourlyBalanceEntity
+  HourlyBalanceEntity,
+  {}
 > {
   fromModelToEntity(model: HourlyBalanceTASModel): HourlyBalanceEntity {
     return new HourlyBalanceEntity(

@@ -45,6 +45,7 @@ export const createOfficials = asyncHandler(
         message: "Se ha creado el funcionario satisfactoriamente",
       });
     } catch (error) {
+      // TODO: Implementar una excepcion personalizada
       logger.error(error);
       response(res, {
         status: 500,
@@ -89,6 +90,7 @@ export const updateOfficial = asyncHandler(
         message: "Se ha actualizado el funcionario satisfactoriamente",
       });
     } catch (error) {
+      // TODO: Implementar una excepcion personalizada
       logger.error(error);
       response(res, {
         status: 500,
@@ -110,6 +112,7 @@ export const deleteOfficial = asyncHandler(
         message: "Se ha eliminado el funcionario satisfactoriamente",
       });
     } catch (error) {
+      // TODO: Implementar una excepcion personalizada
       logger.error(error);
       response(res, {
         status: 500,

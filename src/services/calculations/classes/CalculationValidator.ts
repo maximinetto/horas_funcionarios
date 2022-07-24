@@ -3,6 +3,7 @@ import Calculations from "collections/Calculations";
 import Calculation from "entities/Calculation";
 import Official from "entities/Official";
 import InvalidValueError from "errors/InvalidValueError";
+import UnexpectedValueError from "errors/UnexpectedValueError";
 import { DateTime } from "luxon";
 import { resetDateFromFirstDay } from "utils/date";
 import { getNumberByMonth } from "utils/mapMonths";
@@ -68,7 +69,9 @@ export default class CalculationValidator {
     official?: Official;
   }) {
     if (!calculations || !(calculations instanceof Calculations)) {
-      throw new Error("calculations must be an instance of Calculation");
+      throw new UnexpectedValueError(
+        "calculations must be an instance of Calculation"
+      );
     }
 
     this.officialIsDefined(official);

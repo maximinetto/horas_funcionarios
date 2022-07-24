@@ -1,4 +1,5 @@
 import Calculations from "collections/Calculations";
+import { logger } from "config";
 import { tasCalculator } from "dependencies/container";
 import CalculationTAS from "entities/CalculationTAS";
 import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
@@ -70,7 +71,7 @@ export function expectCurrentActualBalanceEquals(
       currentCalculation.totalNonWorkingHours.value
     )
   ).toBeTruthy();
-  console.log("Total Balances:", currentCalculation.totalBalance);
+  logger.info("Total Balances:", currentCalculation.totalBalance);
   expect(currentCalculation.totalBalance.toString()).toBe(
     total.totalHours.toString()
   );

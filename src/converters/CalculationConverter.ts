@@ -10,9 +10,9 @@ import {
   NotNullableCalculationWithTeacher,
 } from "types/calculations";
 
+import { AbstractConverter } from "./AbstractConverter";
 import CalculationTASConverter from "./CalculationTASConverter";
 import CalculationTeacherConverter from "./CalculationTeacherConverter";
-import { AbstractConverter } from "./converter";
 
 type AllCalculationTypes =
   | NotNullableCalculationWithTAS
@@ -25,7 +25,8 @@ type AllCalculationEntities =
 
 export default class CalculationConverter extends AbstractConverter<
   AllCalculationTypes,
-  Calculation
+  Calculation,
+  {}
 > {
   private calculationTASConverter: CalculationTASConverter;
   private calculationTeacherConverter: CalculationTeacherConverter;

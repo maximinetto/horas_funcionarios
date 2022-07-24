@@ -1,4 +1,5 @@
 import Calculations from "collections/Calculations";
+import { logger } from "config";
 import { balances, calculatorRowService } from "dependencies/container";
 import ActualBalance from "entities/ActualBalance";
 import CalculationTAS from "entities/CalculationTAS";
@@ -157,5 +158,5 @@ export default class TASCalculator {
 }
 
 function save(calculations: CalculationCalculated[]) {
-  console.log(calculations);
+  logger.debug(calculations);
 }

@@ -1,6 +1,7 @@
 import cors from "cors";
 import express from "express";
 import router from "routes";
+import errorHandler from "validation/middlewares/errorHandler";
 
 const app = express();
 
@@ -15,4 +16,6 @@ app.use((_req, res) => {
     error: "Not found",
   });
 });
+
+app.use(errorHandler);
 export default app;
