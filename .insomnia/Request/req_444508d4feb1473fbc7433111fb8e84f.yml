@@ -1,0 +1,58 @@
+_id: req_444508d4feb1473fbc7433111fb8e84f
+type: Request
+parentId: wrk_0b42bd8e24744bb1ae6323deb0211389
+modified: 1658796143253
+created: 1658796086973
+url: http://localhost:3000/api/v1/calculations/year/2021/officials/1
+name: Create Calculation
+description: ""
+method: POST
+body:
+  mimeType: application/json
+  text: |-
+    {
+    	"calculations": [
+    		{
+    		"year": 2021,
+    		"month": 1,
+    		"observations": "Sabelo flaco",
+    		"surplusBusiness": "00:30",
+    		"surplusNonWorking": "00:00",
+    		"surplusSimple": "00:00",
+    		"discount": "00:10",
+    		"workingOvertime": "00:00",
+    		"workingNightOvertime": "00:00",
+    		"nonWorkingOvertime": "00:00",
+    		"nonWorkingNightOvertime": "00:00",
+    		"compensatedNightOvertime": "00:00"
+    	},
+    		{
+    		"year": 2021,
+    		"month": 2,
+    		"observations": "Sabelo flacazo",
+    		"surplusBusiness": "00:00",
+    		"surplusNonWorking": "00:00",
+    		"surplusSimple": "01:00",
+    		"discount": "00:15",
+    		"workingOvertime": "00:00",
+    		"workingNightOvertime": "00:00",
+    		"nonWorkingOvertime": "00:00",
+    		"nonWorkingNightOvertime": "00:00",
+    		"compensatedNightOvertime": "00:00"
+    	}
+    									]
+    }
+parameters: []
+headers:
+  - name: Content-Type
+    value: application/json
+    id: pair_4d2d6e859b3043acb8099669c9c819a9
+authentication: {}
+metaSortKey: -1658796086973
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

@@ -1,0 +1,36 @@
+_id: req_3146850f67a54ecdb309c568c71bbb1e
+type: Request
+parentId: wrk_0b42bd8e24744bb1ae6323deb0211389
+modified: 1658796179613
+created: 1658796162093
+url: http://localhost:3000/api/v1/officials/
+name: Create official
+description: ""
+method: POST
+body:
+  mimeType: application/json
+  text: |-
+    {
+    	"firstName": "Maximiliano",
+    	"lastName": "Minetto",
+    	"dateOfEntry": "2000/10/10",
+    	"chargeNumber": "1212",
+    	"type": "NOT_TEACHER",
+    	"contract": "PERMANENT",
+    	"recordNumber": 1,
+    	"position": "Informática"
+    }
+parameters: []
+headers:
+  - name: Content-Type
+    value: application/json
+    id: pair_8f84c28ea60c4ebda2e78ad75e7a00aa
+authentication: {}
+metaSortKey: -1658796162093
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global
