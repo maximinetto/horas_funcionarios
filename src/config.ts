@@ -27,11 +27,12 @@ const configLogger = {
     format.printf(({ level, message, timestamp, ...metadata }) => {
       let result = `${level}: ${[timestamp]} ${message}`;
       if (metadata) {
-        result += `\n${JSON.stringify(metadata)}`;
+        result += `\n${JSON.stringify(metadata, null, 2)}`;
       }
 
       return result;
-    })
+    }),
+    format.colorize()
   ),
 };
 
@@ -42,11 +43,12 @@ export const logger = createLogger({
     format.timestamp(),
     format.prettyPrint()
   ),
-  transports: [
-    new transports.File(configLogger),
-    new transports.Console(configLogger),
-  ],
+  transports: [new transports.File(configLogger)],
 });
+
+if (process.env.NODE_ENV !== "production") {
+  logger.add(new transports.Console(configLogger));
+}
 export function configureDotEnv(env = ".env") {
   const envDir = path.resolve(baseDir, "..", env);
   logger.info("envDir: ", envDir, "\n\n");

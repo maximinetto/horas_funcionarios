@@ -7,8 +7,7 @@ import { AbstractConverter } from "./AbstractConverter";
 
 export default class HourlyBalanceTeacherConverter extends AbstractConverter<
   HourlyBalanceTeacherModel,
-  HourlyBalanceEntity,
-  {}
+  HourlyBalanceEntity
 > {
   fromModelToEntity(model: HourlyBalanceTeacherModel): HourlyBalanceEntity {
     return new HourlyBalanceEntity(

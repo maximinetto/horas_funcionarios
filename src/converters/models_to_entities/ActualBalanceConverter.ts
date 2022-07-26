@@ -17,8 +17,7 @@ import { AbstractConverter } from "./AbstractConverter";
 
 export default class ActualBalanceConverter extends AbstractConverter<
   ActualBalanceModel,
-  ActualBalanceEntity,
-  {}
+  ActualBalanceEntity
 > {
   fromModelToEntity(model: ActualBalanceModel): ActualBalanceEntity {
     return new ActualBalanceEntity(

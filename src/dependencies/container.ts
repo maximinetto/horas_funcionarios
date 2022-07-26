@@ -1,6 +1,9 @@
 import { asClass, asValue, createContainer } from "awilix";
-import BalanceConverter from "converters/BalanceConverter";
-import CalculationTASConverter from "converters/CalculationTASConverter";
+import CalculationTASConverterDTO from "converters/dtos_to_entities/CalculationTASConverter";
+import BalanceConverter from "converters/models_to_entities/BalanceConverter";
+import CalculationConverter from "converters/models_to_entities/CalculationConverter";
+import CalculationTASConverter from "converters/models_to_entities/CalculationTASConverter";
+import CalculationTeacherConverter from "converters/models_to_entities/CalculationTeacherConverter";
 import { ActualHourlyBalanceRepository } from "persistence/actualBalance";
 import { CalculationRepository } from "persistence/calculations";
 import OfficialRepository from "persistence/officials";
@@ -21,26 +24,29 @@ import CalculationSorter from "sorters/CalculationSorter";
 const container = createContainer();
 
 container.register({
-  officialRepository: asClass(OfficialRepository).singleton(),
-  officialService: asClass(OfficialService).singleton(),
-  database: asValue(prisma),
-  calculator: asClass(Calculator).singleton(),
-  calculatorRowService: asClass(CalculatorRowService).singleton(),
-  calculationRepository: asClass(CalculationRepository).singleton(),
-  recalculatorService: asClass(RecalculatorService).singleton(),
   actualHourlyBalanceRepository: asClass(
     ActualHourlyBalanceRepository
   ).singleton(),
-  balanceConverter: asClass(BalanceConverter).singleton(),
   actualHourlyBalanceCreator: asClass(ActualHourlyBalanceCreator).singleton(),
   actualHourlyBalanceReplacer: asClass(ActualHourlyBalanceReplacer).singleton(),
-  hoursTASCalculator: asClass(HoursTASCalculator).singleton(),
-  calculationValidator: asClass(CalculationValidator).singleton(),
-  balancesPerYearCalculator: asClass(BalancesPerYearCalculator).singleton(),
+  balanceConverter: asClass(BalanceConverter).singleton(),
   balances: asClass(Balances).singleton(),
+  balancesPerYearCalculator: asClass(BalancesPerYearCalculator).singleton(),
+  calculationConverter: asClass(CalculationConverter).singleton(),
+  calculationRepository: asClass(CalculationRepository).singleton(),
   calculationSorter: asClass(CalculationSorter).singleton(),
-  tasCalculator: asClass(TASCalculator).singleton(),
   calculationTASConverter: asClass(CalculationTASConverter).singleton(),
+  calculationTASConverterDTO: asClass(CalculationTASConverterDTO).singleton(),
+  calculationTeacherConverter: asClass(CalculationTeacherConverter).singleton(),
+  calculationValidator: asClass(CalculationValidator).singleton(),
+  calculator: asClass(Calculator).singleton(),
+  calculatorRowService: asClass(CalculatorRowService).singleton(),
+  database: asValue(prisma),
+  hoursTASCalculator: asClass(HoursTASCalculator).singleton(),
+  officialRepository: asClass(OfficialRepository).singleton(),
+  officialService: asClass(OfficialService).singleton(),
+  recalculatorService: asClass(RecalculatorService).singleton(),
+  tasCalculator: asClass(TASCalculator).singleton(),
 });
 
 export const officialService = container.resolve(
@@ -54,3 +60,6 @@ export const calculatorRowService = container.resolve(
 export const tasCalculator = container.resolve(
   "tasCalculator"
 ) as TASCalculator;
+export const calculationConverter = container.resolve(
+  "calculationConverter"
+) as CalculationConverter;

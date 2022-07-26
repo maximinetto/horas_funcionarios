@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 import Calculations from "collections/Calculations";
-import CalculationConverter from "converters/CalculationConverter";
+import CalculationConverter from "converters/models_to_entities/CalculationConverter";
 import Calculation from "entities/Calculation";
 import CalculationTAS from "entities/CalculationTAS";
 import CalculationTeacher from "entities/CalculationTeacher";
@@ -20,11 +20,13 @@ export const includeCalculationsTAS = () => ({
 
 export class CalculationRepository {
   private calculationConverter: CalculationConverter;
-  constructor(calculationConverter?: CalculationConverter) {
-    this.calculationConverter =
-      calculationConverter || new CalculationConverter();
 
-    this.get.bind(this);
+  constructor({
+    calculationConverter,
+  }: {
+    calculationConverter: CalculationConverter;
+  }) {
+    this.calculationConverter = calculationConverter;
   }
 
   getOne(

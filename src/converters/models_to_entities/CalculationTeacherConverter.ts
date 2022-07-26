@@ -7,8 +7,7 @@ import { AbstractConverter } from "./AbstractConverter";
 
 export default class CalculationTeacherConverter extends AbstractConverter<
   NotNullableCalculationWithTeacher,
-  CalculationTeacherEntity,
-  {}
+  CalculationTeacherEntity
 > {
   fromModelToEntity(
     model: NotNullableCalculationWithTeacher

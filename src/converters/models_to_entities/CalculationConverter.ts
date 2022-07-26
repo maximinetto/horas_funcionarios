@@ -1,4 +1,7 @@
 import { Calculation as CalculationModel } from "@prisma/client";
+import { AbstractConverter } from "converters/models_to_entities/AbstractConverter";
+import CalculationTASConverter from "converters/models_to_entities/CalculationTASConverter";
+import CalculationTeacherConverter from "converters/models_to_entities/CalculationTeacherConverter";
 import ActualBalance from "entities/ActualBalance";
 import Calculation from "entities/Calculation";
 import CalculationTAS from "entities/CalculationTAS";
@@ -9,10 +12,6 @@ import {
   NotNullableCalculationWithTAS,
   NotNullableCalculationWithTeacher,
 } from "types/calculations";
-
-import { AbstractConverter } from "./AbstractConverter";
-import CalculationTASConverter from "./CalculationTASConverter";
-import CalculationTeacherConverter from "./CalculationTeacherConverter";
 
 type AllCalculationTypes =
   | NotNullableCalculationWithTAS
@@ -25,21 +24,18 @@ type AllCalculationEntities =
 
 export default class CalculationConverter extends AbstractConverter<
   AllCalculationTypes,
-  Calculation,
-  {}
+  Calculation
 > {
   private calculationTASConverter: CalculationTASConverter;
   private calculationTeacherConverter: CalculationTeacherConverter;
 
   constructor(
-    calculationTASConverter?: CalculationTASConverter,
-    calculationTeacherConverter?: CalculationTeacherConverter
+    calculationTASConverter: CalculationTASConverter,
+    calculationTeacherConverter: CalculationTeacherConverter
   ) {
     super();
-    this.calculationTASConverter =
-      calculationTASConverter ?? new CalculationTASConverter();
-    this.calculationTeacherConverter =
-      calculationTeacherConverter ?? new CalculationTeacherConverter();
+    this.calculationTASConverter = calculationTASConverter;
+    this.calculationTeacherConverter = calculationTeacherConverter;
   }
 
   public isTASModel(

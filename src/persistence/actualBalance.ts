@@ -1,5 +1,5 @@
 import { Prisma } from "@prisma/client";
-import HourlyBalanceTASConverter from "converters/HourlyBalanceTASConverter";
+import HourlyBalanceTASConverter from "converters/models_to_entities/HourlyBalanceTASConverter";
 import Decimal from "decimal.js";
 import ActualBalance from "entities/ActualBalance";
 import Official from "entities/Official";

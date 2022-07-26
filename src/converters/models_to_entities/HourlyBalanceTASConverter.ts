@@ -7,8 +7,7 @@ import { AbstractConverter } from "./AbstractConverter";
 
 export default class HourlyBalanceTASConverter extends AbstractConverter<
   HourlyBalanceTASModel,
-  HourlyBalanceEntity,
-  {}
+  HourlyBalanceEntity
 > {
   fromModelToEntity(model: HourlyBalanceTASModel): HourlyBalanceEntity {
     return new HourlyBalanceEntity(
