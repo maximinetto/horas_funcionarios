@@ -9,6 +9,14 @@ export type ActualBalanceDTO = Prisma.ActualBalanceGetPayload<{
   include: { hourlyBalances: true };
 }>;
 
+export type ActualBalanceComplete = Prisma.ActualBalanceGetPayload<{
+  include: {
+    calculations: true;
+    hourlyBalances: true;
+    official: true;
+  };
+}>;
+
 export type ActualBalanceFindManyOptions = Omit<
   Prisma.ActualBalanceFindManyArgs,
   "where"

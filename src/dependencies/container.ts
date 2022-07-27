@@ -1,9 +1,16 @@
 import { asClass, asValue, createContainer } from "awilix";
 import CalculationTASConverterDTO from "converters/dtos_to_entities/CalculationTASConverter";
+import ActualBalanceConverter from "converters/models_to_entities/ActualBalanceConverter";
 import BalanceConverter from "converters/models_to_entities/BalanceConverter";
 import CalculationConverter from "converters/models_to_entities/CalculationConverter";
 import CalculationTASConverter from "converters/models_to_entities/CalculationTASConverter";
 import CalculationTeacherConverter from "converters/models_to_entities/CalculationTeacherConverter";
+import HourlyBalanceConverter from "converters/models_to_entities/HourlyBalanceConverter";
+import HourlyBalanceTASConverter from "converters/models_to_entities/HourlyBalanceTASConverter";
+import HourlyBalanceTeacherConverter from "converters/models_to_entities/HourlyBalanceTeacher";
+import OfficialConverter from "converters/models_to_entities/OfficialConverter";
+import HourlyBalanceEntityFactoryCreator from "factories/HourlyBalanceEntityFactoryCreator";
+import HourlyBalanceModelFactoryCreator from "factories/HourlyBalanceModelFactoryCreator";
 import { ActualHourlyBalanceRepository } from "persistence/actualBalance";
 import { CalculationRepository } from "persistence/calculations";
 import OfficialRepository from "persistence/officials";
@@ -47,6 +54,19 @@ container.register({
   officialService: asClass(OfficialService).singleton(),
   recalculatorService: asClass(RecalculatorService).singleton(),
   tasCalculator: asClass(TASCalculator).singleton(),
+  actualBalanceConverter: asClass(ActualBalanceConverter).singleton(),
+  officialConverter: asClass(OfficialConverter).singleton(),
+  hourlyBalanceConverter: asClass(HourlyBalanceConverter).singleton(),
+  hourlyBalanceEntityFactoryCreator: asClass(
+    HourlyBalanceEntityFactoryCreator
+  ).singleton(),
+  hourlyBalanceModelFactoryCreator: asClass(
+    HourlyBalanceModelFactoryCreator
+  ).singleton(),
+  hourlyBalanceTASConverter: asClass(HourlyBalanceTASConverter).singleton(),
+  hourlyBalanceTeacherConverter: asClass(
+    HourlyBalanceTeacherConverter
+  ).singleton(),
 });
 
 export const officialService = container.resolve(

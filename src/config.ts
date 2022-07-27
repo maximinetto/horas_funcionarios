@@ -1,9 +1,12 @@
 import dotenv from "dotenv";
 import path from "path";
 import util from "util";
+import { bigIntSerializator } from "utils/strings";
 import { createLogger, format, transports } from "winston";
 
 export const baseDir = __dirname;
+
+bigIntSerializator();
 
 const combineMessageAndSplat = () => {
   return {

@@ -6,8 +6,7 @@ import { AbstractConverter } from "./AbstractConverter";
 
 export default class OfficialConverter extends AbstractConverter<
   OfficialModel,
-  OfficialEntity,
-  {}
+  OfficialEntity
 > {
   fromModelToEntity(model: OfficialModel): OfficialEntity {
     return new OfficialEntity(

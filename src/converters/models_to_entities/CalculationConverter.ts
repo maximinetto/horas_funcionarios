@@ -29,13 +29,17 @@ export default class CalculationConverter extends AbstractConverter<
   private calculationTASConverter: CalculationTASConverter;
   private calculationTeacherConverter: CalculationTeacherConverter;
 
-  constructor(
-    calculationTASConverter: CalculationTASConverter,
-    calculationTeacherConverter: CalculationTeacherConverter
-  ) {
+  constructor({
+    calculationTASConverter,
+    calculationTeacherConverter,
+  }: {
+    calculationTASConverter: CalculationTASConverter;
+    calculationTeacherConverter: CalculationTeacherConverter;
+  }) {
     super();
     this.calculationTASConverter = calculationTASConverter;
     this.calculationTeacherConverter = calculationTeacherConverter;
+    this.fromEntityToModel = this.fromEntityToModel.bind(this);
   }
 
   public isTASModel(

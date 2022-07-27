@@ -1,97 +1,86 @@
-import {
-  ActualBalance as ActualBalanceModel,
-  Contract,
-  TypeOfOfficials,
-} from "@prisma/client";
 import { Decimal } from "decimal.js";
 import ActualBalanceEntity from "entities/ActualBalance";
-import HourlyBalance from "entities/HourlyBalance";
-import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
 import NullOfficial from "entities/null_object/NullOfficial";
 import Official from "entities/Official";
-import { DateTime } from "luxon";
-import { ActualBalanceWithHourlyBalancesTAS } from "types/actualBalance";
-import { Optional } from "typescript-optional";
+import { ActualBalanceComplete } from "types/actualBalance";
 
 import { AbstractConverter } from "./AbstractConverter";
+import CalculationConverter from "./CalculationConverter";
+import HourlyBalanceConverter from "./HourlyBalanceConverter";
+import OfficialConverter from "./OfficialConverter";
 
 export default class ActualBalanceConverter extends AbstractConverter<
-  ActualBalanceModel,
+  ActualBalanceComplete,
   ActualBalanceEntity
 > {
-  fromModelToEntity(model: ActualBalanceModel): ActualBalanceEntity {
+  private officialConverter: OfficialConverter;
+  private hourlyBalanceConverter: HourlyBalanceConverter;
+  private calculationConverter: CalculationConverter;
+
+  constructor({
+    officialConverter,
+    hourlyBalanceConverter,
+    calculationConverter,
+  }: {
+    officialConverter: OfficialConverter;
+    hourlyBalanceConverter: HourlyBalanceConverter;
+    calculationConverter: CalculationConverter;
+  }) {
+    super();
+    this.officialConverter = officialConverter;
+    this.hourlyBalanceConverter = hourlyBalanceConverter;
+    this.calculationConverter = calculationConverter;
+
+    this.fromEntityToModel = this.fromEntityToModel.bind(this);
+  }
+
+  fromModelToEntity(model: ActualBalanceComplete): ActualBalanceEntity {
+    console.log("hola");
+    console.log("this.officialConverter:", this.officialConverter);
+    const official = model.official
+      ? this.officialConverter.fromModelToEntity(model.official)
+      : Official.default(model.officialId);
+
+    const hourlyBalances =
+      model.hourlyBalances != null
+        ? this.hourlyBalanceConverter.fromModelToEntities(model.hourlyBalances)
+        : [];
+
+    const calculations =
+      model.calculations != null
+        ? this.calculationConverter.fromModelsToEntities(model.calculations)
+        : [];
+
     return new ActualBalanceEntity(
       model.id,
       model.year,
       new Decimal(model.total.toString()),
-      new Official(
-        model.officialId,
-        0,
-        "",
-        "",
-        "",
-        Contract.PERMANENT,
-        TypeOfOfficials.NOT_TEACHER,
-        DateTime.fromJSDate(new Date()),
-        0
-      )
+      official,
+      hourlyBalances,
+      calculations
     );
   }
-  fromEntityToModel(entity: ActualBalanceEntity): ActualBalanceModel {
+  fromEntityToModel(entity: ActualBalanceEntity): ActualBalanceComplete {
+    console.log("this:", this);
+    const official = entity.official.map((value) =>
+      this.officialConverter.fromEntityToModel(value)
+    );
+    const calculations = this.calculationConverter.fromEntitiesToModels(
+      entity.calculations
+    );
+
+    const hourlyBalances = this.hourlyBalanceConverter.fromEntitiesToModels(
+      entity.hourlyBalances
+    );
+
     return {
       id: entity.id,
       officialId: entity.official.orElse(new NullOfficial()).id,
       year: entity.year,
       total: BigInt(entity.total.toString()),
+      official: official.get(),
+      calculations,
+      hourlyBalances,
     };
-  }
-
-  fromModelToEntityWithTAS(model: ActualBalanceWithHourlyBalancesTAS) {
-    const hourlyBalances: HourlyBalance[] = model.hourlyBalances.map(
-      (hourlyBalance) => {
-        return new HourlyBalanceTAS(
-          hourlyBalance.id,
-          hourlyBalance.year,
-          new Decimal(hourlyBalance.hourlyBalanceTAS.working.toString()),
-          new Decimal(hourlyBalance.hourlyBalanceTAS.nonWorking.toString()),
-          new Decimal(hourlyBalance.hourlyBalanceTAS.simple.toString()),
-          hourlyBalance.hourlyBalanceTAS.id
-        );
-      }
-    );
-
-    const actualBalance = new ActualBalanceEntity(
-      model.id,
-      model.year,
-      new Decimal(model.total.toString()),
-      new Official(
-        model.officialId,
-        0,
-        "",
-        "",
-        "",
-        Contract.PERMANENT,
-        TypeOfOfficials.NOT_TEACHER,
-        DateTime.fromJSDate(new Date()),
-        0
-      )
-    );
-
-    hourlyBalances.forEach((hourlyBalance) => {
-      const actualBalanceOptional = Optional.of(actualBalance);
-      hourlyBalance.actualBalance = actualBalanceOptional;
-    });
-
-    actualBalance.hourlyBalances = hourlyBalances;
-
-    return actualBalance;
-  }
-
-  fromModelsToEntitiesWithTAS(models: ActualBalanceWithHourlyBalancesTAS[]) {
-    const actualBalances: ActualBalanceEntity[] = models.map((model) => {
-      return this.fromModelToEntityWithTAS(model);
-    });
-
-    return actualBalances;
   }
 }
