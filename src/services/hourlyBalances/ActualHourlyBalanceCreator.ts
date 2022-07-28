@@ -1,5 +1,6 @@
 import Decimal from "decimal.js";
 import ActualBalance from "entities/ActualBalance";
+import Calculation from "entities/Calculation";
 import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
 import Official from "entities/Official";
 import { TYPES_OF_HOURS } from "enums/typeOfHours";
@@ -12,19 +13,23 @@ export default class ActualHourlyBalanceCreator {
     total,
     officialId,
     balances,
+    calculations,
   }: {
     year: number;
     total: Decimal;
     officialId: number;
     balances: TypeOfHoursByYear[];
+    calculations: Calculation[];
   }): ActualBalance {
     const id = generateRandomUUIDV4();
+
     const actualBalance = new ActualBalance(
       id,
       year,
       total,
       Official.default(officialId)
     );
+
     const hourlyBalances = balances.map((b) => {
       const hourlyBalanceId = generateRandomUUIDV4();
       const hourlyBalanceIdTAS = generateRandomUUIDV4();
@@ -55,6 +60,7 @@ export default class ActualHourlyBalanceCreator {
     });
 
     actualBalance.hourlyBalances = hourlyBalances;
+    actualBalance.calculations = calculations;
 
     return actualBalance;
   }

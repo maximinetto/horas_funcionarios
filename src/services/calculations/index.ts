@@ -69,11 +69,13 @@ export default class Calculator {
       this.calculationTASConverterDTO.fromDTOsToEntities(calculationsSanitazed);
     const calculationCollection = new Calculations(...calculationEntities);
 
-    return this.tasCalculator.calculate({
+    const result = await this.tasCalculator.calculate({
       official,
       calculations: calculationCollection,
       year,
     });
+
+    return this.toModel(result);
   }
 
   calculateForTeacher({ officialId, year }) {

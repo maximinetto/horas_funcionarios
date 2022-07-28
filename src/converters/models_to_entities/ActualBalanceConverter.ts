@@ -35,8 +35,6 @@ export default class ActualBalanceConverter extends AbstractConverter<
   }
 
   fromModelToEntity(model: ActualBalanceComplete): ActualBalanceEntity {
-    console.log("hola");
-    console.log("this.officialConverter:", this.officialConverter);
     const official = model.official
       ? this.officialConverter.fromModelToEntity(model.official)
       : Official.default(model.officialId);
@@ -61,7 +59,6 @@ export default class ActualBalanceConverter extends AbstractConverter<
     );
   }
   fromEntityToModel(entity: ActualBalanceEntity): ActualBalanceComplete {
-    console.log("this:", this);
     const official = entity.official.map((value) =>
       this.officialConverter.fromEntityToModel(value)
     );

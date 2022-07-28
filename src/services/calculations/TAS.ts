@@ -135,6 +135,7 @@ export default class TASCalculator {
         year: nextYear,
         officialId: official.id,
         total: dataCalculated.totalBalance,
+        calculations: dataCalculated.calculations,
       });
 
     save([dataCalculated]);
