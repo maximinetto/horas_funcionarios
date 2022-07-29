@@ -4,7 +4,6 @@ import errorHandler from "validation/middlewares/errorHandler";
 import validator from "validation/middlewares/validator";
 
 const app = fastify();
-app.setValidatorCompiler(validator);
 app.register(require("@fastify/cors"));
 
 app.setNotFoundHandler((_req: FastifyRequest, reply: FastifyReply) => {
@@ -18,4 +17,5 @@ app.register(router, {
 });
 
 app.setErrorHandler(errorHandler);
+app.setValidatorCompiler(validator);
 export default app;

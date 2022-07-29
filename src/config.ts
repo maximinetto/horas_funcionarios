@@ -67,7 +67,7 @@ export function configureDotEnv(env = ".env") {
   } = process.env;
 
   return {
-    OFFICIALS_SCHEDULES_PORT,
+    OFFICIALS_SCHEDULES_PORT: Number(OFFICIALS_SCHEDULES_PORT),
     OFFICIALS_SCHEDULES_HOST,
     OFFICIALS_SCHEDULES_DB_URL,
   };

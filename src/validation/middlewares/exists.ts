@@ -37,7 +37,6 @@ export const exists =
         relatedKey,
       });
 
-      console.log(valueAlreadyExists);
       if (
         (valueAlreadyExists && mustExists) ||
         (!valueAlreadyExists && !mustExists)

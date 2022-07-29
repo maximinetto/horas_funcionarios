@@ -10,16 +10,14 @@ import response from "utils/response";
 export const getOfficials = async (
   req: FastifyRequest<{
     Body: {
-      value: {
-        type?: TypeOfOfficials;
-        contract?: Contract;
-        year?: number;
-      };
+      type?: TypeOfOfficials;
+      contract?: Contract;
+      year?: number;
     };
   }>,
   reply: FastifyReply
 ) => {
-  const value = req.body.value;
+  const value = req.body;
   const officials = await officialService.get(value);
   return response(reply, {
     status: 200,
@@ -30,9 +28,7 @@ export const getOfficials = async (
 
 export const createOfficials = async (
   req: FastifyRequest<{
-    Body: {
-      value: OfficialWithoutId;
-    };
+    Body: OfficialWithoutId;
   }>,
   reply: FastifyReply
 ) => {
@@ -45,7 +41,7 @@ export const createOfficials = async (
     chargeNumber,
     type,
     contract,
-  } = req.body.value;
+  } = req.body;
   const newOfficial = {
     recordNumber,
     firstName,
@@ -76,26 +72,17 @@ export const createOfficials = async (
         `The user with record number ${recordNumber} already exists in the system`
       );
     }
-    response(reply, {
-      status: 500,
-      data: {
-        error: "Internal server error",
-      },
-      message: "Ha ocurrido un error al crear el funcionario",
-    });
+    throw error;
   }
 };
 
 export const updateOfficial = async (
   req: FastifyRequest<{
-    Body: {
-      value: Official;
-    };
+    Body: Official;
   }>,
   reply: FastifyReply
 ) => {
-  console.log("hello");
-  const { id, ...others } = req.body.value as Official;
+  const { id, ...others } = req.body;
 
   try {
     const official = await officialService.update(id, others);
@@ -118,14 +105,12 @@ export const updateOfficial = async (
 export const deleteOfficial = async (
   req: FastifyRequest<{
     Body: {
-      value: {
-        id: number;
-      };
+      id: number;
     };
   }>,
   reply: FastifyReply
 ) => {
-  const { id } = req.body.value;
+  const { id } = req.body;
   try {
     const official = await officialService.delete(id);
     response(reply, {

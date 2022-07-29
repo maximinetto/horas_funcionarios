@@ -2,6 +2,7 @@ import { logger } from "config";
 import CustomError from "errors/CustomError";
 import ModelAlreadyExistsError from "errors/ModelAlreadyExistsError";
 import { FastifyReply, FastifyRequest } from "fastify";
+import { ValidationError } from "joi";
 
 export default class ErrorHandler {
   private error: Error;
@@ -28,7 +29,21 @@ export default class ErrorHandler {
       });
     }
 
-    this.internalErrorResponse();
+    if (this.validateError(this.error)) {
+      return this.response.status(400).send({
+        message: "The request is not valid. You have provided invalid data.",
+        error: {
+          details: this.error.details.map((d) => ({
+            message: d.message,
+            key: d.context == null ? "unknown" : d.context.key,
+            value: d.context == null ? null : d.context.value,
+          })),
+        },
+        ok: false,
+      });
+    }
+
+    return this.internalErrorResponse();
   }
 
   private internalErrorResponse() {
@@ -36,5 +51,9 @@ export default class ErrorHandler {
       error: "Internal server error",
       message: "Something went wrong",
     });
+  }
+
+  private validateError(error): error is ValidationError {
+    return error instanceof ValidationError;
   }
 }
