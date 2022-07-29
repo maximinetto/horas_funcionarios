@@ -1,13 +1,11 @@
-import { NextFunction, Request, Response } from "express";
+import { FastifyReply, FastifyRequest } from "fastify";
 import ErrorHandler from "validation/ErrorHandler";
 
 export default function errorHandler(
   error: Error,
-  req: Request,
-  res: Response,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  _next: NextFunction
+  req: FastifyRequest,
+  reply: FastifyReply
 ) {
-  const errorHandlerInstance = new ErrorHandler(error, req, res);
+  const errorHandlerInstance = new ErrorHandler(error, req, reply);
   errorHandlerInstance.handle();
 }

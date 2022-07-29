@@ -1,4 +1,4 @@
-export default class CalculationTASDTOWitgTimeFieldsInString {
+export default class CalculationTASDTOWithTimeFieldsInString {
   private _id: string;
   private _year: number;
   private _month: number;

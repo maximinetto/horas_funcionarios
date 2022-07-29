@@ -1,7 +1,7 @@
-import { Response } from "express";
+import { FastifyReply } from "fastify";
 
 export default function response<T>(
-  res: Response,
+  res: FastifyReply,
   {
     status = 200,
     data,
@@ -14,6 +14,5 @@ export default function response<T>(
 ) {
   return res
     .status(status)
-    .json({ status, data, message, ok: status >= 200 && status < 300 })
-    .end();
+    .send({ status, data, message, ok: status >= 200 && status < 300 });
 }

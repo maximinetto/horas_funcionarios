@@ -1,24 +1,30 @@
 import { logger } from "config";
 import CustomError from "errors/CustomError";
-import { Request, Response } from "express";
+import ModelAlreadyExistsError from "errors/ModelAlreadyExistsError";
+import { FastifyReply, FastifyRequest } from "fastify";
 
 export default class ErrorHandler {
   private error: Error;
-  private request: Request;
-  private response: Response;
+  private response: FastifyReply;
 
-  constructor(error: Error, request: Request, response: Response) {
+  constructor(error: Error, _request: FastifyRequest, response: FastifyReply) {
     this.error = error;
-    this.request = request;
     this.response = response;
   }
 
-  public handle(): void {
+  public handle(): void | FastifyReply {
     logger.error(this.error);
 
     if (this.error instanceof CustomError) {
-      this.response.status(400).json({
+      return this.response.status(400).send({
         message: this.error.message,
+      });
+    }
+
+    if (this.error instanceof ModelAlreadyExistsError) {
+      return this.response.status(409).send({
+        message: this.error.message,
+        description: this.error.description,
       });
     }
 
@@ -26,7 +32,7 @@ export default class ErrorHandler {
   }
 
   private internalErrorResponse() {
-    this.response.status(500).json({
+    this.response.status(500).send({
       error: "Internal server error",
       message: "Something went wrong",
     });

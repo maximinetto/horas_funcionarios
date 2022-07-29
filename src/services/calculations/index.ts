@@ -4,7 +4,7 @@ import { logger } from "config";
 import CalculationTASConverter from "converters/dtos_to_entities/CalculationTASConverter";
 import ActualBalanceConverter from "converters/models_to_entities/ActualBalanceConverter";
 import CalculationConverter from "converters/models_to_entities/CalculationConverter";
-import CalculationTASDTOWitgTimeFieldsInString from "dto/create/calculationTASDTOWithTimeFieldsInString";
+import CalculationTASDTOWithTimeFieldsInString from "dto/create/calculationTASDTOWithTimeFieldsInString";
 import ActualBalance from "entities/ActualBalance";
 import NotExistsError from "errors/NotExistsError";
 import { IOfficialRepository } from "persistence/officials";
@@ -45,7 +45,7 @@ export default class Calculator {
     year,
     officialId,
   }: {
-    calculations: CalculationTASDTOWitgTimeFieldsInString[];
+    calculations: CalculationTASDTOWithTimeFieldsInString[];
     year: number;
     officialId: number;
   }) {

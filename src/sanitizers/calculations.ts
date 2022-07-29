@@ -1,10 +1,10 @@
 import CalculationTASDTO from "dto/create/calculationTASDTO";
-import CalculationTASDTOWitgTimeFieldsInString from "dto/create/calculationTASDTOWithTimeFieldsInString";
+import CalculationTASDTOWithTimeFieldsInString from "dto/create/calculationTASDTOWithTimeFieldsInString";
 import { getMonthByNumber } from "utils/mapMonths";
 import { timeToSeconds } from "utils/time";
 
 export const sanitizeCalculationFields = (
-  calculations: CalculationTASDTOWitgTimeFieldsInString[]
+  calculations: CalculationTASDTOWithTimeFieldsInString[]
 ): CalculationTASDTO[] => {
   return calculations.map((calculation) => {
     const surplusBusiness = timeToSeconds(calculation.surplusBusiness);
