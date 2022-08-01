@@ -6,10 +6,11 @@ import { Optional } from "typescript-optional";
 import Comparable from "utils/Comparator";
 
 import ActualBalance from "./ActualBalance";
+import Entity from "./Entity";
 import ICalculation from "./ICalculation";
 
 export default class Calculation
-  implements Nullable, Comparable<Calculation>, ICalculation
+  implements Entity, Nullable, Comparable<Calculation>, ICalculation
 {
   private _id: string;
   private _year: number;

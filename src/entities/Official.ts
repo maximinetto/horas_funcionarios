@@ -5,9 +5,10 @@ import { OfficialSimple } from "types/officials";
 import Comparable from "utils/Comparator";
 
 import type ActualBalance from "./ActualBalance";
+import Entity from "./Entity";
 
 export default class Official
-  implements Nullable, Comparable<Official>, OfficialSimple
+  implements Entity, Nullable, Comparable<Official>, OfficialSimple
 {
   private _id: number;
   private _recordNumber: number;

@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import Calculations from "collections/Calculations";
 import CalculationConverter from "converters/models_to_entities/CalculationConverter";
 import Calculation from "entities/Calculation";
@@ -12,20 +12,31 @@ import {
   NotNullableCalculationWithTeacher,
 } from "types/calculations";
 
+import Repository from "./Repository";
+import RepositoryPrisma from "./RepositoryPrisma";
+
 export const includeCalculationsTAS = () => ({
   include: {
     calculationTAS: true,
   },
 });
 
-export class CalculationRepository {
+interface CalculationRepository extends Repository<string, Calculation> {}
+
+export class PrismaCalculationRepository
+  extends RepositoryPrisma<string, Calculation>
+  implements CalculationRepository
+{
   private calculationConverter: CalculationConverter;
 
   constructor({
     calculationConverter,
+    prisma,
   }: {
     calculationConverter: CalculationConverter;
+    prisma: PrismaClient;
   }) {
+    super({ prisma, modelName: Calculation });
     this.calculationConverter = calculationConverter;
   }
 

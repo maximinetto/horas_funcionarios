@@ -5,9 +5,10 @@ import { Optional } from "typescript-optional";
 import Comparable from "utils/Comparator";
 
 import type ActualBalance from "./ActualBalance";
+import Entity from "./Entity";
 
 export default abstract class HourlyBalance
-  implements Nullable, Comparable<HourlyBalance>, HourlyBalanceSimple
+  implements Entity, Nullable, Comparable<HourlyBalance>, HourlyBalanceSimple
 {
   private _id: string;
   private _year: number;
