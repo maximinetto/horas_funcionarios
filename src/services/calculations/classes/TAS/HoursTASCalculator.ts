@@ -2,10 +2,8 @@ import Calculations from "collections/Calculations";
 import { Decimal } from "decimal.js";
 import CalculationTAS from "entities/CalculationTAS";
 import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
-import {
-  CalculationRepository,
-  includeCalculationsTAS,
-} from "persistence/calculations";
+import CalculationRepository from "persistence/Calculation/CalculationRepository";
+import { includeCalculationsTAS } from "persistence/Calculation/PrismaCalculationRepository";
 import HoursCalculator from "services/calculations/classes/HoursCalculator";
 import BalancesPerYearCalculator from "services/calculations/classes/TAS/YearsCalculator";
 import HoursClass from "services/calculations/classes/typeOfHours";
@@ -107,7 +105,7 @@ export default class HoursTASCalculator extends HoursCalculator {
 
   getTotalWorkingHours(): Promise<TypeOfHourDecimal> {
     const total = this.calculations.calc(
-      (total, { surplusBusiness }) => total.plus(surplusBusiness),
+      (_total, { surplusBusiness }) => _total.plus(surplusBusiness),
       new Decimal(0)
     );
     const valueMultiplied = total.mul(CalculationTAS.WORKING_MULTIPLIER);
@@ -120,7 +118,7 @@ export default class HoursTASCalculator extends HoursCalculator {
 
   getTotalNonWorkingHours(): Promise<TypeOfHourDecimal> {
     const total = this.calculations.calc(
-      (total, { surplusNonWorking }) => total.plus(surplusNonWorking),
+      (_total, { surplusNonWorking }) => _total.plus(surplusNonWorking),
       new Decimal(0)
     );
     const valueMultiplied = total.mul(CalculationTAS.NON_WORKING_MULTIPLIER);
@@ -133,7 +131,7 @@ export default class HoursTASCalculator extends HoursCalculator {
 
   getTotalSimpleHours(): Promise<TypeOfHourDecimal> {
     const total = this.calculations.calc(
-      (total, { surplusSimple }) => total.plus(surplusSimple),
+      (_total, { surplusSimple }) => _total.plus(surplusSimple),
       new Decimal(0)
     );
 

@@ -1,6 +1,6 @@
 import ActualBalance from "entities/ActualBalance";
 import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
-import { ActualHourlyBalanceRepository } from "persistence/actualBalance";
+import ActualHourlyBalanceRepository from "persistence/ActualBalance/ActualHourlyBalanceRepository";
 
 export default class Balances {
   private actualHourlyBalanceRepository: ActualHourlyBalanceRepository;
@@ -14,26 +14,26 @@ export default class Balances {
   }
 
   async calculate({ year, officialId }: { year: number; officialId: number }) {
-    const lastActualBalances = await this.actualHourlyBalanceRepository.getTAS(
-      {
+    const lastActualBalances = await this.actualHourlyBalanceRepository.filter({
+      where: {
         year: {
           gte: year,
         },
         officialId,
       },
-      {
-        include: {
-          hourlyBalances: {
-            include: {
-              hourlyBalanceTAS: true,
-            },
+      include: {
+        hourlyBalances: {
+          include: {
+            hourlyBalanceTAS: true,
           },
         },
-      }
-    );
+      },
+    });
 
-    const result = lastActualBalances.map((ac) => {
-      const min = getMinHourlyBalanceWithSumGreaterThanZero(ac.hourlyBalances);
+    return lastActualBalances.map((ac) => {
+      const min = getMinHourlyBalanceWithSumGreaterThanZero(
+        ac.hourlyBalances as HourlyBalanceTAS[]
+      );
       const remainingHourlyBalances = ac.hourlyBalances?.filter((h) => {
         return min ? h.year >= min.year : false;
       });
@@ -45,8 +45,6 @@ export default class Balances {
         remainingHourlyBalances
       );
     });
-
-    return result;
   }
 }
 

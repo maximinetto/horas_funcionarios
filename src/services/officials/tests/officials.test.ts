@@ -1,9 +1,36 @@
 import { faker } from "@faker-js/faker";
 import { Contract, TypeOfOfficials } from "@prisma/client";
-import { officialService } from "dependencies/container";
-import { prismaMock } from "singleton";
+import OfficialConverter from "converters/models_to_entities/OfficialConverter";
+import Official from "entities/Official";
+import OfficialRepository from "persistence/Official/OfficialRepository";
+
+import OfficialService from "..";
 
 describe("Officials controller tests", () => {
+  let officialService: OfficialService;
+  let officialRepository: jest.Mocked<OfficialRepository>;
+  let officialConverter: OfficialConverter;
+
+  beforeAll(() => {
+    officialConverter = new OfficialConverter();
+    officialRepository = {
+      add: jest.fn(),
+      set: jest.fn(),
+      remove: jest.fn(),
+      filter: jest.fn(),
+      addRange: jest.fn(),
+      setRange: jest.fn(),
+      removeRange: jest.fn(),
+      get: jest.fn(),
+      getAll: jest.fn(),
+    };
+
+    officialService = new OfficialService({
+      officialConverter,
+      officialRepository,
+    });
+  });
+
   test("Should get multiples official models", async () => {
     const officials = [
       {
@@ -42,9 +69,13 @@ describe("Officials controller tests", () => {
       },
     ];
 
-    prismaMock.official.findMany.mockResolvedValue(officials);
+    officialRepository.filter.mockResolvedValue(
+      officialConverter.fromModelsToEntities(officials)
+    );
 
-    const result = await officialService.get({});
+    // prismaMock.official.findMany.mockResolvedValue(officials);
+
+    const result = await officialService.get();
     expect(result).toEqual(officials);
   });
 
@@ -96,12 +127,20 @@ describe("Officials controller tests", () => {
       (official) => official.contract === Contract.PERMANENT
     );
 
-    prismaMock.official.findMany.mockResolvedValue(mockOfficialByYear);
+    officialRepository.filter.mockResolvedValue(
+      officialConverter.fromModelsToEntities(mockOfficialByYear)
+    );
+
+    // prismaMock.official.findMany.mockResolvedValue(mockOfficialByYear);
 
     const result = await officialService.get({ year });
     expect(result).toEqual(mockOfficialByYear);
 
-    prismaMock.official.findMany.mockResolvedValue(mockContract);
+    officialRepository.filter.mockResolvedValue(
+      officialConverter.fromModelsToEntities(mockContract)
+    );
+
+    // prismaMock.official.findMany.mockResolvedValue(mockContract);
 
     const result2 = await officialService.get({ contract: Contract.PERMANENT });
     expect(result2).toEqual(mockContract);
@@ -120,9 +159,13 @@ describe("Officials controller tests", () => {
       contract: Contract.PERMANENT,
     };
 
-    prismaMock.official.create.mockResolvedValue(official);
+    const officialEntity = officialConverter.fromModelToEntity(official);
 
-    await expect(officialService.create(official)).resolves.toEqual({
+    officialRepository.add.mockResolvedValue(officialEntity);
+
+    //    prismaMock.official.create.mockResolvedValue(official);
+
+    await expect(officialService.create(officialEntity)).resolves.toEqual({
       id: 1,
       recordNumber: 3333,
       firstName: "Maximiliano",
@@ -148,11 +191,13 @@ describe("Officials controller tests", () => {
       contract: Contract.PERMANENT,
     };
 
-    prismaMock.official.update.mockResolvedValue(official);
+    const officialEntity = officialConverter.fromModelToEntity(official);
 
-    await expect(
-      officialService.update(official.id, official)
-    ).resolves.toEqual({
+    officialRepository.set.mockResolvedValue(officialEntity);
+
+    // prismaMock.official.update.mockResolvedValue(official);
+
+    await expect(officialService.update(officialEntity)).resolves.toEqual({
       id: 1,
       recordNumber: 3333,
       firstName: "Maximiliano",
@@ -178,7 +223,11 @@ describe("Officials controller tests", () => {
       contract: Contract.PERMANENT,
     };
 
-    prismaMock.official.delete.mockResolvedValue(official);
+    const officialEntity = officialConverter.fromModelToEntity(official);
+
+    officialRepository.remove.mockResolvedValue(officialEntity);
+
+    // prismaMock.official.delete.mockResolvedValue(official);
 
     await expect(officialService.delete(official.id)).resolves.toEqual({
       id: 1,
@@ -192,10 +241,10 @@ describe("Officials controller tests", () => {
       contract: Contract.PERMANENT,
     });
 
-    expect(prismaMock.official.delete).toHaveBeenCalledWith({
-      where: { id: official.id },
-    });
+    expect(officialRepository.remove).toHaveBeenCalledWith(
+      Official.default(official.id)
+    );
 
-    expect(prismaMock.official.delete).toHaveBeenCalledTimes(1);
+    expect(officialRepository.remove).toHaveBeenCalledTimes(1);
   });
 });

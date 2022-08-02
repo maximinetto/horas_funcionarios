@@ -3,8 +3,8 @@ import Decimal from "decimal.js";
 import CalculationTAS from "entities/CalculationTAS";
 import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
 import { Dictionary } from "lodash";
-import { ActualHourlyBalanceRepository } from "persistence/actualBalance";
-import { CalculationRepository } from "persistence/calculations";
+import ActualHourlyBalanceRepository from "persistence/ActualBalance/ActualHourlyBalanceRepository";
+import CalculationRepository from "persistence/Calculation/CalculationRepository";
 import { expectCalculationEquals } from "services/calculations/classes/tests/expect";
 import calculation from "services/calculations/classes/tests/HoursTASCalculator/calculate";
 import { CalculationDataTAS } from "services/calculations/classes/tests/HoursTASCalculator/HoursTASCalculator.test";
@@ -109,19 +109,38 @@ export default class HoursTASCalculationCreator {
 
     const balancesEnriched = this.balances.map((b) => b.actualBalance);
 
-    jest
-      .spyOn(ActualHourlyBalanceRepository.prototype, "getTAS")
-      .mockResolvedValue(balancesEnriched);
+    const actualHourlyBalanceRepository: jest.Mocked<ActualHourlyBalanceRepository> =
+      {
+        filter: jest.fn().mockResolvedValue(balancesEnriched),
+        add: jest.fn(),
+        addRange: jest.fn(),
+        get: jest.fn(),
+        getAll: jest.fn(),
+        remove: jest.fn(),
+        removeRange: jest.fn(),
+        set: jest.fn(),
+        setRange: jest.fn(),
+      };
 
     const firstCalculationsMock = calculationFromPersistence.flat();
     const secondCalculationsMock = calculationFromPersistence
       .flat()
       .filter((c) => c.year > actualBalanceSecondTest.year);
 
-    jest
-      .spyOn(CalculationRepository.prototype, "get")
-      .mockResolvedValueOnce(new Calculations(...firstCalculationsMock))
-      .mockResolvedValueOnce(new Calculations(...secondCalculationsMock));
+    const calculationRepository: jest.Mocked<CalculationRepository> = {
+      filter: jest
+        .fn()
+        .mockResolvedValueOnce(firstCalculationsMock)
+        .mockResolvedValueOnce(secondCalculationsMock),
+      add: jest.fn(),
+      addRange: jest.fn(),
+      get: jest.fn(),
+      getAll: jest.fn(),
+      remove: jest.fn(),
+      removeRange: jest.fn(),
+      set: jest.fn(),
+      setRange: jest.fn(),
+    };
 
     const calculationsModified = [
       ...arrayWithoutElementAtIndex(calculationsSecondTest, [2, 5, 11]),
@@ -130,7 +149,11 @@ export default class HoursTASCalculationCreator {
 
     const result = await expectCalculationEquals(
       { data, lastBalances: [] },
-      new Calculations(...calculationsModified)
+      new Calculations(...calculationsModified),
+      {
+        actualHourlyBalanceRepository,
+        calculationRepository,
+      }
     );
 
     this.calculations[actualBalanceSecondTest.year] = calculationsModified;

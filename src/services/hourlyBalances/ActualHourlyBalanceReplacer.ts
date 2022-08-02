@@ -58,6 +58,7 @@ export default class ActualHourlyBalanceReplacer {
       year: nextYear,
       total: totalBalance,
       officialId,
+      calculations: [],
     });
   }
 

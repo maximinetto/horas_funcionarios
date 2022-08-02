@@ -1,10 +1,22 @@
 import Calculations from "collections/Calculations";
 import { logger } from "config";
-import { tasCalculator } from "dependencies/container";
+import BalanceConverter from "converters/models_to_entities/BalanceConverter";
 import CalculationTAS from "entities/CalculationTAS";
 import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
+import ActualHourlyBalanceRepository from "persistence/ActualBalance/ActualHourlyBalanceRepository";
+import CalculationRepository from "persistence/Calculation/CalculationRepository";
+import TASCalculator from "services/calculations/TAS";
+import Balances from "services/hourlyBalances";
+import ActualHourlyBalanceCreator from "services/hourlyBalances/ActualHourlyBalanceCreator";
+import ActualHourlyBalanceReplacer from "services/hourlyBalances/ActualHourlyBalanceReplacer";
+import CalculationSorter from "sorters/CalculationSorter";
 import { CalculationCalculated } from "types/calculations";
 
+import CalculationValidator from "../CalculationValidator";
+import CalculatorRowService from "../TAS/CalculatorRowService";
+import HoursTASCalculator from "../TAS/HoursTASCalculator";
+import RecalculatorService from "../TAS/RecalculatorService";
+import BalancesPerYearCalculator from "../TAS/YearsCalculator";
 import calculation from "./HoursTASCalculator/calculate";
 import { calculateTotalBalance } from "./HoursTASCalculator/calculateBalance";
 import { calculate } from "./HoursTASCalculator/calculateForMonth";
@@ -20,8 +32,45 @@ export async function expectCalculationEquals(
     lastBalances: HourlyBalanceTAS[];
     data: Data;
   },
-  _calculations: Calculations<CalculationTAS>
+  _calculations: Calculations<CalculationTAS>,
+  {
+    actualHourlyBalanceRepository,
+    calculationRepository,
+  }: {
+    actualHourlyBalanceRepository: ActualHourlyBalanceRepository;
+    calculationRepository: CalculationRepository;
+  }
 ) {
+  const actualHourlyBalanceCreator = new ActualHourlyBalanceCreator();
+  const actualHourlyBalanceReplacer = new ActualHourlyBalanceReplacer({
+    actualHourlyBalanceCreator,
+    balanceConverter: new BalanceConverter(),
+  });
+  const calculatorRowService = new CalculatorRowService({
+    hoursTASCalculator: new HoursTASCalculator({
+      balancesPerYearCalculator: new BalancesPerYearCalculator(),
+      calculationRepository,
+      calculationSorter: new CalculationSorter(),
+      calculationValidator: new CalculationValidator(),
+    }),
+  });
+
+  const recalculatorService = new RecalculatorService({
+    actualHourlyBalanceReplacer,
+    calculationRepository,
+    calculatorRowService,
+  });
+
+  const tasCalculator = new TASCalculator({
+    actualHourlyBalanceCreator,
+    actualHourlyBalanceReplacer,
+    recalculatorService,
+    balances: new Balances({
+      actualHourlyBalanceRepository,
+    }),
+    calculatorRowService,
+  });
+
   const response = await tasCalculator.calculate({
     calculations: data.calculations,
     official: data.official,

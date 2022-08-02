@@ -19,9 +19,9 @@ export default class HourlyBalanceConverter {
   }
 
   public fromModelToEntities(models: HourlyBalanceModel[]) {
-    return this.hourlyBalanceEntityFactoryCreator.create(models);
+    return this.hourlyBalanceEntityFactoryCreator.createAll(models);
   }
   public fromEntitiesToModels(entities: HourlyBalanceEntity[]) {
-    return this.hourlyBalanceModelFactoryCreator.create(entities);
+    return this.hourlyBalanceModelFactoryCreator.createAll(entities);
   }
 }

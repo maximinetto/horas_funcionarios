@@ -1,8 +1,12 @@
+import { Official as OfficialModel } from "@prisma/client";
 import { Decimal } from "decimal.js";
 import ActualBalanceEntity from "entities/ActualBalance";
 import NullOfficial from "entities/null_object/NullOfficial";
 import Official from "entities/Official";
-import { ActualBalanceComplete } from "types/actualBalance";
+import {
+  ActualBalanceComplete,
+  PartialActualBalance,
+} from "types/actualBalance";
 
 import { AbstractConverter } from "./AbstractConverter";
 import CalculationConverter from "./CalculationConverter";
@@ -10,7 +14,7 @@ import HourlyBalanceConverter from "./HourlyBalanceConverter";
 import OfficialConverter from "./OfficialConverter";
 
 export default class ActualBalanceConverter extends AbstractConverter<
-  ActualBalanceComplete,
+  PartialActualBalance,
   ActualBalanceEntity
 > {
   private officialConverter: OfficialConverter;
@@ -34,7 +38,7 @@ export default class ActualBalanceConverter extends AbstractConverter<
     this.fromEntityToModel = this.fromEntityToModel.bind(this);
   }
 
-  fromModelToEntity(model: ActualBalanceComplete): ActualBalanceEntity {
+  fromModelToEntity(model: PartialActualBalance): ActualBalanceEntity {
     const official = model.official
       ? this.officialConverter.fromModelToEntity(model.official)
       : Official.default(model.officialId);
@@ -59,7 +63,7 @@ export default class ActualBalanceConverter extends AbstractConverter<
     );
   }
   fromEntityToModel(entity: ActualBalanceEntity): ActualBalanceComplete {
-    const official = entity.official.map((value) =>
+    const optionalOfficial = entity.official.map((value) =>
       this.officialConverter.fromEntityToModel(value)
     );
     const calculations = this.calculationConverter.fromEntitiesToModels(
@@ -70,12 +74,17 @@ export default class ActualBalanceConverter extends AbstractConverter<
       entity.hourlyBalances
     );
 
+    const official = optionalOfficial.get();
+    const officialEntity = entity.official.orElseGet(() => Official.default());
+
+    official.id = officialEntity.id;
+
     return {
       id: entity.id,
       officialId: entity.official.orElse(new NullOfficial()).id,
       year: entity.year,
       total: BigInt(entity.total.toString()),
-      official: official.get(),
+      official: official as OfficialModel,
       calculations,
       hourlyBalances,
     };

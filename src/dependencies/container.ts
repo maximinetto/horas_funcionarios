@@ -11,9 +11,9 @@ import HourlyBalanceTeacherConverter from "converters/models_to_entities/HourlyB
 import OfficialConverter from "converters/models_to_entities/OfficialConverter";
 import HourlyBalanceEntityFactoryCreator from "factories/HourlyBalanceEntityFactoryCreator";
 import HourlyBalanceModelFactoryCreator from "factories/HourlyBalanceModelFactoryCreator";
-import { ActualHourlyBalanceRepository } from "persistence/actualBalance";
-import { CalculationRepository } from "persistence/calculations";
-import OfficialRepository from "persistence/officials";
+import PrismaActualHourlyBalanceRepository from "persistence/ActualBalance/PrismaActualHourlyBalanceRepository";
+import PrismaCalculationRepository from "persistence/Calculation/PrismaCalculationRepository";
+import OfficialRepository from "persistence/Official/PrismaOfficialRepository";
 import prisma from "persistence/persistence.config";
 import Calculator from "services/calculations";
 import CalculationValidator from "services/calculations/classes/CalculationValidator";
@@ -32,7 +32,7 @@ const container = createContainer();
 
 container.register({
   actualHourlyBalanceRepository: asClass(
-    ActualHourlyBalanceRepository
+    PrismaActualHourlyBalanceRepository
   ).singleton(),
   actualHourlyBalanceCreator: asClass(ActualHourlyBalanceCreator).singleton(),
   actualHourlyBalanceReplacer: asClass(ActualHourlyBalanceReplacer).singleton(),
@@ -40,7 +40,7 @@ container.register({
   balances: asClass(Balances).singleton(),
   balancesPerYearCalculator: asClass(BalancesPerYearCalculator).singleton(),
   calculationConverter: asClass(CalculationConverter).singleton(),
-  calculationRepository: asClass(CalculationRepository).singleton(),
+  calculationRepository: asClass(PrismaCalculationRepository).singleton(),
   calculationSorter: asClass(CalculationSorter).singleton(),
   calculationTASConverter: asClass(CalculationTASConverter).singleton(),
   calculationTASConverterDTO: asClass(CalculationTASConverterDTO).singleton(),
@@ -83,3 +83,6 @@ export const tasCalculator = container.resolve(
 export const calculationConverter = container.resolve(
   "calculationConverter"
 ) as CalculationConverter;
+export const officialConverter = container.resolve(
+  "officialConverter"
+) as OfficialConverter;

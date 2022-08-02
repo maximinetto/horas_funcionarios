@@ -1,12 +1,16 @@
 import faker from "@faker-js/faker";
-import { Contract, Official, TypeOfOfficials } from "@prisma/client";
+import { Contract, TypeOfOfficials } from "@prisma/client";
+import OfficialConverter from "converters/models_to_entities/OfficialConverter";
 import _omit from "lodash/omit";
-import OfficialRepository from "persistence/officials";
+import PrismaOfficialRepository from "persistence/Official/PrismaOfficialRepository";
 import prisma from "persistence/persistence.config";
 import OfficialService from "services/officials";
+import { OfficialWithOptionalId } from "types/officials";
 
-let officials;
+let officials: OfficialWithOptionalId[];
 let officialService: OfficialService;
+let officialConverter: OfficialConverter;
+
 afterEach(async () => {
   const deleteOfficial = prisma.official.deleteMany();
 
@@ -16,16 +20,21 @@ afterEach(async () => {
 });
 
 beforeEach(async () => {
+  officialConverter = new OfficialConverter();
   officials = await createFakeOfficials();
   officialService = new OfficialService({
-    officialRepository: new OfficialRepository({ database: prisma }),
+    officialRepository: new PrismaOfficialRepository({
+      database: prisma,
+      officialConverter,
+    }),
+    officialConverter,
   });
 });
 
 it("Should get all instance of officials", async () => {
   const response = await officialService.get({});
 
-  const result = (res: Official) => _omit(res, ["id"]);
+  const result = (res: OfficialWithOptionalId) => _omit(res, ["id"]);
 
   expect(response.map(result)).toEqual(officials);
 
@@ -80,7 +89,9 @@ it("Should create 1 official", async () => {
     ]),
   };
 
-  const response = await officialService.create(official);
+  const officialEntity = officialConverter.fromModelToEntity(official);
+
+  const response = await officialService.create(officialEntity);
   const officialWithoutId = { ...response, id: undefined };
 
   delete officialWithoutId.id;
@@ -114,7 +125,9 @@ it("Should update the existing official", async () => {
     throw new Error("No official found");
   }
 
-  const result = await officialService.update(official2.id, official);
+  const officialEntity = officialConverter.fromModelToEntity(official);
+
+  const result = await officialService.update(officialEntity);
 
   expect(result).toEqual({ ...official, id: official2.id });
 });
@@ -136,7 +149,7 @@ it("Should delete a existing official record", async () => {
   expect(count).toBe(1);
 });
 
-async function createFakeOfficials() {
+async function createFakeOfficials(): Promise<OfficialWithOptionalId[]> {
   const _officials = [
     {
       recordNumber: faker.datatype.number(),

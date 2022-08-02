@@ -4,19 +4,18 @@ import Calculation from "entities/Calculation";
 import HourlyBalance from "entities/HourlyBalance";
 import ICalculation from "entities/ICalculation";
 import Official from "entities/Official";
-import type { CalculationRepository } from "persistence/calculations";
+import type CalculationRepository from "persistence/Calculation/CalculationRepository";
+import CalculatePerMonth, {
+  CalculatePerMonthAlternative,
+} from "services/calculations/classes/CalculatePerMonth";
+import CalculationCreator from "services/calculations/classes/CalculationCreator";
+import CalculationValidator from "services/calculations/classes/CalculationValidator";
 import CalculationSorter from "sorters/CalculationSorter";
 import {
   CalculationCalculated,
   CalculationParam,
   PrismaCalculationFinderOptions,
 } from "types/calculations";
-
-import CalculatePerMonth, {
-  CalculatePerMonthAlternative,
-} from "./CalculatePerMonth";
-import CalculationCreator from "./CalculationCreator";
-import CalculationValidator from "./CalculationValidator";
 
 export default abstract class HoursCalculator {
   protected calculationRepository: CalculationRepository;
@@ -166,14 +165,18 @@ export default abstract class HoursCalculator {
   }
 
   private async getRestOfCalculations(official: Official, year: number) {
-    this.calculationsFromPersistence = await this.calculationRepository.get(
-      {
+    const calculations = await this.calculationRepository.filter({
+      where: {
         actualBalance: {
           officialId: official.id,
         },
         year,
       },
-      this.selectOptions
+      ...this.selectOptions,
+    });
+
+    this.calculationsFromPersistence = new Calculations<Calculation>(
+      ...calculations
     );
   }
 

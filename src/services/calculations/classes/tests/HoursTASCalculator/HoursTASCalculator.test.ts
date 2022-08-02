@@ -1,7 +1,7 @@
 import Calculations from "collections/Calculations";
 import ActualBalance from "entities/ActualBalance";
-import { ActualHourlyBalanceRepository } from "persistence/actualBalance";
-import { CalculationRepository } from "persistence/calculations";
+import ActualHourlyBalanceRepository from "persistence/ActualBalance/ActualHourlyBalanceRepository";
+import CalculationRepository from "persistence/Calculation/CalculationRepository";
 import HoursTASCalculationCreator from "services/calculations/classes/tests/HoursTASCalculator/HoursTASCalculationCreator";
 
 import {
@@ -31,35 +31,81 @@ export interface CalculationDataTAS extends CalculationData {
 
 describe("Test calculations", () => {
   test("Should calculate right the passed values", async () => {
-    jest
-      .spyOn(CalculationRepository.prototype, "get")
-      .mockResolvedValue(new Calculations());
+    const calculationRepository: jest.Mocked<CalculationRepository> = {
+      filter: jest.fn().mockResolvedValue([]),
+      add: jest.fn(),
+      addRange: jest.fn(),
+      get: jest.fn(),
+      getAll: jest.fn(),
+      remove: jest.fn(),
+      removeRange: jest.fn(),
+      set: jest.fn(),
+      setRange: jest.fn(),
+    };
 
     const firstData = new Calculations(...calculationsFirstTest);
 
     const data = preset(firstData, yearFirstTest);
-    ActualHourlyBalanceRepository.prototype.getTAS = jest
-      .fn()
-      .mockResolvedValue([convert(data.lastBalances, data.data.official)]);
+
+    const actualHourlyBalanceRepository: jest.Mocked<ActualHourlyBalanceRepository> =
+      {
+        filter: jest
+          .fn()
+          .mockResolvedValue([convert(data.lastBalances, data.data.official)]),
+        add: jest.fn(),
+        addRange: jest.fn(),
+        get: jest.fn(),
+        getAll: jest.fn(),
+        remove: jest.fn(),
+        removeRange: jest.fn(),
+        set: jest.fn(),
+        setRange: jest.fn(),
+      };
 
     await expectCalculationEquals(
       data,
-      new Calculations(...calculationsFirstTest)
+      new Calculations(...calculationsFirstTest),
+      {
+        actualHourlyBalanceRepository,
+        calculationRepository,
+      }
     );
   });
   test("Should calculate right the passed values too", async () => {
-    jest
-      .spyOn(CalculationRepository.prototype, "get")
-      .mockResolvedValue(new Calculations(...calculationsFirstTest));
+    const calculationRepository: jest.Mocked<CalculationRepository> = {
+      filter: jest.fn().mockResolvedValue(calculationsFirstTest),
+      add: jest.fn(),
+      addRange: jest.fn(),
+      get: jest.fn(),
+      getAll: jest.fn(),
+      remove: jest.fn(),
+      removeRange: jest.fn(),
+      set: jest.fn(),
+      setRange: jest.fn(),
+    };
 
     const otherData = new Calculations(...otherCalculations);
     const data = preset(otherData, yearFirstTest);
     const actual = convert(data.lastBalances, data.data.official);
-    jest
-      .spyOn(ActualHourlyBalanceRepository.prototype, "getTAS")
-      .mockResolvedValue([actual]);
+
+    const actualHourlyBalanceRepository: jest.Mocked<ActualHourlyBalanceRepository> =
+      {
+        filter: jest.fn().mockResolvedValue([actual]),
+        add: jest.fn(),
+        addRange: jest.fn(),
+        get: jest.fn(),
+        getAll: jest.fn(),
+        remove: jest.fn(),
+        removeRange: jest.fn(),
+        set: jest.fn(),
+        setRange: jest.fn(),
+      };
+
     const allCalculations = [...calculationsFirstTest, ...otherCalculations];
-    await expectCalculationEquals(data, new Calculations(...allCalculations));
+    await expectCalculationEquals(data, new Calculations(...allCalculations), {
+      actualHourlyBalanceRepository,
+      calculationRepository,
+    });
   });
 
   test("Should calculate right previous balances and next balances", async () => {

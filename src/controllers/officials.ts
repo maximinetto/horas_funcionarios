@@ -1,7 +1,7 @@
 import { Contract, Official, TypeOfOfficials } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { logger } from "config";
-import { officialService } from "dependencies/container";
+import { officialConverter, officialService } from "dependencies/container";
 import ModelAlreadyExistsError from "errors/ModelAlreadyExistsError";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { OfficialWithoutId } from "types/officials";
@@ -54,7 +54,8 @@ export const createOfficials = async (
   };
 
   try {
-    const official = await officialService.create(newOfficial);
+    const officialEntity = officialConverter.fromModelToEntity(newOfficial);
+    const official = await officialService.create(officialEntity);
     response(reply, {
       status: 201,
       data: official,
@@ -82,10 +83,9 @@ export const updateOfficial = async (
   }>,
   reply: FastifyReply
 ) => {
-  const { id, ...others } = req.body;
-
   try {
-    const official = await officialService.update(id, others);
+    const officialEntity = officialConverter.fromModelToEntity(req.body);
+    const official = await officialService.update(officialEntity);
     response(reply, {
       status: 200,
       data: official,

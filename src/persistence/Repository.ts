@@ -1,7 +1,8 @@
 import Entity from "entities/Entity";
+import { Optional } from "typescript-optional";
 
 export default interface Repository<key, E extends Entity> {
-  get(id: key): Promise<E>;
+  get(id: key): Promise<Optional<E>>;
   getAll(): Promise<E[]>;
   filter(predicate: Object): Promise<E[]>;
 

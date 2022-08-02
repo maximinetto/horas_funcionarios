@@ -9,7 +9,7 @@ import InvalidValueError from "errors/InvalidValueError";
 import Creator from "./Creator";
 
 export default class HourlyBalanceModelFactoryCreator
-  implements Creator<HourlyBalanceModel[], HourlyBalanceEntity[]>
+  implements Creator<HourlyBalanceModel, HourlyBalanceEntity>
 {
   private hourlyBalanceTASConverter: HourlyBalanceTASConverter;
   private hourlyBalanceTeacherConverter: HourlyBalanceTeacherConverter;
@@ -25,7 +25,21 @@ export default class HourlyBalanceModelFactoryCreator
     this.hourlyBalanceTeacherConverter = hourlyBalanceTeacherConverter;
   }
 
-  create(types: HourlyBalanceEntity[]): HourlyBalanceModel[] {
+  create(type: HourlyBalanceEntity): HourlyBalanceModel {
+    if (type instanceof HourlyBalanceTAS) {
+      return this.hourlyBalanceTASConverter.fromEntityToModel(type);
+    }
+
+    if (type instanceof HourlyBalanceTeacher) {
+      return this.hourlyBalanceTeacherConverter.fromEntityToModel(type);
+    }
+
+    throw new InvalidValueError(
+      "The instance must be a valid subtype of HourlyBalance"
+    );
+  }
+
+  createAll(types: HourlyBalanceEntity[]): HourlyBalanceModel[] {
     if (types.length === 0) return [];
 
     const type = types[0];

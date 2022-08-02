@@ -3,7 +3,7 @@ import ActualBalance from "entities/ActualBalance";
 import Calculation from "entities/Calculation";
 import CalculationTAS from "entities/CalculationTAS";
 import Official from "entities/Official";
-import { CalculationRepository } from "persistence/calculations";
+import CalculationRepository from "persistence/Calculation/CalculationRepository";
 import ActualHourlyBalanceReplacer from "services/hourlyBalances/ActualHourlyBalanceReplacer";
 import { CalculationCalculated } from "types/calculations";
 
@@ -42,8 +42,8 @@ export default class RecalculatorService {
   }) {
     this.actualHourlyBalances = currentActualHourlyBalances;
 
-    const calculations = (await this.calculationRepository.get(
-      {
+    const calculationEntities = await this.calculationRepository.filter({
+      where: {
         year: {
           gte: year,
         },
@@ -51,12 +51,12 @@ export default class RecalculatorService {
           officialId: official.id,
         },
       },
-      {
-        include: {
-          calculationTAS: true,
-        },
-      }
-    )) as Calculations<CalculationTAS>;
+      include: {
+        calculationTAS: true,
+      },
+    });
+
+    const calculations = new Calculations(...calculationEntities);
 
     if (!Calculation.calculationsHasMoreLaterHours(calculations)) return;
 

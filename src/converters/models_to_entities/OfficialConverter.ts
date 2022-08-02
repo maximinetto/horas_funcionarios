@@ -1,16 +1,16 @@
-import { Official as OfficialModel } from "@prisma/client";
 import OfficialEntity from "entities/Official";
 import { DateTime } from "luxon";
+import { OfficialWithOptionalId } from "types/officials";
 
 import { AbstractConverter } from "./AbstractConverter";
 
 export default class OfficialConverter extends AbstractConverter<
-  OfficialModel,
+  OfficialWithOptionalId,
   OfficialEntity
 > {
-  fromModelToEntity(model: OfficialModel): OfficialEntity {
+  fromModelToEntity(model: OfficialWithOptionalId): OfficialEntity {
     return new OfficialEntity(
-      model.id,
+      model.id ?? 0,
       model.recordNumber,
       model.firstName,
       model.lastName,
@@ -21,7 +21,7 @@ export default class OfficialConverter extends AbstractConverter<
       model.chargeNumber
     );
   }
-  fromEntityToModel(entity: OfficialEntity): OfficialModel {
+  fromEntityToModel(entity: OfficialEntity): OfficialWithOptionalId {
     return {
       id: entity.id,
       recordNumber: entity.recordNumber,

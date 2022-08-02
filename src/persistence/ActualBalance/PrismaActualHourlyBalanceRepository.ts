@@ -1,9 +1,8 @@
-import { Prisma } from "@prisma/client";
-import HourlyBalanceTASConverter from "converters/models_to_entities/HourlyBalanceTASConverter";
-import Decimal from "decimal.js";
+import { Prisma, PrismaClient } from "@prisma/client";
+import ActualBalanceConverter from "converters/models_to_entities/ActualBalanceConverter";
 import ActualBalance from "entities/ActualBalance";
-import Official from "entities/Official";
-import database from "persistence/persistence.config";
+import ActualHourlyBalanceRepository from "persistence/ActualBalance/ActualHourlyBalanceRepository";
+import PrismaRepository from "persistence/PrismaRepository";
 import { serializeBalancesTAS } from "serializers/persistence/balance";
 import {
   ActualBalanceDTO,
@@ -11,11 +10,29 @@ import {
   ActualBalanceWithTASEntity,
 } from "types/actualBalance";
 
-export class ActualHourlyBalanceRepository {
-  private hourlyBalanceConverter: HourlyBalanceTASConverter;
-  constructor(hourlyBalanceConverter?: HourlyBalanceTASConverter) {
-    this.hourlyBalanceConverter =
-      hourlyBalanceConverter || new HourlyBalanceTASConverter();
+export default class PrismaActualHourlyBalanceRepository
+  extends PrismaRepository<string, ActualBalance>
+  implements ActualHourlyBalanceRepository
+{
+  private actualBalanceConverter: ActualBalanceConverter;
+
+  constructor({
+    database,
+    actualBalanceConverter,
+  }: {
+    database: PrismaClient;
+    actualBalanceConverter: ActualBalanceConverter;
+  }) {
+    super({ database, modelName: "ActualBalance" });
+    this.actualBalanceConverter = actualBalanceConverter;
+  }
+
+  toEntity(value: any): ActualBalance {
+    return this.actualBalanceConverter.fromModelToEntity(value);
+  }
+
+  toPersistance(value: ActualBalance): object {
+    return this.actualBalanceConverter.fromEntityToModel(value);
   }
 
   getBalanceTASBYOfficialIdAndYear({
@@ -25,7 +42,8 @@ export class ActualHourlyBalanceRepository {
     officialId: number;
     year: number;
   }): Promise<ActualBalanceDTO[]> {
-    return database.$queryRaw`SELECT actual_balance.id as 'id', actual_balance.year as 'year', actual_balance.total as 'total', 
+    return this._prisma
+      .$queryRaw`SELECT actual_balance.id as 'id', actual_balance.year as 'year', actual_balance.total as 'total', 
     actual_balance.official_id as 'officialId', 
     hourly_balance.id as 'hourlyBalance.id', hourly_balance.year as 'hourlyBalance.year',  
     hourly_balance.actual_balance_id as 'hourlyBalance.actualBalanceId', 
@@ -46,11 +64,12 @@ ORDER BY year ASC, hourly_balance.year ASC`.then((balances) =>
       serializeBalancesTAS(balances)
     );
   }
+
   getTAS(
     where: Prisma.ActualBalanceWhereInput,
     options?: ActualBalanceFindManyOptions
   ): Promise<ActualBalanceWithTASEntity[]> {
-    return database.actualBalance
+    return this._prisma.actualBalance
       .findMany({
         where,
         ...options,
@@ -63,20 +82,7 @@ ORDER BY year ASC, hourly_balance.year ASC`.then((balances) =>
         },
       })
       .then((actuals) => {
-        return actuals.map((balance) => {
-          const hourlyBalances =
-            this.hourlyBalanceConverter.fromModelsToEntities(
-              balance.hourlyBalances
-            );
-
-          return new ActualBalance(
-            balance.id,
-            balance.year,
-            new Decimal(balance.total.toString()),
-            Official.default(balance.officialId),
-            hourlyBalances
-          );
-        });
+        return this.actualBalanceConverter.fromModelsToEntities(actuals);
       });
   }
 }

@@ -1,35 +1,45 @@
 import Calculations from "collections/Calculations";
 import { logger } from "config";
-import { balances, calculatorRowService } from "dependencies/container";
 import ActualBalance from "entities/ActualBalance";
 import CalculationTAS from "entities/CalculationTAS";
 import Official from "entities/Official";
 import ValueNotProvidedError from "errors/ValueNotProvidedError";
 import RecalculatorService from "services/calculations/classes/TAS/RecalculatorService";
+import Balances, {
+  getCurrentActualHourlyBalance,
+} from "services/hourlyBalances";
 import ActualHourlyBalanceCreator from "services/hourlyBalances/ActualHourlyBalanceCreator";
 import ActualHourlyBalanceReplacer from "services/hourlyBalances/ActualHourlyBalanceReplacer";
 import { CalculationCalculated } from "types/calculations";
 
-import { getCurrentActualHourlyBalance } from "../hourlyBalances";
+import CalculatorRowService from "./classes/TAS/CalculatorRowService";
 
 export default class TASCalculator {
   private actualHourlyBalanceReplacer: ActualHourlyBalanceReplacer;
   private actualHourlyBalanceCreator: ActualHourlyBalanceCreator;
   private recalculatorService: RecalculatorService;
+  private calculatorRowService: CalculatorRowService;
   private official?: Official;
+  private balances: Balances;
 
   constructor({
     actualHourlyBalanceReplacer,
     recalculatorService,
     actualHourlyBalanceCreator,
+    balances,
+    calculatorRowService,
   }: {
     actualHourlyBalanceReplacer: ActualHourlyBalanceReplacer;
     recalculatorService: RecalculatorService;
     actualHourlyBalanceCreator: ActualHourlyBalanceCreator;
+    balances: Balances;
+    calculatorRowService: CalculatorRowService;
   }) {
     this.actualHourlyBalanceReplacer = actualHourlyBalanceReplacer;
     this.recalculatorService = recalculatorService;
     this.actualHourlyBalanceCreator = actualHourlyBalanceCreator;
+    this.balances = balances;
+    this.calculatorRowService = calculatorRowService;
   }
 
   async calculate({
@@ -49,16 +59,18 @@ export default class TASCalculator {
     this.official = official;
     this.officialIsDefinite();
 
-    const actualHourlyBalancesAfterPreviousYear = await balances.calculate({
-      year: previousYear,
-      officialId: official.id,
-    });
+    const actualHourlyBalancesAfterPreviousYear = await this.balances.calculate(
+      {
+        year: previousYear,
+        officialId: official.id,
+      }
+    );
 
     const previousActualBalance = getCurrentActualHourlyBalance(
       actualHourlyBalancesAfterPreviousYear,
       previousYear
     );
-    const dataCalculated = await calculatorRowService.calculate({
+    const dataCalculated = await this.calculatorRowService.calculate({
       year: currentYear,
       official,
       calculations,

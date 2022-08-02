@@ -17,6 +17,12 @@ export type ActualBalanceComplete = Prisma.ActualBalanceGetPayload<{
   };
 }>;
 
+export interface PartialActualBalance extends ActualBalanceComplete {
+  calculations?;
+  hourlyBalances?;
+  official?;
+}
+
 export type ActualBalanceFindManyOptions = Omit<
   Prisma.ActualBalanceFindManyArgs,
   "where"

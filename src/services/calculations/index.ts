@@ -7,14 +7,14 @@ import CalculationConverter from "converters/models_to_entities/CalculationConve
 import CalculationTASDTOWithTimeFieldsInString from "dto/create/calculationTASDTOWithTimeFieldsInString";
 import ActualBalance from "entities/ActualBalance";
 import NotExistsError from "errors/NotExistsError";
-import { IOfficialRepository } from "persistence/officials";
+import OfficialRepository from "persistence/Official/OfficialRepository";
 import { sanitizeCalculationFields } from "sanitizers/calculations";
 import TASCalculator from "services/calculations/TAS";
 import { CalculationCalculated } from "types/calculations";
 
 // TODO si el año ya está calculado y existen posteriores lo mejor es mandarlo a una cola
 export default class Calculator {
-  private officialRepository: IOfficialRepository;
+  private officialRepository: OfficialRepository;
   private tasCalculator: TASCalculator;
   private calculationTASConverterDTO: CalculationTASConverter;
   private actualBalanceConverter: ActualBalanceConverter;
@@ -27,7 +27,7 @@ export default class Calculator {
     actualBalanceConverter,
     calculationConverter,
   }: {
-    officialRepository: IOfficialRepository;
+    officialRepository: OfficialRepository;
     tasCalculator: TASCalculator;
     calculationTASConverterDTO: CalculationTASConverter;
     actualBalanceConverter: ActualBalanceConverter;
@@ -50,7 +50,7 @@ export default class Calculator {
     officialId: number;
   }) {
     officialId = Number(officialId);
-    const officialInstance = await this.officialRepository.getOne(officialId);
+    const officialInstance = await this.officialRepository.get(officialId);
     if (officialInstance.isEmpty()) {
       throw new NotExistsError("The official does not exists");
     }

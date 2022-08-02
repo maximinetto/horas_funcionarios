@@ -1,21 +1,22 @@
 import { PrismaClient } from "@prisma/client";
 import Entity from "entities/Entity";
 import Repository from "persistence/Repository";
+import { Optional } from "typescript-optional";
 
-export default abstract class RepositoryPrisma<key, E extends Entity>
+export default abstract class PrismaRepository<key, E extends Entity>
   implements Repository<key, E>
 {
   protected readonly _prisma: PrismaClient;
   protected readonly _modelName: string;
 
   constructor({
-    prisma,
+    database,
     modelName,
   }: {
-    prisma: PrismaClient;
+    database: PrismaClient;
     modelName: string;
   }) {
-    this._prisma = prisma;
+    this._prisma = database;
     this._modelName = modelName;
 
     this.toEntity = this.toEntity.bind(this);
@@ -25,7 +26,7 @@ export default abstract class RepositoryPrisma<key, E extends Entity>
   abstract toEntity(value): E;
   abstract toPersistance(value: E);
 
-  get(id: key): Promise<E> {
+  get(id: key): Promise<Optional<E>> {
     return this._prisma[this._modelName]
       .findFirst({
         where: {

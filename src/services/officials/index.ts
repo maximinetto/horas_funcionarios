@@ -1,20 +1,23 @@
 import { Contract, TypeOfOfficials } from "@prisma/client";
 import OfficialConverter from "converters/models_to_entities/OfficialConverter";
 import Official from "entities/Official";
-import { IOfficialRepository } from "persistence/officials";
-import { OfficialWithoutId } from "types/officials";
+import OfficialRepository from "persistence/Official/OfficialRepository";
 import { lastDateOfTheYear } from "utils/date";
-import removeKeyIfValueDoesNotDefinite from "utils/removeKeyIfValueDoesNotDefinite";
 
+type Get = {
+  type?: TypeOfOfficials;
+  contract?: Contract;
+  year?: number;
+};
 export default class OfficialService {
-  private officialRepository: IOfficialRepository;
+  private officialRepository: OfficialRepository;
   private officialConverter: OfficialConverter;
 
   constructor({
     officialRepository,
     officialConverter,
   }: {
-    officialRepository: IOfficialRepository;
+    officialRepository: OfficialRepository;
     officialConverter: OfficialConverter;
   }) {
     this.officialRepository = officialRepository;
@@ -23,19 +26,12 @@ export default class OfficialService {
     this.toModels = this.toModels.bind(this);
   }
 
-  async get({
-    type,
-    contract,
-    year,
-  }: {
-    type?: TypeOfOfficials;
-    contract?: Contract;
-    year?: number;
-  }) {
+  get(props?: Get) {
+    const { type, contract, year } = props || {};
     const date = lastDateOfTheYear(year);
     const where = {
-      type,
-      contract,
+      type: type,
+      contract: contract,
       dateOfEntry: date
         ? {
             gte: new Date(`${year}-01-01`),
@@ -44,60 +40,23 @@ export default class OfficialService {
         : undefined,
     };
 
-    return this.officialRepository.get(where).then(this.toModels);
-  }
-  async create({
-    recordNumber,
-    firstName,
-    lastName,
-    position,
-    dateOfEntry,
-    chargeNumber,
-    type,
-    contract,
-  }) {
     return this.officialRepository
-      .create({
-        recordNumber,
-        firstName,
-        lastName,
-        position,
-        dateOfEntry,
-        chargeNumber,
-        type,
-        contract,
-      })
-      .then(this.toModel);
+      .filter({ where: { ...where } })
+      .then(this.toModels);
   }
-  async update(
-    id: number,
-    {
-      recordNumber,
-      firstName,
-      lastName,
-      position,
-      dateOfEntry,
-      chargeNumber,
-      type,
-      contract,
-    }: OfficialWithoutId
-  ) {
-    const fields = {
-      recordNumber,
-      firstName,
-      lastName,
-      position,
-      dateOfEntry,
-      chargeNumber,
-      type,
-      contract,
-    };
-    removeKeyIfValueDoesNotDefinite(fields);
 
-    return this.officialRepository.update(id, fields).then(this.toModel);
+  create(official: Official) {
+    return this.officialRepository.add(official).then(this.toModel);
   }
-  async delete(id) {
-    return this.officialRepository.delete(id).then(this.toModel);
+
+  update(official: Official) {
+    return this.officialRepository.set(official).then(this.toModel);
+  }
+
+  delete(id: number) {
+    return this.officialRepository
+      .remove(Official.default(id))
+      .then(this.toModel);
   }
 
   private toModel(entity: Official) {
