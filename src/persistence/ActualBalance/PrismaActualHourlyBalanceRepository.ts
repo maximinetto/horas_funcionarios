@@ -23,7 +23,7 @@ export default class PrismaActualHourlyBalanceRepository
     database: PrismaClient;
     actualBalanceConverter: ActualBalanceConverter;
   }) {
-    super({ database, modelName: "ActualBalance" });
+    super({ database, modelName: "actualBalance" });
     this.actualBalanceConverter = actualBalanceConverter;
   }
 

@@ -30,7 +30,8 @@ export const valueExistsInPersistence = ({
     );
   }
 
-  return persistence[entity]
+  const model = persistence[entity];
+  return model
     .findMany({
       where: { [keyToFind]: { in: value } },
       select: {

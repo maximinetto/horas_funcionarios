@@ -1,4 +1,4 @@
-import app from "app";
+import buildApp from "app";
 import { configureDotEnv, logger } from "config";
 import { memoryUsage } from "memory";
 import prisma from "persistence/persistence.config";
@@ -10,6 +10,7 @@ logger.info("\n\nMemory usage:", {
   ...memoryUsage(),
 });
 
+const app = buildApp();
 app.listen(
   {
     port: OFFICIALS_SCHEDULES_PORT,

@@ -5,10 +5,8 @@ import {
   updateOfficial,
 } from "controllers/officials";
 import { FastifyInstance } from "fastify";
-import { exists } from "validation/middlewares/exists";
 import { schemas } from "validation/schemas/officials";
 
-const entity = "official";
 export default async function routes(fastify: FastifyInstance) {
   fastify.get(
     "/",
@@ -35,12 +33,6 @@ export default async function routes(fastify: FastifyInstance) {
         params: schemas.id,
         body: schemas.update,
       },
-      preValidation: exists({
-        key: "id",
-        entity,
-        property: "params",
-        mustExists: true,
-      }),
     },
     updateOfficial
   );
@@ -50,12 +42,6 @@ export default async function routes(fastify: FastifyInstance) {
       schema: {
         params: schemas.id,
       },
-      preValidation: exists({
-        key: "id",
-        entity,
-        property: "value",
-        mustExists: true,
-      }),
     },
     deleteOfficial
   );

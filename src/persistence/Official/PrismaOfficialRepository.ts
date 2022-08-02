@@ -18,7 +18,7 @@ export default class PrismaOfficialRepository
     database: PrismaClient;
     officialConverter: OfficialConverter;
   }) {
-    super({ database, modelName: "Official" });
+    super({ database, modelName: "official" });
     this.officialConverter = officialConverter;
     this.toEntity = this.toEntity.bind(this);
   }

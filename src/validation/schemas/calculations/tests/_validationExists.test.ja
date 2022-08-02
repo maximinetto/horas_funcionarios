@@ -1,6 +1,5 @@
-import { getMockRes } from "@jest-mock/express";
-import { Request } from "express";
-import middleware, { exists } from "validation/middlewares/validation";
+import { FastifyRequest } from "fastify";
+import exists from "validation/middlewares/exists";
 import { schemas } from "validation/schemas/calculations";
 
 jest.mock("persistence/entity", () => ({
@@ -12,7 +11,7 @@ describe("Validate", () => {
   test("middleware validate that the official with the same id already exists should pass", async () => {
     const { create, paramsCreate } = schemas;
 
-    const req: Partial<Request> = {
+    const req: Partial<FastifyRequest> = {
       params: {
         year: "2018",
         officialId: "1",
@@ -51,12 +50,8 @@ describe("Validate", () => {
       },
     };
 
-    const { res, next } = getMockRes({
-      locals: {},
-    });
-
-    await middleware(paramsCreate, "params")(req as Request, res, next);
-    await middleware(create, "body")(req as Request, res, next);
+    await middleware(paramsCreate, "params")(req as FastifyRequest, res, next);
+    await middleware(create, "body")(req as FastifyRequest, res, next);
 
     const status = res.status as jest.Mock<any, any>;
     if (!res.locals) {
@@ -103,14 +98,14 @@ describe("Validate", () => {
       entity: "official",
       property: "params",
       mustExists: true,
-    })(req as Request, res, next);
+    })(req as FastifyRequest, res, next);
     expect(status.mock.calls).toEqual([]);
     expect(next).toBeCalledTimes(3);
   });
   test("middleware validate that the official with the same id already exists should fail", async () => {
     const { create, paramsCreate } = schemas;
 
-    const req: Partial<Request> = {
+    const req: Partial<FastifyRequest> = {
       params: {
         year: "2018",
         officialId: "1",
@@ -153,8 +148,8 @@ describe("Validate", () => {
       locals: {},
     });
 
-    await middleware(paramsCreate, "params")(req as Request, res, next);
-    await middleware(create, "body")(req as Request, res, next);
+    await middleware(paramsCreate, "params")(req as FastifyRequest, res, next);
+    await middleware(create, "body")(req as FastifyRequest, res, next);
 
     const status = res.status as jest.Mock<any, any>;
     if (!res.locals) {
@@ -201,7 +196,7 @@ describe("Validate", () => {
       entity: "official",
       property: "params",
       mustExists: false,
-    })(req as Request, res, next);
+    })(req as FastifyRequest, res, next);
     expect(status.mock.calls).toEqual([[422]]);
     expect(next).toBeCalledTimes(2);
     expect(res.json).toHaveBeenCalledWith({

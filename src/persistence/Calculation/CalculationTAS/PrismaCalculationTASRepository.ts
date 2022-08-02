@@ -17,7 +17,7 @@ export default class PrismaCalculationTASRepository
     database: PrismaClient;
     calculationTASConverter: CalculationTASConverter;
   }) {
-    super({ database, modelName: "CalculationTAS" });
+    super({ database, modelName: "calculationTAS" });
     this.calculationTASConverter = calculationTASConverter;
   }
 

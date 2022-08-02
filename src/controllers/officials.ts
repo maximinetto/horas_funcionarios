@@ -6,6 +6,7 @@ import ModelAlreadyExistsError from "errors/ModelAlreadyExistsError";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { OfficialWithoutId } from "types/officials";
 import response from "utils/response";
+import validate from "validation/requests/officials/update";
 
 export const getOfficials = async (
   req: FastifyRequest<{
@@ -80,11 +81,16 @@ export const createOfficials = async (
 export const updateOfficial = async (
   req: FastifyRequest<{
     Body: Official;
+    Params: {
+      id: number;
+    };
   }>,
   reply: FastifyReply
 ) => {
   try {
-    const officialEntity = officialConverter.fromModelToEntity(req.body);
+    const validatedData = validate(req);
+
+    const officialEntity = officialConverter.fromModelToEntity(validatedData);
     const official = await officialService.update(officialEntity);
     response(reply, {
       status: 200,
@@ -104,13 +110,13 @@ export const updateOfficial = async (
 
 export const deleteOfficial = async (
   req: FastifyRequest<{
-    Body: {
+    Params: {
       id: number;
     };
   }>,
   reply: FastifyReply
 ) => {
-  const { id } = req.body;
+  const { id } = req.params;
   try {
     const official = await officialService.delete(id);
     response(reply, {

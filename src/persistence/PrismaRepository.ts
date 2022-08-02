@@ -33,7 +33,10 @@ export default abstract class PrismaRepository<key, E extends Entity>
           id,
         },
       })
-      .then((value) => this.toEntity(value));
+      .then((v) => {
+        const model = this.toEntity(v);
+        return Optional.ofNullable(model);
+      });
   }
 
   getAll(): Promise<E[]> {
