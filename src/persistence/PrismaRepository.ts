@@ -34,8 +34,9 @@ export default abstract class PrismaRepository<key, E extends Entity>
         },
       })
       .then((v) => {
-        const model = this.toEntity(v);
-        return Optional.ofNullable(model);
+        if (v) return Optional.of(this.toEntity(v));
+
+        return Optional.empty();
       });
   }
 

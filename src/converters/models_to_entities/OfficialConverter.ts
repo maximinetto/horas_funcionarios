@@ -1,7 +1,6 @@
 import OfficialEntity from "entities/Official";
 import { DateTime } from "luxon";
 import { OfficialWithOptionalId } from "types/officials";
-import { Optional } from "typescript-optional";
 
 import { AbstractConverter } from "./AbstractConverter";
 
@@ -10,7 +9,7 @@ export default class OfficialConverter extends AbstractConverter<
   OfficialEntity
 > {
   fromModelToEntity(model: OfficialWithOptionalId): OfficialEntity {
-    const entity = new OfficialEntity(
+    return new OfficialEntity(
       model.id ?? 0,
       model.recordNumber,
       model.firstName,
@@ -21,8 +20,6 @@ export default class OfficialConverter extends AbstractConverter<
       DateTime.fromJSDate(model.dateOfEntry),
       model.chargeNumber
     );
-
-    return Optional.of(entity);
   }
   fromEntityToModel(entity: OfficialEntity): OfficialWithOptionalId {
     return {
