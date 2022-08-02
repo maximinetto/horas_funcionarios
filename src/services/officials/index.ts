@@ -45,7 +45,7 @@ export default class OfficialService {
       .then(this.toModels);
   }
 
-  create(official: Official) {
+  async create(official: Official) {
     return this.officialRepository.add(official).then(this.toModel);
   }
 

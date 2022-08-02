@@ -97,6 +97,7 @@ it("Should create 1 official", async () => {
   delete officialWithoutId.id;
 
   expect(officialWithoutId).toEqual(official);
+  // TODO: clear database
 });
 
 it("Should update the existing official", async () => {
@@ -117,6 +118,7 @@ it("Should update the existing official", async () => {
     ]),
   };
 
+  // TODO fix this because tests should not depend on other tests
   const official2 = await prisma.official.findFirst({
     orderBy: { id: "desc" },
   });
@@ -125,7 +127,10 @@ it("Should update the existing official", async () => {
     throw new Error("No official found");
   }
 
-  const officialEntity = officialConverter.fromModelToEntity(official);
+  const officialEntity = officialConverter.fromModelToEntity({
+    ...official,
+    id: official2.id,
+  });
 
   const result = await officialService.update(officialEntity);
 

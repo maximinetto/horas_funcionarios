@@ -21,6 +21,8 @@ export default class Official
   private _chargeNumber: number;
   private _actualBalances: ActualBalance[];
 
+  public static DEFAULTNUMBERID = 0;
+
   public constructor(
     id: number,
     recordNumber: number,
@@ -89,7 +91,7 @@ export default class Official
     return false;
   }
 
-  public static default(id = 0): Official {
+  public static default(id = Official.DEFAULTNUMBERID): Official {
     return new Official(
       id,
       0,

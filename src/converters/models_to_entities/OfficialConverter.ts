@@ -23,7 +23,7 @@ export default class OfficialConverter extends AbstractConverter<
   }
   fromEntityToModel(entity: OfficialEntity): OfficialWithOptionalId {
     return {
-      id: entity.id,
+      id: entity.id !== OfficialEntity.DEFAULTNUMBERID ? entity.id : undefined,
       recordNumber: entity.recordNumber,
       firstName: entity.firstName,
       lastName: entity.lastName,
