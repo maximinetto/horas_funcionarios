@@ -60,7 +60,6 @@ export default class OfficialService {
   }
 
   private toModel(entity: Official) {
-    console.log("entity:", entity);
     return this.officialConverter.fromEntityToModel(entity);
   }
 

@@ -19,7 +19,6 @@ describe("Calculations", () => {
     const deleteOfficials = prisma.official.deleteMany();
     const deleteActualBalances = prisma.actualBalance.deleteMany();
 
-    console.log("after");
     await prisma.$transaction([
       deleteCalculations,
       deleteHourlyBalancesTeacher,
@@ -99,7 +98,7 @@ describe("Calculations", () => {
       payload: data,
     });
 
-    const { actualHourlyBalances } = serverReponse.json().data;
+    const { actualHourlyBalances, currentYear } = serverReponse.json().data;
 
     const expected = [
       {
@@ -119,11 +118,16 @@ describe("Calculations", () => {
     ];
 
     const calculationsResponse = actualHourlyBalances[0].calculations;
+    const {
+      totalBalance,
+      totalDiscount,
+      totalWorkingHours,
+      totalNonWorkingHours,
+      totalSimpleHours,
+    } = currentYear;
 
     const actualCalculations = calculationsResponse.map((c) => {
       const ct = convert(c.calculationTAS);
-      console.log(ct);
-
       const others = _omit(c, "actualBalanceId");
       return {
         ...others,
@@ -133,6 +137,26 @@ describe("Calculations", () => {
 
     expect(serverReponse.statusCode).toEqual(201);
     expect(actualCalculations).toEqual(expected);
+    expect(totalBalance).toEqual("4800");
+    expect(totalDiscount).toEqual("1500");
+    expect(totalSimpleHours.value).toEqual("3600");
+    expect(totalWorkingHours.value).toEqual("2700");
+    expect(totalNonWorkingHours.value).toEqual("0");
+
+    const totalBalanceInTime = secondsToTime(4800n);
+    expect(totalBalanceInTime).toEqual("01:20");
+
+    const totalDiscountInTime = secondsToTime(1500n);
+    expect(totalDiscountInTime).toEqual("00:25");
+
+    const totalSimpleHoursInTime = secondsToTime(3600n);
+    expect(totalSimpleHoursInTime).toEqual("01:00");
+
+    const totalWorkingHoursInTime = secondsToTime(2700n);
+    expect(totalWorkingHoursInTime).toEqual("00:45");
+
+    const totalNonWorkingHoursInTime = secondsToTime(0n);
+    expect(totalNonWorkingHoursInTime).toEqual("00:00");
   });
 
   test("should be throw a error because there are not offcials", async () => {
