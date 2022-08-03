@@ -1,1 +1,3 @@
-export default interface Entity {}
+export default interface Entity {
+  entityName(): string;
+}

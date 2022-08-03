@@ -24,7 +24,7 @@ export default abstract class PrismaRepository<key, E extends Entity>
   }
 
   abstract toEntity(value): E;
-  abstract toPersistance(value: E);
+  abstract toModel(value: E);
 
   get(id: key): Promise<Optional<E>> {
     return this._prisma[this._modelName]
@@ -51,7 +51,7 @@ export default abstract class PrismaRepository<key, E extends Entity>
   add(entity: E): Promise<E> {
     return this._prisma[this._modelName]
       .create({
-        data: this.toPersistance(entity),
+        data: this.toModel(entity),
       })
       .then(this.toEntity);
   }
@@ -59,7 +59,7 @@ export default abstract class PrismaRepository<key, E extends Entity>
   addRange(entities: E[]): Promise<E[]> {
     return this._prisma[this._modelName]
       .createMany({
-        data: entities.map((v) => this.toPersistance(v)),
+        data: entities.map((v) => this.toModel(v)),
       })
       .then(this.map);
   }
@@ -70,7 +70,7 @@ export default abstract class PrismaRepository<key, E extends Entity>
         where: {
           id: entity["id"],
         },
-        data: this.toPersistance(entity),
+        data: this.toModel(entity),
       })
       .then(this.toEntity);
   }
@@ -83,7 +83,7 @@ export default abstract class PrismaRepository<key, E extends Entity>
             in: keys,
           },
         },
-        data: this.toPersistance(data),
+        data: this.toModel(data),
       })
       .then(this.map);
   }

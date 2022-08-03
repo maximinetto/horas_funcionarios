@@ -35,7 +35,7 @@ export default class PrismaCalculationRepository
     return this.calculationConverter.fromModelToEntity(value);
   }
 
-  toPersistance(value: Calculation) {
+  toModel(value: Calculation) {
     return this.calculationConverter.fromEntityToModel(value);
   }
 

@@ -1,5 +1,4 @@
 import Calculations from "collections/Calculations";
-import { logger } from "config";
 import ActualBalance from "entities/ActualBalance";
 import CalculationTAS from "entities/CalculationTAS";
 import Official from "entities/Official";
@@ -129,7 +128,6 @@ export default class TASCalculator {
         actualHourlyBalances: [],
       };
 
-    save(postCalculatedData.data);
     return {
       others: postCalculatedData.data,
       actualHourlyBalances: [...postCalculatedData.actualHourlyBalances],
@@ -150,8 +148,6 @@ export default class TASCalculator {
         calculations: dataCalculated.calculations,
       });
 
-    save([dataCalculated]);
-
     return {
       currentYear: dataCalculated,
       others: [],
@@ -170,6 +166,4 @@ export default class TASCalculator {
   }
 }
 
-function save(calculations: CalculationCalculated[]) {
-  logger.debug(calculations);
-}
+function save(calculations: CalculationCalculated[]) {}

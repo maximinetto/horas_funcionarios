@@ -25,7 +25,7 @@ export default class PrismaCalculationTASRepository
     return this.calculationTASConverter.fromModelToEntity(value);
   }
 
-  toPersistance(value: CalculationTAS): object {
+  toModel(value: CalculationTAS): object {
     return this.calculationTASConverter.fromEntityToModel(value);
   }
 }

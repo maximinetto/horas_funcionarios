@@ -4,10 +4,12 @@ import { DateTime } from "luxon";
 import { OfficialSimple } from "types/officials";
 import Comparable from "utils/Comparator";
 
+import { AbstractEntity } from "./AbstractEntity";
 import type ActualBalance from "./ActualBalance";
 import Entity from "./Entity";
 
 export default class Official
+  extends AbstractEntity
   implements Entity, Nullable, Comparable<Official>, OfficialSimple
 {
   private _id: number;
@@ -35,6 +37,7 @@ export default class Official
     chargeNumber: number,
     actualBalances?: ActualBalance[]
   ) {
+    super();
     this._id = id;
     this._recordNumber = recordNumber;
     this._firstName = firstName;
@@ -45,6 +48,9 @@ export default class Official
     this._dateOfEntry = dateOfEntry;
     this._chargeNumber = chargeNumber;
     this._actualBalances = actualBalances ?? [];
+  }
+  entityName(): string {
+    throw new Error("Method not implemented.");
   }
 
   public get id(): number {

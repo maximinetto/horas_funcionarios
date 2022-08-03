@@ -4,10 +4,12 @@ import { HourlyBalanceSimple } from "types/hourlyBalance";
 import { Optional } from "typescript-optional";
 import Comparable from "utils/Comparator";
 
+import { AbstractEntity } from "./AbstractEntity";
 import type ActualBalance from "./ActualBalance";
 import Entity from "./Entity";
 
 export default abstract class HourlyBalance
+  extends AbstractEntity
   implements Entity, Nullable, Comparable<HourlyBalance>, HourlyBalanceSimple
 {
   private _id: string;
@@ -15,6 +17,7 @@ export default abstract class HourlyBalance
   private _actualBalance: Optional<ActualBalance>;
 
   public constructor(id: string, year: number, actualBalance?: ActualBalance) {
+    super();
     this._id = id;
     this._year = year;
     this._actualBalance = Optional.ofNullable(actualBalance);

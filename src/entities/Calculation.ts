@@ -5,11 +5,13 @@ import Nullable from "entities/null_object/Nullable";
 import { Optional } from "typescript-optional";
 import Comparable from "utils/Comparator";
 
+import { AbstractEntity } from "./AbstractEntity";
 import ActualBalance from "./ActualBalance";
 import Entity from "./Entity";
 import ICalculation from "./ICalculation";
 
 export default class Calculation
+  extends AbstractEntity
   implements Entity, Nullable, Comparable<Calculation>, ICalculation
 {
   private _id: string;
@@ -25,11 +27,15 @@ export default class Calculation
     observations?: string,
     actualBalance?: ActualBalance
   ) {
+    super();
     this._id = id;
     this._year = year;
     this._month = month;
     this._observations = observations;
     this._actualBalance = Optional.ofNullable(actualBalance);
+  }
+  entityName(): string {
+    throw new Error("Method not implemented.");
   }
 
   public get id(): string {

@@ -31,7 +31,7 @@ export default class PrismaHourlyBalanceRepository
     return this._hourlyBalanceEntityFactoryCreator.create(value);
   }
 
-  toPersistance(value: HourlyBalance) {
+  toModel(value: HourlyBalance) {
     return this._hourlyBalanceModelFactoryCreator.create(value);
   }
 }

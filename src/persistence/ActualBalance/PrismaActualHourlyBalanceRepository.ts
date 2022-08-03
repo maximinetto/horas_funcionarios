@@ -31,7 +31,7 @@ export default class PrismaActualHourlyBalanceRepository
     return this.actualBalanceConverter.fromModelToEntity(value);
   }
 
-  toPersistance(value: ActualBalance): object {
+  toModel(value: ActualBalance): object {
     return this.actualBalanceConverter.fromEntityToModel(value);
   }
 

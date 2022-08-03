@@ -27,7 +27,7 @@ export default class PrismaOfficialRepository
     return this.officialConverter.fromModelToEntity(official);
   }
 
-  toPersistance(value: OfficialEntity): OfficialWithOptionalId {
+  toModel(value: OfficialEntity): OfficialWithOptionalId {
     return this.officialConverter.fromEntityToModel(value);
   }
 }

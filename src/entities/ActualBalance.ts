@@ -5,12 +5,16 @@ import { Optional } from "typescript-optional";
 import Comparable from "utils/Comparator";
 import { generateRandomUUIDV4 } from "utils/strings";
 
+import { AbstractEntity } from "./AbstractEntity";
 import Calculation from "./Calculation";
+import Entity from "./Entity";
 import type HourlyBalance from "./HourlyBalance";
 import Official from "./Official";
 
 export default class ActualBalance
+  extends AbstractEntity
   implements
+    Entity,
     Nullable,
     Comparable<ActualBalance>,
     ActualBalanceWithHourlyBalancesSimple
@@ -30,6 +34,7 @@ export default class ActualBalance
     hourlyBalances?: HourlyBalance[],
     calculations?: Calculation[]
   ) {
+    super();
     this._id = id;
     this._year = year;
     this._total = total ?? new Decimal(0);
