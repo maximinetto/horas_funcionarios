@@ -5,14 +5,13 @@ import Nullable from "entities/null_object/Nullable";
 import { Optional } from "typescript-optional";
 import Comparable from "utils/Comparator";
 
-import { AbstractEntity } from "./AbstractEntity";
 import ActualBalance from "./ActualBalance";
 import Entity from "./Entity";
 import ICalculation from "./ICalculation";
 
 export default class Calculation
-  extends AbstractEntity
-  implements Entity, Nullable, Comparable<Calculation>, ICalculation
+  extends Entity
+  implements Nullable, Comparable<Calculation>, ICalculation
 {
   private _id: string;
   private _year: number;

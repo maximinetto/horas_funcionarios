@@ -4,13 +4,12 @@ import { HourlyBalanceSimple } from "types/hourlyBalance";
 import { Optional } from "typescript-optional";
 import Comparable from "utils/Comparator";
 
-import { AbstractEntity } from "./AbstractEntity";
 import type ActualBalance from "./ActualBalance";
 import Entity from "./Entity";
 
 export default abstract class HourlyBalance
-  extends AbstractEntity
-  implements Entity, Nullable, Comparable<HourlyBalance>, HourlyBalanceSimple
+  extends Entity
+  implements Nullable, Comparable<HourlyBalance>, HourlyBalanceSimple
 {
   private _id: string;
   private _year: number;
