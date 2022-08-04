@@ -1,11 +1,10 @@
-import { MikroORM } from "@mikro-orm/core";
-import { MariaDbDriver } from "@mikro-orm/mariadb";
 import buildApp from "app";
 import { configureDotEnv, logger } from "config";
 import { memoryUsage } from "memory";
+import Database from "persistence/context/index.config";
 import { debug } from "winston";
 
-const main = ({ database }: { database: Promise<MikroORM<MariaDbDriver>> }) => {
+const main = ({ database }: { database: Database }) => {
   const { OFFICIALS_SCHEDULES_PORT, OFFICIALS_SCHEDULES_HOST } =
     configureDotEnv();
   logger.info("\n\nMemory usage:", {
@@ -31,9 +30,7 @@ const main = ({ database }: { database: Promise<MikroORM<MariaDbDriver>> }) => {
   process.on("SIGTERM", () => {
     debug("SIGTERM signal received: closing HTTP server");
     app.close(() => {
-      database.then((orm) => {
-        orm.close();
-      });
+      database.close();
       debug("HTTP server closed");
     });
   });

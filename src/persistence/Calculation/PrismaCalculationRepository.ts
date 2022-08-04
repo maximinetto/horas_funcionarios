@@ -22,12 +22,12 @@ export default class PrismaCalculationRepository
 
   constructor({
     calculationConverter,
-    database,
+    prisma,
   }: {
     calculationConverter: CalculationConverter;
-    database: PrismaClient;
+    prisma: PrismaClient;
   }) {
-    super({ database, modelName: "calculation" });
+    super({ prisma, modelName: "calculation" });
     this.calculationConverter = calculationConverter;
   }
 

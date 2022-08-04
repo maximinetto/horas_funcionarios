@@ -17,13 +17,13 @@ export default class PrismaActualHourlyBalanceRepository
   private actualBalanceConverter: ActualBalanceConverter;
 
   constructor({
-    database,
+    prisma,
     actualBalanceConverter,
   }: {
-    database: PrismaClient;
+    prisma: PrismaClient;
     actualBalanceConverter: ActualBalanceConverter;
   }) {
-    super({ database, modelName: "actualBalance" });
+    super({ prisma, modelName: "actualBalance" });
     this.actualBalanceConverter = actualBalanceConverter;
   }
 

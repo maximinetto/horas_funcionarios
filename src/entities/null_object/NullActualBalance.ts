@@ -1,6 +1,6 @@
 import { Decimal } from "decimal.js";
 
-import ActualBalance from "../ActualBalance";
+import ActualBalance from "../ActualBalanceTeacher";
 import Nullable from "./Nullable";
 
 export default class NullActualBalance
@@ -8,7 +8,7 @@ export default class NullActualBalance
   implements Nullable
 {
   public constructor(id?: string) {
-    super(id ?? "", 2000, new Decimal(0));
+    super({ id: id ?? "", year: 2000, total: new Decimal(0) });
   }
 
   public isDefault(): boolean {

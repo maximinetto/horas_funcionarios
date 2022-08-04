@@ -1,15 +1,15 @@
+import { EntitySchema } from "@mikro-orm/core";
 import { Month } from "@prisma/client";
 import Calculations from "collections/Calculations";
 import Decimal from "decimal.js";
 import Nullable from "entities/null_object/Nullable";
-import { Optional } from "typescript-optional";
 import Comparable from "utils/Comparator";
 
 import ActualBalance from "./ActualBalance";
 import Entity from "./Entity";
 import ICalculation from "./ICalculation";
 
-export default class Calculation
+export default abstract class Calculation
   extends Entity
   implements Nullable, Comparable<Calculation>, ICalculation
 {
@@ -17,44 +17,67 @@ export default class Calculation
   private _year: number;
   private _month: Month;
   private _observations?: string;
-  private _actualBalance: Optional<ActualBalance>;
+  private _actualBalance?: ActualBalance;
 
-  public constructor(
-    id: string,
-    year: number,
-    month: Month,
-    observations?: string,
-    actualBalance?: ActualBalance
-  ) {
+  public constructor({
+    id,
+    month,
+    year,
+    observations,
+    actualBalance,
+  }: {
+    id: string;
+    year: number;
+    month: Month;
+    observations?: string;
+    actualBalance?: ActualBalance;
+  }) {
     super();
     this._id = id;
     this._year = year;
     this._month = month;
     this._observations = observations;
-    this._actualBalance = Optional.ofNullable(actualBalance);
-  }
-  entityName(): string {
-    throw new Error("Method not implemented.");
+    this._actualBalance = actualBalance;
   }
 
   public get id(): string {
     return this._id;
   }
 
+  public set id(id: string) {
+    this._id = id;
+  }
+
   public get year(): number {
     return this._year;
+  }
+
+  public set year(value: number) {
+    this._year = value;
   }
 
   public get month(): Month {
     return this._month;
   }
 
+  public set month(value: Month) {
+    this._month = value;
+  }
+
   public get observations(): string | undefined {
     return this._observations;
   }
 
-  public get actualBalance(): Optional<ActualBalance> {
+  public set observations(value: string | undefined) {
+    this._observations = value;
+  }
+
+  public get actualBalance(): ActualBalance | undefined {
     return this._actualBalance;
+  }
+
+  public set actualBalance(actualBalance: ActualBalance | undefined) {
+    this._actualBalance = actualBalance;
   }
 
   public isDefault(): boolean {
@@ -92,3 +115,30 @@ export default class Calculation
     return this.id.localeCompare(other.id);
   }
 }
+
+export const schema = new EntitySchema<Calculation, Entity>({
+  name: "ActualBalance",
+  tableName: "actual_balances",
+  extends: "Entity",
+  properties: {
+    id: {
+      type: "uuid",
+      primary: true,
+    },
+    year: {
+      type: "int",
+    },
+    month: {
+      type: "int",
+    },
+    observations: {
+      type: "text",
+      nullable: true,
+    },
+    actualBalance: {
+      reference: "m:1",
+      entity: () => ActualBalance,
+      inversedBy: "calculations",
+    },
+  },
+});

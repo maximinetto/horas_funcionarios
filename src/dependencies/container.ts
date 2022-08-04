@@ -14,7 +14,10 @@ import HourlyBalanceModelFactoryCreator from "factories/HourlyBalanceModelFactor
 import main from "index";
 import PrismaActualHourlyBalanceRepository from "persistence/ActualBalance/PrismaActualHourlyBalanceRepository";
 import PrismaCalculationRepository from "persistence/Calculation/PrismaCalculationRepository";
-import mikroorm from "persistence/context/mikroorm.config";
+import mikroorm, {
+  MikroORMDatabase,
+} from "persistence/context/mikroorm.config";
+import prisma from "persistence/context/prisma.config";
 import OfficialRepository from "persistence/Official/PrismaOfficialRepository";
 import Calculator from "services/calculations";
 import CalculationValidator from "services/calculations/classes/CalculationValidator";
@@ -49,7 +52,9 @@ container.register({
   calculationValidator: asClass(CalculationValidator).singleton(),
   calculator: asClass(Calculator).singleton(),
   calculatorRowService: asClass(CalculatorRowService).singleton(),
-  database: asValue(mikroorm),
+  mikroorm: asValue(mikroorm),
+  prisma: asValue(prisma),
+  database: asClass(MikroORMDatabase).singleton(),
   hoursTASCalculator: asClass(HoursTASCalculator).singleton(),
   officialRepository: asClass(OfficialRepository).singleton(),
   officialService: asClass(OfficialService).singleton(),

@@ -14,15 +14,15 @@ export default class PrismaHourlyBalanceRepository
   private _hourlyBalanceModelFactoryCreator: HourlyBalanceModelFactoryCreator;
 
   constructor({
-    database,
+    prisma,
     hourlyBalanceEntityFactoryCreator,
     hourlyBalanceModelFactoryCreator,
   }: {
-    database: PrismaClient;
+    prisma: PrismaClient;
     hourlyBalanceEntityFactoryCreator: HourlyBalanceEntityFactoryCreator;
     hourlyBalanceModelFactoryCreator: HourlyBalanceModelFactoryCreator;
   }) {
-    super({ database, modelName: "HourlyBalance" });
+    super({ prisma, modelName: "HourlyBalance" });
     this._hourlyBalanceEntityFactoryCreator = hourlyBalanceEntityFactoryCreator;
     this._hourlyBalanceModelFactoryCreator = hourlyBalanceModelFactoryCreator;
   }

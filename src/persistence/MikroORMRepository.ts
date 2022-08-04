@@ -13,15 +13,15 @@ export default class MikroORMRepository<key, T extends Entity>
   protected readonly _idKey: string;
 
   constructor({
-    database,
+    mikroorm,
     modelName,
     idKey,
   }: {
-    database: MikroORM<MariaDbDriver>;
+    mikroorm: MikroORM<MariaDbDriver>;
     modelName: string;
     idKey?: string;
   }) {
-    this._mikroorm = database;
+    this._mikroorm = mikroorm;
     this._modelName = modelName;
     this._idKey = idKey ?? "id";
   }

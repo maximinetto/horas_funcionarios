@@ -1,84 +1,92 @@
+import { Collection, DecimalType, EntitySchema } from "@mikro-orm/core";
 import { Decimal } from "decimal.js";
 import Nullable from "entities/null_object/Nullable";
-import { ActualBalanceWithHourlyBalancesSimple } from "types/actualBalance";
-import { Optional } from "typescript-optional";
 import Comparable from "utils/Comparator";
-import { generateRandomUUIDV4 } from "utils/strings";
 
 import Calculation from "./Calculation";
 import Entity from "./Entity";
-import type HourlyBalance from "./HourlyBalance";
+import HourlyBalance from "./HourlyBalance";
 import Official from "./Official";
 
-export default class ActualBalance
+export default abstract class ActualBalance
   extends Entity
-  implements
-    Nullable,
-    Comparable<ActualBalance>,
-    ActualBalanceWithHourlyBalancesSimple
+  implements Nullable, Comparable<ActualBalance>
 {
   private _id: string;
   private _year: number;
   private _total: Decimal;
-  private _official: Optional<Official>;
-  private _hourlyBalances: HourlyBalance[];
-  private _calculations: Calculation[];
+  private _official?: Official;
+  private _calculations = new Collection<Calculation>(this);
+  private _hourlyBalances = new Collection<HourlyBalance>(this);
 
-  public constructor(
-    id: string,
-    year: number,
-    total?: Decimal,
-    official?: Official,
-    hourlyBalances?: HourlyBalance[],
-    calculations?: Calculation[]
-  ) {
+  public constructor({
+    id,
+    year,
+    official,
+    total,
+  }: {
+    id: string;
+    year: number;
+    total?: Decimal;
+    official?: Official;
+  }) {
     super();
     this._id = id;
     this._year = year;
     this._total = total ?? new Decimal(0);
-    this._official = Optional.ofNullable(official);
-    this._hourlyBalances = hourlyBalances ?? [];
-    this._calculations = calculations ?? [];
+    this._official = official;
   }
 
   public get id(): string {
     return this._id;
   }
 
+  public set id(id: string) {
+    this._id = id;
+  }
+
   public get year(): number {
     return this._year;
+  }
+
+  public set year(value: number) {
+    this._year = value;
   }
 
   public get total(): Decimal {
     return this._total;
   }
 
-  public get official(): Optional<Official> {
+  public set total(value: Decimal) {
+    this._total = value;
+  }
+
+  public get official(): Official | undefined {
     return this._official;
   }
 
-  public get hourlyBalances(): HourlyBalance[] {
-    return this._hourlyBalances;
+  public set official(value: Official | undefined) {
+    this._official = value;
   }
 
-  public set hourlyBalances(hourlyBalances: HourlyBalance[]) {
-    this._hourlyBalances = hourlyBalances;
-  }
-
-  public get calculations(): Calculation[] {
+  public get calculations(): Collection<Calculation> {
     return this._calculations;
   }
 
-  public set calculations(calculations: Calculation[]) {
-    this._calculations = calculations;
+  public set calculations(value: Collection<Calculation>) {
+    this._calculations = value;
+  }
+
+  public get hourlyBalances(): Collection<HourlyBalance> {
+    return this._hourlyBalances;
+  }
+
+  public set hourlyBalances(value: Collection<HourlyBalance>) {
+    this._hourlyBalances = value;
   }
 
   isDefault(): boolean {
     return false;
-  }
-
-  static default(id = generateRandomUUIDV4()): ActualBalance {
-    return new ActualBalance(id, 0);
   }
 
   compareTo(other: ActualBalance): number {
@@ -94,14 +102,37 @@ export default class ActualBalance
 
     return this.id.localeCompare(other.id);
   }
-
-  toJSON() {
-    return {
-      hourlyBalances: this.hourlyBalances.map((h) => h.toJSON()),
-      id: this.id,
-      official: this.official,
-      total: this.total.toString(),
-      year: this.year,
-    };
-  }
 }
+
+export const schema = new EntitySchema<ActualBalance, Entity>({
+  name: "ActualBalance",
+  tableName: "actual_balances",
+  extends: "Entity",
+  properties: {
+    id: {
+      type: "uuid",
+      primary: true,
+    },
+    year: {
+      type: "int",
+    },
+    total: {
+      type: DecimalType,
+    },
+    official: {
+      reference: "m:1",
+      entity: () => Official,
+      inversedBy: "actualBalances",
+    },
+    calculations: {
+      reference: "1:m",
+      entity: () => Calculation,
+      mappedBy: "actualBalance",
+    },
+    hourlyBalances: {
+      reference: "1:m",
+      entity: () => HourlyBalance,
+      mappedBy: "actualBalance",
+    },
+  },
+});

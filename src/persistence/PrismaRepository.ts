@@ -10,13 +10,13 @@ export default abstract class PrismaRepository<key, E extends Entity>
   protected readonly _modelName: string;
 
   constructor({
-    database,
+    prisma,
     modelName,
   }: {
-    database: PrismaClient;
+    prisma: PrismaClient;
     modelName: string;
   }) {
-    this._prisma = database;
+    this._prisma = prisma;
     this._modelName = modelName;
 
     this.toEntity = this.toEntity.bind(this);

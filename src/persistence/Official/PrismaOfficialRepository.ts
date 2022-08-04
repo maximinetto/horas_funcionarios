@@ -12,13 +12,13 @@ export default class PrismaOfficialRepository
   private officialConverter: OfficialConverter;
 
   constructor({
-    database,
+    prisma,
     officialConverter,
   }: {
-    database: PrismaClient;
+    prisma: PrismaClient;
     officialConverter: OfficialConverter;
   }) {
-    super({ database, modelName: "official" });
+    super({ prisma, modelName: "official" });
     this.officialConverter = officialConverter;
     this.toEntity = this.toEntity.bind(this);
   }

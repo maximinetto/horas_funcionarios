@@ -11,13 +11,13 @@ export default class PrismaCalculationTASRepository
   private calculationTASConverter: CalculationTASConverter;
 
   constructor({
-    database,
+    prisma,
     calculationTASConverter,
   }: {
-    database: PrismaClient;
+    prisma: PrismaClient;
     calculationTASConverter: CalculationTASConverter;
   }) {
-    super({ database, modelName: "calculationTAS" });
+    super({ prisma, modelName: "calculationTAS" });
     this.calculationTASConverter = calculationTASConverter;
   }
 

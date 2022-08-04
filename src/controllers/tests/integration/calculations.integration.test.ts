@@ -1,9 +1,10 @@
 import { Contract, Month, TypeOfOfficials } from "@prisma/client";
 import { officialService } from "dependencies/container";
+import Calculation from "entities/Calculation";
 import Official from "entities/Official";
 import _omit from "lodash/omit";
 import { DateTime } from "luxon";
-import prisma from "persistence/context/persistence.config";
+import mikroorm from "persistence/context/mikroorm.config";
 import setupTestEnvironment from "setupTestEnvironment";
 import { secondsToTime } from "utils/time";
 
@@ -11,15 +12,16 @@ const fastify = setupTestEnvironment();
 
 describe("Calculations", () => {
   afterEach(async () => {
-    const deleteCalculations = prisma.calculation.deleteMany();
-    const deleteHourlyBalances = prisma.hourlyBalance.deleteMany();
-    const deleteHourlyBalancesTAS = prisma.hourlyBalanceTAS.deleteMany();
+    const { em } = await mikroorm;
+    const deleteCalculations = em.remove(Calculation);
+    const deleteHourlyBalances = mikroorm.hourlyBalance.deleteMany();
+    const deleteHourlyBalancesTAS = mikroorm.hourlyBalanceTAS.deleteMany();
     const deleteHourlyBalancesTeacher =
-      prisma.hourlyBalanceTeacher.deleteMany();
-    const deleteOfficials = prisma.official.deleteMany();
-    const deleteActualBalances = prisma.actualBalance.deleteMany();
+      mikroorm.hourlyBalanceTeacher.deleteMany();
+    const deleteOfficials = mikroorm.official.deleteMany();
+    const deleteActualBalances = mikroorm.actualBalance.deleteMany();
 
-    await prisma.$transaction([
+    await mikroorm.$transaction([
       deleteCalculations,
       deleteHourlyBalancesTeacher,
       deleteHourlyBalancesTAS,
@@ -28,7 +30,7 @@ describe("Calculations", () => {
       deleteActualBalances,
     ]);
 
-    await prisma.$disconnect();
+    await mikroorm.$disconnect();
   });
 
   test("should be create a list of hours", async () => {

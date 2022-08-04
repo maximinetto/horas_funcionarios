@@ -1,41 +1,56 @@
+import { EntitySchema } from "@mikro-orm/core";
 import type Decimal from "decimal.js";
 import Nullable from "entities/null_object/Nullable";
-import { HourlyBalanceSimple } from "types/hourlyBalance";
-import { Optional } from "typescript-optional";
 import Comparable from "utils/Comparator";
 
-import type ActualBalance from "./ActualBalance";
+import ActualBalance from "./ActualBalance";
 import Entity from "./Entity";
 
 export default abstract class HourlyBalance
   extends Entity
-  implements Nullable, Comparable<HourlyBalance>, HourlyBalanceSimple
+  implements Nullable, Comparable<HourlyBalance>
 {
   private _id: string;
   private _year: number;
-  private _actualBalance: Optional<ActualBalance>;
+  private _actualBalance?: ActualBalance;
 
-  public constructor(id: string, year: number, actualBalance?: ActualBalance) {
+  public constructor({
+    id,
+    year,
+    actualBalance,
+  }: {
+    id: string;
+    year: number;
+    actualBalance?: ActualBalance;
+  }) {
     super();
     this._id = id;
     this._year = year;
-    this._actualBalance = Optional.ofNullable(actualBalance);
+    this._actualBalance = actualBalance;
   }
 
   public get id(): string {
     return this._id;
   }
 
+  public set id(value: string) {
+    this._id = value;
+  }
+
   public get year(): number {
     return this._year;
   }
 
-  public get actualBalance(): Optional<ActualBalance> {
+  public set year(value: number) {
+    this._year = value;
+  }
+
+  public get actualBalance(): ActualBalance | undefined {
     return this._actualBalance;
   }
 
-  public set actualBalance(actualBalance: Optional<ActualBalance>) {
-    this._actualBalance = actualBalance;
+  public set actualBalance(value: ActualBalance | undefined) {
+    this._actualBalance = value;
   }
 
   public isDefault(): boolean {
@@ -65,3 +80,24 @@ export default abstract class HourlyBalance
     };
   }
 }
+
+export const schema = new EntitySchema<HourlyBalance, Entity>({
+  name: "ActualBalance",
+  tableName: "actual_balances",
+  extends: "Entity",
+  abstract: true,
+  properties: {
+    id: {
+      type: "uuid",
+      primary: true,
+    },
+    year: {
+      type: "int",
+    },
+    actualBalance: {
+      reference: "m:1",
+      entity: () => ActualBalance,
+      inversedBy: "hourlyBalances",
+    },
+  },
+});

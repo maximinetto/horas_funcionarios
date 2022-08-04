@@ -1,46 +1,72 @@
+import { DecimalType, EntitySchema } from "@mikro-orm/core";
 import { Month } from "@prisma/client";
 import { Decimal } from "decimal.js";
 import Nullable from "entities/null_object/Nullable";
 
+import ActualBalance from "./ActualBalance";
 import Calculation from "./Calculation";
 
 export default class CalculationTeacher
   extends Calculation
   implements Nullable
 {
-  surplus: Decimal;
-  discount: Decimal;
-  calculationId: string;
+  private _surplus: Decimal;
+  private _discount: Decimal;
 
-  public constructor(
-    id: string,
-    year: number,
-    month: Month,
-    surplus: Decimal,
-    discount: Decimal,
-    calculationId: string,
-    observations?: string,
-    actualBalance?: any
-  ) {
-    super(id, year, month, observations, actualBalance);
-    this.surplus = surplus;
-    this.discount = discount;
-    this.calculationId = calculationId;
+  public constructor({
+    discount,
+    id,
+    month,
+    surplus,
+    year,
+    actualBalance,
+    observations,
+  }: {
+    id: string;
+    year: number;
+    month: Month;
+    surplus: Decimal;
+    discount: Decimal;
+    observations?: string;
+    actualBalance?: ActualBalance;
+  }) {
+    super({ id, year, month, observations, actualBalance });
+    this._surplus = surplus;
+    this._discount = discount;
   }
 
-  public getSurplus(): Decimal {
-    return this.surplus;
+  public get surplus(): Decimal {
+    return this._surplus;
   }
 
-  public getDiscount(): Decimal {
-    return this.discount;
+  public set surplus(surplus: Decimal) {
+    this._surplus = surplus;
   }
 
-  public getCalculationId(): string {
-    return this.calculationId;
+  public get discount(): Decimal {
+    return this._discount;
+  }
+
+  public set discount(discount: Decimal) {
+    this._discount = discount;
   }
 
   public isDefault(): boolean {
     return false;
   }
 }
+
+export const schema = new EntitySchema<CalculationTeacher, Calculation>({
+  name: "ActualBalance",
+  tableName: "actual_balances",
+  extends: "Entity",
+  properties: {
+    surplus: {
+      type: DecimalType,
+    },
+    discount: {
+      type: DecimalType,
+      fieldName: "discount",
+    },
+  },
+});

@@ -1,34 +1,32 @@
+import { DecimalType, EntitySchema } from "@mikro-orm/core";
 import { Decimal } from "decimal.js";
 import Nullable from "entities/null_object/Nullable";
 
-import type ActualBalance from "./ActualBalance";
+import ActualBalance from "./ActualBalance";
 import HourlyBalance from "./HourlyBalance";
 
 export default class HourlyBalanceTeacher
   extends HourlyBalance
   implements Nullable
 {
-  private balance: Decimal;
-  private hourlyBalanceId: string;
+  private _balance: Decimal;
 
   public constructor(
     id: string,
     year: number,
     balance: Decimal,
-    hourlyBalanceId: string,
     actualBalance?: ActualBalance
   ) {
-    super(id, year, actualBalance);
-    this.balance = balance;
-    this.hourlyBalanceId = hourlyBalanceId;
+    super({ id, year, actualBalance });
+    this._balance = balance;
   }
 
-  public getBalance(): Decimal {
-    return this.balance;
+  public get balance(): Decimal {
+    return this._balance;
   }
 
-  public getHourlyBalanceId(): string {
-    return this.hourlyBalanceId;
+  public set balance(value: Decimal) {
+    this._balance = value;
   }
 
   public isDefault(): boolean {
@@ -39,3 +37,15 @@ export default class HourlyBalanceTeacher
     throw new Error("Method not implemented.");
   }
 }
+
+export const schema = new EntitySchema<HourlyBalanceTeacher, HourlyBalance>({
+  name: "ActualBalance",
+  tableName: "actual_balances",
+  extends: "Entity",
+  properties: {
+    balance: {
+      type: DecimalType,
+      fieldName: "surplus_non_working",
+    },
+  },
+});

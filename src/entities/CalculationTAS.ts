@@ -1,3 +1,4 @@
+import { DecimalType, EntitySchema } from "@mikro-orm/core";
 import { Month } from "@prisma/client";
 import { Decimal } from "decimal.js";
 import Nullable from "entities/null_object/Nullable";
@@ -5,7 +6,7 @@ import Nullable from "entities/null_object/Nullable";
 import ActualBalance from "./ActualBalance";
 import Calculation from "./Calculation";
 
-interface Model {
+type CalculationTASModel = {
   id: string;
   year: number;
   month: Month;
@@ -18,10 +19,10 @@ interface Model {
   nonWorkingOvertime: Decimal;
   nonWorkingNightOvertime: Decimal;
   compensatedNightOvertime: Decimal;
-  calculationId: string;
   observations?: string;
-  actualBalance: ActualBalance;
-}
+  actualBalance?: ActualBalance;
+};
+
 export default class CalculationTAS extends Calculation implements Nullable {
   private _surplusBusiness: Decimal;
   private _surplusNonWorking: Decimal;
@@ -32,65 +33,27 @@ export default class CalculationTAS extends Calculation implements Nullable {
   private _nonWorkingOvertime: Decimal;
   private _nonWorkingNightOvertime: Decimal;
   private _compensatedNightOvertime: Decimal;
-  private _calculationId: string;
 
   public static WORKING_MULTIPLIER = 1.5;
   public static NON_WORKING_MULTIPLIER = 2;
 
-  public static from({
+  constructor({
+    actualBalance,
+    compensatedNightOvertime,
+    discount,
     id,
-    year,
     month,
+    nonWorkingNightOvertime,
+    nonWorkingOvertime,
+    observations,
     surplusBusiness,
     surplusNonWorking,
     surplusSimple,
-    discount,
-    workingOvertime,
     workingNightOvertime,
-    nonWorkingOvertime,
-    nonWorkingNightOvertime,
-    compensatedNightOvertime,
-    calculationId,
-    observations,
-    actualBalance,
-  }: Model): CalculationTAS {
-    return new CalculationTAS(
-      id,
-      year,
-      month,
-      surplusBusiness,
-      surplusNonWorking,
-      surplusSimple,
-      discount,
-      workingOvertime,
-      workingNightOvertime,
-      nonWorkingOvertime,
-      nonWorkingNightOvertime,
-      compensatedNightOvertime,
-      calculationId,
-      observations,
-      actualBalance
-    );
-  }
-
-  constructor(
-    id: string,
-    year: number,
-    month: Month,
-    surplusBusiness: Decimal,
-    surplusNonWorking: Decimal,
-    surplusSimple: Decimal,
-    discount: Decimal,
-    workingOvertime: Decimal,
-    workingNightOvertime: Decimal,
-    nonWorkingOvertime: Decimal,
-    nonWorkingNightOvertime: Decimal,
-    compensatedNightOvertime: Decimal,
-    calculationId: string,
-    observations?: string,
-    actualBalance?: ActualBalance
-  ) {
-    super(id, year, month, observations, actualBalance);
+    workingOvertime,
+    year,
+  }: CalculationTASModel) {
+    super({ id, year, month, observations, actualBalance });
     this._surplusBusiness = surplusBusiness;
     this._surplusNonWorking = surplusNonWorking;
     this._surplusSimple = surplusSimple;
@@ -100,47 +63,78 @@ export default class CalculationTAS extends Calculation implements Nullable {
     this._nonWorkingOvertime = nonWorkingOvertime;
     this._nonWorkingNightOvertime = nonWorkingNightOvertime;
     this._compensatedNightOvertime = compensatedNightOvertime;
-    this._calculationId = calculationId;
   }
 
   public get surplusBusiness(): Decimal {
     return this._surplusBusiness;
   }
 
+  public set surplusBusiness(value: Decimal) {
+    this._surplusBusiness = value;
+  }
+
   public get surplusNonWorking(): Decimal {
     return this._surplusNonWorking;
+  }
+
+  public set surplusNonWorking(value: Decimal) {
+    this._surplusNonWorking = value;
   }
 
   public get surplusSimple(): Decimal {
     return this._surplusSimple;
   }
 
+  public set surplusSimple(value: Decimal) {
+    this._surplusSimple = value;
+  }
+
   public get discount(): Decimal {
     return this._discount;
+  }
+
+  public set discount(value: Decimal) {
+    this._discount = value;
   }
 
   public get workingOvertime(): Decimal {
     return this._workingOvertime;
   }
 
+  public set workingOvertime(value: Decimal) {
+    this._workingOvertime = value;
+  }
+
   public get workingNightOvertime(): Decimal {
     return this._workingNightOvertime;
+  }
+
+  public set workingNightOvertime(value: Decimal) {
+    this._workingNightOvertime = value;
   }
 
   public get nonWorkingOvertime(): Decimal {
     return this._nonWorkingOvertime;
   }
 
+  public set nonWorkingOvertime(value: Decimal) {
+    this._nonWorkingOvertime = value;
+  }
+
   public get nonWorkingNightOvertime(): Decimal {
     return this._nonWorkingNightOvertime;
+  }
+
+  public set nonWorkingNightOvertime(value: Decimal) {
+    this._nonWorkingNightOvertime = value;
   }
 
   public get compensatedNightOvertime(): Decimal {
     return this._compensatedNightOvertime;
   }
 
-  public get calculationId(): string {
-    return this._calculationId;
+  public set compensatedNightOvertime(value: Decimal) {
+    this._compensatedNightOvertime = value;
   }
 
   public getTotalHoursPerCalculation(): Decimal {
@@ -171,11 +165,10 @@ export default class CalculationTAS extends Calculation implements Nullable {
     nonWorkingOvertime,
     nonWorkingNightOvertime,
     compensatedNightOvertime,
-    calculationId,
     observations,
     actualBalance,
-  }: Partial<Model>): CalculationTAS {
-    return CalculationTAS.from({
+  }: Partial<CalculationTASModel>): CalculationTAS {
+    return new CalculationTAS({
       id: id ?? this.id,
       year: year ?? this.year,
       month: month ?? this.month,
@@ -190,9 +183,52 @@ export default class CalculationTAS extends Calculation implements Nullable {
         nonWorkingNightOvertime ?? this.nonWorkingNightOvertime,
       compensatedNightOvertime:
         compensatedNightOvertime ?? this.compensatedNightOvertime,
-      calculationId: calculationId ?? this.calculationId,
       observations: observations ?? this.observations,
-      actualBalance: actualBalance ?? this.actualBalance.get(),
+      actualBalance: actualBalance ?? this.actualBalance,
     });
   }
 }
+
+export const schema = new EntitySchema<CalculationTAS, Calculation>({
+  name: "ActualBalance",
+  tableName: "actual_balances",
+  extends: "Entity",
+  properties: {
+    surplusBusiness: {
+      type: DecimalType,
+      fieldName: "surplus_business",
+    },
+    surplusNonWorking: {
+      type: DecimalType,
+      fieldName: "surplus_non_working",
+    },
+    surplusSimple: {
+      type: DecimalType,
+      fieldName: "surplus_simple",
+    },
+    discount: {
+      type: DecimalType,
+      fieldName: "discount",
+    },
+    workingOvertime: {
+      type: DecimalType,
+      fieldName: "working_overtime",
+    },
+    workingNightOvertime: {
+      type: DecimalType,
+      fieldName: "working_night_overtime",
+    },
+    nonWorkingOvertime: {
+      type: DecimalType,
+      fieldName: "non_working_overtime",
+    },
+    nonWorkingNightOvertime: {
+      type: DecimalType,
+      fieldName: "non_working_night_overtime",
+    },
+    compensatedNightOvertime: {
+      type: DecimalType,
+      fieldName: "compensated_night_overtime",
+    },
+  },
+});

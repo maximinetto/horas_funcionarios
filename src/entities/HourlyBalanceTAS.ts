@@ -1,7 +1,8 @@
+import { DecimalType, EntitySchema } from "@mikro-orm/core";
 import { Decimal } from "decimal.js";
 import Nullable from "entities/null_object/Nullable";
 
-import type ActualBalance from "./ActualBalance";
+import ActualBalance from "./ActualBalance";
 import HourlyBalance from "./HourlyBalance";
 
 export default class HourlyBalanceTAS
@@ -11,7 +12,6 @@ export default class HourlyBalanceTAS
   private _working: Decimal;
   private _nonWorking: Decimal;
   private _simple: Decimal;
-  private _hourlyBalanceId: string;
 
   public constructor(
     id: string,
@@ -19,30 +19,36 @@ export default class HourlyBalanceTAS
     working: Decimal,
     nonWorking: Decimal,
     simple: Decimal,
-    hourlyBalanceId: string,
     actualBalance?: ActualBalance
   ) {
-    super(id, year, actualBalance);
+    super({ id, year, actualBalance });
     this._working = working;
     this._nonWorking = nonWorking;
     this._simple = simple;
-    this._hourlyBalanceId = hourlyBalanceId;
   }
 
   public get working(): Decimal {
     return this._working;
   }
 
+  public set working(value: Decimal) {
+    this._working = value;
+  }
+
   public get nonWorking(): Decimal {
     return this._nonWorking;
+  }
+
+  public set nonWorking(value: Decimal) {
+    this._nonWorking = value;
   }
 
   public get simple(): Decimal {
     return this._simple;
   }
 
-  public get hourlyBalanceId(): string {
-    return this._hourlyBalanceId;
+  public set simple(value: Decimal) {
+    this._simple = value;
   }
 
   public isDefault(): boolean {
@@ -52,16 +58,24 @@ export default class HourlyBalanceTAS
   public calculateTotal(): Decimal {
     return this.working.plus(this.nonWorking).plus(this.simple);
   }
-
-  public toJSON() {
-    const result = super.toJSON();
-    return {
-      ...result,
-      id: this.id,
-      working: this.working,
-      simple: this.simple,
-      nonWorking: this.nonWorking,
-      hourlyBalanceId: this.hourlyBalanceId,
-    };
-  }
 }
+
+export const schema = new EntitySchema<HourlyBalanceTAS, HourlyBalance>({
+  name: "ActualBalance",
+  tableName: "actual_balances",
+  extends: "Entity",
+  properties: {
+    nonWorking: {
+      type: DecimalType,
+      fieldName: "surplus_non_working",
+    },
+    simple: {
+      type: DecimalType,
+      fieldName: "surplus_simple",
+    },
+    working: {
+      type: DecimalType,
+      fieldName: "surplus_business",
+    },
+  },
+});
