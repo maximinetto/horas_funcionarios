@@ -1,4 +1,4 @@
-import { asClass, asValue, createContainer } from "awilix";
+import { asClass, asFunction, asValue, createContainer } from "awilix";
 import CalculationTASConverterDTO from "converters/dtos_to_entities/CalculationTASConverter";
 import ActualBalanceConverter from "converters/models_to_entities/ActualBalanceConverter";
 import BalanceConverter from "converters/models_to_entities/BalanceConverter";
@@ -11,10 +11,11 @@ import HourlyBalanceTeacherConverter from "converters/models_to_entities/HourlyB
 import OfficialConverter from "converters/models_to_entities/OfficialConverter";
 import HourlyBalanceEntityFactoryCreator from "factories/HourlyBalanceEntityFactoryCreator";
 import HourlyBalanceModelFactoryCreator from "factories/HourlyBalanceModelFactoryCreator";
+import main from "index";
 import PrismaActualHourlyBalanceRepository from "persistence/ActualBalance/PrismaActualHourlyBalanceRepository";
 import PrismaCalculationRepository from "persistence/Calculation/PrismaCalculationRepository";
+import mikroorm from "persistence/context/mikroorm.config";
 import OfficialRepository from "persistence/Official/PrismaOfficialRepository";
-import prisma from "persistence/persistence.config";
 import Calculator from "services/calculations";
 import CalculationValidator from "services/calculations/classes/CalculationValidator";
 import CalculatorRowService from "services/calculations/classes/TAS/CalculatorRowService";
@@ -48,7 +49,7 @@ container.register({
   calculationValidator: asClass(CalculationValidator).singleton(),
   calculator: asClass(Calculator).singleton(),
   calculatorRowService: asClass(CalculatorRowService).singleton(),
-  database: asValue(prisma),
+  database: asValue(mikroorm),
   hoursTASCalculator: asClass(HoursTASCalculator).singleton(),
   officialRepository: asClass(OfficialRepository).singleton(),
   officialService: asClass(OfficialService).singleton(),
@@ -67,6 +68,7 @@ container.register({
   hourlyBalanceTeacherConverter: asClass(
     HourlyBalanceTeacherConverter
   ).singleton(),
+  main: asFunction(main),
 });
 
 export const officialService = container.resolve(

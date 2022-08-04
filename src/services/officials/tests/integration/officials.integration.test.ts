@@ -2,8 +2,8 @@ import faker from "@faker-js/faker";
 import { Contract, TypeOfOfficials } from "@prisma/client";
 import OfficialConverter from "converters/models_to_entities/OfficialConverter";
 import _omit from "lodash/omit";
+import prisma from "persistence/context/persistence.config";
 import PrismaOfficialRepository from "persistence/Official/PrismaOfficialRepository";
-import prisma from "persistence/persistence.config";
 import OfficialService from "services/officials";
 import { OfficialWithOptionalId } from "types/officials";
 

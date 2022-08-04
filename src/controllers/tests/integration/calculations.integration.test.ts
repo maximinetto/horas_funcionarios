@@ -3,7 +3,7 @@ import { officialService } from "dependencies/container";
 import Official from "entities/Official";
 import _omit from "lodash/omit";
 import { DateTime } from "luxon";
-import prisma from "persistence/persistence.config";
+import prisma from "persistence/context/persistence.config";
 import setupTestEnvironment from "setupTestEnvironment";
 import { secondsToTime } from "utils/time";
 
