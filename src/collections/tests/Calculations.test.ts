@@ -128,7 +128,7 @@ test("Should replace calculations and pass test", () => {
 });
 
 function replacer(calculation: CalculationTAS, id: string): CalculationTAS {
-  return CalculationTAS.from({
+  return new CalculationTAS({
     id,
     month: calculation.month,
     year: calculation.year,
@@ -142,7 +142,6 @@ function replacer(calculation: CalculationTAS, id: string): CalculationTAS {
     nonWorkingOvertime: calculation.nonWorkingOvertime,
     workingOvertime: calculation.workingOvertime,
     observations: calculation.observations,
-    actualBalance: calculation.actualBalance.get(),
-    calculationId: calculation.calculationId,
+    actualBalance: calculation.actualBalance,
   });
 }

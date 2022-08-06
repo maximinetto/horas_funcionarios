@@ -2,6 +2,7 @@ import { Collection, EntitySchema } from "@mikro-orm/core";
 import { Contract, TypeOfOfficials } from "@prisma/client";
 import Nullable from "entities/null_object/Nullable";
 import { DateTime } from "luxon";
+import LuxonDateTimeType from "persistence/types/LuxonDateTimeType";
 import Comparable from "utils/Comparator";
 
 import ActualBalance from "./ActualBalance";
@@ -178,8 +179,8 @@ export default class Official
 }
 
 export const schema = new EntitySchema<Official, Entity>({
-  name: "ActualBalance",
-  tableName: "actual_balances",
+  name: "Official",
+  tableName: "officials",
   extends: "Entity",
   properties: {
     id: {
@@ -209,7 +210,7 @@ export const schema = new EntitySchema<Official, Entity>({
       type: "string",
     },
     dateOfEntry: {
-      type: "dateTime",
+      type: LuxonDateTimeType,
     },
     chargeNumber: {
       type: "number",

@@ -6,18 +6,18 @@ import Nullable from "./Nullable";
 
 export default class NullOfficial extends Official implements Nullable {
   public constructor() {
-    super(
-      0,
-      0,
-      "",
-      "",
-      "",
-      Contract.PERMANENT,
-      TypeOfOfficials.NOT_TEACHER,
-      DateTime.now(),
-      0,
-      []
-    );
+    super({
+      id: 0,
+      chargeNumber: 0,
+      firstName: "",
+      lastName: "",
+      position: "",
+      contract: Contract.PERMANENT,
+      type: TypeOfOfficials.NOT_TEACHER,
+      dateOfEntry: DateTime.now(),
+      recordNumber: 0,
+      actualBalances: [],
+    });
   }
 
   public isDefault(): boolean {

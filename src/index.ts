@@ -1,15 +1,24 @@
-import buildApp from "app";
+import buildApp from "buildApp";
 import { configureDotEnv, logger } from "config";
 import { memoryUsage } from "memory";
-import Database from "persistence/context/index.config";
+import DatabaseFactory, {
+  TypeOfEngine,
+} from "persistence/context/index.config";
 import { debug } from "winston";
 
-const main = ({ database }: { database: Database }) => {
+const main = () => {
   const { OFFICIALS_SCHEDULES_PORT, OFFICIALS_SCHEDULES_HOST } =
     configureDotEnv();
   logger.info("\n\nMemory usage:", {
     ...memoryUsage(),
   });
+
+  const typeOfEngine = process.env
+    .OFFICIALS_SCHEDULES_TYPE_OF_ENGINE as TypeOfEngine;
+
+  const database = DatabaseFactory.createDatabase(typeOfEngine || "mikroorm");
+
+  database.init();
 
   const app = buildApp();
 
@@ -41,4 +50,4 @@ const main = ({ database }: { database: Database }) => {
   });
 };
 
-export default main;
+main();

@@ -53,35 +53,31 @@ export default class ActualBalanceConverter extends AbstractConverter<
         ? this.calculationConverter.fromModelsToEntities(model.calculations)
         : [];
 
-    return new ActualBalanceEntity(
-      model.id,
-      model.year,
-      new Decimal(model.total.toString()),
-      official,
+    return new ActualBalanceEntity({
+      id: model.id,
+      year: model.year,
+      total: new Decimal(model.total.toString()),
+      official: official,
       hourlyBalances,
-      calculations
-    );
+      calculations,
+    });
   }
   fromEntityToModel(entity: ActualBalanceEntity): ActualBalanceComplete {
-    const optionalOfficial = entity.official.map((value) =>
-      this.officialConverter.fromEntityToModel(value)
-    );
     const calculations = this.calculationConverter.fromEntitiesToModels(
-      entity.calculations
+      entity.calculations.getItems()
     );
 
     const hourlyBalances = this.hourlyBalanceConverter.fromEntitiesToModels(
-      entity.hourlyBalances
+      entity.hourlyBalances.getItems()
     );
+    const officialEntity = entity.official ?? NullOfficial.default();
+    const official = this.officialConverter.fromEntityToModel(officialEntity);
 
-    const official = optionalOfficial.get();
-    const officialEntity = entity.official.orElseGet(() => Official.default());
-
-    official.id = officialEntity.id;
+    official.id = entity.official ? entity.official.id : new NullOfficial().id;
 
     return {
       id: entity.id,
-      officialId: entity.official.orElse(new NullOfficial()).id,
+      officialId: official.id,
       year: entity.year,
       total: BigInt(entity.total.toString()),
       official: official as OfficialModel,

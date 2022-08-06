@@ -8,7 +8,7 @@ import Entity from "./Entity";
 import HourlyBalance from "./HourlyBalance";
 import Official from "./Official";
 
-export default abstract class ActualBalance
+export default class ActualBalance
   extends Entity
   implements Nullable, Comparable<ActualBalance>
 {
@@ -22,19 +22,25 @@ export default abstract class ActualBalance
   public constructor({
     id,
     year,
-    official,
     total,
+    official,
+    calculations,
+    hourlyBalances,
   }: {
     id: string;
     year: number;
     total?: Decimal;
     official?: Official;
+    calculations?: Calculation[];
+    hourlyBalances?: HourlyBalance[];
   }) {
     super();
     this._id = id;
     this._year = year;
     this._total = total ?? new Decimal(0);
     this._official = official;
+    this._calculations = new Collection<Calculation>(this, calculations);
+    this._hourlyBalances = new Collection<HourlyBalance>(this, hourlyBalances);
   }
 
   public get id(): string {

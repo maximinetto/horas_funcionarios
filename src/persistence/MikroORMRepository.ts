@@ -3,6 +3,7 @@ import { MariaDbDriver } from "@mikro-orm/mariadb";
 import Entity from "entities/Entity";
 import { Optional } from "typescript-optional";
 
+import { mikroorm } from "./context/mikroorm/mikroorm.config";
 import Repository from "./Repository";
 
 export default class MikroORMRepository<key, T extends Entity>
@@ -12,15 +13,7 @@ export default class MikroORMRepository<key, T extends Entity>
   protected readonly _modelName: string;
   protected readonly _idKey: string;
 
-  constructor({
-    mikroorm,
-    modelName,
-    idKey,
-  }: {
-    mikroorm: MikroORM<MariaDbDriver>;
-    modelName: string;
-    idKey?: string;
-  }) {
+  constructor({ modelName, idKey }: { modelName: string; idKey?: string }) {
     this._mikroorm = mikroorm;
     this._modelName = modelName;
     this._idKey = idKey ?? "id";
@@ -83,12 +76,18 @@ export default class MikroORMRepository<key, T extends Entity>
   }
 
   async remove(entity: T): Promise<T> {
-    await this._mikroorm.em.removeAndFlush(entity);
+    this._mikroorm.em.remove(entity);
     return entity;
   }
 
   async removeRange(entities: T[]): Promise<T[]> {
-    await this._mikroorm.em.removeAndFlush(entities);
+    this._mikroorm.em.remove(entities);
     return entities;
+  }
+
+  clear(): Promise<void> {
+    return Promise.resolve().then(() => {
+      this._mikroorm.em.remove(this._modelName);
+    });
   }
 }

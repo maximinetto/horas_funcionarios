@@ -117,9 +117,9 @@ export default abstract class Calculation
 }
 
 export const schema = new EntitySchema<Calculation, Entity>({
-  name: "ActualBalance",
-  tableName: "actual_balances",
+  name: "Calculation",
   extends: "Entity",
+  abstract: true,
   properties: {
     id: {
       type: "uuid",

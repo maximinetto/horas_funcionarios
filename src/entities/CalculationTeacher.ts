@@ -57,8 +57,8 @@ export default class CalculationTeacher
 }
 
 export const schema = new EntitySchema<CalculationTeacher, Calculation>({
-  name: "ActualBalance",
-  tableName: "actual_balances",
+  name: "CalculationTeacher",
+  tableName: "calculation_teachers",
   extends: "Entity",
   properties: {
     surplus: {

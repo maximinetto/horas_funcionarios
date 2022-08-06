@@ -110,6 +110,10 @@ export default abstract class PrismaRepository<key, E extends Entity>
       .then(this.map);
   }
 
+  clear(): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
+
   private map(values): E[] {
     return values.map((v) => this.toEntity(v));
   }

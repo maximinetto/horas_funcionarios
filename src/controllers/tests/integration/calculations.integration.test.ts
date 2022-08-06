@@ -1,55 +1,48 @@
 import { Contract, Month, TypeOfOfficials } from "@prisma/client";
 import { officialService } from "dependencies/container";
-import Calculation from "entities/Calculation";
 import Official from "entities/Official";
 import _omit from "lodash/omit";
 import { DateTime } from "luxon";
-import mikroorm from "persistence/context/mikroorm.config";
+import Database from "persistence/context/Database";
+import DatabaseFactory from "persistence/context/index.config";
 import setupTestEnvironment from "setupTestEnvironment";
 import { secondsToTime } from "utils/time";
 
 const fastify = setupTestEnvironment();
 
 describe("Calculations", () => {
+  let unitOfWork: Database;
+
   afterEach(async () => {
-    const { em } = await mikroorm;
-    const deleteCalculations = em.remove(Calculation);
-    const deleteHourlyBalances = mikroorm.hourlyBalance.deleteMany();
-    const deleteHourlyBalancesTAS = mikroorm.hourlyBalanceTAS.deleteMany();
-    const deleteHourlyBalancesTeacher =
-      mikroorm.hourlyBalanceTeacher.deleteMany();
-    const deleteOfficials = mikroorm.official.deleteMany();
-    const deleteActualBalances = mikroorm.actualBalance.deleteMany();
+    unitOfWork = DatabaseFactory.createDatabase("mikroorm");
+    await unitOfWork.calculation.clear();
+    await unitOfWork.official.clear();
+    await unitOfWork.hourlyBalance.clear();
+    await unitOfWork.actualBalance.clear();
+    await unitOfWork.commit();
+  });
 
-    await mikroorm.$transaction([
-      deleteCalculations,
-      deleteHourlyBalancesTeacher,
-      deleteHourlyBalancesTAS,
-      deleteHourlyBalances,
-      deleteOfficials,
-      deleteActualBalances,
-    ]);
-
-    await mikroorm.$disconnect();
+  afterAll(() => {
+    unitOfWork.close();
   });
 
   test("should be create a list of hours", async () => {
     await officialService.create(
-      new Official(
-        1,
-        1184,
-        "Maximiliano",
-        "Minetto",
-        "Informática",
-        Contract.PERMANENT,
-        TypeOfOfficials.NOT_TEACHER,
-        DateTime.fromObject({
+      new Official({
+        id: 1,
+        recordNumber: 1184,
+        firstName: "Maximiliano",
+        lastName: "Minetto",
+        position: "Informática",
+        contract: Contract.PERMANENT,
+        type: TypeOfOfficials.NOT_TEACHER,
+        dateOfEntry: DateTime.fromObject({
           year: 2018,
           month: 6,
           day: 25,
         }),
-        128
-      )
+        chargeNumber: 128,
+      })
     );
 
     const calculationTAS1 = {

@@ -1,8 +1,9 @@
 import faker from "@faker-js/faker";
 import { Month } from "@prisma/client";
 import Calculations from "collections/Calculations";
+import Decimal from "decimal.js";
 import ActualBalance from "entities/ActualBalance";
-import Calculation from "entities/Calculation";
+import CalculationTeacher from "entities/CalculationTeacher";
 import CalculationSorter from "sorters/CalculationSorter";
 
 describe("Sorters and getters", () => {
@@ -82,13 +83,18 @@ describe("Sorters and getters", () => {
   ) {
     return calculations.map(
       (c) =>
-        new Calculation(
-          c.id,
-          c.year,
-          c.month,
-          c.observations,
-          new ActualBalance(c.actualBalanceId, c.year)
-        )
+        new CalculationTeacher({
+          id: c.id,
+          year: c.year,
+          month: c.month,
+          observations: c.observations,
+          actualBalance: new ActualBalance({
+            id: c.actualBalanceId,
+            year: c.year,
+          }),
+          discount: new Decimal(0),
+          surplus: new Decimal(0),
+        })
     );
   }
 });

@@ -1,12 +1,11 @@
 import { Month } from "@prisma/client";
-import { CalculationTAS } from "types/calculations";
 
-export default class CalculationTASDTO implements CalculationTAS {
+export default class CalculationTASDTO {
   private _id: string;
   private _year: number;
   private _month: Month;
   private _observations: string | null;
-  private _actualBalanceId: string;
+  private _actualBalanceId: string | undefined;
   private _surplusBusiness: bigint;
   private _surplusNonWorking: bigint;
   private _surplusSimple: bigint;
@@ -16,7 +15,6 @@ export default class CalculationTASDTO implements CalculationTAS {
   private _nonWorkingOvertime: bigint;
   private _nonWorkingNightOvertime: bigint;
   private _compensatedNightOvertime: bigint;
-  private _calculationId: string;
 
   constructor({
     id,
@@ -33,13 +31,12 @@ export default class CalculationTASDTO implements CalculationTAS {
     nonWorkingOvertime,
     nonWorkingNightOvertime,
     compensatedNightOvertime,
-    calculationId,
   }: {
     id: string;
     year: number;
     month: Month;
     observations: string | null;
-    actualBalanceId: string;
+    actualBalanceId: string | undefined;
     surplusBusiness: bigint;
     surplusNonWorking: bigint;
     surplusSimple: bigint;
@@ -49,7 +46,6 @@ export default class CalculationTASDTO implements CalculationTAS {
     nonWorkingOvertime: bigint;
     nonWorkingNightOvertime: bigint;
     compensatedNightOvertime: bigint;
-    calculationId: string;
   }) {
     this._id = id;
     this._year = year;
@@ -65,7 +61,6 @@ export default class CalculationTASDTO implements CalculationTAS {
     this._nonWorkingOvertime = nonWorkingOvertime;
     this._nonWorkingNightOvertime = nonWorkingNightOvertime;
     this._compensatedNightOvertime = compensatedNightOvertime;
-    this._calculationId = calculationId;
   }
 
   get id(): string {
@@ -80,7 +75,7 @@ export default class CalculationTASDTO implements CalculationTAS {
   get observations(): string | null {
     return this._observations;
   }
-  get actualBalanceId(): string {
+  get actualBalanceId(): string | undefined {
     return this._actualBalanceId;
   }
   get surplusBusiness(): bigint {
@@ -109,8 +104,5 @@ export default class CalculationTASDTO implements CalculationTAS {
   }
   get compensatedNightOvertime(): bigint {
     return this._compensatedNightOvertime;
-  }
-  get calculationId(): string {
-    return this._calculationId;
   }
 }

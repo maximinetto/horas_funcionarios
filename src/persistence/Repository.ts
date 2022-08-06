@@ -14,4 +14,6 @@ export default interface Repository<key, E extends Entity> {
 
   remove(entity: E): Promise<E>;
   removeRange(entities: E[]): Promise<E[]>;
+
+  clear(): Promise<void>;
 }

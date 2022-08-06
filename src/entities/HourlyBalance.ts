@@ -82,8 +82,8 @@ export default abstract class HourlyBalance
 }
 
 export const schema = new EntitySchema<HourlyBalance, Entity>({
-  name: "ActualBalance",
-  tableName: "actual_balances",
+  name: "HourlyBalance",
+  tableName: "hourly_balances",
   extends: "Entity",
   abstract: true,
   properties: {

@@ -1,7 +1,7 @@
 import { Decimal } from "decimal.js";
 import CalculationTASDTO from "dto/create/calculationTASDTO";
+import ActualBalance from "entities/ActualBalance";
 import CalculationTASEntity from "entities/CalculationTAS";
-import NullActualBalance from "entities/null_object/NullActualBalance";
 
 import { AbstractConverter } from "./AbstractConverter";
 
@@ -10,23 +10,31 @@ export default class CalculationTASConverter extends AbstractConverter<
   CalculationTASDTO
 > {
   fromDTOToEntity(dto: CalculationTASDTO): CalculationTASEntity {
-    return new CalculationTASEntity(
-      dto.id,
-      dto.year,
-      dto.month,
-      new Decimal(dto.surplusBusiness.toString()),
-      new Decimal(dto.surplusNonWorking.toString()),
-      new Decimal(dto.surplusSimple.toString()),
-      new Decimal(dto.discount.toString()),
-      new Decimal(dto.workingOvertime.toString()),
-      new Decimal(dto.workingNightOvertime.toString()),
-      new Decimal(dto.nonWorkingOvertime.toString()),
-      new Decimal(dto.nonWorkingNightOvertime.toString()),
-      new Decimal(dto.compensatedNightOvertime.toString()),
-      dto.calculationId,
-      dto.observations ?? undefined,
-      new NullActualBalance(dto.actualBalanceId)
-    );
+    return new CalculationTASEntity({
+      id: dto.id,
+      year: dto.year,
+      month: dto.month,
+      surplusBusiness: new Decimal(dto.surplusBusiness.toString()),
+      surplusNonWorking: new Decimal(dto.surplusNonWorking.toString()),
+      surplusSimple: new Decimal(dto.surplusSimple.toString()),
+      discount: new Decimal(dto.discount.toString()),
+      workingOvertime: new Decimal(dto.workingOvertime.toString()),
+      workingNightOvertime: new Decimal(dto.workingNightOvertime.toString()),
+      nonWorkingOvertime: new Decimal(dto.nonWorkingOvertime.toString()),
+      nonWorkingNightOvertime: new Decimal(
+        dto.nonWorkingNightOvertime.toString()
+      ),
+      compensatedNightOvertime: new Decimal(
+        dto.compensatedNightOvertime.toString()
+      ),
+      observations: dto.observations ?? undefined,
+      actualBalance: dto.actualBalanceId
+        ? new ActualBalance({
+            id: dto.actualBalanceId,
+            year: dto.year,
+          })
+        : undefined,
+    });
   }
 
   fromEntityToDTO(entity: CalculationTASEntity): CalculationTASDTO {
@@ -47,9 +55,8 @@ export default class CalculationTASConverter extends AbstractConverter<
         entity.compensatedNightOvertime.toString()
       ),
       discount: BigInt(entity.discount.toString()),
-      calculationId: entity.calculationId,
       observations: entity.observations ?? null,
-      actualBalanceId: entity.actualBalance.orElse(new NullActualBalance()).id,
+      actualBalanceId: entity.actualBalance?.id,
     });
   }
 }

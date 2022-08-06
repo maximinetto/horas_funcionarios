@@ -190,8 +190,8 @@ export default class CalculationTAS extends Calculation implements Nullable {
 }
 
 export const schema = new EntitySchema<CalculationTAS, Calculation>({
-  name: "ActualBalance",
-  tableName: "actual_balances",
+  name: "CalculationTAS",
+  tableName: "calculation_tas",
   extends: "Entity",
   properties: {
     surplusBusiness: {

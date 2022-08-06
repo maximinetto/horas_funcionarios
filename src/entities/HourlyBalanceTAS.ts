@@ -61,8 +61,8 @@ export default class HourlyBalanceTAS
 }
 
 export const schema = new EntitySchema<HourlyBalanceTAS, HourlyBalance>({
-  name: "ActualBalance",
-  tableName: "actual_balances",
+  name: "HourlyBalanceTAS",
+  tableName: "hourly_balances_tas",
   extends: "Entity",
   properties: {
     nonWorking: {
