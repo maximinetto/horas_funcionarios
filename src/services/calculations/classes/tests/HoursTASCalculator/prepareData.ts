@@ -19,20 +19,23 @@ export function preset(
 ): Result {
   const data = {
     calculations,
-    official: new Official(
-      actualBalance.officialId,
-      faker.datatype.number(),
-      faker.name.firstName(),
-      faker.name.lastName(),
-      faker.name.jobTitle(),
-      faker.random.arrayElement([Contract.PERMANENT, Contract.TEMPORARY]),
-      faker.random.arrayElement([
+    official: new Official({
+      id: actualBalance.officialId,
+      chargeNumber: faker.datatype.number(),
+      firstName: faker.name.firstName(),
+      lastName: faker.name.lastName(),
+      position: faker.name.jobTitle(),
+      contract: faker.random.arrayElement([
+        Contract.PERMANENT,
+        Contract.TEMPORARY,
+      ]),
+      type: faker.random.arrayElement([
         TypeOfOfficials.TEACHER,
         TypeOfOfficials.NOT_TEACHER,
       ]),
-      DateTime.fromJSDate(faker.date.past(1, "2018-04-01T00:00z")),
-      faker.datatype.number()
-    ),
+      dateOfEntry: DateTime.fromJSDate(faker.date.past(1, "2018-04-01T00:00z")),
+      recordNumber: faker.datatype.number(),
+    }),
     year,
   };
 
@@ -84,20 +87,23 @@ export const buildOfficial = ({
   return {
     actualDate: date,
     calculations: new Calculations(...calculations),
-    official: new Official(
-      officialId ?? faker.datatype.number(),
-      faker.datatype.number(),
-      faker.name.firstName(),
-      faker.name.lastName(),
-      faker.name.jobTitle(),
-      faker.random.arrayElement([Contract.PERMANENT, Contract.TEMPORARY]),
-      faker.random.arrayElement([
+    official: new Official({
+      id: officialId ?? faker.datatype.number(),
+      recordNumber: faker.datatype.number(),
+      firstName: faker.name.firstName(),
+      lastName: faker.name.lastName(),
+      position: faker.name.jobTitle(),
+      contract: faker.random.arrayElement([
+        Contract.PERMANENT,
+        Contract.TEMPORARY,
+      ]),
+      type: faker.random.arrayElement([
         TypeOfOfficials.TEACHER,
         TypeOfOfficials.NOT_TEACHER,
       ]),
-      DateTime.fromJSDate(faker.date.past(1, "2018-04-01T00:00z")),
-      faker.datatype.number()
-    ),
+      dateOfEntry: DateTime.fromJSDate(faker.date.past(1, "2018-04-01T00:00z")),
+      chargeNumber: faker.datatype.number(),
+    }),
     year,
   };
 };

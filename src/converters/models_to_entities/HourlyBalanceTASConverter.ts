@@ -1,7 +1,7 @@
 import { Decimal } from "decimal.js";
 import HourlyBalanceEntity from "entities/HourlyBalanceTAS";
-import NullActualBalance from "entities/null_object/NullActualBalance";
 import { HourlyBalanceTAS as HourlyBalanceTASModel } from "types/hourlyBalance";
+import { generateRandomUUIDV4 } from "utils/strings";
 
 import { AbstractConverter } from "./AbstractConverter";
 
@@ -10,38 +10,38 @@ export default class HourlyBalanceTASConverter extends AbstractConverter<
   HourlyBalanceEntity
 > {
   fromModelToEntity(model: HourlyBalanceTASModel): HourlyBalanceEntity {
-    return new HourlyBalanceEntity(
-      model.hourlyBalanceTAS ? model.hourlyBalanceTAS.id : "",
-      model.year,
-      new Decimal(
+    return new HourlyBalanceEntity({
+      id: model.hourlyBalanceTAS ? model.hourlyBalanceTAS.id : "",
+      year: model.year,
+      working: new Decimal(
         model.hourlyBalanceTAS ? model.hourlyBalanceTAS.working.toString() : "0"
       ),
-      new Decimal(
+      nonWorking: new Decimal(
         model.hourlyBalanceTAS
           ? model.hourlyBalanceTAS.nonWorking.toString()
           : "0"
       ),
-      new Decimal(
+      simple: new Decimal(
         model.hourlyBalanceTAS ? model.hourlyBalanceTAS.simple.toString() : "0"
       ),
-      model.id
-    );
+    });
   }
   fromEntityToModel(entity: HourlyBalanceEntity): HourlyBalanceTASModel {
-    const actualBalanceId = entity.actualBalance.orElse(
-      new NullActualBalance()
-    ).id;
+    const actualBalanceId = entity.actualBalance
+      ? entity.actualBalance.id
+      : generateRandomUUIDV4();
+    const hourlyBalanceId = generateRandomUUIDV4();
 
     return {
       year: entity.year,
       hourlyBalanceTAS: {
-        hourlyBalanceId: entity.hourlyBalanceId,
+        hourlyBalanceId,
         id: entity.id,
         working: BigInt(entity.working.toString()),
         nonWorking: BigInt(entity.nonWorking.toString()),
         simple: BigInt(entity.simple.toString()),
       },
-      id: entity.hourlyBalanceId,
+      id: hourlyBalanceId,
       actualBalanceId,
     };
   }

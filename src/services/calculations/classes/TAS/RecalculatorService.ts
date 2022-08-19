@@ -42,19 +42,12 @@ export default class RecalculatorService {
   }) {
     this.actualHourlyBalances = currentActualHourlyBalances;
 
-    const calculationEntities = await this.calculationRepository.filter({
-      where: {
-        year: {
-          gte: year,
-        },
-        actualBalance: {
-          officialId: official.id,
-        },
-      },
-      include: {
-        calculationTAS: true,
-      },
-    });
+    const calculationEntities =
+      await this.calculationRepository.getCalculationWithYearGreaterThanActual({
+        officialId: official.id,
+        type: official.type,
+        year,
+      });
 
     const calculations = new Calculations(...calculationEntities);
 
@@ -97,7 +90,9 @@ export default class RecalculatorService {
     const next = this.actualHourlyBalances[index];
 
     const yearNumber = Number(next.year);
-    const calculations = next.calculations as CalculationTAS[];
+    console.log("pre-pepe");
+    const calculations = next.getCalculations() as CalculationTAS[];
+    console.log("pepe");
 
     const data = await this.calculatorRowService.reCalculate({
       calculations: new Calculations(),
@@ -125,7 +120,9 @@ export default class RecalculatorService {
     for (const a of this.actualHourlyBalances) {
       const { year } = a;
       const rest = calculations.filter((c) => c.year === year);
-      a.calculations = rest;
+      console.log("pre-ahhh");
+      a.setCalculations(rest);
+      console.log("ahhh");
     }
   }
 }

@@ -3,7 +3,6 @@ import ActualBalance from "entities/ActualBalance";
 import CalculationTAS from "entities/CalculationTAS";
 import Official from "entities/Official";
 import ValueNotProvidedError from "errors/ValueNotProvidedError";
-import ActualHourlyBalanceRepository from "persistence/ActualBalance/ActualHourlyBalanceRepository";
 import RecalculatorService from "services/calculations/classes/TAS/RecalculatorService";
 import Balances, {
   getCurrentActualHourlyBalance,
@@ -19,7 +18,6 @@ export default class TASCalculator {
   private actualHourlyBalanceCreator: ActualHourlyBalanceCreator;
   private recalculatorService: RecalculatorService;
   private calculatorRowService: CalculatorRowService;
-  private actualHourlyBalanceRepository: ActualHourlyBalanceRepository;
   private official?: Official;
   private balances: Balances;
 
@@ -58,7 +56,7 @@ export default class TASCalculator {
   }> {
     const previousYear = currentYear - 1;
     this.official = official;
-    this.officialIsDefinite();
+    this.officialIsDefined();
 
     const actualHourlyBalancesAfterPreviousYear = await this.balances.calculate(
       {
@@ -150,6 +148,7 @@ export default class TASCalculator {
         officialId: official.id,
         total: dataCalculated.totalBalance,
         calculations: dataCalculated.calculations,
+        type: "tas",
       });
 
     return {
@@ -167,7 +166,7 @@ export default class TASCalculator {
     const [first, ...others] = actualBalances;
   }
 
-  private officialIsDefinite() {
+  private officialIsDefined() {
     if (!this.official) {
       throw new ValueNotProvidedError("You must provide a official");
     }

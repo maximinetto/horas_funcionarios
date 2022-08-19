@@ -1,7 +1,8 @@
 import { Decimal } from "decimal.js";
+import ActualBalanceTeacher from "entities/ActualBalanceTeacher";
 import CalculationTeacherEntity from "entities/CalculationTeacher";
-import NullActualBalance from "entities/null_object/NullActualBalance";
 import { NotNullableCalculationWithTeacher } from "types/calculations";
+import { generateRandomUUIDV4 } from "utils/strings";
 
 import { AbstractConverter } from "./AbstractConverter";
 
@@ -12,34 +13,40 @@ export default class CalculationTeacherConverter extends AbstractConverter<
   fromModelToEntity(
     model: NotNullableCalculationWithTeacher
   ): CalculationTeacherEntity {
-    const { surplus, discount, calculationId } = model.calculationTeacher;
+    const { surplus, discount } = model.calculationTeacher;
 
-    return new CalculationTeacherEntity(
-      model.id,
-      model.year,
-      model.month,
-      new Decimal(surplus.toString()),
-      new Decimal(discount.toString()),
-      calculationId,
-      model.observations ?? undefined,
-      new NullActualBalance(model.actualBalanceId)
-    );
+    const { id, year, month, observations, actualBalanceId } = model;
+
+    return new CalculationTeacherEntity({
+      id,
+      year,
+      month,
+      surplus: new Decimal(surplus.toString()),
+      discount: new Decimal(discount.toString()),
+      observations: observations ?? undefined,
+      actualBalance: new ActualBalanceTeacher({
+        id: actualBalanceId,
+        year,
+      }),
+    });
   }
   fromEntityToModel(
     entity: CalculationTeacherEntity
   ): NotNullableCalculationWithTeacher {
     return {
-      id: entity.calculationId,
+      id: entity.id,
       year: entity.year,
       month: entity.month,
       calculationTeacher: {
         id: entity.id,
-        calculationId: entity.calculationId,
-        surplus: BigInt(entity.getSurplus().toString()),
-        discount: BigInt(entity.getDiscount().toString()),
+        calculationId: generateRandomUUIDV4(),
+        surplus: BigInt(entity.surplus.toString()),
+        discount: BigInt(entity.discount.toString()),
       },
       observations: entity.observations ?? null,
-      actualBalanceId: entity.actualBalance.orElse(new NullActualBalance()).id,
+      actualBalanceId: entity.actualBalance
+        ? entity.actualBalance.id
+        : generateRandomUUIDV4(),
     };
   }
 }

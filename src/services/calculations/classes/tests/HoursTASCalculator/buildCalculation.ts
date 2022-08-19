@@ -1,33 +1,39 @@
 import faker from "@faker-js/faker";
 import { Decimal } from "decimal.js";
-import ActualBalance from "entities/ActualBalance";
+import ActualBalanceTAS from "entities/ActualBalanceTAS";
 import CalculationTAS from "entities/CalculationTAS";
 import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
 import { CalculationTAS as CalculationTASModel } from "types/calculations";
-import { generateRandomUUIDV4 } from "utils/strings";
 
 export function buildCalculation(
   calculation: Omit<CalculationTASModel, "id" | "calculationId">
 ): CalculationTAS {
-  const calculationId = faker.datatype.uuid();
   const id = faker.datatype.uuid();
-  return new CalculationTAS(
+  return new CalculationTAS({
     id,
-    calculation.year,
-    calculation.month,
-    new Decimal(calculation.surplusBusiness.toString()),
-    new Decimal(calculation.surplusNonWorking.toString()),
-    new Decimal(calculation.surplusSimple.toString()),
-    new Decimal(calculation.discount.toString()),
-    new Decimal(calculation.workingOvertime.toString()),
-    new Decimal(calculation.workingNightOvertime.toString()),
-    new Decimal(calculation.nonWorkingOvertime.toString()),
-    new Decimal(calculation.nonWorkingNightOvertime.toString()),
-    new Decimal(calculation.compensatedNightOvertime.toString()),
-    calculationId,
-    calculation.observations ?? undefined,
-    new ActualBalance(calculation.actualBalanceId, calculation.year)
-  );
+    year: calculation.year,
+    month: calculation.month,
+    surplusBusiness: new Decimal(calculation.surplusBusiness.toString()),
+    surplusNonWorking: new Decimal(calculation.surplusNonWorking.toString()),
+    surplusSimple: new Decimal(calculation.surplusSimple.toString()),
+    discount: new Decimal(calculation.discount.toString()),
+    workingOvertime: new Decimal(calculation.workingOvertime.toString()),
+    workingNightOvertime: new Decimal(
+      calculation.workingNightOvertime.toString()
+    ),
+    nonWorkingOvertime: new Decimal(calculation.nonWorkingOvertime.toString()),
+    nonWorkingNightOvertime: new Decimal(
+      calculation.nonWorkingNightOvertime.toString()
+    ),
+    compensatedNightOvertime: new Decimal(
+      calculation.compensatedNightOvertime.toString()
+    ),
+    observations: calculation.observations ?? undefined,
+    actualBalance: new ActualBalanceTAS({
+      id: calculation.actualBalanceId,
+      year: calculation.year,
+    }),
+  });
 }
 
 export function buildHourlyBalance({
@@ -45,13 +51,15 @@ export function buildHourlyBalance({
 }) {
   const id = faker.datatype.uuid();
 
-  return new HourlyBalanceTAS(
+  return new HourlyBalanceTAS({
     id,
     year,
-    new Decimal(working.toString()),
-    new Decimal(nonWorking.toString()),
-    new Decimal(simple.toString()),
-    generateRandomUUIDV4(),
-    ActualBalance.default(actualBalanceId)
-  );
+    working: new Decimal(working.toString()),
+    nonWorking: new Decimal(nonWorking.toString()),
+    simple: new Decimal(simple.toString()),
+    actualBalance: new ActualBalanceTAS({
+      id: actualBalanceId,
+      year,
+    }),
+  });
 }

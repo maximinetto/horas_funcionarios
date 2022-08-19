@@ -1,6 +1,7 @@
 import Calculations from "collections/Calculations";
 import { logger } from "config";
 import BalanceConverter from "converters/models_to_entities/BalanceConverter";
+import MikroORMActualBalanceBuilder from "creators/actual/MikroORMActualBalanceBuilder";
 import CalculationTAS from "entities/CalculationTAS";
 import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
 import ActualHourlyBalanceRepository from "persistence/ActualBalance/ActualHourlyBalanceRepository";
@@ -41,7 +42,9 @@ export async function expectCalculationEquals(
     calculationRepository: CalculationRepository;
   }
 ) {
-  const actualHourlyBalanceCreator = new ActualHourlyBalanceCreator();
+  const actualHourlyBalanceCreator = new ActualHourlyBalanceCreator({
+    actualHourlyBalanceBuilder: new MikroORMActualBalanceBuilder(),
+  });
   const actualHourlyBalanceReplacer = new ActualHourlyBalanceReplacer({
     actualHourlyBalanceCreator,
     balanceConverter: new BalanceConverter(),
@@ -106,6 +109,13 @@ export function expectCurrentActualBalanceEquals(
     balances: lastBalances,
     calculations: _calculations,
   });
+
+  logger.info("simpleHours:", totalCalculationsCurrentYear.simple.toString());
+  logger.info("workingHours:", totalCalculationsCurrentYear.working.toString());
+  logger.info(
+    "nonWorkingHours:",
+    totalCalculationsCurrentYear.nonWorking.toString()
+  );
 
   expect(currentCalculation.totalSimpleHours.value.toString()).toBe(
     totalCalculationsCurrentYear.simple.toString()

@@ -1,8 +1,7 @@
-import { DecimalType, EntitySchema } from "@mikro-orm/core";
 import { Decimal } from "decimal.js";
 import Nullable from "entities/null_object/Nullable";
 
-import ActualBalance from "./ActualBalance";
+import ActualBalanceTAS from "./ActualBalanceTAS";
 import HourlyBalance from "./HourlyBalance";
 
 export default class HourlyBalanceTAS
@@ -12,19 +11,28 @@ export default class HourlyBalanceTAS
   private _working: Decimal;
   private _nonWorking: Decimal;
   private _simple: Decimal;
+  private _actualBalance?: ActualBalanceTAS;
 
-  public constructor(
-    id: string,
-    year: number,
-    working: Decimal,
-    nonWorking: Decimal,
-    simple: Decimal,
-    actualBalance?: ActualBalance
-  ) {
-    super({ id, year, actualBalance });
+  public constructor({
+    id,
+    working,
+    nonWorking,
+    simple,
+    year,
+    actualBalance,
+  }: {
+    id: string;
+    year: number;
+    working: Decimal;
+    nonWorking: Decimal;
+    simple: Decimal;
+    actualBalance?: ActualBalanceTAS;
+  }) {
+    super({ id, year });
     this._working = working;
     this._nonWorking = nonWorking;
     this._simple = simple;
+    this._actualBalance = actualBalance;
   }
 
   public get working(): Decimal {
@@ -51,6 +59,14 @@ export default class HourlyBalanceTAS
     this._simple = value;
   }
 
+  public get actualBalance(): ActualBalanceTAS | undefined {
+    return this._actualBalance;
+  }
+
+  public set actualBalance(value: ActualBalanceTAS | undefined) {
+    this._actualBalance = value;
+  }
+
   public isDefault(): boolean {
     return false;
   }
@@ -59,23 +75,3 @@ export default class HourlyBalanceTAS
     return this.working.plus(this.nonWorking).plus(this.simple);
   }
 }
-
-export const schema = new EntitySchema<HourlyBalanceTAS, HourlyBalance>({
-  name: "HourlyBalanceTAS",
-  tableName: "hourly_balances_tas",
-  extends: "Entity",
-  properties: {
-    nonWorking: {
-      type: DecimalType,
-      fieldName: "surplus_non_working",
-    },
-    simple: {
-      type: DecimalType,
-      fieldName: "surplus_simple",
-    },
-    working: {
-      type: DecimalType,
-      fieldName: "surplus_business",
-    },
-  },
-});

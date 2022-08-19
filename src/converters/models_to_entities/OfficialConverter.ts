@@ -9,17 +9,17 @@ export default class OfficialConverter extends AbstractConverter<
   OfficialEntity
 > {
   fromModelToEntity(model: OfficialWithOptionalId): OfficialEntity {
-    return new OfficialEntity(
-      model.id ?? 0,
-      model.recordNumber,
-      model.firstName,
-      model.lastName,
-      model.position,
-      model.contract,
-      model.type,
-      DateTime.fromJSDate(model.dateOfEntry),
-      model.chargeNumber
-    );
+    return new OfficialEntity({
+      id: model.id ?? 0,
+      recordNumber: model.recordNumber,
+      firstName: model.firstName,
+      lastName: model.lastName,
+      position: model.position,
+      contract: model.contract,
+      type: model.type,
+      dateOfEntry: DateTime.fromJSDate(model.dateOfEntry),
+      chargeNumber: model.chargeNumber,
+    });
   }
   fromEntityToModel(entity: OfficialEntity): OfficialWithOptionalId {
     return {

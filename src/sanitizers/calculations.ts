@@ -40,7 +40,6 @@ export const sanitizeCalculationFields = (
       nonWorkingOvertime,
       nonWorkingNightOvertime,
       compensatedNightOvertime,
-      calculationId: calculation.calculationId,
     });
   });
 };

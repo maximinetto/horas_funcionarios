@@ -1,4 +1,3 @@
-import { Collection, DecimalType, EntitySchema } from "@mikro-orm/core";
 import { Decimal } from "decimal.js";
 import Nullable from "entities/null_object/Nullable";
 import Comparable from "utils/Comparator";
@@ -6,9 +5,9 @@ import Comparable from "utils/Comparator";
 import Calculation from "./Calculation";
 import Entity from "./Entity";
 import HourlyBalance from "./HourlyBalance";
-import Official from "./Official";
+import Official, { TypeOfOfficial } from "./Official";
 
-export default class ActualBalance
+export default abstract class ActualBalance
   extends Entity
   implements Nullable, Comparable<ActualBalance>
 {
@@ -16,31 +15,27 @@ export default class ActualBalance
   private _year: number;
   private _total: Decimal;
   private _official?: Official;
-  private _calculations = new Collection<Calculation>(this);
-  private _hourlyBalances = new Collection<HourlyBalance>(this);
+  private _type: TypeOfOfficial;
 
   public constructor({
     id,
     year,
     total,
     official,
-    calculations,
-    hourlyBalances,
+    type,
   }: {
     id: string;
     year: number;
     total?: Decimal;
     official?: Official;
-    calculations?: Calculation[];
-    hourlyBalances?: HourlyBalance[];
+    type: TypeOfOfficial;
   }) {
     super();
     this._id = id;
     this._year = year;
     this._total = total ?? new Decimal(0);
     this._official = official;
-    this._calculations = new Collection<Calculation>(this, calculations);
-    this._hourlyBalances = new Collection<HourlyBalance>(this, hourlyBalances);
+    this._type = type;
   }
 
   public get id(): string {
@@ -75,21 +70,18 @@ export default class ActualBalance
     this._official = value;
   }
 
-  public get calculations(): Collection<Calculation> {
-    return this._calculations;
+  public get type(): TypeOfOfficial {
+    return this._type;
   }
 
-  public set calculations(value: Collection<Calculation>) {
-    this._calculations = value;
+  public set type(value: TypeOfOfficial) {
+    this._type = value;
   }
 
-  public get hourlyBalances(): Collection<HourlyBalance> {
-    return this._hourlyBalances;
-  }
-
-  public set hourlyBalances(value: Collection<HourlyBalance>) {
-    this._hourlyBalances = value;
-  }
+  abstract getCalculations(): Calculation[];
+  abstract setCalculations(value: Calculation[]): void;
+  abstract getHourlyBalances(): HourlyBalance[];
+  abstract setHourlyBalances(value: HourlyBalance[]): void;
 
   isDefault(): boolean {
     return false;
@@ -109,36 +101,3 @@ export default class ActualBalance
     return this.id.localeCompare(other.id);
   }
 }
-
-export const schema = new EntitySchema<ActualBalance, Entity>({
-  name: "ActualBalance",
-  tableName: "actual_balances",
-  extends: "Entity",
-  properties: {
-    id: {
-      type: "uuid",
-      primary: true,
-    },
-    year: {
-      type: "int",
-    },
-    total: {
-      type: DecimalType,
-    },
-    official: {
-      reference: "m:1",
-      entity: () => Official,
-      inversedBy: "actualBalances",
-    },
-    calculations: {
-      reference: "1:m",
-      entity: () => Calculation,
-      mappedBy: "actualBalance",
-    },
-    hourlyBalances: {
-      reference: "1:m",
-      entity: () => HourlyBalance,
-      mappedBy: "actualBalance",
-    },
-  },
-});

@@ -101,5 +101,12 @@
   },
   "prisma": {
     "schema": "src/prisma/schema.prisma"
+  },
+  "mikro-orm": {
+    "useTsNode": true,
+    "configPaths": [
+      "./src/persistence/context/mikroorm/mikroorm.config.ts",
+      "./dist/persistence/context/mikroorm/mikroorm.config.js"
+    ]
   }
 }

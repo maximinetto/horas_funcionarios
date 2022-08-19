@@ -1,9 +1,8 @@
-import { DecimalType, EntitySchema } from "@mikro-orm/core";
 import { Month } from "@prisma/client";
 import { Decimal } from "decimal.js";
 import Nullable from "entities/null_object/Nullable";
 
-import ActualBalance from "./ActualBalance";
+import ActualBalanceTeacher from "./ActualBalanceTeacher";
 import Calculation from "./Calculation";
 
 export default class CalculationTeacher
@@ -12,6 +11,7 @@ export default class CalculationTeacher
 {
   private _surplus: Decimal;
   private _discount: Decimal;
+  private _actualBalance?: ActualBalanceTeacher;
 
   public constructor({
     discount,
@@ -28,11 +28,12 @@ export default class CalculationTeacher
     surplus: Decimal;
     discount: Decimal;
     observations?: string;
-    actualBalance?: ActualBalance;
+    actualBalance?: ActualBalanceTeacher;
   }) {
-    super({ id, year, month, observations, actualBalance });
+    super({ id, year, month, observations });
     this._surplus = surplus;
     this._discount = discount;
+    this._actualBalance = actualBalance;
   }
 
   public get surplus(): Decimal {
@@ -51,22 +52,11 @@ export default class CalculationTeacher
     this._discount = discount;
   }
 
-  public isDefault(): boolean {
-    return false;
+  public get actualBalance(): ActualBalanceTeacher | undefined {
+    return this._actualBalance;
+  }
+
+  public set actualBalance(actualBalance: ActualBalanceTeacher | undefined) {
+    this._actualBalance = actualBalance;
   }
 }
-
-export const schema = new EntitySchema<CalculationTeacher, Calculation>({
-  name: "CalculationTeacher",
-  tableName: "calculation_teachers",
-  extends: "Entity",
-  properties: {
-    surplus: {
-      type: DecimalType,
-    },
-    discount: {
-      type: DecimalType,
-      fieldName: "discount",
-    },
-  },
-});

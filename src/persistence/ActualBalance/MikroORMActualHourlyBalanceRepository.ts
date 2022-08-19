@@ -1,4 +1,5 @@
 import ActualBalance from "entities/ActualBalance";
+import ActualBalanceTAS from "entities/ActualBalanceTAS";
 import ActualHourlyBalanceRepository from "persistence/ActualBalance/ActualHourlyBalanceRepository";
 import MikroORMRepository from "persistence/MikroORMRepository";
 import { serializeBalancesTAS } from "serializers/persistence/balance";
@@ -46,8 +47,31 @@ ORDER BY year ASC, hourly_balance.year ASC`,
 
   getTAS(): Promise<ActualBalance[]> {
     return this._mikroorm.em.find(
-      ActualBalance,
+      ActualBalanceTAS,
       {},
+      {
+        populate: ["hourlyBalances"],
+      }
+    );
+  }
+
+  getTASWithYearGreaterThanActual({
+    year,
+    officialId,
+  }: {
+    year: number;
+    officialId: number;
+  }) {
+    return this._mikroorm.em.find(
+      ActualBalanceTAS,
+      {
+        year: {
+          $gte: year,
+        },
+        official: {
+          id: officialId,
+        },
+      },
       {
         populate: ["hourlyBalances"],
       }

@@ -21,6 +21,26 @@ export default class PrismaCalculationTASRepository
     this.calculationTASConverter = calculationTASConverter;
   }
 
+  getCalculationsTASWithYearGreaterThanActual({
+    officialId,
+    year,
+  }: {
+    year: number;
+    officialId: number;
+  }) {
+    throw new Error("Method not implemented.");
+  }
+
+  getCalculationsTASWithActualYear({
+    officialId,
+    year,
+  }: {
+    officialId: number;
+    year: number;
+  }): Promise<CalculationTAS[]> {
+    throw new Error("Method not implemented.");
+  }
+
   toEntity(value: any): CalculationTAS {
     return this.calculationTASConverter.fromModelToEntity(value);
   }

@@ -1,10 +1,18 @@
-import buildApp from "app";
+import Database from "persistence/context/Database";
+import DatabaseFactory, {
+  TypeOfEngine,
+} from "persistence/context/index.config";
 
-export default function setupTestEnvironment() {
-  return buildApp({
-    logger: {
-      level: process.env.LOG_LEVEL || "silent",
-    },
-    pluginTimeout: 2 * 60 * 1000,
-  });
-}
+export let database: Database;
+
+beforeAll(async () => {
+  const typeOfEngine = process.env
+    .OFFICIALS_SCHEDULES_TYPE_OF_ENGINE as TypeOfEngine;
+
+  database = DatabaseFactory.createDatabase(typeOfEngine);
+  await database.init();
+});
+
+afterAll(async () => {
+  await database.close();
+});

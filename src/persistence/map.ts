@@ -26,18 +26,6 @@ const getEntityName = (entity: EntityName): string => {
   return typeof entity === "string" ? entity : entity.name;
 };
 
-export const getModel = (entity: Entity): string => {
-  const entityName = entity.entityName();
-
-  const index = Object.values(map).findIndex((value) => {
-    if (typeof value === "string") return entityName === value;
-
-    return entity instanceof value;
-  });
-
-  return getKey(index);
-};
-
 export const getModelByRef = (EntityRef: EntityName) => {
   const entityName = getEntityName(EntityRef);
 

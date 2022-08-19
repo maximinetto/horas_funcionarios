@@ -1,7 +1,8 @@
 import { Decimal } from "decimal.js";
+import ActualBalanceTAS from "entities/ActualBalanceTAS";
 import CalculationTASEntity from "entities/CalculationTAS";
-import NullActualBalance from "entities/null_object/NullActualBalance";
 import { NotNullableCalculationWithTAS } from "types/calculations";
+import { generateRandomUUIDV4 } from "utils/strings";
 
 import { AbstractConverter } from "./AbstractConverter";
 
@@ -15,7 +16,6 @@ export default class CalculationTASConverter extends AbstractConverter<
     const { observations, actualBalanceId, month, year } = model;
 
     const {
-      calculationId,
       compensatedNightOvertime,
       discount,
       nonWorkingNightOvertime,
@@ -28,27 +28,32 @@ export default class CalculationTASConverter extends AbstractConverter<
       id,
     } = model.calculationTAS;
 
-    return new CalculationTASEntity(
+    return new CalculationTASEntity({
       id,
       year,
       month,
-      new Decimal(surplusBusiness.toString()),
-      new Decimal(surplusNonWorking.toString()),
-      new Decimal(surplusSimple.toString()),
-      new Decimal(discount.toString()),
-      new Decimal(workingOvertime.toString()),
-      new Decimal(workingNightOvertime.toString()),
-      new Decimal(nonWorkingOvertime.toString()),
-      new Decimal(nonWorkingNightOvertime.toString()),
-      new Decimal(compensatedNightOvertime.toString()),
-      calculationId,
-      observations ?? undefined,
-      new NullActualBalance(actualBalanceId)
-    );
+      surplusBusiness: new Decimal(surplusBusiness.toString()),
+      surplusNonWorking: new Decimal(surplusNonWorking.toString()),
+      surplusSimple: new Decimal(surplusSimple.toString()),
+      discount: new Decimal(discount.toString()),
+      workingOvertime: new Decimal(workingOvertime.toString()),
+      workingNightOvertime: new Decimal(workingNightOvertime.toString()),
+      nonWorkingOvertime: new Decimal(nonWorkingOvertime.toString()),
+      nonWorkingNightOvertime: new Decimal(nonWorkingNightOvertime.toString()),
+      compensatedNightOvertime: new Decimal(
+        compensatedNightOvertime.toString()
+      ),
+      observations: observations ?? undefined,
+      actualBalance: new ActualBalanceTAS({
+        id: actualBalanceId,
+        year,
+      }),
+    });
   }
   fromEntityToModel(
     entity: CalculationTASEntity
   ): NotNullableCalculationWithTAS {
+    const calculationId = generateRandomUUIDV4();
     return {
       year: entity.year,
       month: entity.month,
@@ -67,11 +72,13 @@ export default class CalculationTASConverter extends AbstractConverter<
           entity.compensatedNightOvertime.toString()
         ),
         discount: BigInt(entity.discount.toString()),
-        calculationId: entity.calculationId,
+        calculationId,
       },
-      id: entity.calculationId,
+      id: calculationId,
       observations: entity.observations ?? null,
-      actualBalanceId: entity.actualBalance.orElse(new NullActualBalance()).id,
+      actualBalanceId: entity.actualBalance
+        ? entity.actualBalance.id
+        : generateRandomUUIDV4(),
     };
   }
 }

@@ -11,11 +11,7 @@ import CalculatePerMonth, {
 import CalculationCreator from "services/calculations/classes/CalculationCreator";
 import CalculationValidator from "services/calculations/classes/CalculationValidator";
 import CalculationSorter from "sorters/CalculationSorter";
-import {
-  CalculationCalculated,
-  CalculationParam,
-  PrismaCalculationFinderOptions,
-} from "types/calculations";
+import { CalculationCalculated, CalculationParam } from "types/calculations";
 
 export default abstract class HoursCalculator {
   protected calculationRepository: CalculationRepository;
@@ -26,7 +22,6 @@ export default abstract class HoursCalculator {
   protected hourlyBalances: Array<HourlyBalance>;
   protected calculationsSorter: CalculationSorter;
   protected calculationCreator: CalculationCreator;
-  private selectOptions: PrismaCalculationFinderOptions;
   private calculationValidator: CalculationValidator;
 
   constructor({
@@ -34,11 +29,9 @@ export default abstract class HoursCalculator {
     calculationRepository,
     calculationSorter,
     calculationValidator,
-    selectOptions,
   }: {
     calculationRepository: CalculationRepository;
     calculationCreator: CalculationCreator;
-    selectOptions: PrismaCalculationFinderOptions;
     calculationValidator: CalculationValidator;
     calculationSorter: CalculationSorter;
   }) {
@@ -48,7 +41,6 @@ export default abstract class HoursCalculator {
     this.calculationsFromPersistence = new Calculations<Calculation>();
     this.hourlyBalances = [];
     this.calculationsSorter = calculationSorter;
-    this.selectOptions = selectOptions;
     this.calculationValidator = calculationValidator;
     this.getCalculationsAndTransform =
       this.getCalculationsAndTransform.bind(this);
@@ -165,15 +157,12 @@ export default abstract class HoursCalculator {
   }
 
   private async getRestOfCalculations(official: Official, year: number) {
-    const calculations = await this.calculationRepository.filter({
-      where: {
-        actualBalance: {
-          officialId: official.id,
-        },
+    const calculations =
+      await this.calculationRepository.getCalculationsWithActualYear({
+        officialId: official.id,
+        type: official.type,
         year,
-      },
-      ...this.selectOptions,
-    });
+      });
 
     this.calculationsFromPersistence = new Calculations<Calculation>(
       ...calculations

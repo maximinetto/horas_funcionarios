@@ -1,9 +1,7 @@
-import { EntitySchema } from "@mikro-orm/core";
 import type Decimal from "decimal.js";
 import Nullable from "entities/null_object/Nullable";
 import Comparable from "utils/Comparator";
 
-import ActualBalance from "./ActualBalance";
 import Entity from "./Entity";
 
 export default abstract class HourlyBalance
@@ -12,21 +10,11 @@ export default abstract class HourlyBalance
 {
   private _id: string;
   private _year: number;
-  private _actualBalance?: ActualBalance;
 
-  public constructor({
-    id,
-    year,
-    actualBalance,
-  }: {
-    id: string;
-    year: number;
-    actualBalance?: ActualBalance;
-  }) {
+  public constructor({ id, year }: { id: string; year: number }) {
     super();
     this._id = id;
     this._year = year;
-    this._actualBalance = actualBalance;
   }
 
   public get id(): string {
@@ -43,14 +31,6 @@ export default abstract class HourlyBalance
 
   public set year(value: number) {
     this._year = value;
-  }
-
-  public get actualBalance(): ActualBalance | undefined {
-    return this._actualBalance;
-  }
-
-  public set actualBalance(value: ActualBalance | undefined) {
-    this._actualBalance = value;
   }
 
   public isDefault(): boolean {
@@ -80,24 +60,3 @@ export default abstract class HourlyBalance
     };
   }
 }
-
-export const schema = new EntitySchema<HourlyBalance, Entity>({
-  name: "HourlyBalance",
-  tableName: "hourly_balances",
-  extends: "Entity",
-  abstract: true,
-  properties: {
-    id: {
-      type: "uuid",
-      primary: true,
-    },
-    year: {
-      type: "int",
-    },
-    actualBalance: {
-      reference: "m:1",
-      entity: () => ActualBalance,
-      inversedBy: "hourlyBalances",
-    },
-  },
-});

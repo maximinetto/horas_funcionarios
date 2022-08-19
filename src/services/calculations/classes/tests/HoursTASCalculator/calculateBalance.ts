@@ -33,15 +33,14 @@ export default function subtractHoursFromBalance(
     const simple = hours[0].value;
     const working = hours[1].value;
     const nonWorking = hours[2].value;
-    return new HourlyBalanceTAS(
-      balances[index].id,
+    return new HourlyBalanceTAS({
+      id: balances[index].id,
       year,
       working,
       nonWorking,
       simple,
-      balances[index].hourlyBalanceId,
-      balances[index].actualBalance.get()
-    );
+      actualBalance: balances[index].actualBalance,
+    });
   });
 
   return {
@@ -59,15 +58,14 @@ export default function subtractHoursFromBalance(
         ? b.working
         : new Decimal("0");
 
-      return new HourlyBalanceTAS(
-        b.id,
-        b.year,
+      return new HourlyBalanceTAS({
+        id: b.id,
+        year: b.year,
         working,
         nonWorking,
         simple,
-        b.hourlyBalanceId,
-        b.actualBalance.get()
-      );
+        actualBalance: b.actualBalance,
+      });
     }),
   };
 }

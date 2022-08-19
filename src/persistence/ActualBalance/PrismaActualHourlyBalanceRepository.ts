@@ -1,13 +1,13 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import ActualBalanceConverter from "converters/models_to_entities/ActualBalanceConverter";
 import ActualBalance from "entities/ActualBalance";
+import ActualBalanceTAS from "entities/ActualBalanceTAS";
 import ActualHourlyBalanceRepository from "persistence/ActualBalance/ActualHourlyBalanceRepository";
 import PrismaRepository from "persistence/PrismaRepository";
 import { serializeBalancesTAS } from "serializers/persistence/balance";
 import {
   ActualBalanceDTO,
   ActualBalanceFindManyOptions,
-  ActualBalanceWithTASEntity,
 } from "types/actualBalance";
 
 export default class PrismaActualHourlyBalanceRepository
@@ -68,7 +68,7 @@ ORDER BY year ASC, hourly_balance.year ASC`.then((balances) =>
   getTAS(
     where: Prisma.ActualBalanceWhereInput,
     options?: ActualBalanceFindManyOptions
-  ): Promise<ActualBalanceWithTASEntity[]> {
+  ): Promise<ActualBalance[]> {
     return this._prisma.actualBalance
       .findMany({
         where,
@@ -84,5 +84,12 @@ ORDER BY year ASC, hourly_balance.year ASC`.then((balances) =>
       .then((actuals) => {
         return this.actualBalanceConverter.fromModelsToEntities(actuals);
       });
+  }
+
+  getTASWithYearGreaterThanActual(_filter: {
+    year: number;
+    officialId: number;
+  }): Promise<ActualBalanceTAS[]> {
+    throw new Error("Method not implemented.");
   }
 }

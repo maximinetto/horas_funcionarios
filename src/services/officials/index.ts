@@ -1,6 +1,7 @@
 import { Contract, TypeOfOfficials } from "@prisma/client";
 import OfficialConverter from "converters/models_to_entities/OfficialConverter";
 import Official from "entities/Official";
+import NotExistsError from "errors/NotExistsError";
 import OfficialRepository from "persistence/Official/OfficialRepository";
 import { lastDateOfTheYear } from "utils/date";
 
@@ -53,10 +54,19 @@ export default class OfficialService {
     return this.officialRepository.set(official).then(this.toModel);
   }
 
-  delete(id: number) {
-    return this.officialRepository
-      .remove(Official.default(id))
-      .then(this.toModel);
+  async delete(id: number) {
+    const official = await this.officialRepository.get(id);
+    return official
+      .map((value) => {
+        return this.officialRepository.remove(value).then((_value) => {
+          console.log("antes");
+          return this.toModel(_value);
+        });
+      })
+      .orElseThrow(
+        () =>
+          new NotExistsError("The official doesn't not exists in the system")
+      );
   }
 
   private toModel(entity: Official) {

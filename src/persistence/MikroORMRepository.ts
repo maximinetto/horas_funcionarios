@@ -1,10 +1,9 @@
 import { FilterQuery, MikroORM, wrap } from "@mikro-orm/core";
 import { MariaDbDriver } from "@mikro-orm/mariadb";
 import Entity from "entities/Entity";
+import { mikroorm } from "persistence/context/mikroorm/MikroORMDatabase";
+import Repository from "persistence/Repository";
 import { Optional } from "typescript-optional";
-
-import { mikroorm } from "./context/mikroorm/mikroorm.config";
-import Repository from "./Repository";
 
 export default class MikroORMRepository<key, T extends Entity>
   implements Repository<key, T>

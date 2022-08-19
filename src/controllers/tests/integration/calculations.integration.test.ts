@@ -1,14 +1,19 @@
 import { Contract, Month, TypeOfOfficials } from "@prisma/client";
+import buildApp from "buildApp";
 import { officialService } from "dependencies/container";
 import Official from "entities/Official";
 import _omit from "lodash/omit";
 import { DateTime } from "luxon";
 import Database from "persistence/context/Database";
 import DatabaseFactory from "persistence/context/index.config";
-import setupTestEnvironment from "setupTestEnvironment";
 import { secondsToTime } from "utils/time";
 
-const fastify = setupTestEnvironment();
+const fastify = buildApp({
+  logger: {
+    level: process.env.LOG_LEVEL || "silent",
+  },
+  pluginTimeout: 2 * 60 * 1000,
+});
 
 describe("Calculations", () => {
   let unitOfWork: Database;

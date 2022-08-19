@@ -111,7 +111,7 @@ export default class HoursTASCalculationCreator {
 
     const actualHourlyBalanceRepository: jest.Mocked<ActualHourlyBalanceRepository> =
       {
-        filter: jest.fn().mockResolvedValue(balancesEnriched),
+        filter: jest.fn(),
         add: jest.fn(),
         addRange: jest.fn(),
         get: jest.fn(),
@@ -120,6 +120,10 @@ export default class HoursTASCalculationCreator {
         removeRange: jest.fn(),
         set: jest.fn(),
         setRange: jest.fn(),
+        clear: jest.fn(),
+        getTASWithYearGreaterThanActual: jest
+          .fn()
+          .mockResolvedValue(balancesEnriched),
       };
 
     const firstCalculationsMock = calculationFromPersistence.flat();
@@ -128,10 +132,7 @@ export default class HoursTASCalculationCreator {
       .filter((c) => c.year > actualBalanceSecondTest.year);
 
     const calculationRepository: jest.Mocked<CalculationRepository> = {
-      filter: jest
-        .fn()
-        .mockResolvedValueOnce(firstCalculationsMock)
-        .mockResolvedValueOnce(secondCalculationsMock),
+      filter: jest.fn(),
       add: jest.fn(),
       addRange: jest.fn(),
       get: jest.fn(),
@@ -140,6 +141,14 @@ export default class HoursTASCalculationCreator {
       removeRange: jest.fn(),
       set: jest.fn(),
       setRange: jest.fn(),
+      clear: jest.fn(),
+      getCalculationWithYearGreaterThanActual: jest
+        .fn()
+        .mockResolvedValueOnce(firstCalculationsMock)
+        .mockResolvedValueOnce(secondCalculationsMock),
+      getCalculationsWithActualYear: jest
+        .fn()
+        .mockResolvedValue(calculationsSecondTest),
     };
 
     const calculationsModified = [
@@ -188,22 +197,21 @@ export default class HoursTASCalculationCreator {
     source: CalculationTAS,
     { discount, surplusNonWorking, surplusSimple }: Partial<CalculationTAS>
   ) {
-    return new CalculationTAS(
-      source.id,
-      source.year,
-      source.month,
-      source.surplusBusiness,
-      surplusNonWorking ?? source.surplusNonWorking,
-      surplusSimple ?? source.surplusSimple,
-      discount ?? source.discount,
-      source.workingOvertime,
-      source.workingNightOvertime,
-      source.nonWorkingOvertime,
-      source.nonWorkingNightOvertime,
-      source.compensatedNightOvertime,
-      source.calculationId,
-      source.observations,
-      source.actualBalance.get()
-    );
+    return new CalculationTAS({
+      id: source.id,
+      year: source.year,
+      month: source.month,
+      surplusBusiness: source.surplusBusiness,
+      surplusNonWorking: surplusNonWorking ?? source.surplusNonWorking,
+      surplusSimple: surplusSimple ?? source.surplusSimple,
+      discount: discount ?? source.discount,
+      workingOvertime: source.workingOvertime,
+      workingNightOvertime: source.workingNightOvertime,
+      nonWorkingOvertime: source.nonWorkingOvertime,
+      nonWorkingNightOvertime: source.nonWorkingNightOvertime,
+      compensatedNightOvertime: source.compensatedNightOvertime,
+      observations: source.observations,
+      actualBalance: source.actualBalance,
+    });
   }
 }

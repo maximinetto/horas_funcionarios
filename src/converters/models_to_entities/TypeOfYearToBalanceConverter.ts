@@ -1,9 +1,11 @@
 import Decimal from "decimal.js";
 import ActualBalance from "entities/ActualBalance";
-import HourlyBalance from "entities/HourlyBalance";
+import ActualBalanceTAS from "entities/ActualBalanceTAS";
+import ActualBalanceTeacher from "entities/ActualBalanceTeacher";
 import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
 import HourlyBalanceTeacher from "entities/HourlyBalanceTeacher";
 import { TYPES_OF_HOURS } from "enums/typeOfHours";
+import UnexpectedValueError from "errors/UnexpectedValueError";
 import { instance as hours } from "services/calculations/classes/typeOfHours";
 import { TypeOfHoursByYearDecimal } from "types/typeOfHours";
 
@@ -12,14 +14,29 @@ export function convertTypesOfYearsToActualBalance(
   balances: TypeOfHoursByYearDecimal[],
   total: Decimal
 ): ActualBalance {
-  const hourlyBalances = actualBalance.hourlyBalances.map((hourlyBalance) => {
-    const current = balances.find((b) => b.year === hourlyBalance.year);
+  if (actualBalance instanceof ActualBalanceTAS) {
+    return convertToActualBalanceTAS(actualBalance, balances, total);
+  } else if (actualBalance instanceof ActualBalanceTeacher) {
+    return convertToActualBalanceTeacher(actualBalance, balances, total);
+  }
 
-    if (!current) {
-      throw new Error("No current balance");
-    }
+  throw new UnexpectedValueError("Type not found");
+}
 
-    if (isTASEntity(hourlyBalance)) {
+function convertToActualBalanceTAS(
+  actualBalance: ActualBalanceTAS,
+  balances: TypeOfHoursByYearDecimal[],
+  total: Decimal
+) {
+  const hourlyBalances = actualBalance.hourlyBalances
+    .getItems()
+    .map((hourlyBalance) => {
+      const current = balances.find((b) => b.year === hourlyBalance.year);
+
+      if (!current) {
+        throw new Error("No current balance");
+      }
+
       const simple = new Decimal(
         current.hours
           .find((h) => hours.isFirstTypeOfHour(h.typeOfHour))
@@ -35,40 +52,50 @@ export function convertTypesOfYearsToActualBalance(
           .find((h) => h.typeOfHour === TYPES_OF_HOURS.nonWorking)
           ?.value.toString() || "0"
       );
-      return new HourlyBalanceTAS(
-        hourlyBalance.id,
-        hourlyBalance.year,
+      return new HourlyBalanceTAS({
+        id: hourlyBalance.id,
+        year: hourlyBalance.year,
         working,
         nonWorking,
         simple,
-        hourlyBalance.hourlyBalanceId
-      );
-    } else if (isTeacherEntity(hourlyBalance)) {
-      const balance = new Decimal(current.hours[0]?.value.toString() ?? "0");
-      return new HourlyBalanceTeacher(
-        hourlyBalance.id,
-        hourlyBalance.year,
-        balance,
-        hourlyBalance.hourlyBalanceId
-      );
-    } else {
-      throw new Error("Unknown entity");
-    }
+      });
+    });
+
+  return new ActualBalanceTAS({
+    id: actualBalance.id,
+    year: actualBalance.year,
+    total: new Decimal(total.toString()),
+    official: actualBalance.official,
+    hourlyBalances,
   });
-
-  return new ActualBalance(
-    actualBalance.id,
-    actualBalance.year,
-    new Decimal(total.toString()),
-    actualBalance.official.orUndefined(),
-    hourlyBalances
-  );
 }
 
-function isTASEntity(entity: HourlyBalance): entity is HourlyBalanceTAS {
-  return entity instanceof HourlyBalanceTAS;
-}
+function convertToActualBalanceTeacher(
+  actualBalance: ActualBalanceTeacher,
+  balances: TypeOfHoursByYearDecimal[],
+  total: Decimal
+) {
+  const hourlyBalances = actualBalance.hourlyBalances
+    .getItems()
+    .map((hourlyBalance) => {
+      const current = balances.find((b) => b.year === hourlyBalance.year);
 
-function isTeacherEntity(entity: HourlyBalance): entity is HourlyBalanceTAS {
-  return entity instanceof HourlyBalanceTAS;
+      if (!current) {
+        throw new Error("No current balance");
+      }
+      const balance = new Decimal(current.hours[0]?.value.toString() ?? "0");
+      return new HourlyBalanceTeacher({
+        id: hourlyBalance.id,
+        year: hourlyBalance.year,
+        balance,
+      });
+    });
+
+  return new ActualBalanceTeacher({
+    id: actualBalance.id,
+    year: actualBalance.year,
+    total: new Decimal(total.toString()),
+    official: actualBalance.official,
+    hourlyBalances,
+  });
 }

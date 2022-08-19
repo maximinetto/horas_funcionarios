@@ -1,37 +1,102 @@
+import ActualHourlyBalanceBuilder from "creators/actual/ActualHourlyBalanceBuilder";
 import Decimal from "decimal.js";
 import ActualBalance from "entities/ActualBalance";
+import ActualBalanceTAS from "entities/ActualBalanceTAS";
+import ActualBalanceTeacher from "entities/ActualBalanceTeacher";
 import Calculation from "entities/Calculation";
 import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
-import Official from "entities/Official";
+import HourlyBalanceTeacher from "entities/HourlyBalanceTeacher";
+import Official, { TypeOfOfficial } from "entities/Official";
 import { TYPES_OF_HOURS } from "enums/typeOfHours";
 import { TypeOfHoursByYear } from "types/typeOfHours";
 import { generateRandomUUIDV4 } from "utils/strings";
 
 export default class ActualHourlyBalanceCreator {
+  private _actualHourlyBalanceBuilder: ActualHourlyBalanceBuilder;
+
+  constructor({
+    actualHourlyBalanceBuilder,
+  }: {
+    actualHourlyBalanceBuilder: ActualHourlyBalanceBuilder;
+  }) {
+    this._actualHourlyBalanceBuilder = actualHourlyBalanceBuilder;
+  }
+
   create({
     year,
     total,
     officialId,
     balances,
     calculations,
+    type,
   }: {
     year: number;
     total: Decimal;
     officialId: number;
     balances: TypeOfHoursByYear[];
     calculations: Calculation[];
+    type: TypeOfOfficial;
   }): ActualBalance {
-    const id = generateRandomUUIDV4();
-
-    const actualBalance = new ActualBalance(
-      id,
+    const actualBalance = this.createActualBalance({
       year,
       total,
-      Official.default(officialId)
-    );
+      officialId,
+      calculations,
+      type,
+    });
 
-    const hourlyBalances = balances.map((b) => {
-      const hourlyBalanceId = generateRandomUUIDV4();
+    if (ActualBalanceTAS.isActualBalanceTAS(actualBalance)) {
+      const hourlyBalances = this.createHourlyBalancesTAS(
+        actualBalance,
+        balances,
+        year
+      );
+      console.log("pre-jejeje");
+      actualBalance.setHourlyBalances(hourlyBalances);
+      console.log("jejeje");
+    } else if (ActualBalanceTeacher.isActualBalanceTeacher(actualBalance)) {
+      const hourlyBalances = this.createHourlyBalancesTeacher(
+        actualBalance,
+        balances,
+        year
+      );
+      actualBalance.setHourlyBalances(hourlyBalances);
+    }
+
+    return actualBalance;
+  }
+
+  private createActualBalance({
+    total,
+    year,
+    type,
+    officialId,
+    calculations,
+  }: {
+    year: number;
+    total: Decimal;
+    officialId: number;
+    calculations: Calculation[];
+    type: TypeOfOfficial;
+  }) {
+    const id = generateRandomUUIDV4();
+    const official = Official.default(officialId);
+    return this._actualHourlyBalanceBuilder.create({
+      calculations,
+      id,
+      official,
+      total,
+      year,
+      type,
+    });
+  }
+
+  private createHourlyBalancesTAS(
+    actualBalance: ActualBalanceTAS,
+    balances: TypeOfHoursByYear[],
+    year: number
+  ) {
+    return balances.map((b) => {
       const hourlyBalanceIdTAS = generateRandomUUIDV4();
       const simple = new Decimal(
         b.hours
@@ -48,20 +113,33 @@ export default class ActualHourlyBalanceCreator {
           .find((h) => h.typeOfHour === TYPES_OF_HOURS.nonWorking)
           ?.value.toString() || "0"
       );
-      return new HourlyBalanceTAS(
-        hourlyBalanceId,
+      return new HourlyBalanceTAS({
+        id: hourlyBalanceIdTAS,
         year,
         working,
         nonWorking,
         simple,
-        hourlyBalanceIdTAS,
-        actualBalance
-      );
+        actualBalance,
+      });
     });
+  }
 
-    actualBalance.hourlyBalances = hourlyBalances;
-    actualBalance.calculations = calculations;
+  private createHourlyBalancesTeacher(
+    actualBalance: ActualBalanceTeacher,
+    balances: TypeOfHoursByYear[],
+    year: number
+  ) {
+    return balances.map((b) => {
+      const hourlyBalanceIdTeacher = generateRandomUUIDV4();
+      const hour = b.hours[0];
+      const balance = new Decimal(hour.value.toString());
 
-    return actualBalance;
+      return new HourlyBalanceTeacher({
+        id: hourlyBalanceIdTeacher,
+        year,
+        balance,
+        actualBalance,
+      });
+    });
   }
 }

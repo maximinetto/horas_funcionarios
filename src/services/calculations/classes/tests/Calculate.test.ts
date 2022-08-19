@@ -1,10 +1,15 @@
 import faker from "@faker-js/faker";
-import { Month } from "@prisma/client";
+import { Contract, Month, TypeOfOfficials } from "@prisma/client";
 import Calculations from "collections/Calculations";
 import Decimal from "decimal.js";
-import ActualBalance from "entities/ActualBalance";
+import { actualHourlyBalanceBuilder } from "dependencies/container";
+import ActualBalanceTeacher from "entities/ActualBalanceTeacher";
 import CalculationTeacher from "entities/CalculationTeacher";
+import Official from "entities/Official";
+import { DateTime } from "luxon";
+import { mikroorm } from "persistence/context/mikroorm/MikroORMDatabase";
 import CalculationSorter from "sorters/CalculationSorter";
+import { getNumberByMonth } from "utils/mapMonths";
 
 describe("Sorters and getters", () => {
   let calculationsSorter: CalculationSorter;
@@ -48,7 +53,7 @@ describe("Sorters and getters", () => {
 
     const calculations = enrich([december, january, may, march]);
 
-    const expected = enrich([january, march, may, december]);
+    const expected = calculations.slice().sort(sort);
 
     const { getBiggestCalculation } = new Calculations(...calculations);
 
@@ -64,6 +69,7 @@ describe("Sorters and getters", () => {
       const result = calculations
         .slice()
         .sort(calculationsSorter.sortFromLowestToHighestDate);
+
       result.forEach((calculation, index) => {
         const current = expected[index];
         expect(calculation.month).toBe(current.month);
@@ -81,20 +87,42 @@ describe("Sorters and getters", () => {
       actualBalanceId: string;
     }[]
   ) {
-    return calculations.map(
-      (c) =>
-        new CalculationTeacher({
-          id: c.id,
-          year: c.year,
-          month: c.month,
-          observations: c.observations,
-          actualBalance: new ActualBalance({
-            id: c.actualBalanceId,
-            year: c.year,
-          }),
-          discount: new Decimal(0),
-          surplus: new Decimal(0),
-        })
-    );
+    return calculations.map((c) => {
+      const official = mikroorm.em.create(Official, {
+        id: 1,
+        chargeNumber: 1,
+        contract: Contract.PERMANENT,
+        dateOfEntry: DateTime.now(),
+        firstName: "Maxi",
+        lastName: "Minetto",
+        position: "Informatic",
+        recordNumber: 1,
+        type: TypeOfOfficials.NOT_TEACHER,
+      });
+      const actualHourlyBalanceTeacher = actualHourlyBalanceBuilder.create({
+        id: c.actualBalanceId,
+        year: c.year,
+        total: new Decimal(0),
+        official,
+        type: "teacher",
+      }) as ActualBalanceTeacher;
+
+      return new CalculationTeacher({
+        id: c.id,
+        year: c.year,
+        month: c.month,
+        observations: c.observations,
+        actualBalance: actualHourlyBalanceTeacher,
+        discount: new Decimal(0),
+        surplus: new Decimal(0),
+      });
+    });
+  }
+
+  function sort(c1: CalculationTeacher, c2: CalculationTeacher) {
+    const month1 = getNumberByMonth(c1.month);
+    const month2 = getNumberByMonth(c2.month);
+
+    return month1 - month2;
   }
 });

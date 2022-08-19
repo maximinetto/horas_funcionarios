@@ -2,10 +2,10 @@ import { Calculation as CalculationModel } from "@prisma/client";
 import { AbstractConverter } from "converters/models_to_entities/AbstractConverter";
 import CalculationTASConverter from "converters/models_to_entities/CalculationTASConverter";
 import CalculationTeacherConverter from "converters/models_to_entities/CalculationTeacherConverter";
-import ActualBalance from "entities/ActualBalance";
 import Calculation from "entities/Calculation";
 import CalculationTAS from "entities/CalculationTAS";
 import CalculationTeacherEntity from "entities/CalculationTeacher";
+import InvalidValueError from "errors/InvalidValueError";
 import {
   CalculationWithTAS,
   CalculationWithTeacher,
@@ -74,16 +74,7 @@ export default class CalculationConverter extends AbstractConverter<
       return this.calculationTeacherConverter.fromModelToEntity(model);
     }
 
-    const actualBalance = model.actualBalanceId
-      ? new ActualBalance(model.actualBalanceId, model.year)
-      : undefined;
-    return new Calculation(
-      model.id,
-      model.year,
-      model.month,
-      model.observations ?? "",
-      actualBalance
-    );
+    throw new InvalidValueError("Model must be a subclass of calculations");
   }
   fromEntityToModel(entity: AllCalculationEntities): AllCalculationTypes {
     if (this.isTASEntity(entity)) {
@@ -94,14 +85,8 @@ export default class CalculationConverter extends AbstractConverter<
       return this.calculationTeacherConverter.fromEntityToModel(entity);
     }
 
-    return {
-      id: entity.id,
-      month: entity.month,
-      observations: entity.observations ?? null,
-      year: entity.year,
-      actualBalanceId: entity.actualBalance
-        .map((actualBalance) => actualBalance.id)
-        .orElseGet(() => ""),
-    };
+    throw new InvalidValueError(
+      "Entity is not a derived instance of Calculation"
+    );
   }
 }

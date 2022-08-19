@@ -1,12 +1,12 @@
-import { DecimalType, EntitySchema } from "@mikro-orm/core";
 import { Month } from "@prisma/client";
 import { Decimal } from "decimal.js";
 import Nullable from "entities/null_object/Nullable";
 
-import ActualBalance from "./ActualBalance";
+import ActualBalanceTAS from "./ActualBalanceTAS";
 import Calculation from "./Calculation";
+import type Entity from "./Entity";
 
-type CalculationTASModel = {
+interface CalculationTASModel extends Entity {
   id: string;
   year: number;
   month: Month;
@@ -20,8 +20,8 @@ type CalculationTASModel = {
   nonWorkingNightOvertime: Decimal;
   compensatedNightOvertime: Decimal;
   observations?: string;
-  actualBalance?: ActualBalance;
-};
+  actualBalance?: ActualBalanceTAS;
+}
 
 export default class CalculationTAS extends Calculation implements Nullable {
   private _surplusBusiness: Decimal;
@@ -33,6 +33,7 @@ export default class CalculationTAS extends Calculation implements Nullable {
   private _nonWorkingOvertime: Decimal;
   private _nonWorkingNightOvertime: Decimal;
   private _compensatedNightOvertime: Decimal;
+  private _actualBalance?: ActualBalanceTAS;
 
   public static WORKING_MULTIPLIER = 1.5;
   public static NON_WORKING_MULTIPLIER = 2;
@@ -52,8 +53,10 @@ export default class CalculationTAS extends Calculation implements Nullable {
     workingNightOvertime,
     workingOvertime,
     year,
+    createdAt,
+    updatedAt,
   }: CalculationTASModel) {
-    super({ id, year, month, observations, actualBalance });
+    super({ id, year, month, observations });
     this._surplusBusiness = surplusBusiness;
     this._surplusNonWorking = surplusNonWorking;
     this._surplusSimple = surplusSimple;
@@ -63,6 +66,9 @@ export default class CalculationTAS extends Calculation implements Nullable {
     this._nonWorkingOvertime = nonWorkingOvertime;
     this._nonWorkingNightOvertime = nonWorkingNightOvertime;
     this._compensatedNightOvertime = compensatedNightOvertime;
+    this._actualBalance = actualBalance;
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
   }
 
   public get surplusBusiness(): Decimal {
@@ -137,6 +143,14 @@ export default class CalculationTAS extends Calculation implements Nullable {
     this._compensatedNightOvertime = value;
   }
 
+  public get actualBalance(): ActualBalanceTAS | undefined {
+    return this._actualBalance;
+  }
+
+  public set actualBalance(actualBalance: ActualBalanceTAS | undefined) {
+    this._actualBalance = actualBalance;
+  }
+
   public getTotalHoursPerCalculation(): Decimal {
     return this.surplusBusiness
       .mul(CalculationTAS.WORKING_MULTIPLIER)
@@ -146,10 +160,6 @@ export default class CalculationTAS extends Calculation implements Nullable {
 
   public discountPerCalculation(): Decimal {
     return this.discount;
-  }
-
-  public isDefault(): boolean {
-    return false;
   }
 
   public copy({
@@ -188,47 +198,3 @@ export default class CalculationTAS extends Calculation implements Nullable {
     });
   }
 }
-
-export const schema = new EntitySchema<CalculationTAS, Calculation>({
-  name: "CalculationTAS",
-  tableName: "calculation_tas",
-  extends: "Entity",
-  properties: {
-    surplusBusiness: {
-      type: DecimalType,
-      fieldName: "surplus_business",
-    },
-    surplusNonWorking: {
-      type: DecimalType,
-      fieldName: "surplus_non_working",
-    },
-    surplusSimple: {
-      type: DecimalType,
-      fieldName: "surplus_simple",
-    },
-    discount: {
-      type: DecimalType,
-      fieldName: "discount",
-    },
-    workingOvertime: {
-      type: DecimalType,
-      fieldName: "working_overtime",
-    },
-    workingNightOvertime: {
-      type: DecimalType,
-      fieldName: "working_night_overtime",
-    },
-    nonWorkingOvertime: {
-      type: DecimalType,
-      fieldName: "non_working_overtime",
-    },
-    nonWorkingNightOvertime: {
-      type: DecimalType,
-      fieldName: "non_working_night_overtime",
-    },
-    compensatedNightOvertime: {
-      type: DecimalType,
-      fieldName: "compensated_night_overtime",
-    },
-  },
-});

@@ -1,8 +1,10 @@
 import { Official as OfficialModel } from "@prisma/client";
+import ActualHourlyBalanceBuilder from "creators/actual/ActualHourlyBalanceBuilder";
 import { Decimal } from "decimal.js";
 import ActualBalanceEntity from "entities/ActualBalance";
 import NullOfficial from "entities/null_object/NullOfficial";
 import Official from "entities/Official";
+import UnexpectedValueError from "errors/UnexpectedValueError";
 import {
   ActualBalanceComplete,
   PartialActualBalance,
@@ -20,20 +22,24 @@ export default class ActualBalanceConverter extends AbstractConverter<
   private officialConverter: OfficialConverter;
   private hourlyBalanceConverter: HourlyBalanceConverter;
   private calculationConverter: CalculationConverter;
+  private _actualHourlyBalanceBuilder: ActualHourlyBalanceBuilder;
 
   constructor({
     officialConverter,
     hourlyBalanceConverter,
     calculationConverter,
+    actualHourlyBalanceBuilder,
   }: {
     officialConverter: OfficialConverter;
     hourlyBalanceConverter: HourlyBalanceConverter;
     calculationConverter: CalculationConverter;
+    actualHourlyBalanceBuilder: ActualHourlyBalanceBuilder;
   }) {
     super();
     this.officialConverter = officialConverter;
     this.hourlyBalanceConverter = hourlyBalanceConverter;
     this.calculationConverter = calculationConverter;
+    this._actualHourlyBalanceBuilder = actualHourlyBalanceBuilder;
 
     this.fromEntityToModel = this.fromEntityToModel.bind(this);
   }
@@ -53,22 +59,39 @@ export default class ActualBalanceConverter extends AbstractConverter<
         ? this.calculationConverter.fromModelsToEntities(model.calculations)
         : [];
 
-    return new ActualBalanceEntity({
-      id: model.id,
-      year: model.year,
-      total: new Decimal(model.total.toString()),
-      official: official,
-      hourlyBalances,
-      calculations,
-    });
+    const { type } = official;
+
+    if (type === "TEACHER")
+      return this._actualHourlyBalanceBuilder.create({
+        id: model.id,
+        year: model.year,
+        total: new Decimal(model.total.toString()),
+        official: official,
+        type: "teacher",
+        hourlyBalances,
+        calculations,
+      });
+    else if (type === "NOT_TEACHER") {
+      return this._actualHourlyBalanceBuilder.create({
+        id: model.id,
+        year: model.year,
+        total: new Decimal(model.total.toString()),
+        type: "tas",
+        official: official,
+        hourlyBalances,
+        calculations,
+      });
+    }
+
+    throw new UnexpectedValueError("Type not found");
   }
   fromEntityToModel(entity: ActualBalanceEntity): ActualBalanceComplete {
     const calculations = this.calculationConverter.fromEntitiesToModels(
-      entity.calculations.getItems()
+      entity.getCalculations()
     );
 
     const hourlyBalances = this.hourlyBalanceConverter.fromEntitiesToModels(
-      entity.hourlyBalances.getItems()
+      entity.getHourlyBalances()
     );
     const officialEntity = entity.official ?? NullOfficial.default();
     const official = this.officialConverter.fromEntityToModel(officialEntity);

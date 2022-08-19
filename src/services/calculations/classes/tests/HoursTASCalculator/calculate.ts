@@ -1,6 +1,8 @@
 import Calculations from "collections/Calculations";
+import MikroORMActualBalanceBuilder from "creators/actual/MikroORMActualBalanceBuilder";
 import Decimal from "decimal.js";
 import ActualBalance from "entities/ActualBalance";
+import ActualBalanceTAS from "entities/ActualBalanceTAS";
 import CalculationTAS from "entities/CalculationTAS";
 import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
 import { generateRandomUUIDV4 } from "utils/strings";
@@ -22,49 +24,47 @@ export default function calculation({
       resultSanitized: [],
       balances: [],
       balancesSanitized: [],
-      actualBalance: new ActualBalance(
-        generateRandomUUIDV4(),
-        0,
-        new Decimal(0),
-        undefined,
-        []
-      ),
+      actualBalance: new MikroORMActualBalanceBuilder().create({
+        id: generateRandomUUIDV4(),
+        year: 0,
+        total: new Decimal(0),
+        type: "tas",
+      }),
     };
   }
 
   const calculationsCalculated = calculate(calculations);
 
-  const actualBalanceAux = calculations
-    .getSmallestCalculation()
-    .actualBalance.get();
+  const calculationTAS =
+    calculations.getSmallestCalculation() as CalculationTAS;
+  const actualBalanceAux = calculationTAS.actualBalance;
 
   const year = calculations.getSmallestCalculation().year;
   const balanceId = generateRandomUUIDV4();
 
   const newBalances: HourlyBalanceTAS[] = balances.map((b) => {
     const id = generateRandomUUIDV4();
-    return new HourlyBalanceTAS(
+    return new HourlyBalanceTAS({
       id,
-      b.year,
-      b.working,
-      b.nonWorking,
-      b.simple,
-      generateRandomUUIDV4(),
-      actualBalanceAux
-    );
+      year: b.year,
+      working: b.working,
+      nonWorking: b.nonWorking,
+      simple: b.simple,
+      actualBalance: actualBalanceAux,
+    });
   });
 
   const balancesWithCurrentYear: HourlyBalanceTAS[] = [
     ...newBalances,
-    new HourlyBalanceTAS(
-      balanceId,
+    new HourlyBalanceTAS({
+      id: balanceId,
       year,
-      calculationsCalculated.working,
-      calculationsCalculated.nonWorking,
-      calculationsCalculated.simple,
-      generateRandomUUIDV4(),
-      actualBalanceAux
-    ),
+      working: calculationsCalculated.working,
+      nonWorking: calculationsCalculated.nonWorking,
+      simple: calculationsCalculated.simple,
+
+      actualBalance: actualBalanceAux,
+    }),
   ];
 
   const results = subtractHoursFromBalance(
@@ -72,20 +72,18 @@ export default function calculation({
     calculationsCalculated.discount
   );
 
-  const total = new Decimal(0);
-  results.balances.reduce(
-    (total, { simple, working, nonWorking }) =>
-      total.plus(simple).plus(working).plus(nonWorking),
+  const total = results.balances.reduce(
+    (_total, { simple, working, nonWorking }) =>
+      _total.plus(simple).plus(working).plus(nonWorking),
     new Decimal(0)
   );
 
-  const actualBalance: ActualBalance = new ActualBalance(
-    actualBalanceAux.id,
+  const actualBalance: ActualBalance = new ActualBalanceTAS({
+    id: actualBalanceAux ? actualBalanceAux.id : generateRandomUUIDV4(),
     year,
     total,
-    actualBalanceAux.official.orUndefined(),
-    results.balances
-  );
+    hourlyBalances: results.balances,
+  });
 
   return {
     actualBalance,

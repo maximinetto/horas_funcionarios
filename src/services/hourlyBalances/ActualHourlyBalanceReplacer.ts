@@ -2,6 +2,7 @@ import BalanceConverter from "converters/models_to_entities/BalanceConverter";
 import { convertTypesOfYearsToActualBalance } from "converters/models_to_entities/TypeOfYearToBalanceConverter";
 import type Decimal from "decimal.js";
 import ActualBalance from "entities/ActualBalance";
+import { TypeOfOfficial } from "entities/Official";
 import { TypeOfHoursByYear, TypeOfHoursByYearDecimal } from "types/typeOfHours";
 
 import ActualHourlyBalanceCreator from "./ActualHourlyBalanceCreator";
@@ -31,23 +32,23 @@ export default class ActualHourlyBalanceReplacer {
     actualBalance: ActualBalance;
   }) {
     const enrichBalances = this.balanceConverter.fromBigIntToDecimal(balances);
-    const currentActualBalance = convertTypesOfYearsToActualBalance(
+    return convertTypesOfYearsToActualBalance(
       actualBalance,
       enrichBalances,
       totalBalance
     );
-
-    return currentActualBalance;
   }
 
   create({
     totalBalance,
     officialId,
     balances,
+    type,
   }: {
     balances: (TypeOfHoursByYearDecimal | TypeOfHoursByYear)[];
     officialId: number;
     totalBalance: Decimal;
+    type: TypeOfOfficial;
   }) {
     const balancesSortedByYear = this.balancesSortedByYear(balances);
     const balanceNewer = this.getBalanceNewer(balancesSortedByYear);
@@ -59,6 +60,7 @@ export default class ActualHourlyBalanceReplacer {
       total: totalBalance,
       officialId,
       calculations: [],
+      type,
     });
   }
 

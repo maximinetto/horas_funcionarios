@@ -1,8 +1,12 @@
 import { faker } from "@faker-js/faker";
 import { Contract, TypeOfOfficials } from "@prisma/client";
 import OfficialConverter from "converters/models_to_entities/OfficialConverter";
-import Official from "entities/Official";
+import MikroORMActualBalanceBuilder from "creators/actual/MikroORMActualBalanceBuilder";
+import MikroORMOfficialBuilder from "creators/official/MikroORMOfficialBuilder";
+import OfficialBuilder from "creators/official/OfficialBuilder";
+import { DateTime } from "luxon";
 import OfficialRepository from "persistence/Official/OfficialRepository";
+import { Optional } from "typescript-optional";
 
 import OfficialService from "..";
 
@@ -10,9 +14,13 @@ describe("Officials controller tests", () => {
   let officialService: OfficialService;
   let officialRepository: jest.Mocked<OfficialRepository>;
   let officialConverter: OfficialConverter;
+  let officialBuilder: OfficialBuilder;
 
   beforeAll(() => {
     officialConverter = new OfficialConverter();
+    officialBuilder = new MikroORMOfficialBuilder({
+      actualHourlyBalanceBuilder: new MikroORMActualBalanceBuilder(),
+    });
     officialRepository = {
       add: jest.fn(),
       set: jest.fn(),
@@ -23,6 +31,7 @@ describe("Officials controller tests", () => {
       removeRange: jest.fn(),
       get: jest.fn(),
       getAll: jest.fn(),
+      clear: jest.fn(),
     };
 
     officialService = new OfficialService({
@@ -72,8 +81,6 @@ describe("Officials controller tests", () => {
     officialRepository.filter.mockResolvedValue(
       officialConverter.fromModelsToEntities(officials)
     );
-
-    // prismaMock.official.findMany.mockResolvedValue(officials);
 
     const result = await officialService.get();
     expect(result).toEqual(officials);
@@ -221,13 +228,17 @@ describe("Officials controller tests", () => {
       chargeNumber: 333333,
       type: TypeOfOfficials.TEACHER,
       contract: Contract.PERMANENT,
+      createdAt: undefined,
+      updatedAt: undefined,
     };
 
-    const officialEntity = officialConverter.fromModelToEntity(official);
+    const officialEntity = officialBuilder.create({
+      ...official,
+      dateOfEntry: DateTime.fromJSDate(official.dateOfEntry),
+    });
 
+    officialRepository.get.mockResolvedValue(Optional.of(officialEntity));
     officialRepository.remove.mockResolvedValue(officialEntity);
-
-    // prismaMock.official.delete.mockResolvedValue(official);
 
     await expect(officialService.delete(official.id)).resolves.toEqual({
       id: 1,
@@ -241,9 +252,7 @@ describe("Officials controller tests", () => {
       contract: Contract.PERMANENT,
     });
 
-    expect(officialRepository.remove).toHaveBeenCalledWith(
-      Official.default(official.id)
-    );
+    expect(officialRepository.remove).toHaveBeenCalledWith(officialEntity);
 
     expect(officialRepository.remove).toHaveBeenCalledTimes(1);
   });

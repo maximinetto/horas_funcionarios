@@ -1,7 +1,7 @@
 import { Decimal } from "decimal.js";
 import HourlyBalanceEntity from "entities/HourlyBalanceTeacher";
-import NullActualBalance from "entities/null_object/NullActualBalance";
 import { HourlyBalanceTeacher as HourlyBalanceTeacherModel } from "types/hourlyBalance";
+import { generateRandomUUIDV4 } from "utils/strings";
 
 import { AbstractConverter } from "./AbstractConverter";
 
@@ -10,30 +10,31 @@ export default class HourlyBalanceTeacherConverter extends AbstractConverter<
   HourlyBalanceEntity
 > {
   fromModelToEntity(model: HourlyBalanceTeacherModel): HourlyBalanceEntity {
-    return new HourlyBalanceEntity(
-      model.hourlyBalanceTeacher ? model.hourlyBalanceTeacher.id : "",
-      model.year,
-      new Decimal(
+    return new HourlyBalanceEntity({
+      id: model.id,
+      year: model.year,
+      balance: new Decimal(
         model.hourlyBalanceTeacher
           ? model.hourlyBalanceTeacher.balance.toString()
           : "0"
       ),
-      model.id
-    );
+    });
   }
   fromEntityToModel(entity: HourlyBalanceEntity): HourlyBalanceTeacherModel {
-    const actualBalanceId = entity.actualBalance.orElse(
-      new NullActualBalance()
-    ).id;
+    const actualBalanceId = entity.actualBalance
+      ? entity.actualBalance.id
+      : generateRandomUUIDV4();
+
+    const hourlyBalanceId = generateRandomUUIDV4();
 
     return {
       year: entity.year,
       hourlyBalanceTeacher: {
-        hourlyBalanceId: entity.getHourlyBalanceId(),
+        hourlyBalanceId,
         id: entity.id,
-        balance: BigInt(entity.getBalance().toString()),
+        balance: BigInt(entity.balance.toString()),
       },
-      id: entity.getHourlyBalanceId(),
+      id: hourlyBalanceId,
       actualBalanceId,
     };
   }

@@ -3,7 +3,6 @@ import { Decimal } from "decimal.js";
 import CalculationTAS from "entities/CalculationTAS";
 import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
 import CalculationRepository from "persistence/Calculation/CalculationRepository";
-import { includeCalculationsTAS } from "persistence/Calculation/PrismaCalculationRepository";
 import HoursCalculator from "services/calculations/classes/HoursCalculator";
 import BalancesPerYearCalculator from "services/calculations/classes/TAS/YearsCalculator";
 import HoursClass from "services/calculations/classes/typeOfHours";
@@ -36,7 +35,6 @@ export default class HoursTASCalculator extends HoursCalculator {
       calculationValidator,
       calculationSorter,
       calculationCreator: new CalculationTASCreator(),
-      selectOptions: includeCalculationsTAS(),
     });
 
     this.balancesPerYearCalculator = balancesPerYearCalculator;

@@ -1,12 +1,13 @@
-import { Collection, EntitySchema } from "@mikro-orm/core";
+import { Collection } from "@mikro-orm/core";
 import { Contract, TypeOfOfficials } from "@prisma/client";
 import Nullable from "entities/null_object/Nullable";
 import { DateTime } from "luxon";
-import LuxonDateTimeType from "persistence/types/LuxonDateTimeType";
 import Comparable from "utils/Comparator";
 
 import ActualBalance from "./ActualBalance";
 import Entity from "./Entity";
+
+export type TypeOfOfficial = "tas" | "teacher";
 
 export default class Official
   extends Entity
@@ -36,6 +37,8 @@ export default class Official
     dateOfEntry,
     recordNumber,
     actualBalances,
+    createdAt,
+    updatedAt,
   }: {
     id: number;
     recordNumber: number;
@@ -47,6 +50,8 @@ export default class Official
     dateOfEntry: DateTime;
     chargeNumber: number;
     actualBalances?: ActualBalance[];
+    createdAt?: Date;
+    updatedAt?: Date;
   }) {
     super();
     this._id = id;
@@ -58,10 +63,10 @@ export default class Official
     this._type = type;
     this._dateOfEntry = dateOfEntry;
     this._chargeNumber = chargeNumber;
-    this._actualBalances = new Collection<ActualBalance>(
-      this,
-      actualBalances ?? []
-    );
+    this._actualBalances = new Collection<ActualBalance>(this, actualBalances);
+
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
   }
   entityName(): string {
     throw new Error("Method not implemented.");
@@ -162,7 +167,6 @@ export default class Official
       type: TypeOfOfficials.NOT_TEACHER,
       dateOfEntry: DateTime.fromMillis(0),
       chargeNumber: 0,
-      actualBalances: [],
     });
   }
   compareTo(other: Official): number {
@@ -177,49 +181,3 @@ export default class Official
     return this.id - other.id;
   }
 }
-
-export const schema = new EntitySchema<Official, Entity>({
-  name: "Official",
-  tableName: "officials",
-  extends: "Entity",
-  properties: {
-    id: {
-      type: "number",
-      primary: true,
-      autoincrement: true,
-    },
-    recordNumber: {
-      type: "number",
-      fieldName: "record_number",
-    },
-    firstName: {
-      type: "string",
-      fieldName: "first_name",
-    },
-    lastName: {
-      type: "string",
-      fieldName: "last_name",
-    },
-    position: {
-      type: "string",
-    },
-    contract: {
-      type: "string",
-    },
-    type: {
-      type: "string",
-    },
-    dateOfEntry: {
-      type: LuxonDateTimeType,
-    },
-    chargeNumber: {
-      type: "number",
-      fieldName: "charge_number",
-    },
-    actualBalances: {
-      reference: "1:m",
-      entity: () => ActualBalance,
-      mappedBy: (actualBalance) => actualBalance.official,
-    },
-  },
-});

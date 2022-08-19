@@ -1,4 +1,3 @@
-import { logger } from "config";
 import { Decimal } from "decimal.js";
 import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
 import { TYPES_OF_HOURS } from "enums/typeOfHours";
@@ -167,11 +166,6 @@ export default class BalancesPerYearCalculator {
       ({ year }) => year === yearToSearch
     );
     if (!yearSearched) {
-      logger.info("year not found");
-      logger.info("currentYear: ", { currentYear });
-      logger.info("calculatedHours:", {
-        calculatedHours: this.calculatedHours,
-      });
       throw new Error("You must have a valid year");
     }
 

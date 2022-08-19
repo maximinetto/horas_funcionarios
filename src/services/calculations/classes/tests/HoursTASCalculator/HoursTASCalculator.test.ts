@@ -32,7 +32,7 @@ export interface CalculationDataTAS extends CalculationData {
 describe("Test calculations", () => {
   test("Should calculate right the passed values", async () => {
     const calculationRepository: jest.Mocked<CalculationRepository> = {
-      filter: jest.fn().mockResolvedValue([]),
+      filter: jest.fn(),
       add: jest.fn(),
       addRange: jest.fn(),
       get: jest.fn(),
@@ -41,6 +41,9 @@ describe("Test calculations", () => {
       removeRange: jest.fn(),
       set: jest.fn(),
       setRange: jest.fn(),
+      clear: jest.fn(),
+      getCalculationWithYearGreaterThanActual: jest.fn().mockResolvedValue([]),
+      getCalculationsWithActualYear: jest.fn().mockResolvedValue([]),
     };
 
     const firstData = new Calculations(...calculationsFirstTest);
@@ -49,9 +52,7 @@ describe("Test calculations", () => {
 
     const actualHourlyBalanceRepository: jest.Mocked<ActualHourlyBalanceRepository> =
       {
-        filter: jest
-          .fn()
-          .mockResolvedValue([convert(data.lastBalances, data.data.official)]),
+        filter: jest.fn(),
         add: jest.fn(),
         addRange: jest.fn(),
         get: jest.fn(),
@@ -60,6 +61,10 @@ describe("Test calculations", () => {
         removeRange: jest.fn(),
         set: jest.fn(),
         setRange: jest.fn(),
+        clear: jest.fn(),
+        getTASWithYearGreaterThanActual: jest
+          .fn()
+          .mockResolvedValue([convert(data.lastBalances, data.data.official)]),
       };
 
     await expectCalculationEquals(
@@ -73,7 +78,7 @@ describe("Test calculations", () => {
   });
   test("Should calculate right the passed values too", async () => {
     const calculationRepository: jest.Mocked<CalculationRepository> = {
-      filter: jest.fn().mockResolvedValue(calculationsFirstTest),
+      filter: jest.fn(),
       add: jest.fn(),
       addRange: jest.fn(),
       get: jest.fn(),
@@ -82,6 +87,11 @@ describe("Test calculations", () => {
       removeRange: jest.fn(),
       set: jest.fn(),
       setRange: jest.fn(),
+      clear: jest.fn(),
+      getCalculationWithYearGreaterThanActual: jest.fn().mockResolvedValue([]),
+      getCalculationsWithActualYear: jest
+        .fn()
+        .mockResolvedValue(calculationsFirstTest),
     };
 
     const otherData = new Calculations(...otherCalculations);
@@ -90,7 +100,7 @@ describe("Test calculations", () => {
 
     const actualHourlyBalanceRepository: jest.Mocked<ActualHourlyBalanceRepository> =
       {
-        filter: jest.fn().mockResolvedValue([actual]),
+        filter: jest.fn(),
         add: jest.fn(),
         addRange: jest.fn(),
         get: jest.fn(),
@@ -99,6 +109,8 @@ describe("Test calculations", () => {
         removeRange: jest.fn(),
         set: jest.fn(),
         setRange: jest.fn(),
+        clear: jest.fn(),
+        getTASWithYearGreaterThanActual: jest.fn().mockResolvedValue([actual]),
       };
 
     const allCalculations = [...calculationsFirstTest, ...otherCalculations];

@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, TypeOfOfficials } from "@prisma/client";
 import CalculationConverter from "converters/models_to_entities/CalculationConverter";
 import Calculation from "entities/Calculation";
 import CalculationTAS from "entities/CalculationTAS";
@@ -29,6 +29,28 @@ export default class PrismaCalculationRepository
   }) {
     super({ prisma, modelName: "calculation" });
     this.calculationConverter = calculationConverter;
+  }
+  getCalculationsWithActualYear({
+    officialId,
+    year,
+    type,
+  }: {
+    officialId: number;
+    year: number;
+    type: TypeOfOfficials;
+  }): Promise<Calculation[]> {
+    throw new Error("Method not implemented.");
+  }
+  getCalculationWithYearGreaterThanActual({
+    officialId,
+    year,
+    type,
+  }: {
+    officialId: number;
+    year: number;
+    type: TypeOfOfficials;
+  }): Promise<Calculation[]> {
+    throw new Error("Method not implemented.");
   }
 
   toEntity(value: any): Calculation {

@@ -2,7 +2,7 @@ import faker from "@faker-js/faker";
 import { Contract, TypeOfOfficials } from "@prisma/client";
 import OfficialConverter from "converters/models_to_entities/OfficialConverter";
 import _omit from "lodash/omit";
-import prisma from "persistence/context/persistence.config";
+import prisma from "persistence/context/prisma.config";
 import PrismaOfficialRepository from "persistence/Official/PrismaOfficialRepository";
 import OfficialService from "services/officials";
 import { OfficialWithOptionalId } from "types/officials";
@@ -24,7 +24,7 @@ beforeEach(async () => {
   officials = await createFakeOfficials();
   officialService = new OfficialService({
     officialRepository: new PrismaOfficialRepository({
-      database: prisma,
+      prisma,
       officialConverter,
     }),
     officialConverter,

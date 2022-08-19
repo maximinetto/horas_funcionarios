@@ -1,6 +1,7 @@
+import ActualHourlyBalanceBuilder from "creators/actual/ActualHourlyBalanceBuilder";
 import { Decimal } from "decimal.js";
 import CalculationTASDTO from "dto/create/calculationTASDTO";
-import ActualBalance from "entities/ActualBalance";
+import ActualBalanceTAS from "entities/ActualBalanceTAS";
 import CalculationTASEntity from "entities/CalculationTAS";
 
 import { AbstractConverter } from "./AbstractConverter";
@@ -9,6 +10,17 @@ export default class CalculationTASConverter extends AbstractConverter<
   CalculationTASEntity,
   CalculationTASDTO
 > {
+  private _actualHourlyBalanceBuilder: ActualHourlyBalanceBuilder;
+
+  constructor({
+    actualHourlyBalanceBuilder,
+  }: {
+    actualHourlyBalanceBuilder: ActualHourlyBalanceBuilder;
+  }) {
+    super();
+    this._actualHourlyBalanceBuilder = actualHourlyBalanceBuilder;
+  }
+
   fromDTOToEntity(dto: CalculationTASDTO): CalculationTASEntity {
     return new CalculationTASEntity({
       id: dto.id,
@@ -29,8 +41,8 @@ export default class CalculationTASConverter extends AbstractConverter<
       ),
       observations: dto.observations ?? undefined,
       actualBalance: dto.actualBalanceId
-        ? new ActualBalance({
-            id: dto.actualBalanceId,
+        ? this.actualBalance({
+            actualBalanceId: dto.actualBalanceId,
             year: dto.year,
           })
         : undefined,
@@ -58,5 +70,20 @@ export default class CalculationTASConverter extends AbstractConverter<
       observations: entity.observations ?? null,
       actualBalanceId: entity.actualBalance?.id,
     });
+  }
+
+  private actualBalance({
+    actualBalanceId,
+    year,
+  }: {
+    actualBalanceId: string;
+    year: number;
+  }): ActualBalanceTAS {
+    return this._actualHourlyBalanceBuilder.create({
+      id: actualBalanceId,
+      year: year,
+      total: new Decimal(0),
+      type: "tas",
+    }) as ActualBalanceTAS;
   }
 }
