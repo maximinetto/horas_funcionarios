@@ -1,12 +1,13 @@
-import { Contract, TypeOfOfficials } from "@prisma/client";
+import { FilterQuery } from "@mikro-orm/core";
 import OfficialConverter from "converters/models_to_entities/OfficialConverter";
-import Official from "entities/Official";
+import Official, { Contract, TypeOfOfficial } from "entities/Official";
 import NotExistsError from "errors/NotExistsError";
+import { DateTime } from "luxon";
 import OfficialRepository from "persistence/Official/OfficialRepository";
 import { lastDateOfTheYear } from "utils/date";
 
 type Get = {
-  type?: TypeOfOfficials;
+  type?: TypeOfOfficial;
   contract?: Contract;
   year?: number;
 };
@@ -35,31 +36,34 @@ export default class OfficialService {
       contract: contract,
       dateOfEntry: date
         ? {
-            gte: new Date(`${year}-01-01`),
-            lte: date,
+            $gte: DateTime.fromObject({
+              day: 1,
+              month: 1,
+              year,
+            }),
+            $lte: DateTime.fromJSDate(date),
           }
         : undefined,
-    };
+    } as FilterQuery<Official>;
 
-    return this.officialRepository
-      .filter({ where: { ...where } })
-      .then(this.toModels);
+    return this.officialRepository.filter(where).then(this.toModels);
   }
 
   async create(official: Official) {
-    return this.officialRepository.add(official).then(this.toModel);
+    const officialSaved = await this.officialRepository.add(official);
+    return this.toModel(officialSaved);
   }
 
-  update(official: Official) {
-    return this.officialRepository.set(official).then(this.toModel);
+  async update(official: Official) {
+    const officialSaved = await this.officialRepository.set(official);
+    return this.toModel(officialSaved);
   }
 
   async delete(id: number) {
     const official = await this.officialRepository.get(id);
     return official
       .map((value) => {
-        return this.officialRepository.remove(value).then((_value) => {
-          console.log("antes");
+        return this.officialRepository.remove(value).then(async (_value) => {
           return this.toModel(_value);
         });
       })

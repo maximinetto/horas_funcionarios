@@ -4,6 +4,7 @@ import OfficialEntity from "entities/Official";
 import OfficialRepository from "persistence/Official/OfficialRepository";
 import PrismaRepository from "persistence/PrismaRepository";
 import { OfficialWithOptionalId } from "types/officials";
+import { Optional } from "typescript-optional";
 
 export default class PrismaOfficialRepository
   extends PrismaRepository<number, OfficialEntity>
@@ -21,6 +22,14 @@ export default class PrismaOfficialRepository
     super({ prisma, modelName: "official" });
     this.officialConverter = officialConverter;
     this.toEntity = this.toEntity.bind(this);
+  }
+
+  getLast(): Promise<Optional<OfficialEntity>> {
+    throw new Error("Method not implemented.");
+  }
+
+  count(): Promise<number> {
+    return this._prisma.official.count();
   }
 
   toEntity(official: OfficialWithOptionalId) {

@@ -2,7 +2,7 @@ import Calculations from "collections/Calculations";
 import Decimal from "decimal.js";
 import Calculation from "entities/Calculation";
 import HourlyBalance from "entities/HourlyBalance";
-import ICalculation from "entities/ICalculation";
+import ICalculation from "entities/interfaces/ICalculation";
 import Official from "entities/Official";
 import type CalculationRepository from "persistence/Calculation/CalculationRepository";
 import CalculatePerMonth, {

@@ -8,29 +8,13 @@ export default abstract class HourlyBalance
   extends Entity
   implements Nullable, Comparable<HourlyBalance>
 {
-  private _id: string;
-  private _year: number;
+  id: string;
+  year: number;
 
   public constructor({ id, year }: { id: string; year: number }) {
     super();
-    this._id = id;
-    this._year = year;
-  }
-
-  public get id(): string {
-    return this._id;
-  }
-
-  public set id(value: string) {
-    this._id = value;
-  }
-
-  public get year(): number {
-    return this._year;
-  }
-
-  public set year(value: number) {
-    this._year = value;
+    this.id = id;
+    this.year = year;
   }
 
   public isDefault(): boolean {

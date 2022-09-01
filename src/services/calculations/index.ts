@@ -1,4 +1,3 @@
-import { TypeOfOfficials } from "@prisma/client";
 import Calculations from "collections/Calculations";
 import { logger } from "config";
 import CalculationTASConverter from "converters/dtos_to_entities/CalculationTASConverter";
@@ -6,6 +5,7 @@ import ActualBalanceConverter from "converters/models_to_entities/ActualBalanceC
 import CalculationConverter from "converters/models_to_entities/CalculationConverter";
 import CalculationTASDTOWithTimeFieldsInString from "dto/create/calculationTASDTOWithTimeFieldsInString";
 import ActualBalance from "entities/ActualBalance";
+import { TypeOfOfficial } from "entities/Official";
 import NotExistsError from "errors/NotExistsError";
 import OfficialRepository from "persistence/Official/OfficialRepository";
 import { sanitizeCalculationFields } from "sanitizers/calculations";
@@ -58,7 +58,7 @@ export default class Calculator {
     const official = officialInstance.get();
     const calculationsSanitazed = sanitizeCalculationFields(calculations);
 
-    if (official.type === TypeOfOfficials.TEACHER) {
+    if (official.type === TypeOfOfficial.TEACHER) {
       this.calculateForTeacher({
         officialId,
         year,

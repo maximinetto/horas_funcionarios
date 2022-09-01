@@ -3,7 +3,7 @@ import { Decimal } from "decimal.js";
 import ActualBalance from "entities/ActualBalance";
 
 import { HourlyBalanceSimple, HourlyBalanceTASNonNull } from "./hourlyBalance";
-import { OfficialSimple } from "./officials";
+import { Official, OfficialSimple } from "./officials";
 
 export type ActualBalanceDTO = Prisma.ActualBalanceGetPayload<{
   include: { hourlyBalances: true };
@@ -13,9 +13,8 @@ export type ActualBalanceComplete = Prisma.ActualBalanceGetPayload<{
   include: {
     calculations: true;
     hourlyBalances: true;
-    official: true;
   };
-}>;
+}> & { official: Official };
 
 export interface PartialActualBalance extends ActualBalanceComplete {
   calculations?;

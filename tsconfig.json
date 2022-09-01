@@ -6,6 +6,9 @@
     "moduleResolution": "node",
     "types": ["node", "jest"],
     "baseUrl": "./src",
+    "paths": {
+      "@/*": ["src/*"]
+    },
     "isolatedModules": true,
     "resolveJsonModule": true,
     "allowJs": true,

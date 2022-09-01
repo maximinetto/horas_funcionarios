@@ -1,36 +1,37 @@
-import { Contract, Month, TypeOfOfficials } from "@prisma/client";
+import { Month } from "@prisma/client";
 import buildApp from "buildApp";
-import { officialService } from "dependencies/container";
-import Official from "entities/Official";
+import OfficialConverter from "converters/models_to_entities/OfficialConverter";
+import MikroORMActualBalanceBuilder from "creators/actual/MikroORMActualBalanceBuilder";
+import MikroORMOfficialBuilder from "creators/official/MikroORMOfficialBuilder";
+import Official, { Contract, TypeOfOfficial } from "entities/Official";
+import { FastifyInstance } from "fastify";
 import _omit from "lodash/omit";
 import { DateTime } from "luxon";
-import Database from "persistence/context/Database";
-import DatabaseFactory from "persistence/context/index.config";
+import OfficialService from "services/officials";
+import { unitOfWork } from "setupIntegrationTestEnvironment";
 import { secondsToTime } from "utils/time";
 
-const fastify = buildApp({
-  logger: {
-    level: process.env.LOG_LEVEL || "silent",
-  },
-  pluginTimeout: 2 * 60 * 1000,
+let fastify: FastifyInstance;
+let officialService;
+
+beforeAll(async () => {
+  fastify = buildApp({
+    logger: {
+      level: process.env.LOG_LEVEL || "silent",
+    },
+    pluginTimeout: 2 * 60 * 1000,
+  });
+  officialService = new OfficialService({
+    officialConverter: new OfficialConverter({
+      officialBuilder: new MikroORMOfficialBuilder({
+        actualHourlyBalanceBuilder: new MikroORMActualBalanceBuilder(),
+      }),
+    }),
+    officialRepository: unitOfWork.official,
+  });
 });
 
 describe("Calculations", () => {
-  let unitOfWork: Database;
-
-  afterEach(async () => {
-    unitOfWork = DatabaseFactory.createDatabase("mikroorm");
-    await unitOfWork.calculation.clear();
-    await unitOfWork.official.clear();
-    await unitOfWork.hourlyBalance.clear();
-    await unitOfWork.actualBalance.clear();
-    await unitOfWork.commit();
-  });
-
-  afterAll(() => {
-    unitOfWork.close();
-  });
-
   test("should be create a list of hours", async () => {
     await officialService.create(
       new Official({
@@ -40,7 +41,7 @@ describe("Calculations", () => {
         lastName: "Minetto",
         position: "Informática",
         contract: Contract.PERMANENT,
-        type: TypeOfOfficials.NOT_TEACHER,
+        type: TypeOfOfficial.TAS,
         dateOfEntry: DateTime.fromObject({
           year: 2018,
           month: 6,
@@ -128,7 +129,7 @@ describe("Calculations", () => {
 
     const actualCalculations = calculationsResponse.map((c) => {
       const ct = convert(c.calculationTAS);
-      const others = _omit(c, "actualBalanceId");
+      const others = _omit(c, ["actualBalanceId", "id"]);
       return {
         ...others,
         calculationTAS: ct,
@@ -159,7 +160,7 @@ describe("Calculations", () => {
     expect(totalNonWorkingHoursInTime).toEqual("00:00");
   });
 
-  test("should be throw a error because there are not offcials", async () => {
+  test("should be throw a error because there are not officials", async () => {
     const data = {
       calculations: [
         {

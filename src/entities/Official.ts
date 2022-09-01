@@ -1,5 +1,4 @@
 import { Collection } from "@mikro-orm/core";
-import { Contract, TypeOfOfficials } from "@prisma/client";
 import Nullable from "entities/null_object/Nullable";
 import { DateTime } from "luxon";
 import Comparable from "utils/Comparator";
@@ -7,26 +6,34 @@ import Comparable from "utils/Comparator";
 import ActualBalance from "./ActualBalance";
 import Entity from "./Entity";
 
-export type TypeOfOfficial = "tas" | "teacher";
+export enum TypeOfOfficial {
+  TAS = "tas",
+  TEACHER = "teacher",
+}
+
+export enum Contract {
+  PERMANENT = "PERMANENT",
+  TEMPORARY = "TEMPORARY",
+}
 
 export default class Official
   extends Entity
   implements Nullable, Comparable<Official>
 {
-  private _id: number;
-  private _recordNumber: number;
-  private _firstName: string;
-  private _lastName: string;
-  private _position: string;
-  private _contract: Contract;
-  private _type: TypeOfOfficials;
-  private _dateOfEntry: DateTime;
-  private _chargeNumber: number;
-  private _actualBalances: Collection<ActualBalance>;
+  id!: number;
+  recordNumber!: number;
+  firstName!: string;
+  lastName!: string;
+  position!: string;
+  contract!: Contract;
+  type!: TypeOfOfficial;
+  dateOfEntry!: DateTime;
+  chargeNumber!: number;
+  actualBalances!: Collection<ActualBalance>;
 
   public static DEFAULTNUMBERID = 0;
 
-  public constructor({
+  constructor({
     chargeNumber,
     id,
     firstName,
@@ -46,7 +53,7 @@ export default class Official
     lastName: string;
     position: string;
     contract: Contract;
-    type: TypeOfOfficials;
+    type: TypeOfOfficial;
     dateOfEntry: DateTime;
     chargeNumber: number;
     actualBalances?: ActualBalance[];
@@ -54,102 +61,22 @@ export default class Official
     updatedAt?: Date;
   }) {
     super();
-    this._id = id;
-    this._recordNumber = recordNumber;
-    this._firstName = firstName;
-    this._lastName = lastName;
-    this._position = position;
-    this._contract = contract;
-    this._type = type;
-    this._dateOfEntry = dateOfEntry;
-    this._chargeNumber = chargeNumber;
-    this._actualBalances = new Collection<ActualBalance>(this, actualBalances);
+    this.id = id;
+    this.recordNumber = recordNumber;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.position = position;
+    this.contract = contract;
+    this.type = type;
+    this.dateOfEntry = dateOfEntry;
+    this.chargeNumber = chargeNumber;
+    this.actualBalances = new Collection<ActualBalance>(this, actualBalances);
 
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
   }
   entityName(): string {
     throw new Error("Method not implemented.");
-  }
-
-  public get id(): number {
-    return this._id;
-  }
-
-  public set id(value: number) {
-    this._id = value;
-  }
-
-  public get recordNumber(): number {
-    return this._recordNumber;
-  }
-
-  public set recordNumber(value: number) {
-    this._recordNumber = value;
-  }
-
-  public get firstName(): string {
-    return this._firstName;
-  }
-
-  public set firstName(value: string) {
-    this._firstName = value;
-  }
-
-  public get lastName(): string {
-    return this._lastName;
-  }
-
-  public set lastName(value: string) {
-    this._lastName = value;
-  }
-
-  public get position(): string {
-    return this._position;
-  }
-
-  public set position(value: string) {
-    this._position = value;
-  }
-
-  public get contract(): Contract {
-    return this._contract;
-  }
-
-  public set contract(value: Contract) {
-    this._contract = value;
-  }
-
-  public get type(): TypeOfOfficials {
-    return this._type;
-  }
-
-  public set type(value: TypeOfOfficials) {
-    this._type = value;
-  }
-
-  public get dateOfEntry(): DateTime {
-    return this._dateOfEntry;
-  }
-
-  public set dateOfEntry(value: DateTime) {
-    this._dateOfEntry = value;
-  }
-
-  public get chargeNumber(): number {
-    return this._chargeNumber;
-  }
-
-  public set chargeNumber(value: number) {
-    this._chargeNumber = value;
-  }
-
-  public get actualBalances(): Collection<ActualBalance, unknown> {
-    return this._actualBalances;
-  }
-
-  public set actualBalances(value: Collection<ActualBalance, unknown>) {
-    this._actualBalances = value;
   }
 
   public isDefault(): boolean {
@@ -164,7 +91,7 @@ export default class Official
       lastName: "",
       position: "",
       contract: Contract.PERMANENT,
-      type: TypeOfOfficials.NOT_TEACHER,
+      type: TypeOfOfficial.TAS,
       dateOfEntry: DateTime.fromMillis(0),
       chargeNumber: 0,
     });

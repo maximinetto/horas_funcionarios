@@ -7,25 +7,19 @@ export default new EntitySchema<CalculationTeacher, Calculation>({
   name: "CalculationTeacher",
   tableName: "calculation_teachers",
   extends: "Calculation",
+  class: CalculationTeacher,
   properties: {
     surplus: {
       type: DecimalType,
-      getter: true,
-      setter: true,
     },
     discount: {
       type: DecimalType,
       fieldName: "discount",
-      getter: true,
-      setter: true,
     },
     actualBalance: {
       reference: "m:1",
       entity: () => ActualBalanceTeacher,
       inversedBy: "calculations",
-      getter: true,
-      setter: true,
     },
   },
-  discriminatorValue: "teacher",
 });

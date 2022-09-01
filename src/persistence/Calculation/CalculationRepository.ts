@@ -1,5 +1,6 @@
-import { Prisma, TypeOfOfficials } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import Calculation from "entities/Calculation";
+import { TypeOfOfficial } from "entities/Official";
 import Repository from "persistence/Repository";
 
 export default interface CalculationRepository
@@ -12,7 +13,7 @@ export default interface CalculationRepository
   }: {
     officialId: number;
     year: number;
-    type: TypeOfOfficials;
+    type: TypeOfOfficial;
   }): Promise<Calculation[]>;
 
   getCalculationsWithActualYear({
@@ -22,6 +23,6 @@ export default interface CalculationRepository
   }: {
     officialId: number;
     year: number;
-    type: TypeOfOfficials;
+    type: TypeOfOfficial;
   }): Promise<Calculation[]>;
 }

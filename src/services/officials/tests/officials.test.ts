@@ -1,9 +1,9 @@
 import { faker } from "@faker-js/faker";
-import { Contract, TypeOfOfficials } from "@prisma/client";
 import OfficialConverter from "converters/models_to_entities/OfficialConverter";
 import MikroORMActualBalanceBuilder from "creators/actual/MikroORMActualBalanceBuilder";
 import MikroORMOfficialBuilder from "creators/official/MikroORMOfficialBuilder";
 import OfficialBuilder from "creators/official/OfficialBuilder";
+import { Contract, TypeOfOfficial } from "entities/Official";
 import { DateTime } from "luxon";
 import OfficialRepository from "persistence/Official/OfficialRepository";
 import { Optional } from "typescript-optional";
@@ -17,7 +17,11 @@ describe("Officials controller tests", () => {
   let officialBuilder: OfficialBuilder;
 
   beforeAll(() => {
-    officialConverter = new OfficialConverter();
+    officialConverter = new OfficialConverter({
+      officialBuilder: new MikroORMOfficialBuilder({
+        actualHourlyBalanceBuilder: new MikroORMActualBalanceBuilder(),
+      }),
+    });
     officialBuilder = new MikroORMOfficialBuilder({
       actualHourlyBalanceBuilder: new MikroORMActualBalanceBuilder(),
     });
@@ -32,6 +36,8 @@ describe("Officials controller tests", () => {
       get: jest.fn(),
       getAll: jest.fn(),
       clear: jest.fn(),
+      getLast: jest.fn(),
+      count: jest.fn(),
     };
 
     officialService = new OfficialService({
@@ -51,8 +57,8 @@ describe("Officials controller tests", () => {
         dateOfEntry: faker.date.past(),
         chargeNumber: faker.datatype.number(),
         type: faker.random.arrayElement([
-          TypeOfOfficials.TEACHER,
-          TypeOfOfficials.NOT_TEACHER,
+          TypeOfOfficial.TEACHER,
+          TypeOfOfficial.TAS,
         ]),
         contract: faker.random.arrayElement([
           Contract.PERMANENT,
@@ -68,8 +74,8 @@ describe("Officials controller tests", () => {
         dateOfEntry: faker.date.past(),
         chargeNumber: faker.datatype.number(),
         type: faker.random.arrayElement([
-          TypeOfOfficials.TEACHER,
-          TypeOfOfficials.NOT_TEACHER,
+          TypeOfOfficial.TEACHER,
+          TypeOfOfficial.TAS,
         ]),
         contract: faker.random.arrayElement([
           Contract.PERMANENT,
@@ -99,8 +105,8 @@ describe("Officials controller tests", () => {
         dateOfEntry: faker.date.past(),
         chargeNumber: faker.datatype.number(),
         type: faker.random.arrayElement([
-          TypeOfOfficials.TEACHER,
-          TypeOfOfficials.NOT_TEACHER,
+          TypeOfOfficial.TEACHER,
+          TypeOfOfficial.TAS,
         ]),
         contract: faker.random.arrayElement([
           Contract.PERMANENT,
@@ -116,8 +122,8 @@ describe("Officials controller tests", () => {
         dateOfEntry: date,
         chargeNumber: faker.datatype.number(),
         type: faker.random.arrayElement([
-          TypeOfOfficials.TEACHER,
-          TypeOfOfficials.NOT_TEACHER,
+          TypeOfOfficial.TEACHER,
+          TypeOfOfficial.TAS,
         ]),
         contract: faker.random.arrayElement([
           Contract.PERMANENT,
@@ -137,8 +143,6 @@ describe("Officials controller tests", () => {
     officialRepository.filter.mockResolvedValue(
       officialConverter.fromModelsToEntities(mockOfficialByYear)
     );
-
-    // prismaMock.official.findMany.mockResolvedValue(mockOfficialByYear);
 
     const result = await officialService.get({ year });
     expect(result).toEqual(mockOfficialByYear);
@@ -162,15 +166,13 @@ describe("Officials controller tests", () => {
       position: "Director",
       dateOfEntry: new Date("2020-01-01"),
       chargeNumber: 333333,
-      type: TypeOfOfficials.TEACHER,
+      type: TypeOfOfficial.TEACHER,
       contract: Contract.PERMANENT,
     };
 
     const officialEntity = officialConverter.fromModelToEntity(official);
 
     officialRepository.add.mockResolvedValue(officialEntity);
-
-    //    prismaMock.official.create.mockResolvedValue(official);
 
     await expect(officialService.create(officialEntity)).resolves.toEqual({
       id: 1,
@@ -180,7 +182,7 @@ describe("Officials controller tests", () => {
       position: "Director",
       dateOfEntry: new Date("2020-01-01"),
       chargeNumber: 333333,
-      type: TypeOfOfficials.TEACHER,
+      type: TypeOfOfficial.TEACHER,
       contract: Contract.PERMANENT,
     });
   });
@@ -194,7 +196,7 @@ describe("Officials controller tests", () => {
       position: "Director",
       dateOfEntry: new Date("2020-01-01"),
       chargeNumber: 333333,
-      type: TypeOfOfficials.TEACHER,
+      type: TypeOfOfficial.TEACHER,
       contract: Contract.PERMANENT,
     };
 
@@ -212,7 +214,7 @@ describe("Officials controller tests", () => {
       position: "Director",
       dateOfEntry: new Date("2020-01-01"),
       chargeNumber: 333333,
-      type: TypeOfOfficials.TEACHER,
+      type: TypeOfOfficial.TEACHER,
       contract: Contract.PERMANENT,
     });
   });
@@ -226,7 +228,7 @@ describe("Officials controller tests", () => {
       position: "Director",
       dateOfEntry: new Date("2020-01-01"),
       chargeNumber: 333333,
-      type: TypeOfOfficials.TEACHER,
+      type: TypeOfOfficial.TEACHER,
       contract: Contract.PERMANENT,
       createdAt: undefined,
       updatedAt: undefined,
@@ -248,7 +250,7 @@ describe("Officials controller tests", () => {
       position: "Director",
       dateOfEntry: new Date("2020-01-01"),
       chargeNumber: 333333,
-      type: TypeOfOfficials.TEACHER,
+      type: TypeOfOfficial.TEACHER,
       contract: Contract.PERMANENT,
     });
 

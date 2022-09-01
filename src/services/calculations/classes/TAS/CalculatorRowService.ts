@@ -30,13 +30,10 @@ export default class CalculatorRowService {
     calculationsFromPersistence: Calculations<CalculationTAS>;
     actualHourlyBalance?: ActualBalance;
   }): Promise<CalculationCalculated> {
-    console.log("pre-hi");
-
     const hourlyBalances = actualHourlyBalance
       ? actualHourlyBalance.getHourlyBalances()
       : [];
 
-    console.log("hi");
     return this.hoursTASCalculator.calculate({
       year,
       official,

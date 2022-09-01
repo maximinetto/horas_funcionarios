@@ -10,4 +10,20 @@ export default class MikroORMCalculationTeacherRepository
   constructor() {
     super({ modelName: "CalculationTeacher" });
   }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  getCalculationsTeacherWithYearGreaterThanActual(_arg0: {
+    officialId: number;
+    year: number;
+  }): Promise<CalculationTeacher[]> {
+    throw new Error("Method not implemented.");
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  getCalculationsTeacherWithActualYear(_arg0: {
+    officialId: number;
+    year: number;
+  }): Promise<CalculationTeacher[]> {
+    throw new Error("Method not implemented.");
+  }
 }

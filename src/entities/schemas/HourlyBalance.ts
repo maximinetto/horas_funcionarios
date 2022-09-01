@@ -11,13 +11,9 @@ export default new EntitySchema<HourlyBalance, Entity>({
     id: {
       type: "uuid",
       primary: true,
-      getter: true,
-      setter: true,
     },
     year: {
       type: "int",
-      getter: true,
-      setter: true,
     },
   },
 });

@@ -10,24 +10,16 @@ export default new EntitySchema<Calculation, Entity>({
     id: {
       type: "uuid",
       primary: true,
-      getter: true,
-      setter: true,
     },
     year: {
       type: "int",
-      getter: true,
-      setter: true,
     },
     month: {
       type: "int",
-      getter: true,
-      setter: true,
     },
     observations: {
       type: "text",
       nullable: true,
-      getter: true,
-      setter: true,
     },
   },
 });

@@ -1,7 +1,8 @@
-import { PrismaClient, TypeOfOfficials } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import CalculationConverter from "converters/models_to_entities/CalculationConverter";
 import Calculation from "entities/Calculation";
 import CalculationTAS from "entities/CalculationTAS";
+import { TypeOfOfficial } from "entities/Official";
 import _omit from "lodash/omit";
 import { NotNullableCalculationWithTAS } from "types/calculations";
 
@@ -37,7 +38,7 @@ export default class PrismaCalculationRepository
   }: {
     officialId: number;
     year: number;
-    type: TypeOfOfficials;
+    type: TypeOfOfficial;
   }): Promise<Calculation[]> {
     throw new Error("Method not implemented.");
   }
@@ -48,7 +49,7 @@ export default class PrismaCalculationRepository
   }: {
     officialId: number;
     year: number;
-    type: TypeOfOfficials;
+    type: TypeOfOfficial;
   }): Promise<Calculation[]> {
     throw new Error("Method not implemented.");
   }

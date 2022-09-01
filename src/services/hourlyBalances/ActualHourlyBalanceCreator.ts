@@ -51,9 +51,7 @@ export default class ActualHourlyBalanceCreator {
         balances,
         year
       );
-      console.log("pre-jejeje");
       actualBalance.setHourlyBalances(hourlyBalances);
-      console.log("jejeje");
     } else if (ActualBalanceTeacher.isActualBalanceTeacher(actualBalance)) {
       const hourlyBalances = this.createHourlyBalancesTeacher(
         actualBalance,

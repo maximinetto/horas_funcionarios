@@ -4,6 +4,7 @@ import CalculationTAS from "entities/CalculationTAS";
 import CalculationTeacher from "entities/CalculationTeacher";
 import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
 import HourlyBalanceTeacher from "entities/HourlyBalanceTeacher";
+import { TypeOfOfficial } from "entities/Official";
 import UnexpectedValueError from "errors/UnexpectedValueError";
 import { mikroorm } from "persistence/context/mikroorm/MikroORMDatabase";
 
@@ -22,7 +23,7 @@ export default class MikroORMActualBalanceBuilder
     hourlyBalances,
     type,
   }: ActualBalanceModel) {
-    if (type === "tas") {
+    if (type === TypeOfOfficial.TAS) {
       const _calculations = calculations as CalculationTAS[];
       const _hourlyBalances = hourlyBalances as HourlyBalanceTAS[];
       return mikroorm.em.create(ActualBalanceTAS, {
@@ -32,9 +33,9 @@ export default class MikroORMActualBalanceBuilder
         calculations: _calculations,
         official,
         hourlyBalances: _hourlyBalances,
-        type: "tas",
+        type: TypeOfOfficial.TAS,
       });
-    } else if (type === "teacher") {
+    } else if (type === TypeOfOfficial.TEACHER) {
       const _calculations = calculations as CalculationTeacher[];
       const _hourlyBalances = hourlyBalances as HourlyBalanceTeacher[];
       return mikroorm.em.create(ActualBalanceTeacher, {
@@ -44,7 +45,7 @@ export default class MikroORMActualBalanceBuilder
         calculations: _calculations,
         official,
         hourlyBalances: _hourlyBalances,
-        type: "teacher",
+        type: TypeOfOfficial.TEACHER,
       });
     }
 

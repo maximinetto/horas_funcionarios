@@ -9,16 +9,12 @@ export default new EntitySchema<Entity>({
       type: "Date",
       onCreate: () => new Date(),
       nullable: true,
-      getter: true,
-      setter: true,
     },
     updatedAt: {
       type: "Date",
       onCreate: () => new Date(),
       onUpdate: () => new Date(),
       nullable: true,
-      getter: true,
-      setter: true,
     },
   },
 });

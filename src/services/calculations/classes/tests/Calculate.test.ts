@@ -1,11 +1,11 @@
 import faker from "@faker-js/faker";
-import { Contract, Month, TypeOfOfficials } from "@prisma/client";
+import { Month } from "@prisma/client";
 import Calculations from "collections/Calculations";
 import Decimal from "decimal.js";
 import { actualHourlyBalanceBuilder } from "dependencies/container";
 import ActualBalanceTeacher from "entities/ActualBalanceTeacher";
 import CalculationTeacher from "entities/CalculationTeacher";
-import Official from "entities/Official";
+import Official, { Contract, TypeOfOfficial } from "entities/Official";
 import { DateTime } from "luxon";
 import { mikroorm } from "persistence/context/mikroorm/MikroORMDatabase";
 import CalculationSorter from "sorters/CalculationSorter";
@@ -97,14 +97,14 @@ describe("Sorters and getters", () => {
         lastName: "Minetto",
         position: "Informatic",
         recordNumber: 1,
-        type: TypeOfOfficials.NOT_TEACHER,
+        type: TypeOfOfficial.TAS,
       });
       const actualHourlyBalanceTeacher = actualHourlyBalanceBuilder.create({
         id: c.actualBalanceId,
         year: c.year,
         total: new Decimal(0),
         official,
-        type: "teacher",
+        type: TypeOfOfficial.TEACHER,
       }) as ActualBalanceTeacher;
 
       return new CalculationTeacher({

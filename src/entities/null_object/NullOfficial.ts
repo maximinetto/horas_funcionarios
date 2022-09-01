@@ -1,7 +1,6 @@
-import { Contract, TypeOfOfficials } from "@prisma/client";
 import { DateTime } from "luxon";
 
-import Official from "../Official";
+import Official, { Contract, TypeOfOfficial } from "../Official";
 import Nullable from "./Nullable";
 
 export default class NullOfficial extends Official implements Nullable {
@@ -13,7 +12,7 @@ export default class NullOfficial extends Official implements Nullable {
       lastName: "",
       position: "",
       contract: Contract.PERMANENT,
-      type: TypeOfOfficials.NOT_TEACHER,
+      type: TypeOfOfficial.TAS,
       dateOfEntry: DateTime.now(),
       recordNumber: 0,
       actualBalances: [],

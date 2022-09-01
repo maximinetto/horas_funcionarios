@@ -21,6 +21,22 @@ export default class PrismaCalculationTeacherRepository
     this.calculationTeacherConverter = calculationTeacherConverter;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  getCalculationsTeacherWithYearGreaterThanActual(arg0: {
+    officialId: number;
+    year: number;
+  }): Promise<CalculationTeacher[]> {
+    throw new Error("Method not implemented.");
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  getCalculationsTeacherWithActualYear(arg0: {
+    officialId: number;
+    year: number;
+  }): Promise<CalculationTeacher[]> {
+    throw new Error("Method not implemented.");
+  }
+
   toEntity(value: any): CalculationTeacher {
     return this.calculationTeacherConverter.fromModelToEntity(value);
   }

@@ -1,6 +1,8 @@
 import { FilterQuery, MikroORM, wrap } from "@mikro-orm/core";
-import { MariaDbDriver } from "@mikro-orm/mariadb";
+import { MySqlDriver } from "@mikro-orm/mysql";
 import Entity from "entities/Entity";
+import _isNil from "lodash/isNil";
+import _omitBy from "lodash/omitBy";
 import { mikroorm } from "persistence/context/mikroorm/MikroORMDatabase";
 import Repository from "persistence/Repository";
 import { Optional } from "typescript-optional";
@@ -8,7 +10,7 @@ import { Optional } from "typescript-optional";
 export default class MikroORMRepository<key, T extends Entity>
   implements Repository<key, T>
 {
-  protected readonly _mikroorm: MikroORM<MariaDbDriver>;
+  protected readonly _mikroorm: MikroORM<MySqlDriver>;
   protected readonly _modelName: string;
   protected readonly _idKey: string;
 
@@ -37,19 +39,22 @@ export default class MikroORMRepository<key, T extends Entity>
   }
 
   filter(predicate: Object): Promise<T[]> {
+    const _predicate = _omitBy(predicate, _isNil);
+
     const options = {
-      ...predicate,
+      ..._predicate,
     } as FilterQuery<T>;
+
     return this._mikroorm.em.find<T>(this._modelName, options);
   }
 
   async add(entity: T): Promise<T> {
-    await this._mikroorm.em.persistAndFlush(entity);
+    this._mikroorm.em.persist(entity);
     return entity;
   }
 
   async addRange(entities: T[]): Promise<T[]> {
-    await this._mikroorm.em.persistAndFlush(entities);
+    this._mikroorm.em.persist(entities);
     return entities;
   }
 
@@ -84,9 +89,12 @@ export default class MikroORMRepository<key, T extends Entity>
     return entities;
   }
 
-  clear(): Promise<void> {
-    return Promise.resolve().then(() => {
-      this._mikroorm.em.remove(this._modelName);
-    });
+  async clear(): Promise<void> {
+    await this._mikroorm.em.flush();
+    this._mikroorm.em.clear();
+    console.log("delete all");
+    return this._mikroorm.em
+      .nativeDelete(this._modelName, {})
+      .then(() => Promise.resolve());
   }
 }

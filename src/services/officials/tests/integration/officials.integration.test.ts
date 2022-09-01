@@ -1,40 +1,42 @@
 import faker from "@faker-js/faker";
-import { Contract, TypeOfOfficials } from "@prisma/client";
 import OfficialConverter from "converters/models_to_entities/OfficialConverter";
+import MikroORMActualBalanceBuilder from "creators/actual/MikroORMActualBalanceBuilder";
+import MikroORMOfficialBuilder from "creators/official/MikroORMOfficialBuilder";
+import { Contract, TypeOfOfficial } from "entities/Official";
 import _omit from "lodash/omit";
-import prisma from "persistence/context/prisma.config";
-import PrismaOfficialRepository from "persistence/Official/PrismaOfficialRepository";
 import OfficialService from "services/officials";
+import { unitOfWork } from "setupIntegrationTestEnvironment";
 import { OfficialWithOptionalId } from "types/officials";
 
 let officials: OfficialWithOptionalId[];
 let officialService: OfficialService;
 let officialConverter: OfficialConverter;
 
-afterEach(async () => {
-  const deleteOfficial = prisma.official.deleteMany();
-
-  await prisma.$transaction([deleteOfficial]);
-
-  await prisma.$disconnect();
-});
-
-beforeEach(async () => {
-  officialConverter = new OfficialConverter();
-  officials = await createFakeOfficials();
-  officialService = new OfficialService({
-    officialRepository: new PrismaOfficialRepository({
-      prisma,
-      officialConverter,
+beforeEach(() => {
+  officialConverter = new OfficialConverter({
+    officialBuilder: new MikroORMOfficialBuilder({
+      actualHourlyBalanceBuilder: new MikroORMActualBalanceBuilder(),
     }),
+  });
+  officialService = new OfficialService({
+    officialRepository: unitOfWork.official,
     officialConverter,
+  });
+  return createFakeOfficials().then((value) => {
+    officials = value;
   });
 });
 
-it("Should get all instance of officials", async () => {
+test("Should get all instance of officials", async () => {
+  console.log("init:", await unitOfWork.official.getAll());
+
+  console.log("Should get all instance of officials");
   const response = await officialService.get({});
 
   const result = (res: OfficialWithOptionalId) => _omit(res, ["id"]);
+
+  console.log("Should get all instance of officials - first expect", response);
+  console.log("officials", officials);
 
   expect(response.map(result)).toEqual(officials);
 
@@ -42,36 +44,49 @@ it("Should get all instance of officials", async () => {
     contract: Contract.PERMANENT,
   });
 
+  console.log(
+    "Should get all instance of officials - second expect",
+    response2
+  );
+
   expect(response2.map(result)).toEqual(
     officials.filter(({ contract }) => contract === Contract.PERMANENT)
   );
 
   const response3 = await officialService.get({
-    type: TypeOfOfficials.TEACHER,
+    type: TypeOfOfficial.TEACHER,
   });
 
+  console.log("Should get all instance of officials - third expect", response3);
+
   expect(response3.map(result)).toEqual(
-    officials.filter(({ type }) => type === TypeOfOfficials.TEACHER)
+    officials.filter(({ type }) => type === TypeOfOfficial.TEACHER)
   );
 
   const response4 = await officialService.get({
-    type: TypeOfOfficials.NOT_TEACHER,
+    type: TypeOfOfficial.TAS,
   });
 
+  console.log("Should get all instance of officials - four expect", response4);
+
   expect(response4.map(result)).toEqual(
-    officials.filter(({ type }) => type === TypeOfOfficials.NOT_TEACHER)
+    officials.filter(({ type }) => type === TypeOfOfficial.TAS)
   );
 
   const response5 = await officialService.get({
     year: 2018,
   });
 
+  console.log("Should get all instance of officials - five expect", response5);
+
   expect(response5.map(result)).toEqual(
     officials.filter(({ dateOfEntry }) => dateOfEntry.getFullYear() === 2018)
   );
 });
 
-it("Should create 1 official", async () => {
+test("Should create 1 official", async () => {
+  console.log("init:", await unitOfWork.official.getAll());
+
   const official = {
     recordNumber: faker.datatype.number(),
     firstName: faker.name.firstName(),
@@ -80,8 +95,8 @@ it("Should create 1 official", async () => {
     dateOfEntry: new Date("2020-01-01"),
     chargeNumber: faker.datatype.number(),
     type: faker.random.arrayElement([
-      TypeOfOfficials.TEACHER,
-      TypeOfOfficials.NOT_TEACHER,
+      TypeOfOfficial.TEACHER,
+      TypeOfOfficial.TAS,
     ]),
     contract: faker.random.arrayElement([
       Contract.PERMANENT,
@@ -100,7 +115,9 @@ it("Should create 1 official", async () => {
   // TODO: clear database
 });
 
-it("Should update the existing official", async () => {
+test("Should update the existing official", async () => {
+  console.log("init:", await unitOfWork.official.getAll());
+
   const official = {
     recordNumber: faker.datatype.number(),
     firstName: faker.name.firstName(),
@@ -109,8 +126,8 @@ it("Should update the existing official", async () => {
     dateOfEntry: new Date("2020-01-01"),
     chargeNumber: faker.datatype.number(),
     type: faker.random.arrayElement([
-      TypeOfOfficials.TEACHER,
-      TypeOfOfficials.NOT_TEACHER,
+      TypeOfOfficial.TEACHER,
+      TypeOfOfficial.TAS,
     ]),
     contract: faker.random.arrayElement([
       Contract.PERMANENT,
@@ -118,39 +135,63 @@ it("Should update the existing official", async () => {
     ]),
   };
 
-  // TODO fix this because tests should not depend on other tests
-  const official2 = await prisma.official.findFirst({
-    orderBy: { id: "desc" },
-  });
+  const officialUpdated: typeof official = {
+    ...official,
+    position: "Informática",
+    firstName: "Pepe",
+    lastName: "Argento",
+  };
 
-  if (!official2) {
+  const initialOfficial = officialConverter.fromModelToEntity(official);
+
+  console.log("initialOfficial:", initialOfficial);
+  await unitOfWork.official.add(initialOfficial);
+  await unitOfWork.commit();
+
+  // TODO fix this because tests should not depend on other tests
+  const optionalOfficialFetched = await unitOfWork.official.getLast();
+
+  if (!optionalOfficialFetched.isPresent()) {
     throw new Error("No official found");
   }
 
-  const officialEntity = officialConverter.fromModelToEntity({
-    ...official,
-    id: official2.id,
+  const officialFetched = optionalOfficialFetched.get();
+
+  const officialEntityUpdated = officialConverter.fromModelToEntity({
+    ...officialUpdated,
+    id: officialFetched.id,
   });
 
-  const result = await officialService.update(officialEntity);
+  const result = await officialService.update(officialEntityUpdated);
 
-  expect(result).toEqual({ ...official, id: official2.id });
+  expect(result).toEqual({ ...officialUpdated, id: officialFetched.id });
 });
 
-it("Should delete a existing official record", async () => {
-  const official = await prisma.official.findFirst({
-    orderBy: { id: "desc" },
-  });
+test("Should delete a existing official record", async () => {
+  console.log("init:", await unitOfWork.official.getAll());
 
-  if (!official) {
+  const officialOptional = await unitOfWork.official.getLast();
+
+  if (!officialOptional) {
     throw new Error("No official found");
   }
 
-  const result = await officialService.delete(official.id);
+  const officialFetched = officialOptional.get();
 
-  expect(result).toEqual(official);
+  const result = await officialService.delete(officialFetched.id);
 
-  const count = await prisma.official.count();
+  const officialModel = officialConverter.fromEntityToModel(officialFetched);
+
+  const expected = _omit(officialModel, [
+    "actualBalances",
+    "createdAt",
+    "updatedAt",
+  ]);
+
+  expect(result).toEqual(expected);
+
+  const count = await unitOfWork.official.count();
+
   expect(count).toBe(1);
 });
 
@@ -164,8 +205,8 @@ async function createFakeOfficials(): Promise<OfficialWithOptionalId[]> {
       dateOfEntry: new Date("2020-01-01"),
       chargeNumber: faker.datatype.number(),
       type: faker.random.arrayElement([
-        TypeOfOfficials.TEACHER,
-        TypeOfOfficials.NOT_TEACHER,
+        TypeOfOfficial.TEACHER,
+        TypeOfOfficial.TAS,
       ]),
       contract: faker.random.arrayElement([
         Contract.PERMANENT,
@@ -180,8 +221,8 @@ async function createFakeOfficials(): Promise<OfficialWithOptionalId[]> {
       dateOfEntry: new Date("2018-03-04"),
       chargeNumber: faker.datatype.number(),
       type: faker.random.arrayElement([
-        TypeOfOfficials.TEACHER,
-        TypeOfOfficials.NOT_TEACHER,
+        TypeOfOfficial.TEACHER,
+        TypeOfOfficial.TAS,
       ]),
       contract: faker.random.arrayElement([
         Contract.PERMANENT,
@@ -190,6 +231,8 @@ async function createFakeOfficials(): Promise<OfficialWithOptionalId[]> {
     },
   ];
 
-  await prisma.official.createMany({ data: _officials });
+  const entities = officialConverter.fromModelsToEntities(_officials);
+  await unitOfWork.official.addRange(entities);
+  await unitOfWork.commit();
   return _officials;
 }

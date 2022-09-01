@@ -11,6 +11,7 @@ import HourlyBalanceTeacherConverter from "converters/models_to_entities/HourlyB
 import OfficialConverter from "converters/models_to_entities/OfficialConverter";
 import ActualHourlyBalanceBuilder from "creators/actual/ActualHourlyBalanceBuilder";
 import MikroORMActualBalanceBuilder from "creators/actual/MikroORMActualBalanceBuilder";
+import MikroORMOfficialBuilder from "creators/official/MikroORMOfficialBuilder";
 import HourlyBalanceEntityFactoryCreator from "factories/HourlyBalanceEntityFactoryCreator";
 import HourlyBalanceModelFactoryCreator from "factories/HourlyBalanceModelFactoryCreator";
 import MikroORMActualHourlyBalanceRepository from "persistence/ActualBalance/MikroORMActualHourlyBalanceRepository";
@@ -76,6 +77,7 @@ container.register({
   hourlyBalanceTeacherConverter: asClass(
     HourlyBalanceTeacherConverter
   ).singleton(),
+  officialBuilder: asClass(MikroORMOfficialBuilder),
 });
 
 export const officialService = container.resolve(

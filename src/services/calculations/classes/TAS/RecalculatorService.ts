@@ -90,9 +90,7 @@ export default class RecalculatorService {
     const next = this.actualHourlyBalances[index];
 
     const yearNumber = Number(next.year);
-    console.log("pre-pepe");
     const calculations = next.getCalculations() as CalculationTAS[];
-    console.log("pepe");
 
     const data = await this.calculatorRowService.reCalculate({
       calculations: new Calculations(),
@@ -120,9 +118,7 @@ export default class RecalculatorService {
     for (const a of this.actualHourlyBalances) {
       const { year } = a;
       const rest = calculations.filter((c) => c.year === year);
-      console.log("pre-ahhh");
       a.setCalculations(rest);
-      console.log("ahhh");
     }
   }
 }

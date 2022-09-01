@@ -4,11 +4,11 @@ import { Decimal } from "decimal.js";
 import ActualBalance from "./ActualBalance";
 import CalculationTeacher from "./CalculationTeacher";
 import HourlyBalanceTeacher from "./HourlyBalanceTeacher";
-import Official from "./Official";
+import Official, { TypeOfOfficial } from "./Official";
 
 export default class ActualBalanceTeacher extends ActualBalance {
-  private _calculations = new Collection<CalculationTeacher>(this);
-  private _hourlyBalances = new Collection<HourlyBalanceTeacher>(this);
+  calculations = new Collection<CalculationTeacher>(this);
+  hourlyBalances = new Collection<HourlyBalanceTeacher>(this);
 
   public constructor({
     id,
@@ -28,32 +28,16 @@ export default class ActualBalanceTeacher extends ActualBalance {
     super({
       id,
       year,
-      type: "teacher",
+      type: TypeOfOfficial.TEACHER,
       total,
       official,
     });
 
-    this._calculations = new Collection<CalculationTeacher>(this, calculations);
-    this._hourlyBalances = new Collection<HourlyBalanceTeacher>(
+    this.calculations = new Collection<CalculationTeacher>(this, calculations);
+    this.hourlyBalances = new Collection<HourlyBalanceTeacher>(
       this,
       hourlyBalances
     );
-  }
-
-  public get calculations(): Collection<CalculationTeacher> {
-    return this._calculations;
-  }
-
-  public set calculations(value: Collection<CalculationTeacher>) {
-    this._calculations = value;
-  }
-
-  public get hourlyBalances(): Collection<HourlyBalanceTeacher> {
-    return this._hourlyBalances;
-  }
-
-  public set hourlyBalances(value: Collection<HourlyBalanceTeacher>) {
-    this._hourlyBalances = value;
   }
 
   public getCalculations(): CalculationTeacher[] {

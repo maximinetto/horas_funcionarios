@@ -3,6 +3,8 @@ import CalculationRepository from "persistence/Calculation/CalculationRepository
 import CalculationTASRepository from "persistence/Calculation/CalculationTAS/CalculationTASRepository";
 import CalculationTeacherRepository from "persistence/Calculation/CalculationTeacher/CalculationTeacherRepository";
 import HourlyBalanceRepository from "persistence/HourlyBalance/HourlyBalanceRepository";
+import HourlyBalanceTASRepository from "persistence/HourlyBalance/HourlyBalanceTASRepository";
+import HourlyBalanceTeacherRepository from "persistence/HourlyBalance/HourlyBalanceTeacherRepository";
 import OfficialRepository from "persistence/Official/OfficialRepository";
 
 export default interface Database {
@@ -14,5 +16,7 @@ export default interface Database {
   calculationTeacher: CalculationTeacherRepository;
   actualBalance: ActualHourlyBalanceRepository;
   hourlyBalance: HourlyBalanceRepository;
+  hourlyBalanceTAS: HourlyBalanceTASRepository;
+  hourlyBalanceTeacher: HourlyBalanceTeacherRepository;
   official: OfficialRepository;
 }

@@ -11,11 +11,11 @@ export default abstract class ActualBalance
   extends Entity
   implements Nullable, Comparable<ActualBalance>
 {
-  private _id: string;
-  private _year: number;
-  private _total: Decimal;
-  private _official?: Official;
-  private _type: TypeOfOfficial;
+  id!: string;
+  year!: number;
+  total!: Decimal;
+  type!: TypeOfOfficial;
+  official?: Official;
 
   public constructor({
     id,
@@ -31,51 +31,11 @@ export default abstract class ActualBalance
     type: TypeOfOfficial;
   }) {
     super();
-    this._id = id;
-    this._year = year;
-    this._total = total ?? new Decimal(0);
-    this._official = official;
-    this._type = type;
-  }
-
-  public get id(): string {
-    return this._id;
-  }
-
-  public set id(id: string) {
-    this._id = id;
-  }
-
-  public get year(): number {
-    return this._year;
-  }
-
-  public set year(value: number) {
-    this._year = value;
-  }
-
-  public get total(): Decimal {
-    return this._total;
-  }
-
-  public set total(value: Decimal) {
-    this._total = value;
-  }
-
-  public get official(): Official | undefined {
-    return this._official;
-  }
-
-  public set official(value: Official | undefined) {
-    this._official = value;
-  }
-
-  public get type(): TypeOfOfficial {
-    return this._type;
-  }
-
-  public set type(value: TypeOfOfficial) {
-    this._type = value;
+    this.id = id;
+    this.year = year;
+    this.total = total ?? new Decimal(0);
+    this.official = official;
+    this.type = type;
   }
 
   abstract getCalculations(): Calculation[];

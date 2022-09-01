@@ -37,7 +37,7 @@ export default class Calculations<E extends Calculation> {
     )[0];
   }
 
-  public calc<T extends Decimal | number | number>(
+  public calc<T extends Decimal | number>(
     callbackfn: (
       previousValue: T,
       currentValue: E,

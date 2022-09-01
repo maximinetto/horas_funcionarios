@@ -11,10 +11,10 @@ export default abstract class Calculation
   extends Entity
   implements Nullable, Comparable<Calculation>, ICalculation
 {
-  private _id: string;
-  private _year: number;
-  private _month: Month;
-  private _observations?: string;
+  id!: string;
+  year!: number;
+  month!: Month;
+  observations?: string;
 
   public constructor({
     id,
@@ -28,42 +28,10 @@ export default abstract class Calculation
     observations?: string;
   }) {
     super();
-    this._id = id;
-    this._year = year;
-    this._month = month;
-    this._observations = observations;
-  }
-
-  public get id(): string {
-    return this._id;
-  }
-
-  public set id(id: string) {
-    this._id = id;
-  }
-
-  public get year(): number {
-    return this._year;
-  }
-
-  public set year(value: number) {
-    this._year = value;
-  }
-
-  public get month(): Month {
-    return this._month;
-  }
-
-  public set month(value: Month) {
-    this._month = value;
-  }
-
-  public get observations(): string | undefined {
-    return this._observations;
-  }
-
-  public set observations(value: string | undefined) {
-    this._observations = value;
+    this.id = id;
+    this.year = year;
+    this.month = month;
+    this.observations = observations;
   }
 
   public isDefault(): boolean {

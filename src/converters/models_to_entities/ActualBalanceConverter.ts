@@ -1,14 +1,14 @@
-import { Official as OfficialModel } from "@prisma/client";
 import ActualHourlyBalanceBuilder from "creators/actual/ActualHourlyBalanceBuilder";
 import { Decimal } from "decimal.js";
 import ActualBalanceEntity from "entities/ActualBalance";
 import NullOfficial from "entities/null_object/NullOfficial";
-import Official from "entities/Official";
+import Official, { TypeOfOfficial } from "entities/Official";
 import UnexpectedValueError from "errors/UnexpectedValueError";
 import {
   ActualBalanceComplete,
   PartialActualBalance,
 } from "types/actualBalance";
+import { Official as OfficialModel } from "types/officials";
 
 import { AbstractConverter } from "./AbstractConverter";
 import CalculationConverter from "./CalculationConverter";
@@ -61,22 +61,22 @@ export default class ActualBalanceConverter extends AbstractConverter<
 
     const { type } = official;
 
-    if (type === "TEACHER")
+    if (type === TypeOfOfficial.TEACHER)
       return this._actualHourlyBalanceBuilder.create({
         id: model.id,
         year: model.year,
         total: new Decimal(model.total.toString()),
         official: official,
-        type: "teacher",
+        type: TypeOfOfficial.TEACHER,
         hourlyBalances,
         calculations,
       });
-    else if (type === "NOT_TEACHER") {
+    else if (type === TypeOfOfficial.TAS) {
       return this._actualHourlyBalanceBuilder.create({
         id: model.id,
         year: model.year,
         total: new Decimal(model.total.toString()),
-        type: "tas",
+        type: TypeOfOfficial.TAS,
         official: official,
         hourlyBalances,
         calculations,

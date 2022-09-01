@@ -1,5 +1,5 @@
-import { ConnectionOptions, MikroORM } from "@mikro-orm/core";
-import { MariaDbDriver } from "@mikro-orm/mariadb";
+import { Options } from "@mikro-orm/core";
+import { MySqlDriver } from "@mikro-orm/mysql";
 import ActualBalanceSchema from "entities/schemas/ActualBalance";
 import ActualBalanceTASSchema from "entities/schemas/ActualBalanceTAS";
 import ActualBalanceTeacherSchema from "entities/schemas/ActualBalanceTeacher";
@@ -12,32 +12,25 @@ import HourlyBalanceTASSchema from "entities/schemas/HourlyBalanceTAS";
 import HourlyBalanceTeacherSchema from "entities/schemas/HourlyBalanceTeacher";
 import OfficialSchema from "entities/schemas/Official";
 
-const options: ConnectionOptions = {
+const dbOptions: Options<MySqlDriver> = {
+  driver: MySqlDriver,
+  timezone: "-03:00",
+  entities: [
+    ActualBalanceSchema,
+    ActualBalanceTASSchema,
+    ActualBalanceTeacherSchema,
+    CalculationSchema,
+    CalculationTASSchema,
+    CalculationTeacherSchema,
+    HourlyBalanceSchema,
+    HourlyBalanceTASSchema,
+    HourlyBalanceTeacherSchema,
+    EntitySchema,
+    OfficialSchema,
+  ],
+  debug: true,
+  allowGlobalContext: true,
   clientUrl: process.env.OFFICIALS_SCHEDULES_DB_URL,
 };
 
-const initializeORM = async () => {
-  console.log("orm init");
-  return MikroORM.init({
-    driver: MariaDbDriver,
-    timezone: "-03:00",
-    entities: [
-      ActualBalanceSchema,
-      ActualBalanceTASSchema,
-      ActualBalanceTeacherSchema,
-      CalculationSchema,
-      CalculationTASSchema,
-      CalculationTeacherSchema,
-      HourlyBalanceSchema,
-      HourlyBalanceTASSchema,
-      HourlyBalanceTeacherSchema,
-      EntitySchema,
-      OfficialSchema,
-    ],
-    debug: true,
-    allowGlobalContext: true,
-    ...options,
-  });
-};
-
-export default initializeORM;
+export default dbOptions;

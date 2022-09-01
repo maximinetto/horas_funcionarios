@@ -1,9 +1,8 @@
 import faker from "@faker-js/faker";
-import { Contract, TypeOfOfficials } from "@prisma/client";
 import Calculations from "collections/Calculations";
 import CalculationTAS from "entities/CalculationTAS";
 import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
-import Official from "entities/Official";
+import Official, { Contract, TypeOfOfficial } from "entities/Official";
 import { DateTime } from "luxon";
 import { CalculationTAS as CalculationTASModel } from "types/calculations";
 import { getMonthByNumber } from "utils/mapMonths";
@@ -30,8 +29,8 @@ export function preset(
         Contract.TEMPORARY,
       ]),
       type: faker.random.arrayElement([
-        TypeOfOfficials.TEACHER,
-        TypeOfOfficials.NOT_TEACHER,
+        TypeOfOfficial.TEACHER,
+        TypeOfOfficial.TAS,
       ]),
       dateOfEntry: DateTime.fromJSDate(faker.date.past(1, "2018-04-01T00:00z")),
       recordNumber: faker.datatype.number(),
@@ -98,8 +97,8 @@ export const buildOfficial = ({
         Contract.TEMPORARY,
       ]),
       type: faker.random.arrayElement([
-        TypeOfOfficials.TEACHER,
-        TypeOfOfficials.NOT_TEACHER,
+        TypeOfOfficial.TEACHER,
+        TypeOfOfficial.TAS,
       ]),
       dateOfEntry: DateTime.fromJSDate(faker.date.past(1, "2018-04-01T00:00z")),
       chargeNumber: faker.datatype.number(),

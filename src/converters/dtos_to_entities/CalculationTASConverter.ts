@@ -3,6 +3,7 @@ import { Decimal } from "decimal.js";
 import CalculationTASDTO from "dto/create/calculationTASDTO";
 import ActualBalanceTAS from "entities/ActualBalanceTAS";
 import CalculationTASEntity from "entities/CalculationTAS";
+import { TypeOfOfficial } from "entities/Official";
 
 import { AbstractConverter } from "./AbstractConverter";
 
@@ -83,7 +84,7 @@ export default class CalculationTASConverter extends AbstractConverter<
       id: actualBalanceId,
       year: year,
       total: new Decimal(0),
-      type: "tas",
+      type: TypeOfOfficial.TAS,
     }) as ActualBalanceTAS;
   }
 }

@@ -1,7 +1,7 @@
 import Calculations from "collections/Calculations";
 import ActualBalance from "entities/ActualBalance";
 import CalculationTAS from "entities/CalculationTAS";
-import Official from "entities/Official";
+import Official, { TypeOfOfficial } from "entities/Official";
 import ValueNotProvidedError from "errors/ValueNotProvidedError";
 import RecalculatorService from "services/calculations/classes/TAS/RecalculatorService";
 import Balances, {
@@ -148,7 +148,7 @@ export default class TASCalculator {
         officialId: official.id,
         total: dataCalculated.totalBalance,
         calculations: dataCalculated.calculations,
-        type: "tas",
+        type: TypeOfOfficial.TAS,
       });
 
     return {

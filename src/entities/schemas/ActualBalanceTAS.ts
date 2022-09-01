@@ -8,20 +8,17 @@ export default new EntitySchema<ActualBalanceTAS, ActualBalance>({
   name: "ActualBalanceTAS",
   tableName: "actual_balances",
   extends: "ActualBalance",
+  class: ActualBalanceTAS,
   properties: {
     calculations: {
       reference: "1:m",
       entity: () => CalculationTAS,
       mappedBy: (calculations) => calculations.actualBalance,
-      getter: true,
-      setter: true,
     },
     hourlyBalances: {
       reference: "1:m",
       entity: () => HourlyBalanceTAS,
       mappedBy: "actualBalance",
-      getter: true,
-      setter: true,
     },
   },
   discriminatorValue: "tas",

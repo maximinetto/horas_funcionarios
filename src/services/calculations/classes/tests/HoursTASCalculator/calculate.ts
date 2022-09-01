@@ -5,6 +5,7 @@ import ActualBalance from "entities/ActualBalance";
 import ActualBalanceTAS from "entities/ActualBalanceTAS";
 import CalculationTAS from "entities/CalculationTAS";
 import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
+import { TypeOfOfficial } from "entities/Official";
 import { generateRandomUUIDV4 } from "utils/strings";
 
 import subtractHoursFromBalance from "./calculateBalance";
@@ -28,7 +29,7 @@ export default function calculation({
         id: generateRandomUUIDV4(),
         year: 0,
         total: new Decimal(0),
-        type: "tas",
+        type: TypeOfOfficial.TAS,
       }),
     };
   }

@@ -1,3 +1,4 @@
+import OfficialBuilder from "creators/official/OfficialBuilder";
 import OfficialEntity from "entities/Official";
 import { DateTime } from "luxon";
 import { OfficialWithOptionalId } from "types/officials";
@@ -8,9 +9,16 @@ export default class OfficialConverter extends AbstractConverter<
   OfficialWithOptionalId,
   OfficialEntity
 > {
+  private _officialBuilder: OfficialBuilder;
+
+  constructor({ officialBuilder }: { officialBuilder: OfficialBuilder }) {
+    super();
+    this._officialBuilder = officialBuilder;
+  }
+
   fromModelToEntity(model: OfficialWithOptionalId): OfficialEntity {
-    return new OfficialEntity({
-      id: model.id ?? 0,
+    return this._officialBuilder.create({
+      id: model.id,
       recordNumber: model.recordNumber,
       firstName: model.firstName,
       lastName: model.lastName,

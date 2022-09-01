@@ -8,8 +8,8 @@ export default class HourlyBalanceTeacher
   extends HourlyBalance
   implements Nullable
 {
-  private _balance: Decimal;
-  private _actualBalance?: ActualBalanceTeacher;
+  balance!: Decimal;
+  actualBalance?: ActualBalanceTeacher;
 
   public constructor({
     id,
@@ -23,24 +23,8 @@ export default class HourlyBalanceTeacher
     actualBalance?: ActualBalanceTeacher;
   }) {
     super({ id, year });
-    this._balance = balance;
-    this._actualBalance = actualBalance;
-  }
-
-  public get balance(): Decimal {
-    return this._balance;
-  }
-
-  public set balance(value: Decimal) {
-    this._balance = value;
-  }
-
-  public get actualBalance(): ActualBalanceTeacher | undefined {
-    return this._actualBalance;
-  }
-
-  public set actualBalance(value: ActualBalanceTeacher | undefined) {
-    this._actualBalance = value;
+    this.balance = balance;
+    this.actualBalance = actualBalance;
   }
 
   public isDefault(): boolean {

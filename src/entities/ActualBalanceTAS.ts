@@ -4,11 +4,11 @@ import { Decimal } from "decimal.js";
 import ActualBalance from "./ActualBalance";
 import CalculationTAS from "./CalculationTAS";
 import HourlyBalanceTAS from "./HourlyBalanceTAS";
-import Official from "./Official";
+import Official, { TypeOfOfficial } from "./Official";
 
 export default class ActualBalanceTAS extends ActualBalance {
-  private _calculations = new Collection<CalculationTAS>(this);
-  private _hourlyBalances = new Collection<HourlyBalanceTAS>(this);
+  calculations = new Collection<CalculationTAS>(this);
+  hourlyBalances = new Collection<HourlyBalanceTAS>(this);
 
   public constructor({
     id,
@@ -28,32 +28,16 @@ export default class ActualBalanceTAS extends ActualBalance {
     super({
       id,
       year,
-      type: "tas",
+      type: TypeOfOfficial.TAS,
       total,
       official,
     });
 
-    this._calculations = new Collection<CalculationTAS>(this, calculations);
-    this._hourlyBalances = new Collection<HourlyBalanceTAS>(
+    this.calculations = new Collection<CalculationTAS>(this, calculations);
+    this.hourlyBalances = new Collection<HourlyBalanceTAS>(
       this,
       hourlyBalances
     );
-  }
-
-  public get calculations(): Collection<CalculationTAS> {
-    return this._calculations;
-  }
-
-  public set calculations(value: Collection<CalculationTAS>) {
-    this._calculations = value;
-  }
-
-  public get hourlyBalances(): Collection<HourlyBalanceTAS> {
-    return this._hourlyBalances;
-  }
-
-  public set hourlyBalances(value: Collection<HourlyBalanceTAS>) {
-    this._hourlyBalances = value;
   }
 
   public getCalculations(): CalculationTAS[] {

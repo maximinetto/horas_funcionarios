@@ -1,5 +1,5 @@
-import { Contract, TypeOfOfficials } from "@prisma/client";
 import type Entity from "entities/Entity";
+import { Contract, TypeOfOfficial } from "entities/Official";
 import { DateTime } from "luxon";
 
 export interface OfficialModel extends Entity {
@@ -9,7 +9,7 @@ export interface OfficialModel extends Entity {
   lastName: string;
   position: string;
   contract: Contract;
-  type: TypeOfOfficials;
+  type: TypeOfOfficial;
   dateOfEntry: DateTime;
   chargeNumber: number;
   actualBalances?: ActualBalance[];

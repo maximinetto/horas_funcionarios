@@ -4,14 +4,24 @@ import Nullable from "entities/null_object/Nullable";
 
 import ActualBalanceTeacher from "./ActualBalanceTeacher";
 import Calculation from "./Calculation";
+import Entity from "./Entity";
 
+interface CalculationTeacherModel extends Entity {
+  id: string;
+  year: number;
+  month: Month;
+  surplus: Decimal;
+  discount: Decimal;
+  observations?: string;
+  actualBalance?: ActualBalanceTeacher;
+}
 export default class CalculationTeacher
   extends Calculation
   implements Nullable
 {
-  private _surplus: Decimal;
-  private _discount: Decimal;
-  private _actualBalance?: ActualBalanceTeacher;
+  surplus!: Decimal;
+  discount!: Decimal;
+  actualBalance?: ActualBalanceTeacher;
 
   public constructor({
     discount,
@@ -21,42 +31,22 @@ export default class CalculationTeacher
     year,
     actualBalance,
     observations,
-  }: {
-    id: string;
-    year: number;
-    month: Month;
-    surplus: Decimal;
-    discount: Decimal;
-    observations?: string;
-    actualBalance?: ActualBalanceTeacher;
-  }) {
+    createdAt,
+    updatedAt,
+  }: CalculationTeacherModel) {
     super({ id, year, month, observations });
-    this._surplus = surplus;
-    this._discount = discount;
-    this._actualBalance = actualBalance;
+    this.surplus = surplus;
+    this.discount = discount;
+    this.actualBalance = actualBalance;
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
   }
 
-  public get surplus(): Decimal {
-    return this._surplus;
+  public getTotalHoursPerCalculation(): Decimal {
+    return this.surplus;
   }
 
-  public set surplus(surplus: Decimal) {
-    this._surplus = surplus;
-  }
-
-  public get discount(): Decimal {
-    return this._discount;
-  }
-
-  public set discount(discount: Decimal) {
-    this._discount = discount;
-  }
-
-  public get actualBalance(): ActualBalanceTeacher | undefined {
-    return this._actualBalance;
-  }
-
-  public set actualBalance(actualBalance: ActualBalanceTeacher | undefined) {
-    this._actualBalance = actualBalance;
+  public discountPerCalculation(): Decimal {
+    return this.discount;
   }
 }
