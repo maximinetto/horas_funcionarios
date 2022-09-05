@@ -1,6 +1,9 @@
 import { FilterQuery, MikroORM, wrap } from "@mikro-orm/core";
 import { MySqlDriver } from "@mikro-orm/mysql";
+import ActualBalanceTAS from "entities/ActualBalanceTAS";
+import ActualBalanceTeacher from "entities/ActualBalanceTeacher";
 import Entity from "entities/Entity";
+import Official from "entities/Official";
 import _isNil from "lodash/isNil";
 import _omitBy from "lodash/omitBy";
 import { mikroorm } from "persistence/context/mikroorm/MikroORMDatabase";
@@ -49,6 +52,13 @@ export default class MikroORMRepository<key, T extends Entity>
   }
 
   async add(entity: T): Promise<T> {
+    console.log("persist");
+    console.log("actualBalanceTAS?", entity instanceof ActualBalanceTAS);
+    console.log(
+      "actualBalanceTeacher?",
+      entity instanceof ActualBalanceTeacher
+    );
+    console.log("official?", entity instanceof Official);
     this._mikroorm.em.persist(entity);
     return entity;
   }
@@ -59,6 +69,13 @@ export default class MikroORMRepository<key, T extends Entity>
   }
 
   set(entity: T): Promise<T> {
+    console.log("merge");
+    console.log("actualBalanceTAS?", entity instanceof ActualBalanceTAS);
+    console.log(
+      "actualBalanceTeacher?",
+      entity instanceof ActualBalanceTeacher
+    );
+    console.log("official?", entity instanceof Official);
     return this.add(entity);
   }
 
@@ -92,7 +109,6 @@ export default class MikroORMRepository<key, T extends Entity>
   async clear(): Promise<void> {
     await this._mikroorm.em.flush();
     this._mikroorm.em.clear();
-    console.log("delete all");
     return this._mikroorm.em
       .nativeDelete(this._modelName, {})
       .then(() => Promise.resolve());

@@ -1,4 +1,4 @@
-import { EntitySchema } from "@mikro-orm/core";
+import { Cascade, EntitySchema } from "@mikro-orm/core";
 import ActualBalance from "entities/ActualBalance";
 import ActualBalanceTAS from "entities/ActualBalanceTAS";
 import CalculationTAS from "entities/CalculationTAS";
@@ -14,6 +14,7 @@ export default new EntitySchema<ActualBalanceTAS, ActualBalance>({
       reference: "1:m",
       entity: () => CalculationTAS,
       mappedBy: (calculations) => calculations.actualBalance,
+      cascade: [Cascade.ALL],
     },
     hourlyBalances: {
       reference: "1:m",

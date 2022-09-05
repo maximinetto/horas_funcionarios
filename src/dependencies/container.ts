@@ -29,6 +29,7 @@ import TASCalculator from "services/calculations/TAS";
 import Balances from "services/hourlyBalances";
 import ActualHourlyBalanceCreator from "services/hourlyBalances/ActualHourlyBalanceCreator";
 import ActualHourlyBalanceReplacer from "services/hourlyBalances/ActualHourlyBalanceReplacer";
+import ActualHourlyBalanceSaver from "services/hourlyBalances/ActualHourlyBalanceSaver";
 import OfficialService from "services/officials";
 import CalculationSorter from "sorters/CalculationSorter";
 
@@ -78,6 +79,7 @@ container.register({
     HourlyBalanceTeacherConverter
   ).singleton(),
   officialBuilder: asClass(MikroORMOfficialBuilder),
+  actualHourlyBalanceSaver: asClass(ActualHourlyBalanceSaver).singleton(),
 });
 
 export const officialService = container.resolve(

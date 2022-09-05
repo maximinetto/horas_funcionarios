@@ -1,9 +1,10 @@
 import ActualHourlyBalanceBuilder from "creators/actual/ActualHourlyBalanceBuilder";
+import ActualBalanceTAS from "entities/ActualBalanceTAS";
+import ActualBalanceTeacher from "entities/ActualBalanceTeacher";
 import HourlyBalance from "entities/HourlyBalance";
 import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
 import HourlyBalanceTeacher from "entities/HourlyBalanceTeacher";
 import UnexpectedValueError from "errors/UnexpectedValueError";
-import { mikroorm } from "persistence/context/mikroorm/MikroORMDatabase";
 
 import HourlyBalanceBuilder from "./HourlyBalanceBuilder";
 import {
@@ -35,39 +36,52 @@ export default class MikroORMHourlyBalanceBuilder
   }
 
   createTAS(hourlyBalanceTAS: HourlyBalanceTASModel): HourlyBalanceTAS {
-    let { actualBalance, id, nonWorking, simple, working, year } =
-      hourlyBalanceTAS;
+    const {
+      actualBalance: _actualBalance,
+      id,
+      nonWorking,
+      simple,
+      working,
+      year,
+    } = hourlyBalanceTAS;
 
+    let actualBalance: ActualBalanceTAS | undefined;
     if (actualBalance != null)
-      actualBalance = this._actualHourlyBalanceBuilder.create(actualBalance);
+      actualBalance = this._actualHourlyBalanceBuilder.create(
+        _actualBalance
+      ) as ActualBalanceTAS;
 
-    return mikroorm.em.create(HourlyBalanceTAS, {
+    return new HourlyBalanceTAS({
       id,
       nonWorking,
       simple,
       working,
       year,
       actualBalance,
-      createdAt: hourlyBalanceTAS.createdAt,
-      updatedAt: hourlyBalanceTAS.updatedAt,
     });
   }
 
   createTeacher(
     hourlyBalanceTeacher: HourlyBalanceTeacherModel
   ): HourlyBalanceTeacher {
-    let { actualBalance, id, balance, year } = hourlyBalanceTeacher;
+    const {
+      actualBalance: _actualBalance,
+      id,
+      balance,
+      year,
+    } = hourlyBalanceTeacher;
 
+    let actualBalance: ActualBalanceTeacher | undefined;
     if (actualBalance != null)
-      actualBalance = this._actualHourlyBalanceBuilder.create(actualBalance);
+      actualBalance = this._actualHourlyBalanceBuilder.create(
+        _actualBalance
+      ) as ActualBalanceTeacher;
 
-    return mikroorm.em.create(HourlyBalanceTeacher, {
+    return new HourlyBalanceTeacher({
       id,
       balance,
       year,
       actualBalance,
-      createdAt: hourlyBalanceTeacher.createdAt,
-      updatedAt: hourlyBalanceTeacher.updatedAt,
     });
   }
 }

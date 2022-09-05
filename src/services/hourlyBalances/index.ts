@@ -21,6 +21,8 @@ export default class Balances {
         year,
       });
 
+    console.log("lastActualBalances:", lastActualBalances);
+
     return lastActualBalances.map((ac) => {
       const hourlyBalances = ac.getHourlyBalances() as HourlyBalanceTAS[];
 

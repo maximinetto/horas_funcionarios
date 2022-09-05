@@ -1,6 +1,7 @@
 import { EntitySchema } from "@mikro-orm/core";
 import Calculation from "entities/Calculation";
 import Entity from "entities/Entity";
+import MonthType from "persistence/types/MonthType";
 
 export default new EntitySchema<Calculation, Entity>({
   name: "Calculation",
@@ -15,7 +16,7 @@ export default new EntitySchema<Calculation, Entity>({
       type: "int",
     },
     month: {
-      type: "int",
+      type: MonthType,
     },
     observations: {
       type: "text",

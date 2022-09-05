@@ -1,3 +1,5 @@
+import ActualHourlyBalanceBuilder from "creators/actual/ActualHourlyBalanceBuilder";
+import ActualBalanceTAS from "entities/ActualBalanceTAS";
 import Calculation from "entities/Calculation";
 import CalculationTAS from "entities/CalculationTAS";
 import CalculationTeacher from "entities/CalculationTeacher";
@@ -12,6 +14,16 @@ import {
 } from "./types";
 
 export default class MikroORMCalculationBuilder implements CalculationBuilder {
+  private _actualHourlyBalanceBuilder: ActualHourlyBalanceBuilder;
+
+  constructor({
+    actualHourlyBalanceBuilder,
+  }: {
+    actualHourlyBalanceBuilder: ActualHourlyBalanceBuilder;
+  }) {
+    this._actualHourlyBalanceBuilder = actualHourlyBalanceBuilder;
+  }
+
   create(calculation: CalculationModel): Calculation {
     if (calculation.type === "tas") {
       return this.createTAS(calculation as CalculationTASModel);
@@ -23,7 +35,11 @@ export default class MikroORMCalculationBuilder implements CalculationBuilder {
   }
 
   public createTAS(calculationTAS: CalculationTASModel): CalculationTAS {
-    return mikroorm.em.create(CalculationTAS, {
+    console.log("calculationId:", calculationTAS.id);
+    const actualBalance = this._actualHourlyBalanceBuilder.create(
+      calculationTAS.actualBalance
+    ) as ActualBalanceTAS;
+    return new CalculationTAS({
       id: calculationTAS.id,
       year: calculationTAS.year,
       month: calculationTAS.month,
@@ -37,7 +53,7 @@ export default class MikroORMCalculationBuilder implements CalculationBuilder {
       surplusSimple: calculationTAS.surplusSimple,
       workingOvertime: calculationTAS.workingOvertime,
       surplusNonWorking: calculationTAS.surplusNonWorking,
-      actualBalance: calculationTAS.actualBalance,
+      actualBalance,
       createdAt: calculationTAS.createdAt,
       updatedAt: calculationTAS.updatedAt,
     });

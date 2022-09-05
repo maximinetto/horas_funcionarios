@@ -3,7 +3,7 @@ import OfficialConverter from "converters/models_to_entities/OfficialConverter";
 import MikroORMActualBalanceBuilder from "creators/actual/MikroORMActualBalanceBuilder";
 import MikroORMOfficialBuilder from "creators/official/MikroORMOfficialBuilder";
 import OfficialBuilder from "creators/official/OfficialBuilder";
-import { Contract, TypeOfOfficial } from "entities/Official";
+import Official, { Contract, TypeOfOfficial } from "entities/Official";
 import { DateTime } from "luxon";
 import OfficialRepository from "persistence/Official/OfficialRepository";
 import { Optional } from "typescript-optional";
@@ -202,19 +202,28 @@ describe("Officials controller tests", () => {
 
     const officialEntity = officialConverter.fromModelToEntity(official);
 
-    officialRepository.set.mockResolvedValue(officialEntity);
+    officialRepository.get.mockResolvedValue(Optional.of(officialEntity));
 
-    // prismaMock.official.update.mockResolvedValue(official);
+    const officialEntityUpdated = new Official({
+      ...officialEntity,
+      actualBalances: undefined,
+      position: "Asistente Informática",
+      type: TypeOfOfficial.TAS,
+    });
 
-    await expect(officialService.update(officialEntity)).resolves.toEqual({
+    officialRepository.set.mockResolvedValue(officialEntityUpdated);
+
+    await expect(
+      officialService.update(officialEntityUpdated)
+    ).resolves.toEqual({
       id: 1,
       recordNumber: 3333,
       firstName: "Maximiliano",
       lastName: "Minetto",
-      position: "Director",
+      position: "Asistente Informática",
       dateOfEntry: new Date("2020-01-01"),
       chargeNumber: 333333,
-      type: TypeOfOfficial.TEACHER,
+      type: TypeOfOfficial.TAS,
       contract: Contract.PERMANENT,
     });
   });

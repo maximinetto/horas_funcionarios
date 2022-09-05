@@ -3,12 +3,14 @@ import ActualBalance from "entities/ActualBalance";
 import CalculationTAS from "entities/CalculationTAS";
 import Official, { TypeOfOfficial } from "entities/Official";
 import ValueNotProvidedError from "errors/ValueNotProvidedError";
+import ActualHourlyBalanceRepository from "persistence/ActualBalance/ActualHourlyBalanceRepository";
 import RecalculatorService from "services/calculations/classes/TAS/RecalculatorService";
 import Balances, {
   getCurrentActualHourlyBalance,
 } from "services/hourlyBalances";
 import ActualHourlyBalanceCreator from "services/hourlyBalances/ActualHourlyBalanceCreator";
 import ActualHourlyBalanceReplacer from "services/hourlyBalances/ActualHourlyBalanceReplacer";
+import ActualHourlyBalanceSaver from "services/hourlyBalances/ActualHourlyBalanceSaver";
 import { CalculationCalculated } from "types/calculations";
 
 import CalculatorRowService from "./classes/TAS/CalculatorRowService";
@@ -18,6 +20,7 @@ export default class TASCalculator {
   private actualHourlyBalanceCreator: ActualHourlyBalanceCreator;
   private recalculatorService: RecalculatorService;
   private calculatorRowService: CalculatorRowService;
+  private actualHourlyBalanceSaver: ActualHourlyBalanceSaver;
   private official?: Official;
   private balances: Balances;
 
@@ -25,20 +28,23 @@ export default class TASCalculator {
     actualHourlyBalanceReplacer,
     recalculatorService,
     actualHourlyBalanceCreator,
-    balances,
     calculatorRowService,
+    actualHourlyBalanceRepository,
   }: {
     actualHourlyBalanceReplacer: ActualHourlyBalanceReplacer;
     recalculatorService: RecalculatorService;
     actualHourlyBalanceCreator: ActualHourlyBalanceCreator;
-    balances: Balances;
     calculatorRowService: CalculatorRowService;
+    actualHourlyBalanceRepository: ActualHourlyBalanceRepository;
   }) {
     this.actualHourlyBalanceReplacer = actualHourlyBalanceReplacer;
     this.recalculatorService = recalculatorService;
     this.actualHourlyBalanceCreator = actualHourlyBalanceCreator;
-    this.balances = balances;
+    this.balances = new Balances({ actualHourlyBalanceRepository });
     this.calculatorRowService = calculatorRowService;
+    this.actualHourlyBalanceSaver = new ActualHourlyBalanceSaver({
+      actualHourlyBalanceRepository,
+    });
   }
 
   async calculate({
@@ -69,6 +75,7 @@ export default class TASCalculator {
       actualHourlyBalancesAfterPreviousYear,
       previousYear
     );
+
     const dataCalculated = await this.calculatorRowService.calculate({
       year: currentYear,
       official,
@@ -82,6 +89,11 @@ export default class TASCalculator {
       currentYear
     );
 
+    console.log(
+      "actualHourlyBalancesAfterPreviousYear",
+      actualHourlyBalancesAfterPreviousYear
+    );
+    console.log("actualBalanceCurrentYear", actualBalanceCurrentYear);
     if (!actualBalanceCurrentYear) {
       return this.createActualBalance(dataCalculated, currentYear, official);
     }
@@ -100,8 +112,10 @@ export default class TASCalculator {
       actualHourlyBalancesAfterPreviousYear,
       actualHourlyBalanceCalculated
     );
-
-    this.save([actualHourlyBalanceCalculated, ...others.actualHourlyBalances]);
+    this.actualHourlyBalanceSaver.save([
+      actualHourlyBalanceCalculated,
+      ...others.actualHourlyBalances,
+    ]);
     return {
       currentYear: dataCalculated,
       ...others,
@@ -145,11 +159,13 @@ export default class TASCalculator {
       this.actualHourlyBalanceCreator.create({
         balances: dataCalculated.balances,
         year: nextYear,
-        officialId: official.id,
+        official,
         total: dataCalculated.totalBalance,
         calculations: dataCalculated.calculations,
         type: TypeOfOfficial.TAS,
       });
+
+    this.actualHourlyBalanceSaver.save([actualHourlyBalanceCalculated]);
 
     return {
       currentYear: dataCalculated,
@@ -160,10 +176,6 @@ export default class TASCalculator {
 
   getNextYear(year: number) {
     return year + 1;
-  }
-
-  private save(actualBalances: ActualBalance[]) {
-    const [first, ...others] = actualBalances;
   }
 
   private officialIsDefined() {

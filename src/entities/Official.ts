@@ -33,7 +33,23 @@ export default class Official
 
   public static DEFAULTNUMBERID = 0;
 
-  constructor({
+  constructor(attributes: {
+    id?: number;
+    recordNumber: number;
+    firstName: string;
+    lastName: string;
+    position: string;
+    contract: Contract;
+    type: TypeOfOfficial;
+    dateOfEntry: DateTime;
+    chargeNumber: number;
+    actualBalances?: ActualBalance[];
+  }) {
+    super();
+    this.setAttributes(attributes);
+  }
+
+  private setAttributes({
     chargeNumber,
     id,
     firstName,
@@ -47,7 +63,7 @@ export default class Official
     createdAt,
     updatedAt,
   }: {
-    id: number;
+    id?: number;
     recordNumber: number;
     firstName: string;
     lastName: string;
@@ -56,12 +72,11 @@ export default class Official
     type: TypeOfOfficial;
     dateOfEntry: DateTime;
     chargeNumber: number;
-    actualBalances?: ActualBalance[];
+    actualBalances?: ActualBalance[] | Collection<ActualBalance, unknown>;
     createdAt?: Date;
     updatedAt?: Date;
   }) {
-    super();
-    this.id = id;
+    if (id) this.id = id;
     this.recordNumber = recordNumber;
     this.firstName = firstName;
     this.lastName = lastName;
@@ -70,11 +85,14 @@ export default class Official
     this.type = type;
     this.dateOfEntry = dateOfEntry;
     this.chargeNumber = chargeNumber;
-    this.actualBalances = new Collection<ActualBalance>(this, actualBalances);
-
+    this.actualBalances =
+      !Array.isArray(actualBalances) && actualBalances != null
+        ? actualBalances
+        : new Collection<ActualBalance>(this, actualBalances);
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
   }
+
   entityName(): string {
     throw new Error("Method not implemented.");
   }
@@ -96,6 +114,38 @@ export default class Official
       chargeNumber: 0,
     });
   }
+
+  update(other: Official) {
+    const {
+      actualBalances,
+      chargeNumber,
+      contract,
+      dateOfEntry,
+      firstName,
+      lastName,
+      position,
+      recordNumber,
+      type,
+      id,
+      createdAt,
+      updatedAt,
+    } = other;
+    this.setAttributes({
+      actualBalances,
+      chargeNumber,
+      contract,
+      dateOfEntry,
+      firstName,
+      lastName,
+      position,
+      recordNumber,
+      type,
+      id,
+      createdAt,
+      updatedAt,
+    });
+  }
+
   compareTo(other: Official): number {
     if (this.id === null) {
       return -1;

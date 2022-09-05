@@ -28,26 +28,15 @@ beforeEach(() => {
 });
 
 test("Should get all instance of officials", async () => {
-  console.log("init:", await unitOfWork.official.getAll());
-
-  console.log("Should get all instance of officials");
   const response = await officialService.get({});
 
   const result = (res: OfficialWithOptionalId) => _omit(res, ["id"]);
-
-  console.log("Should get all instance of officials - first expect", response);
-  console.log("officials", officials);
 
   expect(response.map(result)).toEqual(officials);
 
   const response2 = await officialService.get({
     contract: Contract.PERMANENT,
   });
-
-  console.log(
-    "Should get all instance of officials - second expect",
-    response2
-  );
 
   expect(response2.map(result)).toEqual(
     officials.filter(({ contract }) => contract === Contract.PERMANENT)
@@ -57,8 +46,6 @@ test("Should get all instance of officials", async () => {
     type: TypeOfOfficial.TEACHER,
   });
 
-  console.log("Should get all instance of officials - third expect", response3);
-
   expect(response3.map(result)).toEqual(
     officials.filter(({ type }) => type === TypeOfOfficial.TEACHER)
   );
@@ -66,8 +53,6 @@ test("Should get all instance of officials", async () => {
   const response4 = await officialService.get({
     type: TypeOfOfficial.TAS,
   });
-
-  console.log("Should get all instance of officials - four expect", response4);
 
   expect(response4.map(result)).toEqual(
     officials.filter(({ type }) => type === TypeOfOfficial.TAS)
@@ -77,16 +62,12 @@ test("Should get all instance of officials", async () => {
     year: 2018,
   });
 
-  console.log("Should get all instance of officials - five expect", response5);
-
   expect(response5.map(result)).toEqual(
     officials.filter(({ dateOfEntry }) => dateOfEntry.getFullYear() === 2018)
   );
 });
 
 test("Should create 1 official", async () => {
-  console.log("init:", await unitOfWork.official.getAll());
-
   const official = {
     recordNumber: faker.datatype.number(),
     firstName: faker.name.firstName(),
@@ -112,12 +93,9 @@ test("Should create 1 official", async () => {
   delete officialWithoutId.id;
 
   expect(officialWithoutId).toEqual(official);
-  // TODO: clear database
 });
 
 test("Should update the existing official", async () => {
-  console.log("init:", await unitOfWork.official.getAll());
-
   const official = {
     recordNumber: faker.datatype.number(),
     firstName: faker.name.firstName(),
@@ -144,11 +122,9 @@ test("Should update the existing official", async () => {
 
   const initialOfficial = officialConverter.fromModelToEntity(official);
 
-  console.log("initialOfficial:", initialOfficial);
   await unitOfWork.official.add(initialOfficial);
   await unitOfWork.commit();
 
-  // TODO fix this because tests should not depend on other tests
   const optionalOfficialFetched = await unitOfWork.official.getLast();
 
   if (!optionalOfficialFetched.isPresent()) {
@@ -156,11 +132,10 @@ test("Should update the existing official", async () => {
   }
 
   const officialFetched = optionalOfficialFetched.get();
+  const officialEntityUpdated =
+    officialConverter.fromModelToEntity(officialUpdated);
 
-  const officialEntityUpdated = officialConverter.fromModelToEntity({
-    ...officialUpdated,
-    id: officialFetched.id,
-  });
+  officialEntityUpdated.id = officialFetched.id;
 
   const result = await officialService.update(officialEntityUpdated);
 
@@ -168,8 +143,6 @@ test("Should update the existing official", async () => {
 });
 
 test("Should delete a existing official record", async () => {
-  console.log("init:", await unitOfWork.official.getAll());
-
   const officialOptional = await unitOfWork.official.getLast();
 
   if (!officialOptional) {

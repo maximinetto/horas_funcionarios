@@ -12,9 +12,9 @@ import { unitOfWork } from "setupIntegrationTestEnvironment";
 import { secondsToTime } from "utils/time";
 
 let fastify: FastifyInstance;
-let officialService;
+let officialService: OfficialService;
 
-beforeAll(async () => {
+beforeAll(() => {
   fastify = buildApp({
     logger: {
       level: process.env.LOG_LEVEL || "silent",
@@ -31,11 +31,14 @@ beforeAll(async () => {
   });
 });
 
+afterAll(() => {
+  return fastify.close();
+});
+
 describe("Calculations", () => {
   test("should be create a list of hours", async () => {
     await officialService.create(
       new Official({
-        id: 1,
         recordNumber: 1184,
         firstName: "Maximiliano",
         lastName: "Minetto",
@@ -50,6 +53,8 @@ describe("Calculations", () => {
         chargeNumber: 128,
       })
     );
+
+    const [{ id }] = await officialService.get();
 
     const calculationTAS1 = {
       surplusBusiness: "00:30",
@@ -94,7 +99,7 @@ describe("Calculations", () => {
     };
 
     const serverReponse = await fastify.inject({
-      url: "/api/v1/calculations/year/2021/officials/1",
+      url: `/api/v1/calculations/year/2021/officials/${id}`,
       method: "POST",
       payload: data,
     });

@@ -7,7 +7,6 @@ import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
 import ActualHourlyBalanceRepository from "persistence/ActualBalance/ActualHourlyBalanceRepository";
 import CalculationRepository from "persistence/Calculation/CalculationRepository";
 import TASCalculator from "services/calculations/TAS";
-import Balances from "services/hourlyBalances";
 import ActualHourlyBalanceCreator from "services/hourlyBalances/ActualHourlyBalanceCreator";
 import ActualHourlyBalanceReplacer from "services/hourlyBalances/ActualHourlyBalanceReplacer";
 import CalculationSorter from "sorters/CalculationSorter";
@@ -68,10 +67,8 @@ export async function expectCalculationEquals(
     actualHourlyBalanceCreator,
     actualHourlyBalanceReplacer,
     recalculatorService,
-    balances: new Balances({
-      actualHourlyBalanceRepository,
-    }),
     calculatorRowService,
+    actualHourlyBalanceRepository,
   });
 
   const response = await tasCalculator.calculate({

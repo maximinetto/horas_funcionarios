@@ -2,6 +2,7 @@ import { Month } from "@prisma/client";
 import { Decimal } from "decimal.js";
 import Nullable from "entities/null_object/Nullable";
 
+import ActualBalance from "./ActualBalance";
 import ActualBalanceTeacher from "./ActualBalanceTeacher";
 import Calculation from "./Calculation";
 import Entity from "./Entity";
@@ -48,5 +49,12 @@ export default class CalculationTeacher
 
   public discountPerCalculation(): Decimal {
     return this.discount;
+  }
+
+  getActualBalance(): ActualBalance | undefined {
+    return this.actualBalance;
+  }
+  setActualBalance(actualBalance: ActualBalanceTeacher) {
+    this.actualBalance = actualBalance;
   }
 }

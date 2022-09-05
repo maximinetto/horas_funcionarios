@@ -25,14 +25,14 @@ export default class ActualHourlyBalanceCreator {
   create({
     year,
     total,
-    officialId,
+    official,
     balances,
     calculations,
     type,
   }: {
     year: number;
     total: Decimal;
-    officialId: number;
+    official: Official;
     balances: TypeOfHoursByYear[];
     calculations: Calculation[];
     type: TypeOfOfficial;
@@ -40,7 +40,7 @@ export default class ActualHourlyBalanceCreator {
     const actualBalance = this.createActualBalance({
       year,
       total,
-      officialId,
+      official,
       calculations,
       type,
     });
@@ -68,17 +68,16 @@ export default class ActualHourlyBalanceCreator {
     total,
     year,
     type,
-    officialId,
+    official,
     calculations,
   }: {
     year: number;
     total: Decimal;
-    officialId: number;
+    official: Official;
     calculations: Calculation[];
     type: TypeOfOfficial;
   }) {
     const id = generateRandomUUIDV4();
-    const official = Official.default(officialId);
     return this._actualHourlyBalanceBuilder.create({
       calculations,
       id,

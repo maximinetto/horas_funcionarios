@@ -94,9 +94,11 @@ export default class Calculator {
       this.actualBalanceConverter.fromEntitiesToModels(
         data.actualHourlyBalances
       );
+
     const calculations = this.calculationConverter.fromEntitiesToModels(
       data.currentYear.calculations
     );
+
     const currentYear = {
       ...data.currentYear,
       calculations,

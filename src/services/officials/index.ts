@@ -55,8 +55,18 @@ export default class OfficialService {
   }
 
   async update(official: Official) {
-    const officialSaved = await this.officialRepository.set(official);
-    return this.toModel(officialSaved);
+    const { id } = official;
+    const officialFromPersistence = await this.officialRepository.get(id);
+
+    return officialFromPersistence
+      .map(async (o) => {
+        o.update(official);
+        const officialSaved = await this.officialRepository.set(o);
+        return this.toModel(officialSaved);
+      })
+      .orElseThrow(
+        () => new NotExistsError(`The official with id ${id} doesn't exist`)
+      );
   }
 
   async delete(id: number) {

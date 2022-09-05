@@ -4,6 +4,7 @@ import Decimal from "decimal.js";
 import Nullable from "entities/null_object/Nullable";
 import Comparable from "utils/Comparator";
 
+import ActualBalance from "./ActualBalance";
 import Entity from "./Entity";
 import ICalculation from "./interfaces/ICalculation";
 
@@ -54,6 +55,9 @@ export default abstract class Calculation
     }
     return calculations.length > 0;
   }
+
+  abstract getActualBalance(): ActualBalance | undefined;
+  abstract setActualBalance(actualBalance: ActualBalance);
 
   compareTo(other: Calculation): number {
     if (this.id === other.id) {

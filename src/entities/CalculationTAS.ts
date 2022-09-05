@@ -2,6 +2,7 @@ import { Month } from "@prisma/client";
 import { Decimal } from "decimal.js";
 import Nullable from "entities/null_object/Nullable";
 
+import ActualBalance from "./ActualBalance";
 import ActualBalanceTAS from "./ActualBalanceTAS";
 import Calculation from "./Calculation";
 import type Entity from "./Entity";
@@ -80,6 +81,13 @@ export default class CalculationTAS extends Calculation implements Nullable {
 
   public discountPerCalculation(): Decimal {
     return this.discount;
+  }
+
+  getActualBalance(): ActualBalance | undefined {
+    return this.actualBalance;
+  }
+  setActualBalance(actualBalance: ActualBalanceTAS) {
+    this.actualBalance = actualBalance;
   }
 
   public copy({
