@@ -293,14 +293,12 @@
         },
         "balance": {
           "name": "balance",
-          "type": "numeric(10,0)",
+          "type": "bigint",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "precision": 10,
-          "scale": 0,
-          "mappedType": "decimal"
+          "mappedType": "bigint"
         },
         "actual_balance_id": {
           "name": "actual_balance_id",
@@ -393,36 +391,30 @@
         },
         "surplus_non_working": {
           "name": "surplus_non_working",
-          "type": "numeric(10,0)",
+          "type": "bigint",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "precision": 10,
-          "scale": 0,
-          "mappedType": "decimal"
+          "mappedType": "bigint"
         },
         "surplus_simple": {
           "name": "surplus_simple",
-          "type": "numeric(10,0)",
+          "type": "bigint",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "precision": 10,
-          "scale": 0,
-          "mappedType": "decimal"
+          "mappedType": "bigint"
         },
         "surplus_business": {
           "name": "surplus_business",
-          "type": "numeric(10,0)",
+          "type": "bigint",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "precision": 10,
-          "scale": 0,
-          "mappedType": "decimal"
+          "mappedType": "bigint"
         },
         "actual_balance_id": {
           "name": "actual_balance_id",
@@ -533,25 +525,21 @@
         },
         "surplus": {
           "name": "surplus",
-          "type": "numeric(10,0)",
+          "type": "bigint",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "precision": 10,
-          "scale": 0,
-          "mappedType": "decimal"
+          "mappedType": "bigint"
         },
         "discount": {
           "name": "discount",
-          "type": "numeric(10,0)",
+          "type": "bigint",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "precision": 10,
-          "scale": 0,
-          "mappedType": "decimal"
+          "mappedType": "bigint"
         },
         "actual_balance_id": {
           "name": "actual_balance_id",
@@ -662,102 +650,84 @@
         },
         "surplus_business": {
           "name": "surplus_business",
-          "type": "numeric(10,0)",
+          "type": "bigint",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "precision": 10,
-          "scale": 0,
-          "mappedType": "decimal"
+          "mappedType": "bigint"
         },
         "surplus_non_working": {
           "name": "surplus_non_working",
-          "type": "numeric(10,0)",
+          "type": "bigint",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "precision": 10,
-          "scale": 0,
-          "mappedType": "decimal"
+          "mappedType": "bigint"
         },
         "surplus_simple": {
           "name": "surplus_simple",
-          "type": "numeric(10,0)",
+          "type": "bigint",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "precision": 10,
-          "scale": 0,
-          "mappedType": "decimal"
+          "mappedType": "bigint"
         },
         "discount": {
           "name": "discount",
-          "type": "numeric(10,0)",
+          "type": "bigint",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "precision": 10,
-          "scale": 0,
-          "mappedType": "decimal"
+          "mappedType": "bigint"
         },
         "working_overtime": {
           "name": "working_overtime",
-          "type": "numeric(10,0)",
+          "type": "bigint",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "precision": 10,
-          "scale": 0,
-          "mappedType": "decimal"
+          "mappedType": "bigint"
         },
         "working_night_overtime": {
           "name": "working_night_overtime",
-          "type": "numeric(10,0)",
+          "type": "bigint",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "precision": 10,
-          "scale": 0,
-          "mappedType": "decimal"
+          "mappedType": "bigint"
         },
         "non_working_overtime": {
           "name": "non_working_overtime",
-          "type": "numeric(10,0)",
+          "type": "bigint",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "precision": 10,
-          "scale": 0,
-          "mappedType": "decimal"
+          "mappedType": "bigint"
         },
         "non_working_night_overtime": {
           "name": "non_working_night_overtime",
-          "type": "numeric(10,0)",
+          "type": "bigint",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "precision": 10,
-          "scale": 0,
-          "mappedType": "decimal"
+          "mappedType": "bigint"
         },
         "compensated_night_overtime": {
           "name": "compensated_night_overtime",
-          "type": "numeric(10,0)",
+          "type": "bigint",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "precision": 10,
-          "scale": 0,
-          "mappedType": "decimal"
+          "mappedType": "bigint"
         },
         "actual_balance_id": {
           "name": "actual_balance_id",

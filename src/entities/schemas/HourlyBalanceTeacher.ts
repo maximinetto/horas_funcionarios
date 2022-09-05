@@ -1,4 +1,4 @@
-import { DecimalType, EntitySchema } from "@mikro-orm/core";
+import { BigIntType, EntitySchema } from "@mikro-orm/core";
 import ActualBalanceTeacher from "entities/ActualBalanceTeacher";
 import HourlyBalance from "entities/HourlyBalance";
 import HourlyBalanceTeacher from "entities/HourlyBalanceTeacher";
@@ -10,7 +10,7 @@ export default new EntitySchema<HourlyBalanceTeacher, HourlyBalance>({
   class: HourlyBalanceTeacher,
   properties: {
     balance: {
-      type: DecimalType,
+      type: BigIntType,
     },
     actualBalance: {
       reference: "m:1",

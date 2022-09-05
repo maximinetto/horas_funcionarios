@@ -1,4 +1,4 @@
-import { DecimalType, EntitySchema } from "@mikro-orm/core";
+import { BigIntType, EntitySchema } from "@mikro-orm/core";
 import ActualBalanceTeacher from "entities/ActualBalanceTeacher";
 import Calculation from "entities/Calculation";
 import CalculationTeacher from "entities/CalculationTeacher";
@@ -10,10 +10,10 @@ export default new EntitySchema<CalculationTeacher, Calculation>({
   class: CalculationTeacher,
   properties: {
     surplus: {
-      type: DecimalType,
+      type: BigIntType,
     },
     discount: {
-      type: DecimalType,
+      type: BigIntType,
       fieldName: "discount",
     },
     actualBalance: {
