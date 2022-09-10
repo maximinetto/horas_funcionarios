@@ -1,7 +1,8 @@
 import Calculations from "collections/Calculations";
 import ActualBalance from "entities/ActualBalance";
 import CalculationTAS from "entities/CalculationTAS";
-import Official, { TypeOfOfficial } from "entities/Official";
+import Official from "entities/Official";
+import { TypeOfOfficial } from "enums/officials";
 import ValueNotProvidedError from "errors/ValueNotProvidedError";
 import ActualHourlyBalanceRepository from "persistence/ActualBalance/ActualHourlyBalanceRepository";
 import RecalculatorService from "services/calculations/classes/TAS/RecalculatorService";

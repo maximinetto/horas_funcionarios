@@ -1,7 +1,7 @@
-import { Month } from "@prisma/client";
 import Calculations from "collections/Calculations";
 import Decimal from "decimal.js";
 import Nullable from "entities/null_object/Nullable";
+import { Month } from "enums/common";
 import Comparable from "utils/Comparator";
 
 import ActualBalance from "./ActualBalance";
@@ -23,13 +23,15 @@ export default abstract class Calculation
     year,
     observations,
   }: {
-    id: string;
+    id?: string;
     year: number;
     month: Month;
     observations?: string;
   }) {
     super();
-    this.id = id;
+    if (id) {
+      this.id = id;
+    }
     this.year = year;
     this.month = month;
     this.observations = observations;

@@ -1,10 +1,11 @@
 import { Collection } from "@mikro-orm/core";
 import { Decimal } from "decimal.js";
+import { TypeOfOfficial } from "enums/officials";
 
 import ActualBalance from "./ActualBalance";
 import CalculationTAS from "./CalculationTAS";
 import HourlyBalanceTAS from "./HourlyBalanceTAS";
-import Official, { TypeOfOfficial } from "./Official";
+import Official from "./Official";
 
 export default class ActualBalanceTAS extends ActualBalance {
   calculations = new Collection<CalculationTAS>(this);
@@ -18,7 +19,7 @@ export default class ActualBalanceTAS extends ActualBalance {
     calculations,
     hourlyBalances,
   }: {
-    id: string;
+    id?: string;
     year: number;
     total?: Decimal;
     official?: Official;

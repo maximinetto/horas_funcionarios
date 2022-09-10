@@ -1,0 +1,16 @@
+version: "3.1"
+
+services:
+  official_schedules_db:
+    image: mysql:8.0
+    volumes: 
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    command: --init-file /docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3312:3306"
+    environment:
+      MYSQL_DATABASE: hours_test
+      MYSQL_ROOT_USER: maximinetto
+      MYSQL_USER: maximinetto
+      MYSQL_ROOT_PASSWORD: maxi08041994
+      MYSQL_PASSWORD: maxi08041994

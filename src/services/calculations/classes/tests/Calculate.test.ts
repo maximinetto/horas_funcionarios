@@ -1,11 +1,12 @@
 import faker from "@faker-js/faker";
-import { Month } from "@prisma/client";
 import Calculations from "collections/Calculations";
 import Decimal from "decimal.js";
 import { actualHourlyBalanceBuilder } from "dependencies/container";
 import ActualBalanceTeacher from "entities/ActualBalanceTeacher";
 import CalculationTeacher from "entities/CalculationTeacher";
-import Official, { Contract, TypeOfOfficial } from "entities/Official";
+import Official from "entities/Official";
+import { Month } from "enums/common";
+import { Contract, TypeOfOfficial } from "enums/officials";
 import { DateTime } from "luxon";
 import { mikroorm } from "persistence/context/mikroorm/MikroORMDatabase";
 import CalculationSorter from "sorters/CalculationSorter";

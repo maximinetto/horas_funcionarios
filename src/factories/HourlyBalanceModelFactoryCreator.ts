@@ -1,10 +1,10 @@
-import { HourlyBalance as HourlyBalanceModel } from "@prisma/client";
 import HourlyBalanceTASConverter from "converters/models_to_entities/HourlyBalanceTASConverter";
 import HourlyBalanceTeacherConverter from "converters/models_to_entities/HourlyBalanceTeacher";
 import HourlyBalanceEntity from "entities/HourlyBalance";
 import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
 import HourlyBalanceTeacher from "entities/HourlyBalanceTeacher";
 import InvalidValueError from "errors/InvalidValueError";
+import { HourlyBalanceModel } from "types/hourlyBalance";
 
 import Creator from "./Creator";
 

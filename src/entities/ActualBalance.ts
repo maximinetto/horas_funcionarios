@@ -1,11 +1,12 @@
 import { Decimal } from "decimal.js";
 import Nullable from "entities/null_object/Nullable";
+import { TypeOfOfficial } from "enums/officials";
 import Comparable from "utils/Comparator";
 
 import Calculation from "./Calculation";
 import Entity from "./Entity";
 import HourlyBalance from "./HourlyBalance";
-import Official, { TypeOfOfficial } from "./Official";
+import Official from "./Official";
 
 export default abstract class ActualBalance
   extends Entity
@@ -24,14 +25,14 @@ export default abstract class ActualBalance
     official,
     type,
   }: {
-    id: string;
+    id?: string;
     year: number;
     total?: Decimal;
     official?: Official;
     type: TypeOfOfficial;
   }) {
     super();
-    this.id = id;
+    if (id) this.id = id;
     this.year = year;
     this.total = total ?? new Decimal(0);
     this.official = official;

@@ -1,6 +1,6 @@
-import { Month } from "@prisma/client";
 import { Decimal } from "decimal.js";
 import Nullable from "entities/null_object/Nullable";
+import { Month } from "enums/common";
 
 import ActualBalance from "./ActualBalance";
 import ActualBalanceTAS from "./ActualBalanceTAS";
@@ -8,7 +8,7 @@ import Calculation from "./Calculation";
 import type Entity from "./Entity";
 
 interface CalculationTASModel extends Entity {
-  id: string;
+  id?: string;
   year: number;
   month: Month;
   surplusBusiness: Decimal;

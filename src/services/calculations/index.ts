@@ -5,7 +5,7 @@ import ActualBalanceConverter from "converters/models_to_entities/ActualBalanceC
 import CalculationConverter from "converters/models_to_entities/CalculationConverter";
 import CalculationTASDTOWithTimeFieldsInString from "dto/create/calculationTASDTOWithTimeFieldsInString";
 import ActualBalance from "entities/ActualBalance";
-import { TypeOfOfficial } from "entities/Official";
+import { TypeOfOfficial } from "enums/officials";
 import NotExistsError from "errors/NotExistsError";
 import OfficialRepository from "persistence/Official/OfficialRepository";
 import { sanitizeCalculationFields } from "sanitizers/calculations";

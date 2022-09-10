@@ -26,6 +26,7 @@ export function serializeBalancesTAS(balances: unknown) {
         id: balance["id"],
         year: Number(balance["year"]),
         total: BigInt(balance["total"]),
+        type: balance["type"],
         officialId: Number(balance["officialId"]),
         hourlyBalances: [hourlyBalance],
       });

@@ -1,4 +1,4 @@
-import { Month } from "@prisma/client";
+import { Month } from "enums/common";
 
 type MonthArray = Array<{
   key: string;

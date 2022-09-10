@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import CalculationConverter from "converters/models_to_entities/CalculationConverter";
 import Calculation from "entities/Calculation";
 import CalculationTAS from "entities/CalculationTAS";
-import { TypeOfOfficial } from "entities/Official";
+import { TypeOfOfficial } from "enums/officials";
 import _omit from "lodash/omit";
 import { NotNullableCalculationWithTAS } from "types/calculations";
 

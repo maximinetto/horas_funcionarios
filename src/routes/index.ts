@@ -1,9 +1,9 @@
 import { baseDir, logger } from "config";
 import { FastifyInstance } from "fastify";
 import fs from "fs/promises";
-import path from "path";
+import { resolve } from "path";
 
-const pathRouter = path.resolve(baseDir, "routes");
+const pathRouter = resolve(baseDir, "routes");
 
 const removeExtension = (file: string) => {
   return file.split(".")[0];

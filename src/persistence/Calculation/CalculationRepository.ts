@@ -1,11 +1,10 @@
-import { Prisma } from "@prisma/client";
 import Calculation from "entities/Calculation";
-import { TypeOfOfficial } from "entities/Official";
+import { TypeOfOfficial } from "enums/officials";
 import Repository from "persistence/Repository";
 
 export default interface CalculationRepository
   extends Repository<string, Calculation> {
-  filter(predicate: Prisma.CalculationFindManyArgs): Promise<Calculation[]>;
+  filter(predicate: object): Promise<Calculation[]>;
   getCalculationWithYearGreaterThanActual({
     officialId,
     year,

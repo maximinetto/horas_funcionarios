@@ -1,9 +1,10 @@
-import { Month } from "@prisma/client";
 import buildApp from "buildApp";
 import OfficialConverter from "converters/models_to_entities/OfficialConverter";
 import MikroORMActualBalanceBuilder from "creators/actual/MikroORMActualBalanceBuilder";
 import MikroORMOfficialBuilder from "creators/official/MikroORMOfficialBuilder";
-import Official, { Contract, TypeOfOfficial } from "entities/Official";
+import Official from "entities/Official";
+import { Month } from "enums/common";
+import { Contract, TypeOfOfficial } from "enums/officials";
 import { FastifyInstance } from "fastify";
 import _omit from "lodash/omit";
 import { DateTime } from "luxon";

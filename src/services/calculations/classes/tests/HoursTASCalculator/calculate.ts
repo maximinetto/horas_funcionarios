@@ -5,7 +5,7 @@ import ActualBalance from "entities/ActualBalance";
 import ActualBalanceTAS from "entities/ActualBalanceTAS";
 import CalculationTAS from "entities/CalculationTAS";
 import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
-import { TypeOfOfficial } from "entities/Official";
+import { TypeOfOfficial } from "enums/officials";
 import { generateRandomUUIDV4 } from "utils/strings";
 
 import subtractHoursFromBalance from "./calculateBalance";

@@ -1,5 +1,5 @@
 import Calculation from "entities/Calculation";
-import { TypeOfOfficial } from "entities/Official";
+import { TypeOfOfficial } from "enums/officials";
 import UnexpectedValueError from "errors/UnexpectedValueError";
 import MikroORMRepository from "persistence/MikroORMRepository";
 

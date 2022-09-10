@@ -1,18 +1,21 @@
 import faker from "@faker-js/faker";
-import { ActualBalance, Month } from "@prisma/client";
 import CalculationTAS from "entities/CalculationTAS";
+import { Month } from "enums/common";
+import { TypeOfOfficial } from "enums/officials";
 import { DateTime } from "luxon";
+import { ActualBalanceModel } from "types/actualBalance";
 
 import { buildCalculation } from "./buildCalculation";
 import { hoursToSeconds } from "./util";
 
 export const yearFirstTest = 2021;
 
-export const actualBalance: ActualBalance = {
+export const actualBalance: ActualBalanceModel = {
   id: faker.datatype.uuid(),
   officialId: 1,
   year: yearFirstTest,
   total: 0n,
+  type: TypeOfOfficial.TAS,
 };
 
 export const calculationsFirstTest: CalculationTAS[] = [
@@ -317,9 +320,10 @@ export const calculationsSecondTest: CalculationTAS[] = [
   }),
 ];
 
-export const actualBalanceSecondTest: ActualBalance = {
+export const actualBalanceSecondTest: ActualBalanceModel = {
   id: faker.datatype.uuid(),
   officialId: 1,
   year: yearSecondTest,
   total: 0n,
+  type: TypeOfOfficial.TAS,
 };

@@ -1,39 +1,45 @@
-import { Prisma } from "@prisma/client";
-import { Decimal } from "decimal.js";
 import ActualBalance from "entities/ActualBalance";
 
-import { HourlyBalanceSimple, HourlyBalanceTASNonNull } from "./hourlyBalance";
+import { CalculationModel } from "./calculations";
+import {
+  HourlyBalanceModel,
+  HourlyBalanceSimple,
+  HourlyBalanceTASNonNull,
+} from "./hourlyBalance";
 import { Official, OfficialSimple } from "./officials";
 
-export type ActualBalanceDTO = Prisma.ActualBalanceGetPayload<{
-  include: { hourlyBalances: true };
-}>;
+export interface ActualBalanceModel {
+  id: string;
+  year: number;
+  total: bigint;
+  type: TypeOfOfficial;
+  officialId?: number;
+}
 
-export type ActualBalanceComplete = Prisma.ActualBalanceGetPayload<{
-  include: {
-    calculations: true;
-    hourlyBalances: true;
-  };
-}> & { official: Official };
+export interface ActualBalanceDTO extends ActualBalanceModel {
+  hourlyBalances: HourlyBalanceModel[];
+}
+
+export interface ActualBalanceComplete extends ActualBalanceModel {
+  calculations: CalculationModel[];
+  hourlyBalances: HourlyBalanceModel[];
+  official: Official;
+}
 
 export interface PartialActualBalance extends ActualBalanceComplete {
   calculations?;
   hourlyBalances?;
   official?;
+  officialId?: number;
 }
 
-export type ActualBalanceFindManyOptions = Omit<
-  Prisma.ActualBalanceFindManyArgs,
-  "where"
->;
-
-export type ActualBalanceWithHourlyBalances = Prisma.ActualBalanceGetPayload<{
-  include: { hourlyBalances: true };
-}>;
+export interface ActualBalanceWithHourlyBalances extends ActualBalanceModel {
+  hourlyBalances: HourlyBalanceModel[];
+}
 
 export interface ActualBalanceWithHourlyBalancesSimple
   extends Omit<ActualBalanceWithHourlyBalances, "officialId"> {
-  total: Decimal;
+  total: bigint;
   official: Optional<OfficialSimple>;
   hourlyBalances: HourlyBalanceSimple[];
 }

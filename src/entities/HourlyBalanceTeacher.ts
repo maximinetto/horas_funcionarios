@@ -17,7 +17,7 @@ export default class HourlyBalanceTeacher
     year,
     actualBalance,
   }: {
-    id: string;
+    id?: string;
     year: number;
     balance: Decimal;
     actualBalance?: ActualBalanceTeacher;

@@ -2,7 +2,7 @@ import faker from "@faker-js/faker";
 import OfficialConverter from "converters/models_to_entities/OfficialConverter";
 import MikroORMActualBalanceBuilder from "creators/actual/MikroORMActualBalanceBuilder";
 import MikroORMOfficialBuilder from "creators/official/MikroORMOfficialBuilder";
-import { Contract, TypeOfOfficial } from "entities/Official";
+import { Contract, TypeOfOfficial } from "enums/officials";
 import _omit from "lodash/omit";
 import OfficialService from "services/officials";
 import { unitOfWork } from "setupIntegrationTestEnvironment";

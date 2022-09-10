@@ -4,7 +4,7 @@ import {
   Type,
   ValidationError,
 } from "@mikro-orm/core";
-import { Month } from "@prisma/client";
+import { Month } from "enums/common";
 import { getMonthByNumber, getNumberByMonth } from "utils/mapMonths";
 
 export default class MonthType extends Type<Month, number> {

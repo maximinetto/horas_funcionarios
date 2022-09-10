@@ -3,7 +3,7 @@ import ActualBalance from "entities/ActualBalance";
 import Calculation from "entities/Calculation";
 import CalculationTAS from "entities/CalculationTAS";
 import HourlyBalance from "entities/HourlyBalance";
-import { TypeOfOfficial } from "entities/Official";
+import { TypeOfOfficial } from "enums/officials";
 import UnexpectedError from "errors/UnexpectedError";
 
 import Nullable from "./Nullable";

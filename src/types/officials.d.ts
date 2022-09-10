@@ -1,4 +1,3 @@
-import { Contract, TypeOfOfficial } from "entities/Official";
 import { DateTime } from "luxon";
 
 export type Official = {

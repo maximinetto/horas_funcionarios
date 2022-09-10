@@ -18,8 +18,7 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitAny": false,
-    "skipLibCheck": true,
     "sourceMap": true
   },
-  "include": ["src"]
+  "include": ["src/**/*"]
 }

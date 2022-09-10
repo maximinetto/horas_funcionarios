@@ -1,6 +1,7 @@
+import { Contract, TypeOfOfficial } from "enums/officials";
 import { DateTime } from "luxon";
 
-import Official, { Contract, TypeOfOfficial } from "../Official";
+import Official from "../Official";
 import Nullable from "./Nullable";
 
 export default class NullOfficial extends Official implements Nullable {

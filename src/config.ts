@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import path from "path";
+import { resolve } from "path";
 import util from "util";
 import { bigIntSerializator } from "utils/strings";
 import { createLogger, format, transports } from "winston";
@@ -22,7 +22,7 @@ const combineMessageAndSplat = () => {
 };
 
 const configLogger = {
-  filename: path.resolve(baseDir, "..", "logs", "server.log"),
+  filename: resolve(baseDir, "..", "logs", "server.log"),
   format: format.combine(
     format.timestamp({ format: "MMM-DD-YYYY HH:mm:ss" }),
     combineMessageAndSplat(),
@@ -53,7 +53,7 @@ if (process.env.NODE_ENV !== "production") {
   logger.add(new transports.Console(configLogger));
 }
 export function configureDotEnv(env = ".env") {
-  const envDir = path.resolve(baseDir, "..", env);
+  const envDir = resolve(baseDir, "..", env);
   logger.info("envDir: ", envDir, "\n\n");
 
   dotenv.config({

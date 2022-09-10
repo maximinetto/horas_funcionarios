@@ -1,4 +1,3 @@
-import { Calculation as CalculationModel } from "@prisma/client";
 import { AbstractConverter } from "converters/models_to_entities/AbstractConverter";
 import CalculationTASConverter from "converters/models_to_entities/CalculationTASConverter";
 import CalculationTeacherConverter from "converters/models_to_entities/CalculationTeacherConverter";
@@ -7,6 +6,7 @@ import CalculationTAS from "entities/CalculationTAS";
 import CalculationTeacherEntity from "entities/CalculationTeacher";
 import InvalidValueError from "errors/InvalidValueError";
 import {
+  CalculationModel,
   CalculationWithTAS,
   CalculationWithTeacher,
   NotNullableCalculationWithTAS,

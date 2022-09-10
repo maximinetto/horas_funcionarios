@@ -1,34 +1,58 @@
-import {
-  Calculation as CalculationModel,
-  CalculationTAS as CalculationTASModel,
-  CalculationTeacher,
-  Prisma,
-} from "@prisma/client";
 import Decimal from "decimal.js";
 import Calculation from "entities/Calculation";
 import CalculationTASEntity from "entities/CalculationTAS";
 import Official from "entities/Official";
 
+import { Month } from "./common";
 import {
   TypeOfHourDecimal,
   TypeOfHoursByYear,
   TypeOfHoursByYearDecimal,
 } from "./typeOfHours";
 
-export type CalculationWithTAS = Prisma.CalculationGetPayload<{
-  include: { calculationTAS: true };
-}>;
+export interface CalculationModel {
+  id?: string;
+  year: number;
+  month: Month;
+  observations: string | null;
+  actualBalanceId?: string;
+}
+
+export interface CalculationTASModel {
+  id?: string;
+  surplusBusiness: bigint;
+  surplusNonWorking: bigint;
+  surplusSimple: bigint;
+  discount: bigint;
+  workingOvertime: bigint;
+  workingNightOvertime: bigint;
+  nonWorkingOvertime: bigint;
+  nonWorkingNightOvertime: bigint;
+  compensatedNightOvertime: bigint;
+  calculationId: string;
+}
+
+export interface CalculationTeacherModel {
+  id?: string;
+  surplus: bigint;
+  discount: bigint;
+  calculationId: string;
+}
+
+export interface CalculationWithTAS extends CalculationModel {
+  calculationTAS: CalculationTASModel;
+}
 
 export interface NotNullableCalculationWithTAS extends CalculationWithTAS {
   calculationTAS: CalculationTASModel;
 }
-export type CalculationWithTeacher = Prisma.CalculationGetPayload<{
-  include: { calculationTeacher: true };
-}>;
+export interface CalculationWithTeacher extends CalculationModel {
+  calculationTeacher: CalculationTeacherModel;
+}
 
 export interface NotNullableCalculationWithTeacher
   extends CalculationWithTeacher {
-  calculationTeacher: CalculationTeacher;
+  calculationTeacher: CalculationTeacherModel;
 }
 
 export interface CalculationParam<T extends Calculation> {
@@ -47,9 +71,6 @@ export interface CalculationTeacher
 export interface CalculationParamTAS extends CalculationParam {
   calculations: CalculationTASEntity[];
 }
-
-export interface PrismaCalculationFinderOptions
-  extends Partial<Prisma.CalculationFindUniqueArgs> {}
 
 export type CalculationCalculated = {
   calculations: CalculationTASEntity[];

@@ -2,7 +2,8 @@ import BalanceConverter from "converters/models_to_entities/BalanceConverter";
 import { convertTypesOfYearsToActualBalance } from "converters/models_to_entities/TypeOfYearToBalanceConverter";
 import type Decimal from "decimal.js";
 import ActualBalance from "entities/ActualBalance";
-import Official, { TypeOfOfficial } from "entities/Official";
+import Official from "entities/Official";
+import { TypeOfOfficial } from "enums/officials";
 import { TypeOfHoursByYear, TypeOfHoursByYearDecimal } from "types/typeOfHours";
 
 import ActualHourlyBalanceCreator from "./ActualHourlyBalanceCreator";

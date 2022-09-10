@@ -1,4 +1,4 @@
-import { Month } from "@prisma/client";
+import { Month } from "enums/common";
 
 export default class CalculationTASDTO {
   private _id: string;

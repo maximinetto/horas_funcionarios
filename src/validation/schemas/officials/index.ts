@@ -1,7 +1,7 @@
-import { Contract, TypeOfOfficials } from "@prisma/client";
+import { Contract, TypeOfOfficial } from "enums/officials";
 import Joi from "joi";
 
-const types = Object.values(TypeOfOfficials);
+const types = Object.values(TypeOfOfficial);
 const contracts = Object.values(Contract);
 
 const recordNumberOfficialSchema = Joi.number().min(1);

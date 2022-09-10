@@ -1,7 +1,7 @@
-import { Month } from "@prisma/client";
 import Calculations from "collections/Calculations";
 import Calculation from "entities/Calculation";
 import Official from "entities/Official";
+import { Month } from "enums/common";
 import InvalidValueError from "errors/InvalidValueError";
 import UnexpectedValueError from "errors/UnexpectedValueError";
 import { DateTime } from "luxon";

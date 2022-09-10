@@ -1,18 +1,18 @@
-import { Contract, TypeOfOfficials } from "@prisma/client";
+import { Contract, TypeOfOfficial } from "enums/officials";
 
 export function typeContainsString(str: string) {
   const strToLower = str.toLowerCase();
-  return Object.values(TypeOfOfficials).some((type) =>
+  return Object.values(TypeOfOfficial).some((type) =>
     type.toLowerCase().includes(strToLower)
   );
 }
 
-export function stringToType(str: string | null): TypeOfOfficials | undefined {
+export function stringToType(str: string | null): TypeOfOfficial | undefined {
   if (str === null) {
     return undefined;
   }
   const strToLower = str.toLowerCase();
-  return Object.values(TypeOfOfficials).find(
+  return Object.values(TypeOfOfficial).find(
     (type) => type.toLowerCase() === strToLower
   );
 }

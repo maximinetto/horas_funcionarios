@@ -1,8 +1,11 @@
 import ActualHourlyBalanceBuilder from "creators/actual/ActualHourlyBalanceBuilder";
 import { Decimal } from "decimal.js";
 import ActualBalanceEntity from "entities/ActualBalance";
+import ActualBalanceTAS from "entities/ActualBalanceTAS";
+import ActualBalanceTeacher from "entities/ActualBalanceTeacher";
 import NullOfficial from "entities/null_object/NullOfficial";
-import Official, { TypeOfOfficial } from "entities/Official";
+import Official from "entities/Official";
+import { TypeOfOfficial } from "enums/officials";
 import UnexpectedValueError from "errors/UnexpectedValueError";
 import {
   ActualBalanceComplete,
@@ -98,6 +101,15 @@ export default class ActualBalanceConverter extends AbstractConverter<
 
     official.id = entity.official ? entity.official.id : new NullOfficial().id;
 
+    let type: TypeOfOfficial;
+    if (entity instanceof ActualBalanceTAS) type = TypeOfOfficial.TAS;
+    else if (entity instanceof ActualBalanceTeacher)
+      type = TypeOfOfficial.TEACHER;
+    else
+      throw new UnexpectedValueError(
+        "The subtype of actual balance is not recognized"
+      );
+
     return {
       id: entity.id,
       officialId: official.id,
@@ -106,6 +118,7 @@ export default class ActualBalanceConverter extends AbstractConverter<
       official: official as OfficialModel,
       calculations,
       hourlyBalances,
+      type,
     };
   }
 }

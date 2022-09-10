@@ -1,7 +1,7 @@
-import { Month } from "@prisma/client";
 import Calculations from "collections/Calculations";
 import Decimal from "decimal.js";
 import CalculationTAS from "entities/CalculationTAS";
+import { Month } from "enums/common";
 import { buildCalculation } from "services/calculations/classes/tests/HoursTASCalculator/buildCalculation";
 import { hoursToSeconds } from "services/calculations/classes/tests/HoursTASCalculator/util";
 import CalculationSorter from "sorters/CalculationSorter";

@@ -4,7 +4,7 @@
  */
 
 import type { Config } from "@jest/types";
-import path from "path";
+import { join } from "path";
 
 import { compilerOptions } from "./tsconfig.json";
 
@@ -95,7 +95,7 @@ const config: Config.InitialOptions = {
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
   // modulePathIgnorePatterns: [],
 
-  modulePaths: [path.join("<rootDir>", compilerOptions.baseUrl)],
+  modulePaths: [join("<rootDir>", compilerOptions.baseUrl)],
 
   // Activates notifications for test results
   // notify: false,

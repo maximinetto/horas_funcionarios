@@ -1,7 +1,8 @@
 import { EntitySchema } from "@mikro-orm/core";
 import ActualBalance from "entities/ActualBalance";
 import Entity from "entities/Entity";
-import Official, { Contract, TypeOfOfficial } from "entities/Official";
+import Official from "entities/Official";
+import { Contract, TypeOfOfficial } from "enums/officials";
 import LuxonDateType from "persistence/types/LuxonDateType";
 
 export default new EntitySchema<Official, Entity>({

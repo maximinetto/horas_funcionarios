@@ -1,20 +1,11 @@
 import { Collection } from "@mikro-orm/core";
 import Nullable from "entities/null_object/Nullable";
+import { Contract, TypeOfOfficial } from "enums/officials";
 import { DateTime } from "luxon";
 import Comparable from "utils/Comparator";
 
 import ActualBalance from "./ActualBalance";
 import Entity from "./Entity";
-
-export enum TypeOfOfficial {
-  TAS = "tas",
-  TEACHER = "teacher",
-}
-
-export enum Contract {
-  PERMANENT = "PERMANENT",
-  TEMPORARY = "TEMPORARY",
-}
 
 export default class Official
   extends Entity

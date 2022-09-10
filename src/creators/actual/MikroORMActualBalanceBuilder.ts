@@ -4,7 +4,7 @@ import CalculationTAS from "entities/CalculationTAS";
 import CalculationTeacher from "entities/CalculationTeacher";
 import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
 import HourlyBalanceTeacher from "entities/HourlyBalanceTeacher";
-import { TypeOfOfficial } from "entities/Official";
+import { TypeOfOfficial } from "enums/officials";
 import UnexpectedValueError from "errors/UnexpectedValueError";
 
 import ActualHourlyBalanceBuilder from "./ActualHourlyBalanceBuilder";

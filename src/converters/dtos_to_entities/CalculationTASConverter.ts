@@ -3,7 +3,7 @@ import { Decimal } from "decimal.js";
 import CalculationTASDTO from "dto/create/calculationTASDTO";
 import ActualBalanceTAS from "entities/ActualBalanceTAS";
 import CalculationTASEntity from "entities/CalculationTAS";
-import { TypeOfOfficial } from "entities/Official";
+import { TypeOfOfficial } from "enums/officials";
 
 import { AbstractConverter } from "./AbstractConverter";
 

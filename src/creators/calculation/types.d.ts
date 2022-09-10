@@ -1,8 +1,8 @@
-import { Month } from "@prisma/client";
 import ActualBalance from "creators/actual/types";
 import Decimal from "decimal.js";
 import type Entity from "entities/Entity";
 import { TypeOfOfficial } from "entities/Official";
+import { Month } from "enums/common";
 
 export interface CalculationModel extends Entity {
   id: string;

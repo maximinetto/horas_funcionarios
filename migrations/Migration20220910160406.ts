@@ -1,6 +1,6 @@
 import { Migration } from '@mikro-orm/migrations';
 
-export class Migration20220905122850 extends Migration {
+export class Migration20220910160406 extends Migration {
 
   async up(): Promise<void> {
     this.addSql('create table `officials` (`id` int unsigned not null auto_increment primary key, `created_at` datetime null, `updated_at` datetime null, `record_number` int not null, `first_name` varchar(255) not null, `last_name` varchar(255) not null, `position` varchar(255) not null, `contract` enum(\'PERMANENT\', \'TEMPORARY\') not null, `type` enum(\'tas\', \'teacher\') not null, `date_of_entry` date not null, `charge_number` int not null) default character set utf8mb4 engine = InnoDB;');

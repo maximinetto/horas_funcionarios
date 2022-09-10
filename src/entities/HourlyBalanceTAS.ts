@@ -21,7 +21,7 @@ export default class HourlyBalanceTAS
     year,
     actualBalance,
   }: {
-    id: string;
+    id?: string;
     year: number;
     working: Decimal;
     nonWorking: Decimal;

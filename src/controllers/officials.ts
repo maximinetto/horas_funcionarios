@@ -1,7 +1,7 @@
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { logger } from "config";
 import { officialConverter, officialService } from "dependencies/container";
-import { Contract, TypeOfOfficial } from "entities/Official";
+import { Contract, TypeOfOfficial } from "enums/officials";
 import ModelAlreadyExistsError from "errors/ModelAlreadyExistsError";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { Official, OfficialWithoutId } from "types/officials";
