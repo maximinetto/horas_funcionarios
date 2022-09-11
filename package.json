@@ -27,8 +27,9 @@
     "lint": "npm run lint:fix",
     "lint:fix": "eslint  . --ext=ts --fix",
     "format": "prettier --write .",
+    "test2": "ts-node-dev -r tsconfig-paths/register src/test.ts",
     "migrate:dev": "dotenv -e .env.development -- mikro-orm migration:create --initial && dotenv -e .env.development -- mikro-orm migration:up",
-    "migrate:test": "dotenv -e .env.test -- mikro-orm migration:create --initial && dotenv -e .env.test -- mikro-orm migration:up"
+    "migrate:test": "mikro-orm migration:create --initial && mikro-orm migration:up"
   },
   "author": "",
   "license": "ISC",

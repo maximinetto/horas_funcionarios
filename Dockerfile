@@ -5,9 +5,7 @@ WORKDIR /usr/app
 COPY package*.json ./
 COPY . .
 
-RUN npm install
-RUN npm run migrate:test
+RUN npm ci
+RUN npm run migrate:dev
 
-EXPOSE 3000
-
-CMD ["npm", "start"]
+CMD ["npm", "dev"]
