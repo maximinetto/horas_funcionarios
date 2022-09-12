@@ -1,0 +1,11 @@
+FROM node:18-alpine
+
+WORKDIR /usr/app
+
+COPY package*.json ./
+RUN npm ci
+COPY . .
+COPY .env.test .env
+EXPOSE 3000
+
+CMD npm run migrate:test; npm run unit && npm run integration

@@ -7,21 +7,24 @@ services:
       - ~/docker/mysql-data:/var/lib/mysql
     command: --default-authentication-plugin=mysql_native_password
     ports:
-      - "3312:3306"
+      - "${OFFICIALS_SCHEDULES_DB_PORT-3312}:3306"
     container_name: official_schedules_db
     restart: always
     hostname: db
     environment:
-      MYSQL_DATABASE: hours_test
-      MYSQL_ROOT_USER: maximinetto
-      MYSQL_USER: maximinetto
-      MYSQL_ROOT_PASSWORD: maxi08041994
-      MYSQL_PASSWORD: maxi08041994
-  api:
-    build: .
-    ports:
-      - 3000:3000
-    env_file:
-      - ./.env.test
-    depends_on:
-      - db
+      MYSQL_DATABASE: ${OFFICIALS_SCHEDULES_DB_NAME-official_schedules_db}
+      MYSQL_USER: ${OFFICIALS_SCHEDULES_DB_USER-maximinetto}
+      MYSQL_PASSWORD: ${OFFICIALS_SCHEDULES_DB_PASSWORD-maxi08041994}
+  # api:
+  #   build: 
+  #     context: .
+  #     dockerfile: Dockerfile.test
+  #   ports:
+  #     - 3000:3000
+  #   environment:
+  #     - OFFICIALS_SCHEDULES_PORT=3000
+  #     - OFFICIALS_SCHEDULES_HOST=app
+  #     - OFFICIALS_SCHEDULES_DB_URL=mysql://maximinetto:maxi08041994@db:3306/hours_test
+  #     - OFFICIALS_SCHEDULES_TYPE_OF_ENGINE=mikroorm=value
+  #   depends_on:
+  #     - db

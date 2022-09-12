@@ -12,6 +12,8 @@ import HourlyBalanceTASSchema from "entities/schemas/HourlyBalanceTAS";
 import HourlyBalanceTeacherSchema from "entities/schemas/HourlyBalanceTeacher";
 import OfficialSchema from "entities/schemas/Official";
 
+const PORT = Number(process.env.OFFICIALS_SCHEDULES_DB_PORT);
+
 const dbOptions: Options<MySqlDriver> = {
   driver: MySqlDriver,
   timezone: "-03:00",
@@ -30,7 +32,9 @@ const dbOptions: Options<MySqlDriver> = {
   ],
   debug: true,
   allowGlobalContext: true,
-  clientUrl: process.env.OFFICIALS_SCHEDULES_DB_URL,
+  dbName: process.env.OFFICIALS_SCHEDULES_DB_NAME,
+  port: PORT,
+  password: process.env.OFFICIALS_SCHEDULES_DB_PASSWORD,
 };
 
 export default dbOptions;
