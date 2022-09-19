@@ -1,5 +1,4 @@
 import { MikroORM } from "@mikro-orm/core";
-import { MariaDbDriver } from "@mikro-orm/mariadb";
 import { MySqlDriver } from "@mikro-orm/mysql";
 import UnexpectedError from "errors/UnexpectedError";
 import MikroORMActualHourlyBalanceRepository from "persistence/ActualBalance/MikroORMActualHourlyBalanceRepository";
@@ -11,7 +10,7 @@ import MikroORMHourlyBalanceTASRepository from "persistence/HourlyBalance/MikroO
 import MikroORMHourlyBalanceTeacherRepository from "persistence/HourlyBalance/MikroORMHourlyBalanceTeacherRepository";
 import MikroORMOfficialRepository from "persistence/Official/MikroORMOfficialRepository";
 
-import Database from "../index.config";
+import Database from "../Database";
 import initializeORM from "./index";
 
 export let mikroorm: MikroORM<MySqlDriver>;
@@ -57,8 +56,13 @@ export class MikroORMDatabase implements Database {
     return this._mikroorm.close();
   }
 
+  clear(): Promise<void> {
+    this.assert();
+    return this._mikroorm?.getSchemaGenerator().refreshDatabase();
+  }
+
   private assert(): asserts this is this & {
-    _mikroorm: MikroORM<MariaDbDriver>;
+    _mikroorm: MikroORM<MySqlDriver>;
   } {
     if (this._mikroorm == null) {
       throw new UnexpectedError("Database must be initialized");

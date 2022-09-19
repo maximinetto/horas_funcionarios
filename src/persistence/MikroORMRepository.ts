@@ -1,14 +1,10 @@
-import { FilterQuery, MikroORM, wrap } from "@mikro-orm/core";
+import { FilterQuery, FindOptions, MikroORM, wrap } from "@mikro-orm/core";
 import { MySqlDriver } from "@mikro-orm/mysql";
-import ActualBalanceTAS from "entities/ActualBalanceTAS";
-import ActualBalanceTeacher from "entities/ActualBalanceTeacher";
 import Entity from "entities/Entity";
-import Official from "entities/Official";
-import _isNil from "lodash/isNil";
-import _omitBy from "lodash/omitBy";
 import { mikroorm } from "persistence/context/mikroorm/MikroORMDatabase";
 import Repository from "persistence/Repository";
 import { Optional } from "typescript-optional";
+import removeKeyIfValueDoesNotDefined from "utils/removeKeyIfValueDoesNotDefined";
 
 export default class MikroORMRepository<key, T extends Entity>
   implements Repository<key, T>
@@ -41,24 +37,21 @@ export default class MikroORMRepository<key, T extends Entity>
     return this._mikroorm.em.find<T>(this._modelName, options);
   }
 
-  filter(predicate: Object): Promise<T[]> {
-    const _predicate = _omitBy(predicate, _isNil);
+  filter(predicate: Object, options?: Object): Promise<T[]> {
+    const _predicate = removeKeyIfValueDoesNotDefined(predicate);
 
-    const options = {
+    const where = {
       ..._predicate,
     } as FilterQuery<T>;
 
-    return this._mikroorm.em.find<T>(this._modelName, options);
+    const _options = {
+      ...options,
+    } as FindOptions<T>;
+
+    return this._mikroorm.em.find<T>(this._modelName, where, _options);
   }
 
   async add(entity: T): Promise<T> {
-    console.log("persist");
-    console.log("actualBalanceTAS?", entity instanceof ActualBalanceTAS);
-    console.log(
-      "actualBalanceTeacher?",
-      entity instanceof ActualBalanceTeacher
-    );
-    console.log("official?", entity instanceof Official);
     this._mikroorm.em.persist(entity);
     return entity;
   }
@@ -69,13 +62,6 @@ export default class MikroORMRepository<key, T extends Entity>
   }
 
   set(entity: T): Promise<T> {
-    console.log("merge");
-    console.log("actualBalanceTAS?", entity instanceof ActualBalanceTAS);
-    console.log(
-      "actualBalanceTeacher?",
-      entity instanceof ActualBalanceTeacher
-    );
-    console.log("official?", entity instanceof Official);
     return this.add(entity);
   }
 

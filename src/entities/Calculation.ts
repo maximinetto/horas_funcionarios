@@ -8,27 +8,33 @@ import ActualBalance from "./ActualBalance";
 import Entity from "./Entity";
 import ICalculation from "./interfaces/ICalculation";
 
+export interface CalculationModel {
+  id?: string;
+  year: number;
+  month: Month;
+  observations?: string;
+}
 export default abstract class Calculation
   extends Entity
-  implements Nullable, Comparable<Calculation>, ICalculation
+  implements Nullable, Comparable<Calculation>, ICalculation, CalculationModel
 {
   id!: string;
   year!: number;
   month!: Month;
   observations?: string;
 
-  public constructor({
-    id,
-    month,
-    year,
-    observations,
-  }: {
-    id?: string;
-    year: number;
-    month: Month;
-    observations?: string;
-  }) {
+  public constructor(values: CalculationModel) {
     super();
+
+    this.setAttributes(values);
+  }
+
+  protected setAttributes({
+    id,
+    year,
+    month,
+    observations,
+  }: CalculationModel): void {
     if (id) {
       this.id = id;
     }

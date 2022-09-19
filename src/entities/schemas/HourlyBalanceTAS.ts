@@ -1,7 +1,8 @@
-import { BigIntType, EntitySchema } from "@mikro-orm/core";
+import { EntitySchema } from "@mikro-orm/core";
 import ActualBalanceTAS from "entities/ActualBalanceTAS";
 import HourlyBalance from "entities/HourlyBalance";
 import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
+import BigNumberType from "persistence/types/BigNumberType";
 
 export default new EntitySchema<HourlyBalanceTAS, HourlyBalance>({
   name: "HourlyBalanceTAS",
@@ -10,15 +11,15 @@ export default new EntitySchema<HourlyBalanceTAS, HourlyBalance>({
   class: HourlyBalanceTAS,
   properties: {
     nonWorking: {
-      type: BigIntType,
+      type: BigNumberType,
       fieldName: "surplus_non_working",
     },
     simple: {
-      type: BigIntType,
+      type: BigNumberType,
       fieldName: "surplus_simple",
     },
     working: {
-      type: BigIntType,
+      type: BigNumberType,
       fieldName: "surplus_business",
     },
     actualBalance: {

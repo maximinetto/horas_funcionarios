@@ -9,8 +9,11 @@ import HourlyBalanceConverter from "converters/models_to_entities/HourlyBalanceC
 import HourlyBalanceTASConverter from "converters/models_to_entities/HourlyBalanceTASConverter";
 import HourlyBalanceTeacherConverter from "converters/models_to_entities/HourlyBalanceTeacher";
 import OfficialConverter from "converters/models_to_entities/OfficialConverter";
+import TypeOfYearToBalanceConverter from "converters/models_to_entities/TypeOfYearToBalanceConverter";
 import ActualHourlyBalanceBuilder from "creators/actual/ActualHourlyBalanceBuilder";
 import MikroORMActualBalanceBuilder from "creators/actual/MikroORMActualBalanceBuilder";
+import MikroORMCalculationBuilder from "creators/calculation/MikroORMCalculationBuilder";
+import MikroORMHourlyBalanceBuilder from "creators/hourlyBalance/MikroORMHourlyBalanceBuilder";
 import MikroORMOfficialBuilder from "creators/official/MikroORMOfficialBuilder";
 import HourlyBalanceEntityFactoryCreator from "factories/HourlyBalanceEntityFactoryCreator";
 import HourlyBalanceModelFactoryCreator from "factories/HourlyBalanceModelFactoryCreator";
@@ -46,6 +49,7 @@ container.register({
   balances: asClass(Balances).singleton(),
   balancesPerYearCalculator: asClass(BalancesPerYearCalculator).singleton(),
   calculationConverter: asClass(CalculationConverter).singleton(),
+  calculationBuilder: asClass(MikroORMCalculationBuilder).singleton(),
   calculationRepository: asClass(MikroORMCalculationRepository).singleton(),
   calculationSorter: asClass(CalculationSorter).singleton(),
   calculationTASRepository: asClass(
@@ -74,12 +78,16 @@ container.register({
   hourlyBalanceModelFactoryCreator: asClass(
     HourlyBalanceModelFactoryCreator
   ).singleton(),
+  hourlyBalanceBuilder: asClass(MikroORMHourlyBalanceBuilder).singleton(),
   hourlyBalanceTASConverter: asClass(HourlyBalanceTASConverter).singleton(),
   hourlyBalanceTeacherConverter: asClass(
     HourlyBalanceTeacherConverter
   ).singleton(),
   officialBuilder: asClass(MikroORMOfficialBuilder),
   actualHourlyBalanceSaver: asClass(ActualHourlyBalanceSaver).singleton(),
+  typeOfYearToBalanceConverter: asClass(
+    TypeOfYearToBalanceConverter
+  ).singleton(),
 });
 
 export const officialService = container.resolve(

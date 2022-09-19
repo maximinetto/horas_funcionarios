@@ -1,4 +1,4 @@
-console.log(
-  "process.env.OFFICIALS_SCHEDULES_DB_URL:",
-  process.env.OFFICIALS_SCHEDULES_DB_URL
-);
+import { convertDecimalToHHmm, convertHHmmToDecimal } from "./calculate";
+
+console.log(convertDecimalToHHmm("0.1666666666"));
+console.log(convertHHmmToDecimal("00:11"));

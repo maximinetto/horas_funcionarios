@@ -171,14 +171,12 @@
         },
         "total": {
           "name": "total",
-          "type": "numeric(10,0)",
+          "type": "bigint",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "precision": 10,
-          "scale": 0,
-          "mappedType": "decimal"
+          "mappedType": "bigint"
         },
         "official_id": {
           "name": "official_id",
@@ -422,7 +420,7 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "length": 36,
           "mappedType": "string"
         }
@@ -460,6 +458,7 @@
             "id"
           ],
           "referencedTableName": "actual_balances",
+          "deleteRule": "cascade",
           "updateRule": "cascade"
         }
       }
@@ -735,7 +734,7 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "length": 36,
           "mappedType": "string"
         }
@@ -773,6 +772,7 @@
             "id"
           ],
           "referencedTableName": "actual_balances",
+          "deleteRule": "cascade",
           "updateRule": "cascade"
         }
       }

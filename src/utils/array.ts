@@ -1,5 +1,6 @@
 import ArrayIsEmptyError from "errors/ArrayIsEmptyError";
 import _keyBy from "lodash/keyBy";
+import _omit from "lodash/omit";
 
 export const isFirstValue = (index: number) => index === 0;
 export const previousValue = <T>(array: T[], index: number) => {
@@ -71,3 +72,10 @@ function checkConditions(
 export const arrayToObject = <T>(array: T[], key: string) => {
   return _keyBy(array, key);
 };
+
+export function removeUnnecesaryPropertiesOfArray<T extends Object>(
+  array: T[],
+  keys: string[]
+) {
+  return array.map((o) => _omit(o, keys));
+}

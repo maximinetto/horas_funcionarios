@@ -1,12 +1,17 @@
+import { FilterQuery, FindOptions } from "@mikro-orm/core";
 import Calculations from "collections/Calculations";
 import { logger } from "config";
 import CalculationTASConverter from "converters/dtos_to_entities/CalculationTASConverter";
 import ActualBalanceConverter from "converters/models_to_entities/ActualBalanceConverter";
 import CalculationConverter from "converters/models_to_entities/CalculationConverter";
-import CalculationTASDTOWithTimeFieldsInString from "dto/create/calculationTASDTOWithTimeFieldsInString";
+import CalculationTASDTO from "dto/create/CalculationTASDTO";
+import CalculationTASDTOWithTimeFieldsInString from "dto/create/CalculationTASDTOWithTimeFieldsInString";
 import ActualBalance from "entities/ActualBalance";
+import CalculationTAS from "entities/CalculationTAS";
 import { TypeOfOfficial } from "enums/officials";
 import NotExistsError from "errors/NotExistsError";
+import UnexpectedError from "errors/UnexpectedError";
+import CalculationTASRepository from "persistence/Calculation/CalculationTAS/CalculationTASRepository";
 import OfficialRepository from "persistence/Official/OfficialRepository";
 import { sanitizeCalculationFields } from "sanitizers/calculations";
 import TASCalculator from "services/calculations/TAS";
@@ -19,6 +24,7 @@ export default class Calculator {
   private calculationTASConverterDTO: CalculationTASConverter;
   private actualBalanceConverter: ActualBalanceConverter;
   private calculationConverter: CalculationConverter;
+  private calculationTASRepository: CalculationTASRepository;
 
   constructor({
     officialRepository,
@@ -26,8 +32,10 @@ export default class Calculator {
     calculationTASConverterDTO,
     actualBalanceConverter,
     calculationConverter,
+    calculationTASRepository,
   }: {
     officialRepository: OfficialRepository;
+    calculationTASRepository: CalculationTASRepository;
     tasCalculator: TASCalculator;
     calculationTASConverterDTO: CalculationTASConverter;
     actualBalanceConverter: ActualBalanceConverter;
@@ -38,6 +46,7 @@ export default class Calculator {
     this.calculationTASConverterDTO = calculationTASConverterDTO;
     this.actualBalanceConverter = actualBalanceConverter;
     this.calculationConverter = calculationConverter;
+    this.calculationTASRepository = calculationTASRepository;
   }
 
   async execute({
@@ -65,9 +74,9 @@ export default class Calculator {
       });
     }
 
-    const calculationEntities =
-      this.calculationTASConverterDTO.fromDTOsToEntities(calculationsSanitazed);
-    const calculationCollection = new Calculations(...calculationEntities);
+    const calculationCollection = await this.setCalculations(
+      calculationsSanitazed
+    );
 
     const result = await this.tasCalculator.calculate({
       official,
@@ -83,6 +92,49 @@ export default class Calculator {
       officialId,
       year,
     });
+  }
+
+  private;
+
+  private async setCalculations(calculations: CalculationTASDTO[]) {
+    const calculationToUpdate = calculations.filter((c) => !c.insert);
+
+    const ids = calculationToUpdate.map((c) => c.id);
+    const filter: FilterQuery<CalculationTAS> = {
+      id: {
+        $in: ids,
+      },
+    };
+    const options: FindOptions<CalculationTAS, "actualBalance"> = {
+      populate: ["actualBalance"],
+    };
+
+    const calculationsFound = await this.calculationTASRepository.filter(
+      filter,
+      options
+    );
+
+    if (calculationsFound.length > 0) {
+      calculationsFound.forEach((calculationFound) => {
+        const calculationToUpdate = calculations.find(
+          (c) => c.id === calculationFound.id
+        );
+        if (!calculationToUpdate)
+          throw new UnexpectedError("calculationToUpdate must be found");
+
+        const model = calculationToUpdate.toModel();
+
+        model.actualBalance = calculationFound.actualBalance;
+
+        calculationFound.replace(model);
+      });
+    }
+
+    const calculationEntities =
+      this.calculationTASConverterDTO.fromDTOsToEntities(
+        calculations.filter((c) => c.insert)
+      );
+    return new Calculations(...calculationEntities, ...calculationsFound);
   }
 
   private toModel(data: {

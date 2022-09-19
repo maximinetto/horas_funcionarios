@@ -1,5 +1,5 @@
 import { calculator } from "dependencies/container";
-import CalculationTASDTOWithTimeFieldsInString from "dto/create/calculationTASDTOWithTimeFieldsInString";
+import CalculationTASDTOWithTimeFieldsInString from "dto/create/CalculationTASDTOWithTimeFieldsInString";
 import { FastifyReply, FastifyRequest } from "fastify";
 import response from "utils/response";
 import validate from "validation/requests/calculations/create";

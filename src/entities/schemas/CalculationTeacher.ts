@@ -1,7 +1,8 @@
-import { BigIntType, EntitySchema } from "@mikro-orm/core";
+import { EntitySchema } from "@mikro-orm/core";
 import ActualBalanceTeacher from "entities/ActualBalanceTeacher";
 import Calculation from "entities/Calculation";
 import CalculationTeacher from "entities/CalculationTeacher";
+import BigNumberType from "persistence/types/BigNumberType";
 
 export default new EntitySchema<CalculationTeacher, Calculation>({
   name: "CalculationTeacher",
@@ -10,10 +11,10 @@ export default new EntitySchema<CalculationTeacher, Calculation>({
   class: CalculationTeacher,
   properties: {
     surplus: {
-      type: BigIntType,
+      type: BigNumberType,
     },
     discount: {
-      type: BigIntType,
+      type: BigNumberType,
       fieldName: "discount",
     },
     actualBalance: {

@@ -30,7 +30,8 @@ beforeEach(() => {
 test("Should get all instance of officials", async () => {
   const response = await officialService.get({});
 
-  const result = (res: OfficialWithOptionalId) => _omit(res, ["id"]);
+  const result = (res: OfficialWithOptionalId) =>
+    _omit(res, ["id", "actualBalances", "createdAt", "updatedAt"]);
 
   expect(response.map(result)).toEqual(officials);
 

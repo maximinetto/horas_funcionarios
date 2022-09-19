@@ -64,7 +64,6 @@ export default class MikroORMCalculationRepository
     year: number;
     type: TypeOfOfficial;
   }): Promise<Calculation[]> {
-    console.log("type:", type);
     if (type === TypeOfOfficial.TAS) {
       return this._calculationTASRepository.getCalculationsTASWithActualYear({
         officialId,

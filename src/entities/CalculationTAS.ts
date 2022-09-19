@@ -1,16 +1,12 @@
 import { Decimal } from "decimal.js";
 import Nullable from "entities/null_object/Nullable";
-import { Month } from "enums/common";
 
 import ActualBalance from "./ActualBalance";
 import ActualBalanceTAS from "./ActualBalanceTAS";
-import Calculation from "./Calculation";
+import Calculation, { CalculationModel } from "./Calculation";
 import type Entity from "./Entity";
 
-interface CalculationTASModel extends Entity {
-  id?: string;
-  year: number;
-  month: Month;
+type CalculationTASModelExclusiveFields = {
   surplusBusiness: Decimal;
   surplusNonWorking: Decimal;
   surplusSimple: Decimal;
@@ -20,11 +16,17 @@ interface CalculationTASModel extends Entity {
   nonWorkingOvertime: Decimal;
   nonWorkingNightOvertime: Decimal;
   compensatedNightOvertime: Decimal;
-  observations?: string;
   actualBalance?: ActualBalanceTAS;
-}
+};
+export interface CalculationTASModel
+  extends Entity,
+    CalculationModel,
+    CalculationTASModelExclusiveFields {}
 
-export default class CalculationTAS extends Calculation implements Nullable {
+export default class CalculationTAS
+  extends Calculation
+  implements Nullable, CalculationTASModel
+{
   surplusBusiness!: Decimal;
   surplusNonWorking!: Decimal;
   surplusSimple!: Decimal;
@@ -34,30 +36,37 @@ export default class CalculationTAS extends Calculation implements Nullable {
   nonWorkingOvertime!: Decimal;
   nonWorkingNightOvertime!: Decimal;
   compensatedNightOvertime!: Decimal;
-  actualBalance?: ActualBalanceTAS;
+  actualBalance?: ActualBalanceTAS | undefined;
 
   public static WORKING_MULTIPLIER = 1.5;
   public static NON_WORKING_MULTIPLIER = 2;
 
   constructor({
-    actualBalance,
-    compensatedNightOvertime,
-    discount,
     id,
-    month,
-    nonWorkingNightOvertime,
-    nonWorkingOvertime,
-    observations,
-    surplusBusiness,
-    surplusNonWorking,
-    surplusSimple,
-    workingNightOvertime,
-    workingOvertime,
     year,
-    createdAt,
-    updatedAt,
+    month,
+    observations,
+    ...others
   }: CalculationTASModel) {
     super({ id, year, month, observations });
+
+    this.setAttributesTAS(others);
+  }
+
+  private setAttributesTAS({
+    surplusSimple,
+    surplusBusiness,
+    surplusNonWorking,
+    discount,
+    compensatedNightOvertime,
+    nonWorkingNightOvertime,
+    workingNightOvertime,
+    workingOvertime,
+    nonWorkingOvertime,
+    actualBalance,
+    createdAt,
+    updatedAt,
+  }: CalculationTASModelExclusiveFields & Entity) {
     this.surplusBusiness = surplusBusiness;
     this.surplusNonWorking = surplusNonWorking;
     this.surplusSimple = surplusSimple;
@@ -124,5 +133,11 @@ export default class CalculationTAS extends Calculation implements Nullable {
       observations: observations ?? this.observations,
       actualBalance: actualBalance ?? this.actualBalance,
     });
+  }
+
+  public replace(other: CalculationTASModel): void {
+    const { id, year, month, observations, ...others } = other;
+    this.setAttributes({ id, year, month, observations });
+    this.setAttributesTAS(others);
   }
 }

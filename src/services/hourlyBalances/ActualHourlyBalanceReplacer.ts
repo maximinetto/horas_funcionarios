@@ -1,7 +1,8 @@
 import BalanceConverter from "converters/models_to_entities/BalanceConverter";
-import { convertTypesOfYearsToActualBalance } from "converters/models_to_entities/TypeOfYearToBalanceConverter";
+import TypeOfYearToBalanceConverter from "converters/models_to_entities/TypeOfYearToBalanceConverter";
 import type Decimal from "decimal.js";
 import ActualBalance from "entities/ActualBalance";
+import Calculation from "entities/Calculation";
 import Official from "entities/Official";
 import { TypeOfOfficial } from "enums/officials";
 import { TypeOfHoursByYear, TypeOfHoursByYearDecimal } from "types/typeOfHours";
@@ -11,33 +12,43 @@ import ActualHourlyBalanceCreator from "./ActualHourlyBalanceCreator";
 export default class ActualHourlyBalanceReplacer {
   private balanceConverter: BalanceConverter;
   private actualHourlyBalanceCreator: ActualHourlyBalanceCreator;
+  private _typeOfYearToBalanceConverter: TypeOfYearToBalanceConverter;
 
   constructor({
     actualHourlyBalanceCreator,
     balanceConverter,
+    typeOfYearToBalanceConverter,
   }: {
     balanceConverter: BalanceConverter;
     actualHourlyBalanceCreator: ActualHourlyBalanceCreator;
+    typeOfYearToBalanceConverter: TypeOfYearToBalanceConverter;
   }) {
     this.balanceConverter = balanceConverter;
     this.actualHourlyBalanceCreator = actualHourlyBalanceCreator;
+    this._typeOfYearToBalanceConverter = typeOfYearToBalanceConverter;
   }
 
   replace({
     actualBalance,
     balances,
     totalBalance,
+    calculations,
+    official,
   }: {
     balances: (TypeOfHoursByYearDecimal | TypeOfHoursByYear)[];
     totalBalance: Decimal;
     actualBalance: ActualBalance;
+    calculations: Calculation[];
+    official: Official;
   }) {
     const enrichBalances = this.balanceConverter.fromBigIntToDecimal(balances);
-    return convertTypesOfYearsToActualBalance(
+    return this._typeOfYearToBalanceConverter.convertToActualBalance({
       actualBalance,
-      enrichBalances,
-      totalBalance
-    );
+      balances: enrichBalances,
+      total: totalBalance,
+      calculations,
+      official,
+    });
   }
 
   create({

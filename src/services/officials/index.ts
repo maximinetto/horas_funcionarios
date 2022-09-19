@@ -47,7 +47,13 @@ export default class OfficialService {
         : undefined,
     } as FilterQuery<Official>;
 
-    return this.officialRepository.filter(where).then(this.toModels);
+    return this.officialRepository.filter(where).then((officials) =>
+      officials.map((o) => ({
+        ...o,
+        dateOfEntry: o.dateOfEntry.toJSDate(),
+        actualBalances: o.actualBalances.getItems(),
+      }))
+    );
   }
 
   async create(official: Official) {

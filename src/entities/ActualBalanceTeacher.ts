@@ -54,7 +54,7 @@ export default class ActualBalanceTeacher extends ActualBalance {
   }
 
   setHourlyBalances(value: HourlyBalanceTeacher[]): void {
-    this.hourlyBalances = new Collection<HourlyBalanceTeacher>(this, value);
+    this.hourlyBalances.set(value);
   }
 
   public static isActualBalanceTeacher(

@@ -1,9 +1,11 @@
+import Calculations from "collections/Calculations";
 import Decimal from "decimal.js";
 import Calculation from "entities/Calculation";
 import CalculationTASEntity from "entities/CalculationTAS";
+import HourlyBalance from "entities/HourlyBalance";
 import Official from "entities/Official";
+import { Month } from "enums/common";
 
-import { Month } from "./common";
 import {
   TypeOfHourDecimal,
   TypeOfHoursByYear,
@@ -50,6 +52,11 @@ export interface CalculationWithTeacher extends CalculationModel {
   calculationTeacher: CalculationTeacherModel;
 }
 
+export type CalculationTASInherited = CalculationModel &
+  Omit<CalculationTASModel, "calculationId">;
+export type CalculationTeacherInherited = CalculationModel &
+  Omit<CalculationTeacherModel, "calculationId">;
+
 export interface NotNullableCalculationWithTeacher
   extends CalculationWithTeacher {
   calculationTeacher: CalculationTeacherModel;
@@ -66,11 +73,7 @@ export interface CalculationParam<T extends Calculation> {
 export interface CalculationTAS extends CalculationModel, CalculationTASModel {}
 export interface CalculationTeacher
   extends CalculationModel,
-    CalculationTeacher {}
-
-export interface CalculationParamTAS extends CalculationParam {
-  calculations: CalculationTASEntity[];
-}
+    CalculationTeacherModel {}
 
 export type CalculationCalculated = {
   calculations: CalculationTASEntity[];

@@ -1,12 +1,11 @@
 import ActualBalance from "entities/ActualBalance";
+import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
+import { TypeOfOfficial } from "enums/officials";
 
 import { CalculationModel } from "./calculations";
-import {
-  HourlyBalanceModel,
-  HourlyBalanceSimple,
-  HourlyBalanceTASNonNull,
-} from "./hourlyBalance";
-import { Official, OfficialSimple } from "./officials";
+import { MakeOptional } from "./common";
+import { HourlyBalanceModel, HourlyBalanceTASNonNull } from "./hourlyBalance";
+import { Official } from "./officials";
 
 export interface ActualBalanceModel {
   id: string;
@@ -26,22 +25,14 @@ export interface ActualBalanceComplete extends ActualBalanceModel {
   official: Official;
 }
 
-export interface PartialActualBalance extends ActualBalanceComplete {
-  calculations?;
-  hourlyBalances?;
-  official?;
-  officialId?: number;
-}
+export interface PartialActualBalance
+  extends MakeOptional<
+    ActualBalanceComplete,
+    "calculations" | "hourlyBalances" | "officialId" | "official"
+  > {}
 
 export interface ActualBalanceWithHourlyBalances extends ActualBalanceModel {
   hourlyBalances: HourlyBalanceModel[];
-}
-
-export interface ActualBalanceWithHourlyBalancesSimple
-  extends Omit<ActualBalanceWithHourlyBalances, "officialId"> {
-  total: bigint;
-  official: Optional<OfficialSimple>;
-  hourlyBalances: HourlyBalanceSimple[];
 }
 
 export interface ActualBalanceWithHourlyBalancesTAS

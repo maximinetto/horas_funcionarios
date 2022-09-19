@@ -50,8 +50,6 @@ export default new EntitySchema<Official, Entity>({
       reference: "1:m",
       entity: () => ActualBalance,
       mappedBy: (actualBalance) => actualBalance.official,
-
-      nullable: true,
     },
   },
 });

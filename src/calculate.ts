@@ -10,7 +10,7 @@ export function convertDecimalToHHmm(real: number | bigint | string): string {
 
   const decimal = new Decimal(real.toString());
   const integer = decimal.floor();
-  const decimalPart = new Decimal(decimal.sub(integer).toFixed(2));
+  const decimalPart = new Decimal(decimal.sub(integer));
   const minutes = decimalPart.mul(60).ceil().toString().padStart(2, "0");
   return integer + ":" + minutes;
 }

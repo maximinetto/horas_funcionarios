@@ -9,12 +9,12 @@ beforeAll(async () => {
 });
 
 afterEach(async () => {
+  await unitOfWork.official.clear();
   await unitOfWork.calculationTAS.clear();
   await unitOfWork.calculationTeacher.clear();
-  await unitOfWork.official.clear();
-  await unitOfWork.hourlyBalance.clear();
+  await unitOfWork.hourlyBalanceTAS.clear();
+  await unitOfWork.hourlyBalanceTeacher.clear();
   await unitOfWork.actualBalance.clear();
-  await unitOfWork.commit();
 });
 
 afterAll(() => {

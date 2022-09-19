@@ -104,6 +104,8 @@ export default class RecalculatorService {
       actualBalance: next,
       balances: data.balances,
       totalBalance: data.totalBalance,
+      calculations: data.calculations,
+      official,
     });
     this.actualHourlyBalances[index] = actualHourlyBalance;
     return data;

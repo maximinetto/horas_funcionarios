@@ -1,7 +1,8 @@
-import { BigIntType, EntitySchema } from "@mikro-orm/core";
+import { EntitySchema } from "@mikro-orm/core";
 import ActualBalanceTAS from "entities/ActualBalanceTAS";
 import Calculation from "entities/Calculation";
 import CalculationTAS from "entities/CalculationTAS";
+import BigNumberType from "persistence/types/BigNumberType";
 
 export default new EntitySchema<CalculationTAS, Calculation>({
   name: "CalculationTAS",
@@ -10,39 +11,39 @@ export default new EntitySchema<CalculationTAS, Calculation>({
   class: CalculationTAS,
   properties: {
     surplusBusiness: {
-      type: BigIntType,
+      type: BigNumberType,
       fieldName: "surplus_business",
     },
     surplusNonWorking: {
-      type: BigIntType,
+      type: BigNumberType,
       fieldName: "surplus_non_working",
     },
     surplusSimple: {
-      type: BigIntType,
+      type: BigNumberType,
       fieldName: "surplus_simple",
     },
     discount: {
-      type: BigIntType,
+      type: BigNumberType,
       fieldName: "discount",
     },
     workingOvertime: {
-      type: BigIntType,
+      type: BigNumberType,
       fieldName: "working_overtime",
     },
     workingNightOvertime: {
-      type: BigIntType,
+      type: BigNumberType,
       fieldName: "working_night_overtime",
     },
     nonWorkingOvertime: {
-      type: BigIntType,
+      type: BigNumberType,
       fieldName: "non_working_overtime",
     },
     nonWorkingNightOvertime: {
-      type: BigIntType,
+      type: BigNumberType,
       fieldName: "non_working_night_overtime",
     },
     compensatedNightOvertime: {
-      type: BigIntType,
+      type: BigNumberType,
       fieldName: "compensated_night_overtime",
     },
     actualBalance: {

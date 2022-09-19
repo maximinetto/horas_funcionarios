@@ -1,8 +1,9 @@
-import { DecimalType, EntitySchema } from "@mikro-orm/core";
+import { EntitySchema } from "@mikro-orm/core";
 import ActualBalance from "entities/ActualBalance";
 import Entity from "entities/Entity";
 import Official from "entities/Official";
 import { TypeOfOfficial } from "enums/officials";
+import BigNumberType from "persistence/types/BigNumberType";
 
 export default new EntitySchema<ActualBalance, Entity>({
   name: "ActualBalance",
@@ -18,7 +19,7 @@ export default new EntitySchema<ActualBalance, Entity>({
       type: "int",
     },
     total: {
-      type: DecimalType,
+      type: BigNumberType,
     },
     official: {
       reference: "m:1",

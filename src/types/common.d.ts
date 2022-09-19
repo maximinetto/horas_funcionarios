@@ -13,3 +13,6 @@ export type NonNullable<T> = Exclude<T, null | undefined>;
 export type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] };
 
 export type Property = "body" | "params" | "query" | "headers" | "cookies";
+
+export type MakeOptional<Type, Key extends keyof Type> = Omit<Type, Key> &
+  Partial<Pick<Type, Key>>;

@@ -1,5 +1,5 @@
-import CalculationTASDTO from "dto/create/calculationTASDTO";
-import CalculationTASDTOWithTimeFieldsInString from "dto/create/calculationTASDTOWithTimeFieldsInString";
+import CalculationTASDTO from "dto/create/CalculationTASDTO";
+import CalculationTASDTOWithTimeFieldsInString from "dto/create/CalculationTASDTOWithTimeFieldsInString";
 import { getMonthByNumber } from "utils/mapMonths";
 import { timeToSeconds } from "utils/time";
 
@@ -40,6 +40,7 @@ export const sanitizeCalculationFields = (
       nonWorkingOvertime,
       nonWorkingNightOvertime,
       compensatedNightOvertime,
+      insert: calculation.id == null,
     });
   });
 };

@@ -1,4 +1,4 @@
-import CalculationTASDTOWithTimeFieldsInString from "dto/create/calculationTASDTOWithTimeFieldsInString";
+import CalculationTASDTOWithTimeFieldsInString from "dto/create/CalculationTASDTOWithTimeFieldsInString";
 import { FastifyRequest } from "fastify";
 
 export default function validate(

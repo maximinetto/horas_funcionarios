@@ -1,7 +1,9 @@
 import Calculations from "collections/Calculations";
 import { logger } from "config";
 import BalanceConverter from "converters/models_to_entities/BalanceConverter";
+import TypeOfYearToBalanceConverter from "converters/models_to_entities/TypeOfYearToBalanceConverter";
 import MikroORMActualBalanceBuilder from "creators/actual/MikroORMActualBalanceBuilder";
+import MikroORMHourlyBalanceBuilder from "creators/hourlyBalance/MikroORMHourlyBalanceBuilder";
 import CalculationTAS from "entities/CalculationTAS";
 import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
 import ActualHourlyBalanceRepository from "persistence/ActualBalance/ActualHourlyBalanceRepository";
@@ -41,12 +43,18 @@ export async function expectCalculationEquals(
     calculationRepository: CalculationRepository;
   }
 ) {
+  const actualHourlyBalanceBuilder = new MikroORMActualBalanceBuilder();
+
   const actualHourlyBalanceCreator = new ActualHourlyBalanceCreator({
-    actualHourlyBalanceBuilder: new MikroORMActualBalanceBuilder(),
+    actualHourlyBalanceBuilder,
+    hourlyBalanceBuilder: new MikroORMHourlyBalanceBuilder({
+      actualHourlyBalanceBuilder,
+    }),
   });
   const actualHourlyBalanceReplacer = new ActualHourlyBalanceReplacer({
     actualHourlyBalanceCreator,
     balanceConverter: new BalanceConverter(),
+    typeOfYearToBalanceConverter: new TypeOfYearToBalanceConverter(),
   });
   const calculatorRowService = new CalculatorRowService({
     hoursTASCalculator: new HoursTASCalculator({

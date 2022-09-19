@@ -46,7 +46,7 @@ export default class ActualBalanceTAS extends ActualBalance {
   }
 
   public setCalculations(value: CalculationTAS[]) {
-    this.calculations = new Collection<CalculationTAS>(this, value);
+    this.calculations.set(value);
   }
 
   getHourlyBalances(): HourlyBalanceTAS[] {
@@ -54,7 +54,7 @@ export default class ActualBalanceTAS extends ActualBalance {
   }
 
   setHourlyBalances(value: HourlyBalanceTAS[]): void {
-    this.hourlyBalances = new Collection<HourlyBalanceTAS>(this, value);
+    this.hourlyBalances.set(value);
   }
 
   public static isActualBalanceTAS(

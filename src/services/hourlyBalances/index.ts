@@ -1,5 +1,4 @@
 import ActualBalance from "entities/ActualBalance";
-import ActualBalanceTAS from "entities/ActualBalanceTAS";
 import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
 import ActualHourlyBalanceRepository from "persistence/ActualBalance/ActualHourlyBalanceRepository";
 
@@ -21,23 +20,18 @@ export default class Balances {
         year,
       });
 
-    console.log("lastActualBalances:", lastActualBalances);
-
-    return lastActualBalances.map((ac) => {
+    lastActualBalances.forEach((ac) => {
       const hourlyBalances = ac.getHourlyBalances() as HourlyBalanceTAS[];
 
       const min = getMinHourlyBalanceWithSumGreaterThanZero(hourlyBalances);
       const remainingHourlyBalances = hourlyBalances.filter((h) => {
         return min ? h.year >= min.year : false;
       });
-      return new ActualBalanceTAS({
-        id: ac.id,
-        year: ac.year,
-        total: ac.total,
-        official: ac.official,
-        hourlyBalances: remainingHourlyBalances,
-      });
+
+      ac.setHourlyBalances(remainingHourlyBalances);
     });
+
+    return lastActualBalances;
   }
 }
 

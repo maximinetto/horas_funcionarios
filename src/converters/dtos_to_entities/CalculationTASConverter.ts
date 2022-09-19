@@ -1,6 +1,7 @@
 import ActualHourlyBalanceBuilder from "creators/actual/ActualHourlyBalanceBuilder";
+import CalculationBuilder from "creators/calculation/CalculationBuilder";
 import { Decimal } from "decimal.js";
-import CalculationTASDTO from "dto/create/calculationTASDTO";
+import CalculationTASDTO from "dto/create/CalculationTASDTO";
 import ActualBalanceTAS from "entities/ActualBalanceTAS";
 import CalculationTASEntity from "entities/CalculationTAS";
 import { TypeOfOfficial } from "enums/officials";
@@ -12,18 +13,25 @@ export default class CalculationTASConverter extends AbstractConverter<
   CalculationTASDTO
 > {
   private _actualHourlyBalanceBuilder: ActualHourlyBalanceBuilder;
+  private _calculationBuilder: CalculationBuilder;
 
   constructor({
     actualHourlyBalanceBuilder,
+    calculationBuilder,
   }: {
     actualHourlyBalanceBuilder: ActualHourlyBalanceBuilder;
+    calculationBuilder: CalculationBuilder;
   }) {
     super();
     this._actualHourlyBalanceBuilder = actualHourlyBalanceBuilder;
+    this._calculationBuilder = calculationBuilder;
+    this.fromDTOToEntity = this.fromDTOToEntity.bind(this);
   }
 
   fromDTOToEntity(dto: CalculationTASDTO): CalculationTASEntity {
-    return new CalculationTASEntity({
+    const observations = dto.observations ? dto.observations : undefined;
+
+    return this._calculationBuilder.createTAS({
       id: dto.id,
       year: dto.year,
       month: dto.month,
@@ -40,13 +48,15 @@ export default class CalculationTASConverter extends AbstractConverter<
       compensatedNightOvertime: new Decimal(
         dto.compensatedNightOvertime.toString()
       ),
-      observations: dto.observations ?? undefined,
-      actualBalance: dto.actualBalanceId
-        ? this.actualBalance({
-            actualBalanceId: dto.actualBalanceId,
-            year: dto.year,
-          })
-        : undefined,
+      observations,
+      type: TypeOfOfficial.TAS,
+      insert: dto.insert,
+      actualBalance: {
+        id: dto.actualBalanceId,
+        year: dto.year,
+        total: new Decimal(0),
+        type: TypeOfOfficial.TAS,
+      },
     });
   }
 
@@ -68,7 +78,7 @@ export default class CalculationTASConverter extends AbstractConverter<
         entity.compensatedNightOvertime.toString()
       ),
       discount: BigInt(entity.discount.toString()),
-      observations: entity.observations ?? null,
+      observations: entity.observations,
       actualBalanceId: entity.actualBalance?.id,
     });
   }

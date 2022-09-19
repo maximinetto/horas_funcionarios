@@ -72,6 +72,11 @@ export default class TASCalculator {
       }
     );
 
+    // console.log(
+    //   "actualHourlyBalancesAfterPreviousYear:",
+    //   actualHourlyBalancesAfterPreviousYear
+    // );
+
     const previousActualBalance = getCurrentActualHourlyBalance(
       actualHourlyBalancesAfterPreviousYear,
       previousYear
@@ -90,11 +95,11 @@ export default class TASCalculator {
       currentYear
     );
 
-    console.log(
-      "actualHourlyBalancesAfterPreviousYear",
-      actualHourlyBalancesAfterPreviousYear
-    );
-    console.log("actualBalanceCurrentYear", actualBalanceCurrentYear);
+    // console.log(
+    //   "actualHourlyBalancesAfterPreviousYear",
+    //   actualHourlyBalancesAfterPreviousYear
+    // );
+    // console.log("actualBalanceCurrentYear", actualBalanceCurrentYear);
     if (!actualBalanceCurrentYear) {
       return this.createActualBalance(dataCalculated, currentYear, official);
     }
@@ -104,7 +109,14 @@ export default class TASCalculator {
         balances: dataCalculated.balances,
         totalBalance: dataCalculated.totalBalance,
         actualBalance: actualBalanceCurrentYear,
+        calculations: dataCalculated.calculations,
+        official,
       });
+
+    // console.log(
+    //   "actualHourlyBalanceCalculated:",
+    //   actualHourlyBalanceCalculated
+    // );
 
     const nextYear = this.getNextYear(actualHourlyBalanceCalculated.year);
 
@@ -117,6 +129,9 @@ export default class TASCalculator {
       actualHourlyBalanceCalculated,
       ...others.actualHourlyBalances,
     ]);
+
+    // console.log("dataCalculated.calculations:", dataCalculated.calculations);
+
     return {
       currentYear: dataCalculated,
       ...others,

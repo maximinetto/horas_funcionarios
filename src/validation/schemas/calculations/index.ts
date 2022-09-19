@@ -9,6 +9,7 @@ const base = {
   year: Joi.number().integer().min(2000).required(),
   month: Joi.number().integer().min(1).max(12).required(),
   observations: Joi.string().allow(""),
+  actualBalanceId: Joi.string().uuid({ version: "uuidv4" }),
 };
 
 const tas = {

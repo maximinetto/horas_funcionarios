@@ -1,4 +1,4 @@
-import { Cascade, EntitySchema } from "@mikro-orm/core";
+import { EntitySchema } from "@mikro-orm/core";
 import ActualBalance from "entities/ActualBalance";
 import ActualBalanceTeacher from "entities/ActualBalanceTeacher";
 import CalculationTeacher from "entities/CalculationTeacher";
@@ -14,7 +14,6 @@ export default new EntitySchema<ActualBalanceTeacher, ActualBalance>({
       reference: "1:m",
       entity: () => CalculationTeacher,
       mappedBy: (calculations) => calculations.actualBalance,
-      cascade: [Cascade.ALL],
     },
     hourlyBalances: {
       reference: "1:m",

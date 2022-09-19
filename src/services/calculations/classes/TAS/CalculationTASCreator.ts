@@ -3,21 +3,7 @@ import CalculationCreator from "services/calculations/classes/CalculationCreator
 
 export default class CalculationTASCreator implements CalculationCreator {
   create(calculation: CalculationTAS, id: string): CalculationTAS {
-    return new CalculationTAS({
-      id,
-      month: calculation.month,
-      year: calculation.year,
-      surplusBusiness: calculation.surplusBusiness,
-      surplusNonWorking: calculation.surplusNonWorking,
-      surplusSimple: calculation.surplusSimple,
-      discount: calculation.discount,
-      compensatedNightOvertime: calculation.compensatedNightOvertime,
-      workingNightOvertime: calculation.workingNightOvertime,
-      nonWorkingNightOvertime: calculation.nonWorkingNightOvertime,
-      nonWorkingOvertime: calculation.nonWorkingOvertime,
-      workingOvertime: calculation.workingOvertime,
-      observations: calculation.observations,
-      actualBalance: calculation.actualBalance,
-    });
+    calculation.id = id;
+    return calculation;
   }
 }

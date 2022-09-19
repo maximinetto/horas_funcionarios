@@ -1,5 +1,6 @@
 import ActualHourlyBalanceBuilder from "creators/actual/ActualHourlyBalanceBuilder";
 import Official from "entities/Official";
+import { mikroorm } from "persistence/context/mikroorm/MikroORMDatabase";
 
 import OfficialBuilder from "./OfficialBuilder";
 import { OfficialModel } from "./types";
@@ -15,7 +16,7 @@ export default class MikroORMOfficialBuilder implements OfficialBuilder {
     this._actualHourlyBalanceBuilder = actualHourlyBalanceBuilder;
   }
 
-  create(official: OfficialModel): Official {
+  create({ insert = true, ...official }: OfficialModel): Official {
     const {
       firstName,
       lastName,
@@ -32,7 +33,7 @@ export default class MikroORMOfficialBuilder implements OfficialBuilder {
       ? actualBalances.map((a) => this._actualHourlyBalanceBuilder.create(a))
       : undefined;
 
-    return new Official({
+    const data = {
       id: official.id,
       firstName,
       lastName,
@@ -43,6 +44,13 @@ export default class MikroORMOfficialBuilder implements OfficialBuilder {
       recordNumber,
       type,
       actualBalances: _actualBalances,
-    });
+    };
+
+    if (!insert)
+      return mikroorm.em.merge<Official>(Official, data, {
+        refresh: true,
+      });
+
+    return new Official(data);
   }
 }

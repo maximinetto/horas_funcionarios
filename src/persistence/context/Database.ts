@@ -11,6 +11,7 @@ export default interface Database {
   init(): Promise<void>;
   close(): Promise<void>;
   commit(): Promise<void>;
+  clear(): Promise<void>;
   calculation: CalculationRepository;
   calculationTAS: CalculationTASRepository;
   calculationTeacher: CalculationTeacherRepository;

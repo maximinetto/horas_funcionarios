@@ -8,6 +8,7 @@ import { Contract, TypeOfOfficial } from "enums/officials";
 import { DateTime } from "luxon";
 import OfficialRepository from "persistence/Official/OfficialRepository";
 import { Optional } from "typescript-optional";
+import { removeUnnecesaryPropertiesOfArray } from "utils/array";
 
 import OfficialService from "..";
 
@@ -16,6 +17,7 @@ describe("Officials controller tests", () => {
   let officialRepository: jest.Mocked<OfficialRepository>;
   let officialConverter: OfficialConverter;
   let officialBuilder: OfficialBuilder;
+  const keysToOmit = ["createdAt", "updatedAt", "actualBalances"];
 
   beforeAll(() => {
     officialConverter = new OfficialConverter({
@@ -90,7 +92,9 @@ describe("Officials controller tests", () => {
     );
 
     const result = await officialService.get();
-    expect(result).toEqual(officials);
+    expect(removeUnnecesaryPropertiesOfArray(result, keysToOmit)).toEqual(
+      officials
+    );
   });
 
   test("Should filter officials", async () => {
@@ -146,7 +150,9 @@ describe("Officials controller tests", () => {
     );
 
     const result = await officialService.get({ year });
-    expect(result).toEqual(mockOfficialByYear);
+    expect(removeUnnecesaryPropertiesOfArray(result, keysToOmit)).toEqual(
+      mockOfficialByYear
+    );
 
     officialRepository.filter.mockResolvedValue(
       officialConverter.fromModelsToEntities(mockContract)
@@ -155,7 +161,9 @@ describe("Officials controller tests", () => {
     // prismaMock.official.findMany.mockResolvedValue(mockContract);
 
     const result2 = await officialService.get({ contract: Contract.PERMANENT });
-    expect(result2).toEqual(mockContract);
+    expect(removeUnnecesaryPropertiesOfArray(result2, keysToOmit)).toEqual(
+      mockContract
+    );
   });
 
   test("Should create a new official", async () => {

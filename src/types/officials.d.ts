@@ -1,4 +1,4 @@
-import { DateTime } from "luxon";
+import { Contract, TypeOfOfficial } from "enums/officials";
 
 export type Official = {
   id: number;
@@ -16,7 +16,4 @@ export type OfficialWithoutId = Omit<Official, "id">;
 
 export interface OfficialWithOptionalId extends OfficialWithoutId {
   id?: number;
-}
-export interface OfficialSimple extends OfficialWithDifferentTypeAndContract {
-  dateOfEntry: DateTime;
 }
