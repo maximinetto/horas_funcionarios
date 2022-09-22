@@ -1,4 +1,3 @@
-import { convertDecimalToHHmm, convertHHmmToDecimal } from "./calculate";
+import { secondsToTime } from "utils/time";
 
-console.log(convertDecimalToHHmm("0.1666666666"));
-console.log(convertHHmmToDecimal("00:11"));
+console.log(secondsToTime(8670n));

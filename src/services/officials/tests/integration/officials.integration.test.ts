@@ -4,13 +4,15 @@ import MikroORMActualBalanceBuilder from "creators/actual/MikroORMActualBalanceB
 import MikroORMOfficialBuilder from "creators/official/MikroORMOfficialBuilder";
 import { Contract, TypeOfOfficial } from "enums/officials";
 import _omit from "lodash/omit";
+import Database from "persistence/context/Database";
 import OfficialService from "services/officials";
-import { unitOfWork } from "setupIntegrationTestEnvironment";
 import { OfficialWithOptionalId } from "types/officials";
 
 let officials: OfficialWithOptionalId[];
 let officialService: OfficialService;
 let officialConverter: OfficialConverter;
+
+const unitOfWork = global.unitOfWork as Database;
 
 beforeEach(() => {
   officialConverter = new OfficialConverter({

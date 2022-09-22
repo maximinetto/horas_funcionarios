@@ -73,9 +73,7 @@ const config: Config.InitialOptions = {
   maxWorkers: "50%",
 
   // An array of directory names to be searched recursively up from the requiring module's location
-  // moduleDirectories: [
-  //   "node_modules"
-  // ],
+  moduleDirectories: ["node_modules", "src"],
 
   // An array of file extensions your modules use
   moduleFileExtensions: [
@@ -147,7 +145,7 @@ const config: Config.InitialOptions = {
   // snapshotSerializers: [],
 
   // The test environment that will be used for testing
-  testEnvironment: "node",
+  testEnvironment: "./src/setupIntegrationTestEnvironment.ts",
 
   // Options that will be passed to the testEnvironment
   // testEnvironmentOptions: {},

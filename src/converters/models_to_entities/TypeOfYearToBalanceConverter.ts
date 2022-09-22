@@ -5,11 +5,16 @@ import ActualBalanceTeacher from "entities/ActualBalanceTeacher";
 import Calculation from "entities/Calculation";
 import CalculationTAS from "entities/CalculationTAS";
 import CalculationTeacher from "entities/CalculationTeacher";
+import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
+import HourlyBalanceTeacher from "entities/HourlyBalanceTeacher";
 import Official from "entities/Official";
 import { TYPES_OF_HOURS } from "enums/typeOfHours";
 import UnexpectedValueError from "errors/UnexpectedValueError";
 import { instance as hours } from "services/calculations/classes/typeOfHours";
+import { removeHourlyBalancesWithZeroBalance } from "services/hourlyBalances/HourlyBalanceRemover";
+import sort from "services/hourlyBalances/HourlyBalancesSorter";
 import { TypeOfHoursByYearDecimal } from "types/typeOfHours";
+import { generateRandomUUIDV4 } from "utils/strings";
 
 export default class TypeOfYearToBalanceConverter {
   convertToActualBalance({
@@ -59,37 +64,51 @@ export default class TypeOfYearToBalanceConverter {
     calculations: CalculationTAS[];
     official: Official;
   }) {
-    actualBalance.getHourlyBalances().forEach((hourlyBalance) => {
-      const current = balances.find((b) => b.year === hourlyBalance.year);
-
-      if (!current) {
-        throw new Error("No current balance");
-      }
+    balances.forEach((balance) => {
+      let current = actualBalance
+        .getHourlyBalances()
+        .find((b) => b.year === balance.year);
 
       const simple = new Decimal(
-        current.hours
+        balance.hours
           .find((h) => hours.isFirstTypeOfHour(h.typeOfHour))
           ?.value.toString() ?? "0"
       );
       const working = new Decimal(
-        current.hours
+        balance.hours
           .find((h) => h.typeOfHour === TYPES_OF_HOURS.working)
           ?.value.toString() || "0"
       );
       const nonWorking = new Decimal(
-        current.hours
+        balance.hours
           .find((h) => h.typeOfHour === TYPES_OF_HOURS.nonWorking)
           ?.value.toString() || "0"
       );
 
-      hourlyBalance.working = working;
-      hourlyBalance.nonWorking = nonWorking;
-      hourlyBalance.simple = simple;
+      if (!current) {
+        current = new HourlyBalanceTAS({
+          id: generateRandomUUIDV4(),
+          working,
+          nonWorking,
+          simple,
+          year: balance.year,
+          actualBalance,
+        });
+        actualBalance.addHourlyBalance(current);
+      } else {
+        current.working = working;
+        current.nonWorking = nonWorking;
+        current.simple = simple;
+      }
     });
 
-    actualBalance.total = new Decimal(total.toString());
-    actualBalance.official = official;
-    actualBalance.setCalculations(calculations);
+    this.assignValues({
+      actualBalance,
+      balances,
+      calculations,
+      official,
+      total,
+    });
 
     return actualBalance;
   }
@@ -117,10 +136,63 @@ export default class TypeOfYearToBalanceConverter {
       hourlyBalance.balance = balance;
     });
 
+    balances.forEach((balance) => {
+      let current = actualBalance
+        .getHourlyBalances()
+        .find((b) => b.year === balance.year);
+
+      const hours = new Decimal(balance.hours[0]?.value.toString() ?? "0");
+
+      if (!current) {
+        current = new HourlyBalanceTeacher({
+          id: generateRandomUUIDV4(),
+          balance: hours,
+          year: balance.year,
+          actualBalance,
+        });
+        actualBalance.addHourlyBalance(current);
+      } else {
+        current.balance = hours;
+      }
+    });
+
+    this.assignValues({
+      actualBalance,
+      balances,
+      calculations,
+      official,
+      total,
+    });
+
+    return actualBalance;
+  }
+
+  private assignValues({
+    actualBalance,
+    calculations,
+    official,
+    balances,
+    total,
+  }: {
+    actualBalance: ActualBalance;
+    balances: TypeOfHoursByYearDecimal[];
+    total: Decimal;
+    official: Official;
+    calculations: Calculation[];
+  }) {
+    const hourlyBalancesToRemove = actualBalance
+      .getHourlyBalances()
+      .filter((h) => !balances.some((b) => b.year === h.year));
+
+    actualBalance.removeHourlyBalance(...hourlyBalancesToRemove);
+
+    let hourlyBalances = actualBalance.getHourlyBalances();
+    hourlyBalances = sort(hourlyBalances);
+    hourlyBalances = removeHourlyBalancesWithZeroBalance(hourlyBalances);
+    actualBalance.setHourlyBalances(hourlyBalances);
+
     actualBalance.total = total;
     actualBalance.official = official;
     actualBalance.setCalculations(calculations);
-
-    return actualBalance;
   }
 }

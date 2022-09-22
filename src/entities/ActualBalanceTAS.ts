@@ -57,6 +57,14 @@ export default class ActualBalanceTAS extends ActualBalance {
     this.hourlyBalances.set(value);
   }
 
+  addHourlyBalance(...items: HourlyBalanceTAS[]) {
+    this.hourlyBalances.add(...items);
+  }
+
+  removeHourlyBalance(...items: HourlyBalanceTAS[]) {
+    this.hourlyBalances.remove(...items);
+  }
+
   public static isActualBalanceTAS(
     actualBalance: ActualBalance
   ): actualBalance is ActualBalanceTAS {

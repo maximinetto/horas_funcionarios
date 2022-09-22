@@ -21,4 +21,6 @@ test("Seconds should be converted into time input", async () => {
   expect(time).toBe("00:00");
   time = secondsToTime(BigInt(60 * 9));
   expect(time).toBe("00:09");
+  time = secondsToTime(8670n);
+  expect(time).toBe("02:25");
 });

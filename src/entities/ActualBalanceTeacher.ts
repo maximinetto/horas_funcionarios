@@ -57,6 +57,13 @@ export default class ActualBalanceTeacher extends ActualBalance {
     this.hourlyBalances.set(value);
   }
 
+  addHourlyBalance(...items: HourlyBalanceTeacher[]) {
+    this.hourlyBalances.add(...items);
+  }
+  removeHourlyBalance(...items: HourlyBalanceTeacher[]) {
+    this.hourlyBalances.remove(...items);
+  }
+
   public static isActualBalanceTeacher(
     actualBalance: ActualBalance
   ): actualBalance is ActualBalanceTeacher {

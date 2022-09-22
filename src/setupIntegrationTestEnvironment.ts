@@ -1,22 +1,32 @@
+import NodeEnvironment from "jest-environment-node";
 import Database from "persistence/context/Database";
 import DatabaseFactory from "persistence/context/index.config";
 
-export let unitOfWork: Database;
+// beforeAll(async () => {
+//   unitOfWork = DatabaseFactory.createDatabase("mikroorm");
+//   await unitOfWork.init();
+// });
 
-beforeAll(async () => {
-  unitOfWork = DatabaseFactory.createDatabase("mikroorm");
-  await unitOfWork.init();
-});
+// afterAll(() => {
+//   unitOfWork.close();
+// });
 
-afterEach(async () => {
-  await unitOfWork.official.clear();
-  await unitOfWork.calculationTAS.clear();
-  await unitOfWork.calculationTeacher.clear();
-  await unitOfWork.hourlyBalanceTAS.clear();
-  await unitOfWork.hourlyBalanceTeacher.clear();
-  await unitOfWork.actualBalance.clear();
-});
+export default class DBEnvironment extends NodeEnvironment {
+  constructor(config, context) {
+    super(config, context);
+  }
 
-afterAll(() => {
-  unitOfWork.close();
-});
+  async setup() {
+    await super.setup();
+
+    const unitOfWork = DatabaseFactory.createDatabase("mikroorm");
+    await unitOfWork.init();
+    this.global.unitOfWork = unitOfWork;
+  }
+
+  async teardown() {
+    const unitOfWork = this.global.unitOfWork as Database;
+    unitOfWork.close();
+    await super.teardown();
+  }
+}

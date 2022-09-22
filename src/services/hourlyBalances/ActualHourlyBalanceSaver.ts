@@ -22,7 +22,7 @@ export default class ActualHourlyBalanceSaver {
   }
 
   private saveInPersistance(actualBalance: ActualBalance) {
-    console.log("actualBalance to save:", actualBalance);
+    // console.log("actualBalance to save:", actualBalance);
 
     actualBalance.getCalculations().forEach((c) => {
       c.id = generateRandomUUIDV4();
@@ -33,6 +33,6 @@ export default class ActualHourlyBalanceSaver {
   }
 
   private queue(actualBalances: ActualBalance[]) {
-    console.log("actualBalances to queue:", actualBalances);
+    // console.log("actualBalances to queue:", actualBalances);
   }
 }

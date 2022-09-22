@@ -5,11 +5,15 @@ import ActualBalance from "entities/ActualBalance";
 import ActualBalanceTAS from "entities/ActualBalanceTAS";
 import ActualBalanceTeacher from "entities/ActualBalanceTeacher";
 import Calculation from "entities/Calculation";
+import HourlyBalance from "entities/HourlyBalance";
 import Official from "entities/Official";
 import { TypeOfOfficial } from "enums/officials";
 import { TYPES_OF_HOURS } from "enums/typeOfHours";
+import UnexpectedValueError from "errors/UnexpectedValueError";
 import { TypeOfHoursByYear } from "types/typeOfHours";
 import { generateRandomUUIDV4 } from "utils/strings";
+
+import { removeHourlyBalancesWithZeroBalance } from "./HourlyBalanceRemover";
 
 export default class ActualHourlyBalanceCreator {
   private _actualHourlyBalanceBuilder: ActualHourlyBalanceBuilder;
@@ -49,13 +53,20 @@ export default class ActualHourlyBalanceCreator {
       type,
     });
 
+    let hourlyBalances: HourlyBalance[];
     if (ActualBalanceTAS.isActualBalanceTAS(actualBalance)) {
-      const hourlyBalances = this.createHourlyBalancesTAS(balances, year);
-      actualBalance.setHourlyBalances(hourlyBalances);
+      hourlyBalances = this.createHourlyBalancesTAS(balances, year);
     } else if (ActualBalanceTeacher.isActualBalanceTeacher(actualBalance)) {
-      const hourlyBalances = this.createHourlyBalancesTeacher(balances, year);
-      actualBalance.setHourlyBalances(hourlyBalances);
+      hourlyBalances = this.createHourlyBalancesTeacher(balances, year);
+    } else {
+      throw new UnexpectedValueError("Type of hourly balance invalid");
     }
+
+    const result = actualBalance as ActualBalance;
+
+    hourlyBalances = removeHourlyBalancesWithZeroBalance(hourlyBalances);
+
+    result.setHourlyBalances(hourlyBalances);
 
     return actualBalance;
   }
@@ -72,7 +83,7 @@ export default class ActualHourlyBalanceCreator {
     official: Official;
     calculations: Calculation[];
     type: TypeOfOfficial;
-  }) {
+  }): ActualBalance {
     const id = generateRandomUUIDV4();
     return this._actualHourlyBalanceBuilder.create({
       calculations,

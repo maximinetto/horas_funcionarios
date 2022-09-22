@@ -43,6 +43,8 @@ export default abstract class ActualBalance
   abstract setCalculations(value: Calculation[]): void;
   abstract getHourlyBalances(): HourlyBalance[];
   abstract setHourlyBalances(value: HourlyBalance[]): void;
+  abstract addHourlyBalance(...items: HourlyBalance[]);
+  abstract removeHourlyBalance(...items: HourlyBalance[]);
 
   isDefault(): boolean {
     return false;

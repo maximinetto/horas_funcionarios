@@ -125,6 +125,7 @@ export default class TASCalculator {
       actualHourlyBalancesAfterPreviousYear,
       actualHourlyBalanceCalculated
     );
+    debugger;
     this.actualHourlyBalanceSaver.save([
       actualHourlyBalanceCalculated,
       ...others.actualHourlyBalances,

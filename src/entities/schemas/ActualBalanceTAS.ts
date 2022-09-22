@@ -14,11 +14,13 @@ export default new EntitySchema<ActualBalanceTAS, ActualBalance>({
       reference: "1:m",
       entity: () => CalculationTAS,
       mappedBy: (calculations) => calculations.actualBalance,
+      orphanRemoval: true,
     },
     hourlyBalances: {
       reference: "1:m",
       entity: () => HourlyBalanceTAS,
       mappedBy: "actualBalance",
+      orphanRemoval: true,
     },
   },
   discriminatorValue: "tas",

@@ -420,7 +420,7 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": true,
+          "nullable": false,
           "length": 36,
           "mappedType": "string"
         }
@@ -458,7 +458,6 @@
             "id"
           ],
           "referencedTableName": "actual_balances",
-          "deleteRule": "cascade",
           "updateRule": "cascade"
         }
       }
@@ -734,7 +733,7 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": true,
+          "nullable": false,
           "length": 36,
           "mappedType": "string"
         }
@@ -772,7 +771,6 @@
             "id"
           ],
           "referencedTableName": "actual_balances",
-          "deleteRule": "cascade",
           "updateRule": "cascade"
         }
       }

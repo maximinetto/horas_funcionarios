@@ -38,7 +38,7 @@ export const secondsToTime = (seconds: bigint = 0n) => {
     .sub(new Decimal(hours).mul(60 * 60))
     .sub(new Decimal(minutes).mul(60));
 
-  if (secondsLeft.gt(30)) {
+  if (secondsLeft.gte(30)) {
     minutes = new Decimal(minutes).eq(59)
       ? "0"
       : new Decimal(minutes).add(1).toString();

@@ -32,6 +32,6 @@ export default class HourlyBalanceTeacher
   }
 
   public calculateTotal(): Decimal {
-    throw new Error("Method not implemented.");
+    return this.balance;
   }
 }

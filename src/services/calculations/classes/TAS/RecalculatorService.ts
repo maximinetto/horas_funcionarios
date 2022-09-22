@@ -40,7 +40,9 @@ export default class RecalculatorService {
     currentActualHourlyBalances: ActualBalance[];
     actualHourlyBalanceCalculated: ActualBalance;
   }) {
-    this.actualHourlyBalances = currentActualHourlyBalances;
+    this.actualHourlyBalances = currentActualHourlyBalances.sort(
+      (a1, a2) => a1.year - a2.year
+    );
 
     const calculationEntities =
       await this.calculationRepository.getCalculationWithYearGreaterThanActual({
@@ -102,7 +104,7 @@ export default class RecalculatorService {
 
     const actualHourlyBalance = this.actualHourlyBalanceReplacer.replace({
       actualBalance: next,
-      balances: data.balances,
+      balances: data.balancesSanitized,
       totalBalance: data.totalBalance,
       calculations: data.calculations,
       official,
@@ -117,10 +119,11 @@ export default class RecalculatorService {
   ) {
     this.actualHourlyBalances[0] = actualHourlyBalanceCalculated;
 
-    for (const a of this.actualHourlyBalances) {
-      const { year } = a;
+    for (let i = 1; i < this.actualHourlyBalances.length; i++) {
+      const actualBalance = this.actualHourlyBalances[i];
+      const { year } = actualBalance;
       const rest = calculations.filter((c) => c.year === year);
-      a.setCalculations(rest);
+      actualBalance.setCalculations(rest);
     }
   }
 }

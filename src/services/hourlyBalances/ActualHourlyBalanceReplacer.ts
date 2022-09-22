@@ -8,6 +8,7 @@ import { TypeOfOfficial } from "enums/officials";
 import { TypeOfHoursByYear, TypeOfHoursByYearDecimal } from "types/typeOfHours";
 
 import ActualHourlyBalanceCreator from "./ActualHourlyBalanceCreator";
+import sort from "./HourlyBalancesSorter";
 
 export default class ActualHourlyBalanceReplacer {
   private balanceConverter: BalanceConverter;
@@ -62,7 +63,7 @@ export default class ActualHourlyBalanceReplacer {
     totalBalance: Decimal;
     type: TypeOfOfficial;
   }) {
-    const balancesSortedByYear = this.balancesSortedByYear(balances);
+    const balancesSortedByYear = sort(balances);
     const balanceNewer = this.getBalanceNewer(balancesSortedByYear);
     const nextYear = this.getNextYear(balanceNewer);
 
@@ -86,11 +87,5 @@ export default class ActualHourlyBalanceReplacer {
     balanceNewer: TypeOfHoursByYearDecimal | TypeOfHoursByYear
   ) {
     return balanceNewer.year + 1;
-  }
-
-  private balancesSortedByYear(
-    balances: (TypeOfHoursByYearDecimal | TypeOfHoursByYear)[]
-  ) {
-    return balances.sort((a, b) => a.year - b.year);
   }
 }

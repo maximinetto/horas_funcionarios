@@ -16,6 +16,7 @@ export const createHours = async (
   const validatedData = validate(req);
 
   const result = await calculator.execute(validatedData);
+
   response(reply, {
     status: 201,
     data: result,

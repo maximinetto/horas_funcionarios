@@ -12,6 +12,12 @@ export default class NullActualBalance
   extends ActualBalance
   implements Nullable
 {
+  addHourlyBalance(...items: HourlyBalance[]) {
+    throw new Error("Method not implemented.");
+  }
+  removeHourlyBalance(...items: HourlyBalance[]) {
+    throw new Error("Method not implemented.");
+  }
   public constructor(id?: string) {
     super({
       id: id ?? "",

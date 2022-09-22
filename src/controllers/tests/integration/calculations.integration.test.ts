@@ -14,18 +14,19 @@ import { Contract, TypeOfOfficial } from "enums/officials";
 import { FastifyInstance } from "fastify";
 import _omit from "lodash/omit";
 import { DateTime } from "luxon";
+import Database from "persistence/context/Database";
 import OfficialService from "services/officials";
-import { unitOfWork } from "setupIntegrationTestEnvironment";
-import { getMonthByNumber } from "utils/mapMonths";
+import { getMonthByNumber, getNumberByMonth } from "utils/mapMonths";
 import { secondsToTime } from "utils/time";
 
-import generate from "./preload";
+import { generateFirstCase, generateSecondCase } from "./preload";
 
 let fastify: FastifyInstance;
 let officialService: OfficialService;
 let actualHourlyBalanceBuilder: ActualHourlyBalanceBuilder;
 let calculationBuilder: CalculationBuilder;
 let officialBuilder: OfficialBuilder;
+const unitOfWork = global.unitOfWork as Database;
 
 beforeAll(() => {
   fastify = buildApp({
@@ -219,7 +220,6 @@ describe("Calculations", () => {
 
     // Should create official
 
-    debugger;
     const serverReponse = await fastify.inject({
       url: "/api/v1/calculations/year/2021/officials/1",
       method: "POST",
@@ -231,7 +231,7 @@ describe("Calculations", () => {
     });
   });
   test("should be calculate correctly from a list of previous hours", async () => {
-    const { currentBalance, official } = await generate({
+    const { currentBalance, official } = await generateFirstCase({
       officialService,
       calculationBuilder,
       actualHourlyBalanceBuilder,
@@ -287,11 +287,6 @@ describe("Calculations", () => {
     });
 
     const { actualHourlyBalances, currentYear } = serverReponse.json().data;
-
-    // console.log("{ actualHourlyBalances, currentYear }", {
-    //   actualHourlyBalances,
-    //   currentYear,
-    // });
 
     const expected = convert2(
       [
@@ -357,6 +352,181 @@ describe("Calculations", () => {
       BigInt(totalNonWorkingHoursExpected)
     );
     expect(totalNonWorkingHoursInTime).toEqual("00:00");
+  });
+
+  test("should be calculate correctly the next years", async () => {
+    const { previousActualBalance, currentBalance, official } =
+      await generateSecondCase({
+        officialService,
+        calculationBuilder,
+        actualHourlyBalanceBuilder,
+        unitOfWork,
+      });
+
+    const [first, second, third] = previousActualBalance!
+      .getCalculations()
+      .filter((c) =>
+        [Month.APRIL, Month.MAY, Month.JULY].some((month) => c.month === month)
+      );
+
+    const calculation1: CalculationTASDTOWithTimeFieldsInString = {
+      year: first.year,
+      month: getNumberByMonth(first.month),
+      observations: "Complicado la verdad",
+      id: first.id,
+      surplusSimple: "01:05",
+      surplusBusiness: "00:58",
+      surplusNonWorking: "00:00",
+      compensatedNightOvertime: "01:02",
+      discount: "00:41",
+      nonWorkingNightOvertime: "00:00",
+      nonWorkingOvertime: "00:00",
+      workingNightOvertime: "00:00",
+      workingOvertime: "00:20",
+      actualBalanceId: previousActualBalance!.id,
+    };
+
+    const calculation2 = {
+      year: second.year,
+      month: getNumberByMonth(second.month),
+      observations: "No se sabe nada",
+      id: second.id,
+      surplusSimple: "00:18",
+      surplusBusiness: "00:00",
+      surplusNonWorking: "00:00",
+      compensatedNightOvertime: "00:00",
+      discount: "00:02",
+      nonWorkingNightOvertime: "00:00",
+      nonWorkingOvertime: "00:00",
+      workingNightOvertime: "00:00",
+      workingOvertime: "00:00",
+      actualBalanceId: currentBalance.id,
+    };
+
+    const calculation3 = {
+      year: third.year,
+      month: getNumberByMonth(third.month),
+      observations: "Dificil",
+      id: third.id,
+      surplusSimple: "00:00",
+      surplusBusiness: "00:45",
+      surplusNonWorking: "00:00",
+      compensatedNightOvertime: "00:00",
+      discount: "01:02",
+      nonWorkingNightOvertime: "00:00",
+      nonWorkingOvertime: "00:00",
+      workingNightOvertime: "02:00",
+      workingOvertime: "01:15",
+      actualBalanceId: currentBalance.id,
+    };
+
+    const data = {
+      calculations: [calculation1, calculation2, calculation3],
+    };
+
+    const serverReponse = await fastify.inject({
+      url: `/api/v1/calculations/year/${previousActualBalance.year}/officials/${official.id}`,
+      method: "POST",
+      payload: data,
+    });
+
+    const { actualHourlyBalances } = serverReponse.json().data;
+
+    const expected = convert2(
+      [
+        { ...calculation2, id: second.id },
+        { ...calculation1, id: first.id },
+        { ...calculation3, id: third.id },
+      ],
+      [
+        ...(previousActualBalance!
+          .getCalculations()
+          .filter(
+            (c) => ![first.id, second.id, third.id].some((id) => c.id === id)
+          ) as CalculationTAS[]),
+      ]
+    );
+
+    const previousActualBalanceResponse = actualHourlyBalances[0];
+
+    const calculationsResponse = previousActualBalanceResponse.calculations;
+
+    const actualCalculations = calculationsResponse.map((c) => {
+      const ct = convert(c.calculationTAS);
+      const others = _omit(c, ["actualBalanceId", "id"]);
+      return {
+        ...others,
+        calculationTAS: {
+          ...ct,
+          id: c.calculationTAS.id,
+          actualBalanceId: c.calculationTAS.actualBalanceId,
+        },
+      };
+    });
+
+    expect(serverReponse.statusCode).toEqual(201);
+    expect(actualCalculations).toEqual(expected);
+
+    assertEquals(actualHourlyBalances, [
+      {
+        hourlyBalancesExpected: [
+          {
+            totalSimpleHoursExpected: "4620",
+            totalWorkingHoursExpected: "9270",
+            totalNonWorkingHoursExpected: "0",
+            totalSimpleHoursInTimeExpected: "01:17",
+            totalWorkingHoursInTimeExpected: "02:35",
+            totalNonWorkingHoursInTimeExpected: "00:00",
+          },
+        ],
+        totalBalanceExpected: "13890",
+        totalBalanceInTimeExpected: "03:52",
+      },
+      {
+        hourlyBalancesExpected: [
+          {
+            totalSimpleHoursExpected: "0",
+            totalWorkingHoursExpected: "1590",
+            totalNonWorkingHoursExpected: "0",
+            totalSimpleHoursInTimeExpected: "00:00",
+            totalWorkingHoursInTimeExpected: "00:27",
+            totalNonWorkingHoursInTimeExpected: "00:00",
+          },
+          {
+            totalSimpleHoursExpected: "36000",
+            totalWorkingHoursExpected: "72900",
+            totalNonWorkingHoursExpected: "14400",
+            totalSimpleHoursInTimeExpected: "10:00",
+            totalWorkingHoursInTimeExpected: "20:15",
+            totalNonWorkingHoursInTimeExpected: "04:00",
+          },
+        ],
+        totalBalanceExpected: "124890",
+        totalBalanceInTimeExpected: "34:42",
+      },
+      {
+        hourlyBalancesExpected: [
+          {
+            totalSimpleHoursExpected: "14070",
+            totalWorkingHoursExpected: "72900",
+            totalNonWorkingHoursExpected: "14400",
+            totalSimpleHoursInTimeExpected: "03:55",
+            totalWorkingHoursInTimeExpected: "20:15",
+            totalNonWorkingHoursInTimeExpected: "04:00",
+          },
+          {
+            totalSimpleHoursExpected: "6600",
+            totalWorkingHoursExpected: "1800",
+            totalNonWorkingHoursExpected: "0",
+            totalSimpleHoursInTimeExpected: "01:50",
+            totalWorkingHoursInTimeExpected: "00:30",
+            totalNonWorkingHoursInTimeExpected: "00:00",
+          },
+        ],
+        totalBalanceExpected: "109770",
+        totalBalanceInTimeExpected: "30:30",
+      },
+    ]);
   });
 });
 
@@ -429,5 +599,74 @@ function convert2(
     //     },
   }));
 
-  return [...firstCollection, ...lastCollection];
+  return [...firstCollection, ...lastCollection].sort(
+    (c1, c2) => getNumberByMonth(c1.month) - getNumberByMonth(c2.month)
+  );
+}
+
+function assertEquals(
+  actualHourlyBalances: any[],
+  expected: {
+    hourlyBalancesExpected: {
+      totalSimpleHoursExpected: string;
+      totalWorkingHoursExpected: string;
+      totalNonWorkingHoursExpected: string;
+      totalSimpleHoursInTimeExpected: string;
+      totalWorkingHoursInTimeExpected: string;
+      totalNonWorkingHoursInTimeExpected: string;
+    }[];
+    totalBalanceExpected: string;
+    totalBalanceInTimeExpected: string;
+  }[]
+) {
+  for (let i = 0; i < actualHourlyBalances.length; i++) {
+    const {
+      hourlyBalancesExpected,
+      totalBalanceExpected,
+      totalBalanceInTimeExpected,
+    } = expected[i];
+    const actualBalance = actualHourlyBalances[i];
+
+    expect(actualBalance.total).toEqual(totalBalanceExpected);
+    const totalBalanceInTime = secondsToTime(BigInt(totalBalanceExpected));
+    expect(totalBalanceInTime).toEqual(totalBalanceInTimeExpected);
+
+    for (let j = 0; j < actualBalance.hourlyBalances.length; j++) {
+      const {
+        totalSimpleHoursExpected,
+        totalWorkingHoursExpected,
+        totalNonWorkingHoursExpected,
+        totalSimpleHoursInTimeExpected,
+        totalWorkingHoursInTimeExpected,
+        totalNonWorkingHoursInTimeExpected,
+      } = hourlyBalancesExpected[j];
+
+      const balance = actualBalance.hourlyBalances[j];
+
+      expect(balance.hourlyBalanceTAS.simple).toEqual(totalSimpleHoursExpected);
+      expect(balance.hourlyBalanceTAS.working).toEqual(
+        totalWorkingHoursExpected
+      );
+      expect(balance.hourlyBalanceTAS.nonWorking).toEqual(
+        totalNonWorkingHoursExpected
+      );
+
+      const totalSimpleHoursInTime = secondsToTime(
+        BigInt(totalSimpleHoursExpected)
+      );
+      expect(totalSimpleHoursInTime).toEqual(totalSimpleHoursInTimeExpected);
+
+      const totalWorkingHoursInTime = secondsToTime(
+        BigInt(totalWorkingHoursExpected)
+      );
+      expect(totalWorkingHoursInTime).toEqual(totalWorkingHoursInTimeExpected);
+
+      const totalNonWorkingHoursInTime = secondsToTime(
+        BigInt(totalNonWorkingHoursExpected)
+      );
+      expect(totalNonWorkingHoursInTime).toEqual(
+        totalNonWorkingHoursInTimeExpected
+      );
+    }
+  }
 }
