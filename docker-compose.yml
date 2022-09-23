@@ -15,6 +15,7 @@ services:
       MYSQL_DATABASE: ${OFFICIALS_SCHEDULES_DB_NAME-official_schedules_db}
       MYSQL_USER: ${OFFICIALS_SCHEDULES_DB_USER-maximinetto}
       MYSQL_PASSWORD: ${OFFICIALS_SCHEDULES_DB_PASSWORD-maxi08041994}
+      MYSQL_RANDOM_ROOT_PASSWORD: yes
   # api:
   #   build: 
   #     context: .

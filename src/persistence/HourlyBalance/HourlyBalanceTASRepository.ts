@@ -1,5 +1,5 @@
-import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
-import Repository from "persistence/Repository";
+import HourlyBalanceTAS from "../../entities/HourlyBalanceTAS";
+import Repository from "../Repository";
 
 export default interface HourlyBalanceTASRepository
   extends Repository<string, HourlyBalanceTAS> {}

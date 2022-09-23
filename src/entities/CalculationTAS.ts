@@ -1,10 +1,10 @@
 import { Decimal } from "decimal.js";
-import Nullable from "entities/null_object/Nullable";
 
 import ActualBalance from "./ActualBalance";
 import ActualBalanceTAS from "./ActualBalanceTAS";
 import Calculation, { CalculationModel } from "./Calculation";
 import type Entity from "./Entity";
+import Nullable from "./null_object/Nullable";
 
 type CalculationTASModelExclusiveFields = {
   surplusBusiness: Decimal;
@@ -36,7 +36,7 @@ export default class CalculationTAS
   nonWorkingOvertime!: Decimal;
   nonWorkingNightOvertime!: Decimal;
   compensatedNightOvertime!: Decimal;
-  actualBalance?: ActualBalanceTAS | undefined;
+  actualBalance?: ActualBalanceTAS;
 
   public static WORKING_MULTIPLIER = 1.5;
   public static NON_WORKING_MULTIPLIER = 2;

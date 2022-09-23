@@ -1,5 +1,6 @@
 import { EntitySchema } from "@mikro-orm/core";
-import Entity from "entities/Entity";
+
+import Entity from "../Entity";
 
 export default new EntitySchema<Entity>({
   name: "Entity",

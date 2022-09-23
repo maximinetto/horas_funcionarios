@@ -1,6 +1,5 @@
-import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
-import MikroORMRepository from "persistence/MikroORMRepository";
-
+import HourlyBalanceTAS from "../../entities/HourlyBalanceTAS";
+import MikroORMRepository from "../MikroORMRepository";
 import HourlyBalanceRepository from "./HourlyBalanceRepository";
 
 export default class MikroORMHourlyBalanceTASRepository

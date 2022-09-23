@@ -24,7 +24,7 @@ const combineMessageAndSplat = () => {
 const configLogger = {
   filename: resolve(baseDir, "..", "logs", "server.log"),
   format: format.combine(
-    format.timestamp({ format: "MMM-DD-YYYY HH:mm:ss" }),
+    format.timestamp(),
     combineMessageAndSplat(),
     format.align(),
     format.printf(({ level, message, timestamp, ...metadata }) => {

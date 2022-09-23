@@ -1,8 +1,7 @@
-import Calculation from "entities/Calculation";
-import { TypeOfOfficial } from "enums/officials";
-import UnexpectedValueError from "errors/UnexpectedValueError";
-import MikroORMRepository from "persistence/MikroORMRepository";
-
+import Calculation from "../../entities/Calculation";
+import { TypeOfOfficial } from "../../enums/officials";
+import UnexpectedValueError from "../../errors/UnexpectedValueError";
+import MikroORMRepository from "../MikroORMRepository";
 import CalculationRepository from "./CalculationRepository";
 import CalculationTASRepository from "./CalculationTAS/CalculationTASRepository";
 import CalculationTeacherRepository from "./CalculationTeacher/CalculationTeacherRepository";

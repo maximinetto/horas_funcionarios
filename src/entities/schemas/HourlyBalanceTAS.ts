@@ -1,8 +1,9 @@
 import { EntitySchema } from "@mikro-orm/core";
-import ActualBalanceTAS from "entities/ActualBalanceTAS";
-import HourlyBalance from "entities/HourlyBalance";
-import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
-import BigNumberType from "persistence/types/BigNumberType";
+
+import BigNumberType from "../../persistence/types/BigNumberType";
+import ActualBalanceTAS from "../ActualBalanceTAS";
+import HourlyBalance from "../HourlyBalance";
+import HourlyBalanceTAS from "../HourlyBalanceTAS";
 
 export default new EntitySchema<HourlyBalanceTAS, HourlyBalance>({
   name: "HourlyBalanceTAS",

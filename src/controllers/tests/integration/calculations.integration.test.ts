@@ -1,24 +1,24 @@
 import buildApp from "buildApp";
-import OfficialConverter from "converters/models_to_entities/OfficialConverter";
-import ActualHourlyBalanceBuilder from "creators/actual/ActualHourlyBalanceBuilder";
-import MikroORMActualBalanceBuilder from "creators/actual/MikroORMActualBalanceBuilder";
-import CalculationBuilder from "creators/calculation/CalculationBuilder";
-import MikroORMCalculationBuilder from "creators/calculation/MikroORMCalculationBuilder";
-import MikroORMOfficialBuilder from "creators/official/MikroORMOfficialBuilder";
-import OfficialBuilder from "creators/official/OfficialBuilder";
-import type CalculationTASDTOWithTimeFieldsInString from "dto/create/CalculationTASDTOWithTimeFieldsInString";
-import CalculationTAS from "entities/CalculationTAS";
-import Official from "entities/Official";
-import { Month } from "enums/common";
-import { Contract, TypeOfOfficial } from "enums/officials";
 import { FastifyInstance } from "fastify";
 import _omit from "lodash/omit";
 import { DateTime } from "luxon";
-import Database from "persistence/context/Database";
-import OfficialService from "services/officials";
-import { getMonthByNumber, getNumberByMonth } from "utils/mapMonths";
-import { secondsToTime } from "utils/time";
+import { unitOfWork } from "setupIntegrationTestEnvironment";
 
+import OfficialConverter from "../../../converters/models_to_entities/OfficialConverter";
+import ActualHourlyBalanceBuilder from "../../../creators/actual/ActualHourlyBalanceBuilder";
+import MikroORMActualBalanceBuilder from "../../../creators/actual/MikroORMActualBalanceBuilder";
+import CalculationBuilder from "../../../creators/calculation/CalculationBuilder";
+import MikroORMCalculationBuilder from "../../../creators/calculation/MikroORMCalculationBuilder";
+import MikroORMOfficialBuilder from "../../../creators/official/MikroORMOfficialBuilder";
+import OfficialBuilder from "../../../creators/official/OfficialBuilder";
+import type CalculationTASDTOWithTimeFieldsInString from "../../../dto/create/CalculationTASDTOWithTimeFieldsInString";
+import CalculationTAS from "../../../entities/CalculationTAS";
+import Official from "../../../entities/Official";
+import { Month } from "../../../enums/common";
+import { Contract, TypeOfOfficial } from "../../../enums/officials";
+import OfficialService from "../../../services/officials";
+import { getMonthByNumber, getNumberByMonth } from "../../../utils/mapMonths";
+import { secondsToTime } from "../../../utils/time";
 import { generateFirstCase, generateSecondCase } from "./preload";
 
 let fastify: FastifyInstance;
@@ -26,7 +26,6 @@ let officialService: OfficialService;
 let actualHourlyBalanceBuilder: ActualHourlyBalanceBuilder;
 let calculationBuilder: CalculationBuilder;
 let officialBuilder: OfficialBuilder;
-const unitOfWork = global.unitOfWork as Database;
 
 beforeAll(() => {
   fastify = buildApp({

@@ -1,9 +1,9 @@
-import HourlyBalance from "entities/HourlyBalance";
-import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
-import HourlyBalanceTeacher from "entities/HourlyBalanceTeacher";
-import UnexpectedValueError from "errors/UnexpectedValueError";
 import { Optional } from "typescript-optional";
 
+import HourlyBalance from "../../entities/HourlyBalance";
+import HourlyBalanceTAS from "../../entities/HourlyBalanceTAS";
+import HourlyBalanceTeacher from "../../entities/HourlyBalanceTeacher";
+import UnexpectedValueError from "../../errors/UnexpectedValueError";
 import HourlyBalanceRepository from "./HourlyBalanceRepository";
 import HourlyBalanceTASRepository from "./HourlyBalanceTASRepository";
 import HourlyBalanceTeacherRepository from "./HourlyBalanceTeacherRepository";

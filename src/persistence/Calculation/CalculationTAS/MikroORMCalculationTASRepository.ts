@@ -1,6 +1,5 @@
-import CalculationTAS from "entities/CalculationTAS";
-import MikroORMRepository from "persistence/MikroORMRepository";
-
+import CalculationTAS from "../../../entities/CalculationTAS";
+import MikroORMRepository from "../../MikroORMRepository";
 import CalculationTASRepository from "./CalculationTASRepository";
 
 export default class MikroORMCalculationTASRepository

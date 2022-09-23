@@ -1,9 +1,10 @@
 import { EntitySchema } from "@mikro-orm/core";
-import ActualBalance from "entities/ActualBalance";
-import Entity from "entities/Entity";
-import Official from "entities/Official";
-import { TypeOfOfficial } from "enums/officials";
-import BigNumberType from "persistence/types/BigNumberType";
+
+import { TypeOfOfficial } from "../../enums/officials";
+import BigNumberType from "../../persistence/types/BigNumberType";
+import ActualBalance from "../ActualBalance";
+import Entity from "../Entity";
+import Official from "../Official";
 
 export default new EntitySchema<ActualBalance, Entity>({
   name: "ActualBalance",

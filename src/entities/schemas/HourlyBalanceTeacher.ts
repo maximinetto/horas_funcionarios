@@ -1,8 +1,9 @@
 import { EntitySchema } from "@mikro-orm/core";
-import ActualBalanceTeacher from "entities/ActualBalanceTeacher";
-import HourlyBalance from "entities/HourlyBalance";
-import HourlyBalanceTeacher from "entities/HourlyBalanceTeacher";
-import BigNumberType from "persistence/types/BigNumberType";
+
+import BigNumberType from "../../persistence/types/BigNumberType";
+import ActualBalanceTeacher from "../ActualBalanceTeacher";
+import HourlyBalance from "../HourlyBalance";
+import HourlyBalanceTeacher from "../HourlyBalanceTeacher";
 
 export default new EntitySchema<HourlyBalanceTeacher, HourlyBalance>({
   name: "HourlyBalanceTeacher",

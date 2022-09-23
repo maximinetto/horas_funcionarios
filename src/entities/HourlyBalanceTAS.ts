@@ -1,8 +1,8 @@
 import { Decimal } from "decimal.js";
-import Nullable from "entities/null_object/Nullable";
 
 import ActualBalanceTAS from "./ActualBalanceTAS";
 import HourlyBalance from "./HourlyBalance";
+import Nullable from "./null_object/Nullable";
 
 export default class HourlyBalanceTAS
   extends HourlyBalance

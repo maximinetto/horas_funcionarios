@@ -3,9 +3,10 @@ import fastify, {
   FastifyRequest,
   FastifyServerOptions,
 } from "fastify";
-import router from "routes";
-import errorHandler from "validation/middlewares/errorHandler";
-import validator from "validation/middlewares/validator";
+
+import router from "./routes";
+import errorHandler from "./validation/middlewares/errorHandler";
+import validator from "./validation/middlewares/validator";
 
 export default function buildApp(options?: FastifyServerOptions) {
   const app = fastify(options);

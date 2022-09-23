@@ -1,7 +1,7 @@
-import Official from "entities/Official";
-import MikroORMRepository from "persistence/MikroORMRepository";
 import { Optional } from "typescript-optional";
 
+import Official from "../../entities/Official";
+import MikroORMRepository from "../MikroORMRepository";
 import OfficialRepository from "./OfficialRepository";
 
 export default class MikroORMOfficialRepository

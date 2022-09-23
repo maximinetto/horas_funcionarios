@@ -1,10 +1,11 @@
 import { FilterQuery, FindOptions, MikroORM, wrap } from "@mikro-orm/core";
 import { MySqlDriver } from "@mikro-orm/mysql";
-import Entity from "entities/Entity";
-import { mikroorm } from "persistence/context/mikroorm/MikroORMDatabase";
-import Repository from "persistence/Repository";
 import { Optional } from "typescript-optional";
-import removeKeyIfValueDoesNotDefined from "utils/removeKeyIfValueDoesNotDefined";
+
+import Entity from "../entities/Entity";
+import removeKeyIfValueDoesNotDefined from "../utils/removeKeyIfValueDoesNotDefined";
+import { mikroorm } from "./context/mikroorm/MikroORMDatabase";
+import Repository from "./Repository";
 
 export default class MikroORMRepository<key, T extends Entity>
   implements Repository<key, T>
@@ -57,6 +58,7 @@ export default class MikroORMRepository<key, T extends Entity>
   }
 
   async addRange(entities: T[]): Promise<T[]> {
+    if (entities.length === 0) return [];
     this._mikroorm.em.persist(entities);
     return entities;
   }
@@ -88,6 +90,7 @@ export default class MikroORMRepository<key, T extends Entity>
   }
 
   async removeRange(entities: T[]): Promise<T[]> {
+    if (entities.length === 0) return [];
     this._mikroorm.em.remove(entities);
     return entities;
   }

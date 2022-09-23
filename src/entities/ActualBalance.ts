@@ -1,11 +1,11 @@
 import { Decimal } from "decimal.js";
-import Nullable from "entities/null_object/Nullable";
-import { TypeOfOfficial } from "enums/officials";
-import Comparable from "utils/Comparator";
 
+import { TypeOfOfficial } from "../enums/officials";
+import Comparable from "../utils/Comparator";
 import Calculation from "./Calculation";
 import Entity from "./Entity";
 import HourlyBalance from "./HourlyBalance";
+import Nullable from "./null_object/Nullable";
 import Official from "./Official";
 
 export default abstract class ActualBalance

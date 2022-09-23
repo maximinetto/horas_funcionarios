@@ -1,15 +1,15 @@
 import { MikroORM } from "@mikro-orm/core";
 import { MySqlDriver } from "@mikro-orm/mysql";
-import UnexpectedError from "errors/UnexpectedError";
-import MikroORMActualHourlyBalanceRepository from "persistence/ActualBalance/MikroORMActualHourlyBalanceRepository";
-import MikroORMCalculationTASRepository from "persistence/Calculation/CalculationTAS/MikroORMCalculationTASRepository";
-import MikroORMCalculationTeacherRepository from "persistence/Calculation/CalculationTeacher/MikroORMCalculationTeacherRepository";
-import MikroORMCalculationRepository from "persistence/Calculation/MikroORMCalculationRepository";
-import MikroORMHourlyBalanceRepository from "persistence/HourlyBalance/MikroORMHourlyBalanceRepository";
-import MikroORMHourlyBalanceTASRepository from "persistence/HourlyBalance/MikroORMHourlyBalanceTASRepository";
-import MikroORMHourlyBalanceTeacherRepository from "persistence/HourlyBalance/MikroORMHourlyBalanceTeacherRepository";
-import MikroORMOfficialRepository from "persistence/Official/MikroORMOfficialRepository";
 
+import UnexpectedError from "../../../errors/UnexpectedError";
+import MikroORMActualHourlyBalanceRepository from "../../ActualBalance/MikroORMActualHourlyBalanceRepository";
+import MikroORMCalculationTASRepository from "../../Calculation/CalculationTAS/MikroORMCalculationTASRepository";
+import MikroORMCalculationTeacherRepository from "../../Calculation/CalculationTeacher/MikroORMCalculationTeacherRepository";
+import MikroORMCalculationRepository from "../../Calculation/MikroORMCalculationRepository";
+import MikroORMHourlyBalanceRepository from "../../HourlyBalance/MikroORMHourlyBalanceRepository";
+import MikroORMHourlyBalanceTASRepository from "../../HourlyBalance/MikroORMHourlyBalanceTASRepository";
+import MikroORMHourlyBalanceTeacherRepository from "../../HourlyBalance/MikroORMHourlyBalanceTeacherRepository";
+import MikroORMOfficialRepository from "../../Official/MikroORMOfficialRepository";
 import Database from "../Database";
 import initializeORM from "./index";
 

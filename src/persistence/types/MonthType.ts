@@ -4,8 +4,9 @@ import {
   Type,
   ValidationError,
 } from "@mikro-orm/core";
-import { Month } from "enums/common";
-import { getMonthByNumber, getNumberByMonth } from "utils/mapMonths";
+
+import { Month } from "../../enums/common";
+import { getMonthByNumber, getNumberByMonth } from "../../utils/mapMonths";
 
 export default class MonthType extends Type<Month, number> {
   public convertToDatabaseValue(value: Month): number {

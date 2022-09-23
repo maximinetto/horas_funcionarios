@@ -1,8 +1,9 @@
 import { EntitySchema } from "@mikro-orm/core";
-import ActualBalance from "entities/ActualBalance";
-import ActualBalanceTeacher from "entities/ActualBalanceTeacher";
-import CalculationTeacher from "entities/CalculationTeacher";
-import HourlyBalanceTeacher from "entities/HourlyBalanceTeacher";
+
+import ActualBalance from "../ActualBalance";
+import ActualBalanceTeacher from "../ActualBalanceTeacher";
+import CalculationTeacher from "../CalculationTeacher";
+import HourlyBalanceTeacher from "../HourlyBalanceTeacher";
 
 export default new EntitySchema<ActualBalanceTeacher, ActualBalance>({
   name: "ActualBalanceTeacher",

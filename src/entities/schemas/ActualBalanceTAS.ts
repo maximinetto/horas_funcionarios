@@ -1,8 +1,9 @@
 import { EntitySchema } from "@mikro-orm/core";
-import ActualBalance from "entities/ActualBalance";
-import ActualBalanceTAS from "entities/ActualBalanceTAS";
-import CalculationTAS from "entities/CalculationTAS";
-import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
+
+import ActualBalance from "../ActualBalance";
+import ActualBalanceTAS from "../ActualBalanceTAS";
+import CalculationTAS from "../CalculationTAS";
+import HourlyBalanceTAS from "../HourlyBalanceTAS";
 
 export default new EntitySchema<ActualBalanceTAS, ActualBalance>({
   name: "ActualBalanceTAS",

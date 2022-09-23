@@ -1,12 +1,12 @@
-import Calculations from "collections/Calculations";
 import Decimal from "decimal.js";
-import Nullable from "entities/null_object/Nullable";
-import { Month } from "enums/common";
-import Comparable from "utils/Comparator";
 
+import Calculations from "../collections/Calculations";
+import { Month } from "../enums/common";
+import Comparable from "../utils/Comparator";
 import ActualBalance from "./ActualBalance";
 import Entity from "./Entity";
 import ICalculation from "./interfaces/ICalculation";
+import Nullable from "./null_object/Nullable";
 
 export interface CalculationModel {
   id?: string;

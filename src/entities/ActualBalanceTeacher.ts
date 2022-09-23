@@ -1,7 +1,7 @@
 import { Collection } from "@mikro-orm/core";
 import { Decimal } from "decimal.js";
-import { TypeOfOfficial } from "enums/officials";
 
+import { TypeOfOfficial } from "../enums/officials";
 import ActualBalance from "./ActualBalance";
 import CalculationTeacher from "./CalculationTeacher";
 import HourlyBalanceTeacher from "./HourlyBalanceTeacher";

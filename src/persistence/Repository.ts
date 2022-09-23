@@ -1,5 +1,6 @@
-import Entity from "entities/Entity";
 import { Optional } from "typescript-optional";
+
+import Entity from "../entities/Entity";
 
 export default interface Repository<key, E extends Entity> {
   get(id: key): Promise<Optional<E>>;

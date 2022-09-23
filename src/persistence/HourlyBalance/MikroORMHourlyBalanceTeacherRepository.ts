@@ -1,6 +1,5 @@
-import HourlyBalanceTeacher from "entities/HourlyBalanceTeacher";
-import MikroORMRepository from "persistence/MikroORMRepository";
-
+import HourlyBalanceTeacher from "../../entities/HourlyBalanceTeacher";
+import MikroORMRepository from "../MikroORMRepository";
 import HourlyBalanceRepository from "./HourlyBalanceRepository";
 
 export default class MikroORMHourlyBalanceTeacherRepository

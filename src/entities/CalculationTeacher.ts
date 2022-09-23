@@ -1,11 +1,11 @@
 import { Decimal } from "decimal.js";
-import Nullable from "entities/null_object/Nullable";
-import { Month } from "enums/common";
 
+import { Month } from "../enums/common";
 import ActualBalance from "./ActualBalance";
 import ActualBalanceTeacher from "./ActualBalanceTeacher";
 import Calculation from "./Calculation";
 import Entity from "./Entity";
+import Nullable from "./null_object/Nullable";
 
 interface CalculationTeacherModel extends Entity {
   id?: string;

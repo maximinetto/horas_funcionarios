@@ -1,6 +1,7 @@
 import { EntitySchema } from "@mikro-orm/core";
-import Entity from "entities/Entity";
-import HourlyBalance from "entities/HourlyBalance";
+
+import Entity from "../Entity";
+import HourlyBalance from "../HourlyBalance";
 
 export default new EntitySchema<HourlyBalance, Entity>({
   name: "HourlyBalance",

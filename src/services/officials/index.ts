@@ -51,7 +51,7 @@ export default class OfficialService {
       officials.map((o) => ({
         ...o,
         dateOfEntry: o.dateOfEntry.toJSDate(),
-        actualBalances: o.actualBalances.getItems(),
+        actualBalances: o.getActualBalances(),
       }))
     );
   }

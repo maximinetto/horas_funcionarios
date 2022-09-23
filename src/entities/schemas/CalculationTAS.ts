@@ -1,8 +1,9 @@
 import { EntitySchema } from "@mikro-orm/core";
-import ActualBalanceTAS from "entities/ActualBalanceTAS";
-import Calculation from "entities/Calculation";
-import CalculationTAS from "entities/CalculationTAS";
-import BigNumberType from "persistence/types/BigNumberType";
+
+import BigNumberType from "../../persistence/types/BigNumberType";
+import ActualBalanceTAS from "../ActualBalanceTAS";
+import Calculation from "../Calculation";
+import CalculationTAS from "../CalculationTAS";
 
 export default new EntitySchema<CalculationTAS, Calculation>({
   name: "CalculationTAS",

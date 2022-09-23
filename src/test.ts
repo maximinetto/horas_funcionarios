@@ -1,3 +1,3 @@
-import { secondsToTime } from "utils/time";
+import { secondsToTime } from "./utils/time";
 
-console.log(secondsToTime(8670n));
+console.log("global:", secondsToTime(8670n));

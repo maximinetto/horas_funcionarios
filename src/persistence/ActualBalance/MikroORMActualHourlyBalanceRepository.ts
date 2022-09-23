@@ -1,9 +1,9 @@
-import ActualBalance from "entities/ActualBalance";
-import ActualBalanceTAS from "entities/ActualBalanceTAS";
-import ActualHourlyBalanceRepository from "persistence/ActualBalance/ActualHourlyBalanceRepository";
-import MikroORMRepository from "persistence/MikroORMRepository";
-import { serializeBalancesTAS } from "serializers/persistence/balance";
-import { ActualBalanceDTO } from "types/actualBalance";
+import ActualBalance from "../../entities/ActualBalance";
+import ActualBalanceTAS from "../../entities/ActualBalanceTAS";
+import { serializeBalancesTAS } from "../../serializers/persistence/balance";
+import { ActualBalanceDTO } from "../../types/actualBalance";
+import ActualHourlyBalanceRepository from "../ActualBalance/ActualHourlyBalanceRepository";
+import MikroORMRepository from "../MikroORMRepository";
 
 export default class MikroORMActualHourlyBalanceRepository
   extends MikroORMRepository<string, ActualBalance>
@@ -76,5 +76,10 @@ ORDER BY year ASC, hourly_balance.year ASC`,
         populate: ["hourlyBalances"],
       }
     );
+  }
+
+  async removeRange(entities: ActualBalance[]): Promise<ActualBalance[]> {
+    this._mikroorm.em.remove(entities);
+    return entities;
   }
 }

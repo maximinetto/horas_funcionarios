@@ -1,5 +1,5 @@
-import CalculationTeacher from "entities/CalculationTeacher";
-import Repository from "persistence/Repository";
+import CalculationTeacher from "../../../entities/CalculationTeacher";
+import Repository from "../../Repository";
 
 export default interface CalculationTeacherRepository
   extends Repository<string, CalculationTeacher> {

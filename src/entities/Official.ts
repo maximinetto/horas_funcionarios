@@ -1,11 +1,11 @@
 import { Collection } from "@mikro-orm/core";
-import Nullable from "entities/null_object/Nullable";
-import { Contract, TypeOfOfficial } from "enums/officials";
 import { DateTime } from "luxon";
-import Comparable from "utils/Comparator";
 
+import { Contract, TypeOfOfficial } from "../enums/officials";
+import Comparable from "../utils/Comparator";
 import ActualBalance from "./ActualBalance";
 import Entity from "./Entity";
+import Nullable from "./null_object/Nullable";
 
 export default class Official
   extends Entity
@@ -90,6 +90,10 @@ export default class Official
 
   public isDefault(): boolean {
     return false;
+  }
+
+  getActualBalances() {
+    return this.actualBalances.getItems(false);
   }
 
   public static default(id = Official.DEFAULTNUMBERID): Official {

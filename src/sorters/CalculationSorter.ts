@@ -1,9 +1,9 @@
-import Calculation from "entities/Calculation";
 import { DateTime } from "luxon";
-import { resetDateFromFirstDay } from "utils/date";
-import { getNumberByMonth } from "utils/mapMonths";
-import numberSorter from "utils/numberSorter";
 
+import Calculation from "../entities/Calculation";
+import { resetDateFromFirstDay } from "../utils/date";
+import { getNumberByMonth } from "../utils/mapMonths";
+import numberSorter from "../utils/numberSorter";
 import Sorter from "./Sorter";
 
 export default class CalculationSorter extends Sorter<Calculation> {

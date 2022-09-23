@@ -1,7 +1,8 @@
 import { EntitySchema } from "@mikro-orm/core";
-import Calculation from "entities/Calculation";
-import Entity from "entities/Entity";
-import MonthType from "persistence/types/MonthType";
+
+import MonthType from "../../persistence/types/MonthType";
+import Calculation from "../Calculation";
+import Entity from "../Entity";
 
 export default new EntitySchema<Calculation, Entity>({
   name: "Calculation",

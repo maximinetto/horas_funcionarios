@@ -1,18 +1,17 @@
 import faker from "@faker-js/faker";
-import OfficialConverter from "converters/models_to_entities/OfficialConverter";
-import MikroORMActualBalanceBuilder from "creators/actual/MikroORMActualBalanceBuilder";
-import MikroORMOfficialBuilder from "creators/official/MikroORMOfficialBuilder";
-import { Contract, TypeOfOfficial } from "enums/officials";
 import _omit from "lodash/omit";
-import Database from "persistence/context/Database";
-import OfficialService from "services/officials";
-import { OfficialWithOptionalId } from "types/officials";
+import { unitOfWork } from "setupIntegrationTestEnvironment";
+
+import OfficialConverter from "../../../../converters/models_to_entities/OfficialConverter";
+import MikroORMActualBalanceBuilder from "../../../../creators/actual/MikroORMActualBalanceBuilder";
+import MikroORMOfficialBuilder from "../../../../creators/official/MikroORMOfficialBuilder";
+import { Contract, TypeOfOfficial } from "../../../../enums/officials";
+import OfficialService from "../../../../services/officials";
+import { OfficialWithOptionalId } from "../../../../types/officials";
 
 let officials: OfficialWithOptionalId[];
 let officialService: OfficialService;
 let officialConverter: OfficialConverter;
-
-const unitOfWork = global.unitOfWork as Database;
 
 beforeEach(() => {
   officialConverter = new OfficialConverter({
@@ -26,15 +25,20 @@ beforeEach(() => {
   });
   return createFakeOfficials().then((value) => {
     officials = value;
+    console.log("officials.integration.test");
   });
 });
 
 test("Should get all instance of officials", async () => {
+  console.log("Should get all instance of officials");
   const response = await officialService.get({});
 
   const result = (res: OfficialWithOptionalId) =>
     _omit(res, ["id", "actualBalances", "createdAt", "updatedAt"]);
 
+  console.log("result:", result);
+
+  expect(response.length).toBe(2);
   expect(response.map(result)).toEqual(officials);
 
   const response2 = await officialService.get({
@@ -71,6 +75,8 @@ test("Should get all instance of officials", async () => {
 });
 
 test("Should create 1 official", async () => {
+  console.log("Should create 1 official");
+
   const official = {
     recordNumber: faker.datatype.number(),
     firstName: faker.name.firstName(),
@@ -99,6 +105,7 @@ test("Should create 1 official", async () => {
 });
 
 test("Should update the existing official", async () => {
+  console.log("Should update the existing official");
   const official = {
     recordNumber: faker.datatype.number(),
     firstName: faker.name.firstName(),
@@ -146,6 +153,8 @@ test("Should update the existing official", async () => {
 });
 
 test("Should delete a existing official record", async () => {
+  console.log("Should delete a existing official record");
+
   const officialOptional = await unitOfWork.official.getLast();
 
   if (!officialOptional) {

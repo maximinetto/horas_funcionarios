@@ -1,6 +1,6 @@
-import Calculation from "entities/Calculation";
-import { TypeOfOfficial } from "enums/officials";
-import Repository from "persistence/Repository";
+import Calculation from "../../entities/Calculation";
+import { TypeOfOfficial } from "../../enums/officials";
+import Repository from "../Repository";
 
 export default interface CalculationRepository
   extends Repository<string, Calculation> {

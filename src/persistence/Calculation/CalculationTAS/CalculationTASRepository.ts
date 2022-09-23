@@ -1,5 +1,5 @@
-import CalculationTAS from "entities/CalculationTAS";
-import Repository from "persistence/Repository";
+import CalculationTAS from "../../../entities/CalculationTAS";
+import Repository from "../../Repository";
 
 export default interface CalculationTASRepository
   extends Repository<string, CalculationTAS> {

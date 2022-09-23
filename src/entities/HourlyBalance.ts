@@ -1,8 +1,8 @@
 import type Decimal from "decimal.js";
-import Nullable from "entities/null_object/Nullable";
-import Comparable from "utils/Comparator";
 
+import Comparable from "../utils/Comparator";
 import Entity from "./Entity";
+import Nullable from "./null_object/Nullable";
 
 export default abstract class HourlyBalance
   extends Entity

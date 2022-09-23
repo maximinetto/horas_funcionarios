@@ -1,6 +1,5 @@
-import CalculationTeacher from "entities/CalculationTeacher";
-import MikroORMRepository from "persistence/MikroORMRepository";
-
+import CalculationTeacher from "../../../entities/CalculationTeacher";
+import MikroORMRepository from "../../MikroORMRepository";
 import CalculationTeacherRepository from "./CalculationTeacherRepository";
 
 export default class MikroORMCalculationTeacherRepository
