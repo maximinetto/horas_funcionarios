@@ -7,7 +7,6 @@ import Entity from "../Entity";
 import Official from "../Official";
 
 export default new EntitySchema<Official, Entity>({
-  name: "Official",
   tableName: "officials",
   extends: "Entity",
   class: Official,

@@ -7,7 +7,7 @@ export default class MikroORMCalculationTeacherRepository
   implements CalculationTeacherRepository
 {
   constructor() {
-    super({ modelName: "CalculationTeacher" });
+    super({ modelName: CalculationTeacher });
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -24,5 +24,11 @@ export default class MikroORMCalculationTeacherRepository
     year: number;
   }): Promise<CalculationTeacher[]> {
     throw new Error("Method not implemented.");
+  }
+
+  async clear(): Promise<void> {
+    await this._mikroorm.em.flush();
+    this._mikroorm.em.clear();
+    await this._mikroorm.em.nativeDelete(CalculationTeacher, {});
   }
 }

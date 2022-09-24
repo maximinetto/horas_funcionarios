@@ -2,7 +2,6 @@ import { Decimal } from "decimal.js";
 
 import HourlyBalanceTAS from "../../../../../entities/HourlyBalanceTAS";
 import {
-  TypeOfHour,
   TypeOfHourDecimal,
   TypeOfHoursByYearDecimal,
 } from "../../../../../types/typeOfHours";
@@ -83,11 +82,11 @@ export function sanitize(balances: TypeOfHoursByYearDecimal[]) {
 export function calculateNextRowBalance(
   year: number,
   totalCurrentYear: Omit<Total, "totalHours">,
-  previousHour?: TypeOfHour
+  previousHour?: TypeOfHourDecimal
 ) {
   const simple: Decimal =
-    previousHour && previousHour.value < 0n
-      ? previousHour.value + totalCurrentYear.simple
+    previousHour && previousHour.value.greaterThan(0)
+      ? previousHour.value.plus(totalCurrentYear.simple)
       : totalCurrentYear.simple;
   const working: Decimal = simple.lessThan(0)
     ? simple.plus(totalCurrentYear.working)

@@ -10,7 +10,7 @@ export default class MikroORMActualHourlyBalanceRepository
   implements ActualHourlyBalanceRepository
 {
   constructor() {
-    super({ modelName: "ActualBalance" });
+    super({ modelName: ActualBalance });
   }
 
   getBalanceTASBYOfficialIdAndYear({
@@ -81,5 +81,11 @@ ORDER BY year ASC, hourly_balance.year ASC`,
   async removeRange(entities: ActualBalance[]): Promise<ActualBalance[]> {
     this._mikroorm.em.remove(entities);
     return entities;
+  }
+
+  async clear(): Promise<void> {
+    await this._mikroorm.em.flush();
+    this._mikroorm.em.clear();
+    await this._mikroorm.em.nativeDelete(ActualBalance, {});
   }
 }

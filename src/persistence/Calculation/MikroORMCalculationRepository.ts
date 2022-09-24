@@ -20,7 +20,7 @@ export default class MikroORMCalculationRepository
     calculationTASRepository: CalculationTASRepository;
     calculationTeacherRepository: CalculationTeacherRepository;
   }) {
-    super({ modelName: "Calculation" });
+    super({ modelName: Calculation });
     this._calculationTASRepository = calculationTASRepository;
     this._calculationTeacherRepository = calculationTeacherRepository;
   }

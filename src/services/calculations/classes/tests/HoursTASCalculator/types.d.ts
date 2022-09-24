@@ -6,7 +6,7 @@ import CalculationTAS from "../../../../../entities/CalculationTAS";
 import HourlyBalanceTAS from "../../../../../entities/HourlyBalanceTAS";
 import Official from "../../../../../entities/Official";
 import { TYPES_OF_HOURS } from "../../../../../enums/typeOfHours";
-import { TypeOfHour } from "../../../../../types/typeOfHours";
+import { TypeOfHourDecimal } from "../../../../../types/typeOfHours";
 
 export type Data = {
   calculations: Calculations<CalculationTAS>;
@@ -33,7 +33,7 @@ export type Total = {
 export type CalculationData = {
   result: {
     year: number;
-    hours: TypeOfHour[];
+    hours: TypeOfHourDecimal[];
   }[];
   resultSanitized: {
     year: number;

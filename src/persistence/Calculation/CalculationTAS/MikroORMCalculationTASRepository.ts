@@ -7,7 +7,7 @@ export default class MikroORMCalculationTASRepository
   implements CalculationTASRepository
 {
   constructor() {
-    super({ modelName: "CalculationTAS" });
+    super({ modelName: CalculationTAS });
   }
 
   getCalculationsTASWithYearGreaterThanActual({
@@ -44,5 +44,11 @@ export default class MikroORMCalculationTASRepository
       },
       year,
     });
+  }
+
+  async clear(): Promise<void> {
+    await this._mikroorm.em.flush();
+    this._mikroorm.em.clear();
+    await this._mikroorm.em.nativeDelete(CalculationTAS, {});
   }
 }

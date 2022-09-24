@@ -1,4 +1,10 @@
-import { FilterQuery, FindOptions, MikroORM, wrap } from "@mikro-orm/core";
+import {
+  EntityClass,
+  FilterQuery,
+  FindOptions,
+  MikroORM,
+  wrap,
+} from "@mikro-orm/core";
 import { MySqlDriver } from "@mikro-orm/mysql";
 import { Optional } from "typescript-optional";
 
@@ -11,10 +17,16 @@ export default class MikroORMRepository<key, T extends Entity>
   implements Repository<key, T>
 {
   protected readonly _mikroorm: MikroORM<MySqlDriver>;
-  protected readonly _modelName: string;
+  protected readonly _modelName: EntityClass<T>;
   protected readonly _idKey: string;
 
-  constructor({ modelName, idKey }: { modelName: string; idKey?: string }) {
+  constructor({
+    modelName,
+    idKey,
+  }: {
+    modelName: EntityClass<T>;
+    idKey?: string;
+  }) {
     this._mikroorm = mikroorm;
     this._modelName = modelName;
     this._idKey = idKey ?? "id";
@@ -98,8 +110,9 @@ export default class MikroORMRepository<key, T extends Entity>
   async clear(): Promise<void> {
     await this._mikroorm.em.flush();
     this._mikroorm.em.clear();
+    const options = {} as FilterQuery<T>;
     return this._mikroorm.em
-      .nativeDelete(this._modelName, {})
+      .nativeDelete(this._modelName, options)
       .then(() => Promise.resolve());
   }
 }

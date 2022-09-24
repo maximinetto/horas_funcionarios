@@ -9,7 +9,7 @@ export default class MikroORMOfficialRepository
   implements OfficialRepository
 {
   constructor() {
-    super({ modelName: "Official" });
+    super({ modelName: Official });
   }
 
   getLast(): Promise<Optional<Official>> {

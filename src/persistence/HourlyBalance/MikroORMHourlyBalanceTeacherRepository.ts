@@ -7,6 +7,12 @@ export default class MikroORMHourlyBalanceTeacherRepository
   implements HourlyBalanceRepository
 {
   constructor() {
-    super({ modelName: "HourlyBalanceTeacher" });
+    super({ modelName: HourlyBalanceTeacher });
+  }
+
+  async clear(): Promise<void> {
+    await this._mikroorm.em.flush();
+    this._mikroorm.em.clear();
+    await this._mikroorm.em.nativeDelete(HourlyBalanceTeacher, {});
   }
 }
