@@ -1,4 +1,6 @@
-import Hours from "services/calculations/classes/typeOfHours";
+import { expect, test } from "vitest";
+
+import Hours from "../../../../services/calculations/classes/typeOfHours";
 
 const service = new Hours();
 

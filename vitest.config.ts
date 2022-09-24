@@ -4,10 +4,12 @@ export default defineConfig({
   test: {
     environment: "node",
     browser: false,
-    include: ["**/tests/**/*.integration.test.ts"],
+    include: ["**/tests/**/*.test.ts"],
+    exclude: ["**/tests/**/*.integration.test.ts"],
     root: ".",
-    threads: false,
-    maxThreads: 1,
-    maxConcurrency: 1,
+    isolate: true,
+    clearMocks: true,
+
+    setupFiles: "./src/setupTestEnvironment.ts",
   },
 });

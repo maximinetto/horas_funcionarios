@@ -1,3 +1,5 @@
+import { expect } from "vitest";
+
 import Calculations from "../../../../collections/Calculations";
 import { logger } from "../../../../config";
 import BalanceConverter from "../../../../converters/models_to_entities/BalanceConverter";

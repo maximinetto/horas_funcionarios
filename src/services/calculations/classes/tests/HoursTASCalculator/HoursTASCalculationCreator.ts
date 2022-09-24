@@ -1,5 +1,7 @@
 import Decimal from "decimal.js";
+import ActualBalanceTAS from "entities/ActualBalanceTAS";
 import { Dictionary } from "lodash";
+import { mock } from "vitest-mock-extended";
 
 import Calculations from "../../../../../collections/Calculations";
 import CalculationTAS from "../../../../../entities/CalculationTAS";
@@ -110,47 +112,23 @@ export default class HoursTASCalculationCreator {
 
     const balancesEnriched = this.balances.map((b) => b.actualBalance);
 
-    const actualHourlyBalanceRepository: jest.Mocked<ActualHourlyBalanceRepository> =
-      {
-        filter: jest.fn(),
-        add: jest.fn(),
-        addRange: jest.fn(),
-        get: jest.fn(),
-        getAll: jest.fn(),
-        remove: jest.fn(),
-        removeRange: jest.fn(),
-        set: jest.fn(),
-        setRange: jest.fn(),
-        clear: jest.fn(),
-        getTASWithYearGreaterThanActual: jest
-          .fn()
-          .mockResolvedValue(balancesEnriched),
-      };
+    const actualHourlyBalanceRepository = mock<ActualHourlyBalanceRepository>();
+    actualHourlyBalanceRepository.getTASWithYearGreaterThanActual.mockResolvedValue(
+      balancesEnriched as ActualBalanceTAS[]
+    );
 
     const firstCalculationsMock = calculationFromPersistence.flat();
     const secondCalculationsMock = calculationFromPersistence
       .flat()
       .filter((c) => c.year > actualBalanceSecondTest.year);
 
-    const calculationRepository: jest.Mocked<CalculationRepository> = {
-      filter: jest.fn(),
-      add: jest.fn(),
-      addRange: jest.fn(),
-      get: jest.fn(),
-      getAll: jest.fn(),
-      remove: jest.fn(),
-      removeRange: jest.fn(),
-      set: jest.fn(),
-      setRange: jest.fn(),
-      clear: jest.fn(),
-      getCalculationWithYearGreaterThanActual: jest
-        .fn()
-        .mockResolvedValueOnce(firstCalculationsMock)
-        .mockResolvedValueOnce(secondCalculationsMock),
-      getCalculationsWithActualYear: jest
-        .fn()
-        .mockResolvedValue(calculationsSecondTest),
-    };
+    const calculationRepository = mock<CalculationRepository>();
+    calculationRepository.getCalculationWithYearGreaterThanActual
+      .mockResolvedValueOnce(firstCalculationsMock)
+      .mockResolvedValueOnce(secondCalculationsMock);
+    calculationRepository.getCalculationsWithActualYear.mockResolvedValue(
+      calculationsSecondTest
+    );
 
     const calculationsModified = [
       ...arrayWithoutElementAtIndex(calculationsSecondTest, [2, 5, 11]),

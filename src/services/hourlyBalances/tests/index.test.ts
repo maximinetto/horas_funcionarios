@@ -1,4 +1,5 @@
 import Decimal from "decimal.js";
+import { expect, it } from "vitest";
 
 import HourlyBalanceTAS from "../../../entities/HourlyBalanceTAS";
 import HourlyBalanceTeacher from "../../../entities/HourlyBalanceTeacher";

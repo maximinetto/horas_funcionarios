@@ -1,4 +1,4 @@
-import { logger as customLogger } from "config";
+import { logger as customLogger } from "../../../../../config";
 
 export function hoursToSeconds(hours: number) {
   return BigInt(hours) * 60n * 60n;

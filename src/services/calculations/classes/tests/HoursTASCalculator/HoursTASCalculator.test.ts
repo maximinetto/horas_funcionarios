@@ -1,3 +1,7 @@
+import ActualBalanceTAS from "entities/ActualBalanceTAS";
+import { describe, test } from "vitest";
+import { mock } from "vitest-mock-extended";
+
 import Calculations from "../../../../../collections/Calculations";
 import ActualBalance from "../../../../../entities/ActualBalance";
 import ActualHourlyBalanceRepository from "../../../../../persistence/ActualBalance/ActualHourlyBalanceRepository";
@@ -30,41 +34,20 @@ export interface CalculationDataTAS extends CalculationData {
 
 describe("Test calculations", () => {
   test("Should calculate right the passed values", async () => {
-    const calculationRepository: jest.Mocked<CalculationRepository> = {
-      filter: jest.fn(),
-      add: jest.fn(),
-      addRange: jest.fn(),
-      get: jest.fn(),
-      getAll: jest.fn(),
-      remove: jest.fn(),
-      removeRange: jest.fn(),
-      set: jest.fn(),
-      setRange: jest.fn(),
-      clear: jest.fn(),
-      getCalculationWithYearGreaterThanActual: jest.fn().mockResolvedValue([]),
-      getCalculationsWithActualYear: jest.fn().mockResolvedValue([]),
-    };
-
     const firstData = new Calculations(...calculationsFirstTest);
 
     const data = preset(firstData, yearFirstTest);
 
-    const actualHourlyBalanceRepository: jest.Mocked<ActualHourlyBalanceRepository> =
-      {
-        filter: jest.fn(),
-        add: jest.fn(),
-        addRange: jest.fn(),
-        get: jest.fn(),
-        getAll: jest.fn(),
-        remove: jest.fn(),
-        removeRange: jest.fn(),
-        set: jest.fn(),
-        setRange: jest.fn(),
-        clear: jest.fn(),
-        getTASWithYearGreaterThanActual: jest
-          .fn()
-          .mockResolvedValue([convert(data.lastBalances, data.data.official)]),
-      };
+    const actualHourlyBalanceRepository = mock<ActualHourlyBalanceRepository>();
+    actualHourlyBalanceRepository.getTASWithYearGreaterThanActual.mockResolvedValue(
+      [convert(data.lastBalances, data.data.official) as ActualBalanceTAS]
+    );
+
+    const calculationRepository = mock<CalculationRepository>();
+    calculationRepository.getCalculationWithYearGreaterThanActual.mockResolvedValue(
+      []
+    );
+    calculationRepository.getCalculationsWithActualYear.mockResolvedValue([]);
 
     await expectCalculationEquals(
       data,
@@ -76,41 +59,22 @@ describe("Test calculations", () => {
     );
   });
   test("Should calculate right the passed values too", async () => {
-    const calculationRepository: jest.Mocked<CalculationRepository> = {
-      filter: jest.fn(),
-      add: jest.fn(),
-      addRange: jest.fn(),
-      get: jest.fn(),
-      getAll: jest.fn(),
-      remove: jest.fn(),
-      removeRange: jest.fn(),
-      set: jest.fn(),
-      setRange: jest.fn(),
-      clear: jest.fn(),
-      getCalculationWithYearGreaterThanActual: jest.fn().mockResolvedValue([]),
-      getCalculationsWithActualYear: jest
-        .fn()
-        .mockResolvedValue(calculationsFirstTest),
-    };
+    const calculationRepository = mock<CalculationRepository>();
+    calculationRepository.getCalculationWithYearGreaterThanActual.mockResolvedValue(
+      []
+    );
+    calculationRepository.getCalculationsWithActualYear.mockResolvedValue(
+      calculationsFirstTest
+    );
 
     const otherData = new Calculations(...otherCalculations);
     const data = preset(otherData, yearFirstTest);
     const actual = convert(data.lastBalances, data.data.official);
 
-    const actualHourlyBalanceRepository: jest.Mocked<ActualHourlyBalanceRepository> =
-      {
-        filter: jest.fn(),
-        add: jest.fn(),
-        addRange: jest.fn(),
-        get: jest.fn(),
-        getAll: jest.fn(),
-        remove: jest.fn(),
-        removeRange: jest.fn(),
-        set: jest.fn(),
-        setRange: jest.fn(),
-        clear: jest.fn(),
-        getTASWithYearGreaterThanActual: jest.fn().mockResolvedValue([actual]),
-      };
+    const actualHourlyBalanceRepository = mock<ActualHourlyBalanceRepository>();
+    actualHourlyBalanceRepository.getTASWithYearGreaterThanActual.mockResolvedValue(
+      [actual as ActualBalanceTAS]
+    );
 
     const allCalculations = [...calculationsFirstTest, ...otherCalculations];
     await expectCalculationEquals(data, new Calculations(...allCalculations), {

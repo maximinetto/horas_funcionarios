@@ -31,9 +31,10 @@ export class MikroORMDatabase implements Database {
     return this._mikroorm.em.flush();
   }
 
-  async init(): Promise<void> {
-    this._mikroorm = await initializeORM();
+  async init(connect = true): Promise<void> {
+    this._mikroorm = await initializeORM(connect);
     mikroorm = this._mikroorm;
+    console.log("jajaja", mikroorm);
     this.calculationTAS = new MikroORMCalculationTASRepository();
     this.calculationTeacher = new MikroORMCalculationTeacherRepository();
     this.calculation = new MikroORMCalculationRepository({

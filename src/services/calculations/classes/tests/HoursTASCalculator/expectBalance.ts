@@ -1,4 +1,5 @@
 import { Decimal } from "decimal.js";
+import { expect } from "vitest";
 
 import {
   TypeOfHoursByYear,

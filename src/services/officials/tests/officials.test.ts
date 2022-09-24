@@ -1,6 +1,8 @@
 import { faker } from "@faker-js/faker";
 import { DateTime } from "luxon";
 import { Optional } from "typescript-optional";
+import { beforeAll, describe, expect, test } from "vitest";
+import { mock } from "vitest-mock-extended";
 
 import OfficialConverter from "../../../converters/models_to_entities/OfficialConverter";
 import MikroORMActualBalanceBuilder from "../../../creators/actual/MikroORMActualBalanceBuilder";
@@ -14,7 +16,7 @@ import OfficialService from "../index";
 
 describe("Officials controller tests", () => {
   let officialService: OfficialService;
-  let officialRepository: jest.Mocked<OfficialRepository>;
+  const officialRepository = mock<OfficialRepository>();
   let officialConverter: OfficialConverter;
   let officialBuilder: OfficialBuilder;
   const keysToOmit = ["createdAt", "updatedAt", "actualBalances"];
@@ -28,20 +30,6 @@ describe("Officials controller tests", () => {
     officialBuilder = new MikroORMOfficialBuilder({
       actualHourlyBalanceBuilder: new MikroORMActualBalanceBuilder(),
     });
-    officialRepository = {
-      add: jest.fn(),
-      set: jest.fn(),
-      remove: jest.fn(),
-      filter: jest.fn(),
-      addRange: jest.fn(),
-      setRange: jest.fn(),
-      removeRange: jest.fn(),
-      get: jest.fn(),
-      getAll: jest.fn(),
-      clear: jest.fn(),
-      getLast: jest.fn(),
-      count: jest.fn(),
-    };
 
     officialService = new OfficialService({
       officialConverter,

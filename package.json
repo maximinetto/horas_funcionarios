@@ -10,8 +10,8 @@
     "unit:debug": "npm run unit -- Hours --runInBand",
     "unit": "dotenv -e .env.test -- jest -c jest.config.unit.ts --logHeapUsage",
     "unit:swc": "dotenv -e .env.test -- jest -c jest.config.unit.swc.ts --logHeapUsage",
-    "unit:mocha": "dotenv -e .env.test -- mocha --check-leaks -r ts-node/register -r tsconfig-paths/register '**/tests/officials.test.ts'",
-    "integration": "dotenv -e .env.test -- jest -c jest.config.integration.ts",
+    "unit:vitest": "dotenv -e .env.test -- vitest",
+    "integration": "dotenv -e .env.test -- vitest -c vitest.integration.config.ts",
     "integration:swc": "dotenv -e .env.test -- jest -c jest.config.integration.swc.ts",
     "integration:watch": "npm run integration -- --watchAll",
     "build": "rimraf dist && babel src --ignore=node_modules,dist --extensions .ts --out-dir dist --copy-files --no-copy-ignored",
@@ -101,7 +101,8 @@
     "ts-node-dev": "2.0.0",
     "tsconfig-paths": "4.0.0",
     "typescript": "4.7.4",
-    "vitest": "0.23.4"
+    "vitest": "0.23.4",
+    "vitest-mock-extended": "0.1.15"
   },
   "mikro-orm": {
     "useTsNode": true,

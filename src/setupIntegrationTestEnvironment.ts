@@ -1,3 +1,5 @@
+import { afterAll, afterEach, beforeAll } from "vitest";
+
 import Database from "./persistence/context/Database";
 import DatabaseFactory from "./persistence/context/index.config";
 
@@ -5,7 +7,7 @@ export let unitOfWork: Database;
 
 beforeAll(async () => {
   unitOfWork = DatabaseFactory.createDatabase("mikroorm");
-  await unitOfWork.init();
+  await unitOfWork.init(true);
 });
 
 afterEach(async () => {
@@ -18,5 +20,5 @@ afterEach(async () => {
 });
 
 afterAll(() => {
-  unitOfWork.close();
+  return unitOfWork.close();
 });

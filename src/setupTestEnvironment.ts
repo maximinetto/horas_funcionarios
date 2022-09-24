@@ -1,18 +1,13 @@
-import Database from "./persistence/context/Database";
 import DatabaseFactory, {
   TypeOfEngine,
 } from "./persistence/context/index.config";
 
-export let database: Database;
-
-beforeAll(async () => {
+export const setup = async () => {
   const typeOfEngine = process.env
     .OFFICIALS_SCHEDULES_TYPE_OF_ENGINE as TypeOfEngine;
 
-  database = DatabaseFactory.createDatabase(typeOfEngine);
-  await database.init();
-});
+  const database = DatabaseFactory.createDatabase(typeOfEngine);
+  await database.init(false);
+};
 
-afterAll(async () => {
-  await database.close();
-});
+setup();

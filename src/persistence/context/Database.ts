@@ -8,7 +8,7 @@ import HourlyBalanceTeacherRepository from "../HourlyBalance/HourlyBalanceTeache
 import OfficialRepository from "../Official/OfficialRepository";
 
 export default interface Database {
-  init(): Promise<void>;
+  init(connect: boolean): Promise<void>;
   close(): Promise<void>;
   commit(): Promise<void>;
   clear(): Promise<void>;

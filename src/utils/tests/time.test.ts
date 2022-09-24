@@ -1,3 +1,5 @@
+import { expect, test } from "vitest";
+
 import { secondsToTime, timeToSeconds } from "../../utils/time";
 
 test("Time should be converted into seconds", async () => {

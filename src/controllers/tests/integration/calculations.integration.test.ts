@@ -1,6 +1,7 @@
 import { FastifyInstance } from "fastify";
 import _omit from "lodash/omit";
 import { DateTime } from "luxon";
+import { afterAll, beforeAll, describe, expect, test } from "vitest";
 
 import buildApp from "../../../buildApp";
 import OfficialConverter from "../../../converters/models_to_entities/OfficialConverter";
@@ -21,39 +22,39 @@ import { getMonthByNumber, getNumberByMonth } from "../../../utils/mapMonths";
 import { secondsToTime } from "../../../utils/time";
 import { generateFirstCase, generateSecondCase } from "./preload";
 
-let fastify: FastifyInstance;
-let officialService: OfficialService;
-let actualHourlyBalanceBuilder: ActualHourlyBalanceBuilder;
-let calculationBuilder: CalculationBuilder;
-let officialBuilder: OfficialBuilder;
-
-beforeAll(() => {
-  fastify = buildApp({
-    logger: {
-      level: process.env.LOG_LEVEL || "silent",
-    },
-    pluginTimeout: 2 * 60 * 1000,
-  });
-  actualHourlyBalanceBuilder = new MikroORMActualBalanceBuilder();
-  officialBuilder = new MikroORMOfficialBuilder({
-    actualHourlyBalanceBuilder,
-  });
-  calculationBuilder = new MikroORMCalculationBuilder({
-    actualHourlyBalanceBuilder,
-  });
-  officialService = new OfficialService({
-    officialConverter: new OfficialConverter({
-      officialBuilder,
-    }),
-    officialRepository: unitOfWork.official,
-  });
-});
-
-afterAll(() => {
-  return fastify.close();
-});
-
 describe("Calculations", () => {
+  let fastify: FastifyInstance;
+  let officialService: OfficialService;
+  let actualHourlyBalanceBuilder: ActualHourlyBalanceBuilder;
+  let calculationBuilder: CalculationBuilder;
+  let officialBuilder: OfficialBuilder;
+
+  beforeAll(() => {
+    fastify = buildApp({
+      logger: {
+        level: process.env.LOG_LEVEL || "silent",
+      },
+      pluginTimeout: 2 * 60 * 1000,
+    });
+    actualHourlyBalanceBuilder = new MikroORMActualBalanceBuilder();
+    officialBuilder = new MikroORMOfficialBuilder({
+      actualHourlyBalanceBuilder,
+    });
+    calculationBuilder = new MikroORMCalculationBuilder({
+      actualHourlyBalanceBuilder,
+    });
+    officialService = new OfficialService({
+      officialConverter: new OfficialConverter({
+        officialBuilder,
+      }),
+      officialRepository: unitOfWork.official,
+    });
+  });
+
+  afterAll(() => {
+    return fastify.close();
+  });
+
   test("should be create a list of hours", async () => {
     await officialService.create(
       new Official({
