@@ -1,11 +1,12 @@
 import { FilterQuery } from "@mikro-orm/core";
-import OfficialConverter from "converters/models_to_entities/OfficialConverter";
-import Official from "entities/Official";
-import { Contract, TypeOfOfficial } from "enums/officials";
-import NotExistsError from "errors/NotExistsError";
 import { DateTime } from "luxon";
-import OfficialRepository from "persistence/Official/OfficialRepository";
-import { lastDateOfTheYear } from "utils/date";
+
+import OfficialConverter from "../../converters/models_to_entities/OfficialConverter";
+import Official from "../../entities/Official";
+import { Contract, TypeOfOfficial } from "../../enums/officials";
+import NotExistsError from "../../errors/NotExistsError";
+import OfficialRepository from "../../persistence/Official/OfficialRepository";
+import { lastDateOfTheYear } from "../../utils/date";
 
 type Get = {
   type?: TypeOfOfficial;

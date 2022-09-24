@@ -1,19 +1,18 @@
-import Calculations from "collections/Calculations";
-import ActualBalance from "entities/ActualBalance";
-import CalculationTAS from "entities/CalculationTAS";
-import Official from "entities/Official";
-import { TypeOfOfficial } from "enums/officials";
-import ValueNotProvidedError from "errors/ValueNotProvidedError";
-import ActualHourlyBalanceRepository from "persistence/ActualBalance/ActualHourlyBalanceRepository";
-import RecalculatorService from "services/calculations/classes/TAS/RecalculatorService";
+import Calculations from "../../collections/Calculations";
+import ActualBalance from "../../entities/ActualBalance";
+import CalculationTAS from "../../entities/CalculationTAS";
+import Official from "../../entities/Official";
+import { TypeOfOfficial } from "../../enums/officials";
+import ValueNotProvidedError from "../../errors/ValueNotProvidedError";
+import ActualHourlyBalanceRepository from "../../persistence/ActualBalance/ActualHourlyBalanceRepository";
+import RecalculatorService from "../../services/calculations/classes/TAS/RecalculatorService";
 import Balances, {
   getCurrentActualHourlyBalance,
-} from "services/hourlyBalances";
-import ActualHourlyBalanceCreator from "services/hourlyBalances/ActualHourlyBalanceCreator";
-import ActualHourlyBalanceReplacer from "services/hourlyBalances/ActualHourlyBalanceReplacer";
-import ActualHourlyBalanceSaver from "services/hourlyBalances/ActualHourlyBalanceSaver";
-import { CalculationCalculated } from "types/calculations";
-
+} from "../../services/hourlyBalances";
+import ActualHourlyBalanceCreator from "../../services/hourlyBalances/ActualHourlyBalanceCreator";
+import ActualHourlyBalanceReplacer from "../../services/hourlyBalances/ActualHourlyBalanceReplacer";
+import ActualHourlyBalanceSaver from "../../services/hourlyBalances/ActualHourlyBalanceSaver";
+import { CalculationCalculated } from "../../types/calculations";
 import CalculatorRowService from "./classes/TAS/CalculatorRowService";
 
 export default class TASCalculator {

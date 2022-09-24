@@ -1,5 +1,5 @@
-import Database from "persistence/context/Database";
-import DatabaseFactory from "persistence/context/index.config";
+import Database from "./persistence/context/Database";
+import DatabaseFactory from "./persistence/context/index.config";
 
 export let unitOfWork: Database;
 

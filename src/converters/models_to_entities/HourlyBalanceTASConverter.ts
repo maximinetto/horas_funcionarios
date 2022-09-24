@@ -1,8 +1,8 @@
 import { Decimal } from "decimal.js";
-import HourlyBalanceEntity from "entities/HourlyBalanceTAS";
-import { HourlyBalanceTAS as HourlyBalanceTASModel } from "types/hourlyBalance";
-import { generateRandomUUIDV4 } from "utils/strings";
 
+import HourlyBalanceEntity from "../../entities/HourlyBalanceTAS";
+import { HourlyBalanceTAS as HourlyBalanceTASModel } from "../../types/hourlyBalance";
+import { generateRandomUUIDV4 } from "../../utils/strings";
 import { AbstractConverter } from "./AbstractConverter";
 
 export default class HourlyBalanceTASConverter extends AbstractConverter<

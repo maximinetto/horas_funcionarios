@@ -1,4 +1,4 @@
-import { Contract, TypeOfOfficial } from "enums/officials";
+import { Contract, TypeOfOfficial } from "../enums/officials";
 
 export type Official = {
   id: number;

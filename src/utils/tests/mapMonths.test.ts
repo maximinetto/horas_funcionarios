@@ -1,5 +1,5 @@
-import { Month } from "enums/common";
-import { getMonthByNumber, getNumberByMonth } from "utils/mapMonths";
+import { Month } from "../../enums/common";
+import { getMonthByNumber, getNumberByMonth } from "../../utils/mapMonths";
 
 test("Test get month number by month name.", () => {
   const months = [

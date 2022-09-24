@@ -1,11 +1,11 @@
-import Calculations from "collections/Calculations";
 import Decimal from "decimal.js";
-import Calculation from "entities/Calculation";
-import CalculationTASEntity from "entities/CalculationTAS";
-import HourlyBalance from "entities/HourlyBalance";
-import Official from "entities/Official";
-import { Month } from "enums/common";
 
+import Calculations from "../collections/Calculations";
+import Calculation from "../entities/Calculation";
+import CalculationTASEntity from "../entities/CalculationTAS";
+import HourlyBalance from "../entities/HourlyBalance";
+import Official from "../entities/Official";
+import { Month } from "../enums/common";
 import {
   TypeOfHourDecimal,
   TypeOfHoursByYear,

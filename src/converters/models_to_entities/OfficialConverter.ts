@@ -1,8 +1,8 @@
-import OfficialBuilder from "creators/official/OfficialBuilder";
-import OfficialEntity from "entities/Official";
 import { DateTime } from "luxon";
-import { OfficialWithOptionalId } from "types/officials";
 
+import OfficialBuilder from "../../creators/official/OfficialBuilder";
+import OfficialEntity from "../../entities/Official";
+import { OfficialWithOptionalId } from "../../types/officials";
 import { AbstractConverter } from "./AbstractConverter";
 
 export default class OfficialConverter extends AbstractConverter<

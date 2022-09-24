@@ -1,6 +1,6 @@
-import OfficialRepository from "persistence/officials";
-import prisma from "persistence/persistence.config";
-import OfficialService from "services/officials";
+import OfficialRepository from "../../../persistence/officials";
+import prisma from "../../../persistence/persistence.config";
+import OfficialService from "../../../services/officials";
 import faker from "@faker-js/faker";
 import { Contract, TypeOfOfficials } from "@prisma/client";
 import chai from "chai";

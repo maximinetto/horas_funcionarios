@@ -1,4 +1,4 @@
-import CustomError from "errors/CustomError";
+import CustomError from "./CustomError";
 
 export default class NotExistsError extends CustomError {
   constructor(message: string) {

@@ -1,4 +1,4 @@
-import CustomError from "errors/CustomError";
+import CustomError from "./CustomError";
 
 export default class InvalidValueError extends CustomError {
   constructor(message) {

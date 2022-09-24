@@ -1,7 +1,8 @@
-import ActualBalance from "entities/ActualBalance";
-import type Entity from "entities/Entity";
-import { Contract, TypeOfOfficial } from "enums/officials";
 import { DateTime } from "luxon";
+
+import ActualBalance from "../../entities/ActualBalance";
+import type Entity from "../../entities/Entity";
+import { Contract, TypeOfOfficial } from "../../enums/officials";
 
 export interface OfficialModel extends Entity {
   id?: number;

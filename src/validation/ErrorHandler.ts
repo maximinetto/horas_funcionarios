@@ -1,8 +1,9 @@
-import { logger } from "config";
-import CustomError from "errors/CustomError";
-import ModelAlreadyExistsError from "errors/ModelAlreadyExistsError";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { ValidationError } from "joi";
+
+import { logger } from "../config";
+import CustomError from "../errors/CustomError";
+import ModelAlreadyExistsError from "../errors/ModelAlreadyExistsError";
 
 export default class ErrorHandler {
   private error: Error;

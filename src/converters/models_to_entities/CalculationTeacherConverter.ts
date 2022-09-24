@@ -1,9 +1,9 @@
 import { Decimal } from "decimal.js";
-import ActualBalanceTeacher from "entities/ActualBalanceTeacher";
-import CalculationTeacherEntity from "entities/CalculationTeacher";
-import { NotNullableCalculationWithTeacher } from "types/calculations";
-import { generateRandomUUIDV4 } from "utils/strings";
 
+import ActualBalanceTeacher from "../../entities/ActualBalanceTeacher";
+import CalculationTeacherEntity from "../../entities/CalculationTeacher";
+import { NotNullableCalculationWithTeacher } from "../../types/calculations";
+import { generateRandomUUIDV4 } from "../../utils/strings";
 import { AbstractConverter } from "./AbstractConverter";
 
 export default class CalculationTeacherConverter extends AbstractConverter<

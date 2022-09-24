@@ -1,10 +1,11 @@
 import { PrismaClient } from "@prisma/client";
-import OfficialConverter from "converters/models_to_entities/OfficialConverter";
-import OfficialEntity from "entities/Official";
-import OfficialRepository from "persistence/Official/OfficialRepository";
-import PrismaRepository from "persistence/PrismaRepository";
-import { OfficialWithOptionalId } from "types/officials";
 import { Optional } from "typescript-optional";
+
+import OfficialConverter from "../../converters/models_to_entities/OfficialConverter";
+import OfficialEntity from "../../entities/Official";
+import { OfficialWithOptionalId } from "../../types/officials";
+import OfficialRepository from "../Official/OfficialRepository";
+import PrismaRepository from "../PrismaRepository";
 
 export default class PrismaOfficialRepository
   extends PrismaRepository<number, OfficialEntity>

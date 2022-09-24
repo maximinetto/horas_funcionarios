@@ -1,8 +1,9 @@
 import { PrismaClient } from "@prisma/client";
-import CalculationTASConverter from "converters/models_to_entities/CalculationTASConverter";
-import CalculationTAS from "entities/CalculationTAS";
-import CalculationTASRepository from "persistence/Calculation/CalculationTAS/CalculationTASRepository";
-import PrismaRepository from "persistence/PrismaRepository";
+
+import CalculationTASConverter from "../../../converters/models_to_entities/CalculationTASConverter";
+import CalculationTAS from "../../../entities/CalculationTAS";
+import CalculationTASRepository from "../../Calculation/CalculationTAS/CalculationTASRepository";
+import PrismaRepository from "../../PrismaRepository";
 
 export default class PrismaCalculationTASRepository
   extends PrismaRepository<string, CalculationTAS>

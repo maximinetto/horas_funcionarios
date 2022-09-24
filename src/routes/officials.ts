@@ -1,11 +1,12 @@
+import { FastifyInstance } from "fastify";
+
 import {
   createOfficials,
   deleteOfficial,
   getOfficials,
   updateOfficial,
-} from "controllers/officials";
-import { FastifyInstance } from "fastify";
-import { schemas } from "validation/schemas/officials";
+} from "../controllers/officials";
+import { schemas } from "../validation/schemas/officials";
 
 export default async function routes(fastify: FastifyInstance) {
   fastify.get(

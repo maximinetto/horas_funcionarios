@@ -1,6 +1,7 @@
 import Decimal from "decimal.js";
-import { CalculationTASModel } from "entities/CalculationTAS";
-import { Month } from "enums/common";
+
+import { CalculationTASModel } from "../../entities/CalculationTAS";
+import { Month } from "../../enums/common";
 
 export default class CalculationTASDTO {
   id: string;

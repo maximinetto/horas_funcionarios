@@ -1,4 +1,4 @@
-import { Contract, TypeOfOfficial } from "enums/officials";
+import { Contract, TypeOfOfficial } from "../../enums/officials";
 
 export function typeContainsString(str: string) {
   const strToLower = str.toLowerCase();

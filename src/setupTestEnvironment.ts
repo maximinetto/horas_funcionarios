@@ -1,7 +1,7 @@
-import Database from "persistence/context/Database";
+import Database from "./persistence/context/Database";
 import DatabaseFactory, {
   TypeOfEngine,
-} from "persistence/context/index.config";
+} from "./persistence/context/index.config";
 
 export let database: Database;
 

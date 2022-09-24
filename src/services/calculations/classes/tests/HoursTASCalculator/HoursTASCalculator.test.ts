@@ -1,9 +1,8 @@
-import Calculations from "collections/Calculations";
-import ActualBalance from "entities/ActualBalance";
-import ActualHourlyBalanceRepository from "persistence/ActualBalance/ActualHourlyBalanceRepository";
-import CalculationRepository from "persistence/Calculation/CalculationRepository";
-import HoursTASCalculationCreator from "services/calculations/classes/tests/HoursTASCalculator/HoursTASCalculationCreator";
-
+import Calculations from "../../../../../collections/Calculations";
+import ActualBalance from "../../../../../entities/ActualBalance";
+import ActualHourlyBalanceRepository from "../../../../../persistence/ActualBalance/ActualHourlyBalanceRepository";
+import CalculationRepository from "../../../../../persistence/Calculation/CalculationRepository";
+import HoursTASCalculationCreator from "../../../../../services/calculations/classes/tests/HoursTASCalculator/HoursTASCalculationCreator";
 import {
   expectCalculationEquals,
   expectCurrentActualBalanceEquals,

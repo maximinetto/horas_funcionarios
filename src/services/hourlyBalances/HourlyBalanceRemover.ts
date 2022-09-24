@@ -1,5 +1,4 @@
-import HourlyBalance from "entities/HourlyBalance";
-
+import HourlyBalance from "../../entities/HourlyBalance";
 import sort from "./HourlyBalancesSorter";
 
 export function removeHourlyBalancesWithZeroBalance(

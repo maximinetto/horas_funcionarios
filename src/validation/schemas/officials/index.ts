@@ -1,5 +1,6 @@
-import { Contract, TypeOfOfficial } from "enums/officials";
 import Joi from "joi";
+
+import { Contract, TypeOfOfficial } from "../../../enums/officials";
 
 const types = Object.values(TypeOfOfficial);
 const contracts = Object.values(Contract);

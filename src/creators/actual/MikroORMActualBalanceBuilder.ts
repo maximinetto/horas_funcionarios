@@ -1,13 +1,12 @@
-import ActualBalanceTAS from "entities/ActualBalanceTAS";
-import ActualBalanceTeacher from "entities/ActualBalanceTeacher";
-import CalculationTAS from "entities/CalculationTAS";
-import CalculationTeacher from "entities/CalculationTeacher";
-import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
-import HourlyBalanceTeacher from "entities/HourlyBalanceTeacher";
-import { TypeOfOfficial } from "enums/officials";
-import UnexpectedValueError from "errors/UnexpectedValueError";
-import { mikroorm } from "persistence/context/mikroorm/MikroORMDatabase";
-
+import ActualBalanceTAS from "../../entities/ActualBalanceTAS";
+import ActualBalanceTeacher from "../../entities/ActualBalanceTeacher";
+import CalculationTAS from "../../entities/CalculationTAS";
+import CalculationTeacher from "../../entities/CalculationTeacher";
+import HourlyBalanceTAS from "../../entities/HourlyBalanceTAS";
+import HourlyBalanceTeacher from "../../entities/HourlyBalanceTeacher";
+import { TypeOfOfficial } from "../../enums/officials";
+import UnexpectedValueError from "../../errors/UnexpectedValueError";
+import { mikroorm } from "../../persistence/context/mikroorm/MikroORMDatabase";
 import ActualHourlyBalanceBuilder from "./ActualHourlyBalanceBuilder";
 import ActualBalanceModel from "./types";
 

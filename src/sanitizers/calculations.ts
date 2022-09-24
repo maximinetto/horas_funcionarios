@@ -1,7 +1,7 @@
-import CalculationTASDTO from "dto/create/CalculationTASDTO";
-import CalculationTASDTOWithTimeFieldsInString from "dto/create/CalculationTASDTOWithTimeFieldsInString";
-import { getMonthByNumber } from "utils/mapMonths";
-import { timeToSeconds } from "utils/time";
+import CalculationTASDTO from "../dto/create/CalculationTASDTO";
+import CalculationTASDTOWithTimeFieldsInString from "../dto/create/CalculationTASDTOWithTimeFieldsInString";
+import { getMonthByNumber } from "../utils/mapMonths";
+import { timeToSeconds } from "../utils/time";
 
 export const sanitizeCalculationFields = (
   calculations: CalculationTASDTOWithTimeFieldsInString[]

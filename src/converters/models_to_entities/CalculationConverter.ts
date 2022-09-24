@@ -1,17 +1,17 @@
-import { AbstractConverter } from "converters/models_to_entities/AbstractConverter";
-import CalculationTASConverter from "converters/models_to_entities/CalculationTASConverter";
-import CalculationTeacherConverter from "converters/models_to_entities/CalculationTeacherConverter";
-import Calculation from "entities/Calculation";
-import CalculationTAS from "entities/CalculationTAS";
-import CalculationTeacherEntity from "entities/CalculationTeacher";
-import InvalidValueError from "errors/InvalidValueError";
+import { AbstractConverter } from "../../converters/models_to_entities/AbstractConverter";
+import CalculationTASConverter from "../../converters/models_to_entities/CalculationTASConverter";
+import CalculationTeacherConverter from "../../converters/models_to_entities/CalculationTeacherConverter";
+import Calculation from "../../entities/Calculation";
+import CalculationTAS from "../../entities/CalculationTAS";
+import CalculationTeacherEntity from "../../entities/CalculationTeacher";
+import InvalidValueError from "../../errors/InvalidValueError";
 import {
   CalculationModel,
   CalculationWithTAS,
   CalculationWithTeacher,
   NotNullableCalculationWithTAS,
   NotNullableCalculationWithTeacher,
-} from "types/calculations";
+} from "../../types/calculations";
 
 type AllCalculationTypes =
   | NotNullableCalculationWithTAS

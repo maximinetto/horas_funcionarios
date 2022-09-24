@@ -1,11 +1,11 @@
-import ActualHourlyBalanceBuilder from "creators/actual/ActualHourlyBalanceBuilder";
-import CalculationBuilder from "creators/calculation/CalculationBuilder";
 import { Decimal } from "decimal.js";
-import CalculationTASDTO from "dto/create/CalculationTASDTO";
-import ActualBalanceTAS from "entities/ActualBalanceTAS";
-import CalculationTASEntity from "entities/CalculationTAS";
-import { TypeOfOfficial } from "enums/officials";
 
+import ActualHourlyBalanceBuilder from "../../creators/actual/ActualHourlyBalanceBuilder";
+import CalculationBuilder from "../../creators/calculation/CalculationBuilder";
+import CalculationTASDTO from "../../dto/create/CalculationTASDTO";
+import ActualBalanceTAS from "../../entities/ActualBalanceTAS";
+import CalculationTASEntity from "../../entities/CalculationTAS";
+import { TypeOfOfficial } from "../../enums/officials";
 import { AbstractConverter } from "./AbstractConverter";
 
 export default class CalculationTASConverter extends AbstractConverter<

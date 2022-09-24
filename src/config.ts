@@ -1,8 +1,9 @@
 import dotenv from "dotenv";
 import { resolve } from "path";
 import util from "util";
-import { bigIntSerializator } from "utils/strings";
 import { createLogger, format, transports } from "winston";
+
+import { bigIntSerializator } from "./utils/strings";
 
 export const baseDir = __dirname;
 

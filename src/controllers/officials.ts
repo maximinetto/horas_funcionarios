@@ -1,12 +1,13 @@
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
-import { logger } from "config";
-import { officialConverter, officialService } from "dependencies/container";
-import { Contract, TypeOfOfficial } from "enums/officials";
-import ModelAlreadyExistsError from "errors/ModelAlreadyExistsError";
 import { FastifyReply, FastifyRequest } from "fastify";
-import { Official, OfficialWithoutId } from "types/officials";
-import response from "utils/response";
-import validate from "validation/requests/officials/update";
+
+import { logger } from "../config";
+import { officialConverter, officialService } from "../dependencies/container";
+import { Contract, TypeOfOfficial } from "../enums/officials";
+import ModelAlreadyExistsError from "../errors/ModelAlreadyExistsError";
+import { Official, OfficialWithoutId } from "../types/officials";
+import response from "../utils/response";
+import validate from "../validation/requests/officials/update";
 
 export const getOfficials = async (
   req: FastifyRequest<{

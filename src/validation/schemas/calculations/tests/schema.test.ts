@@ -1,5 +1,6 @@
 import { Schema } from "joi";
-import { schemas } from "validation/schemas/calculations";
+
+import { schemas } from "../../../../validation/schemas/calculations";
 
 describe("Calculation ", () => {
   describe("create schema", () => {

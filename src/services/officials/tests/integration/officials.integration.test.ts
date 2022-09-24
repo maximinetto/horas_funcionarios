@@ -1,12 +1,12 @@
 import faker from "@faker-js/faker";
 import _omit from "lodash/omit";
-import { unitOfWork } from "setupIntegrationTestEnvironment";
 
 import OfficialConverter from "../../../../converters/models_to_entities/OfficialConverter";
 import MikroORMActualBalanceBuilder from "../../../../creators/actual/MikroORMActualBalanceBuilder";
 import MikroORMOfficialBuilder from "../../../../creators/official/MikroORMOfficialBuilder";
 import { Contract, TypeOfOfficial } from "../../../../enums/officials";
 import OfficialService from "../../../../services/officials";
+import { unitOfWork } from "../../../../setupIntegrationTestEnvironment";
 import { OfficialWithOptionalId } from "../../../../types/officials";
 
 let officials: OfficialWithOptionalId[];

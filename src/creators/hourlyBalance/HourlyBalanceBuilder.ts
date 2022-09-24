@@ -1,7 +1,6 @@
-import HourlyBalance from "entities/HourlyBalance";
-import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
-import HourlyBalanceTeacher from "entities/HourlyBalanceTeacher";
-
+import HourlyBalance from "../../entities/HourlyBalance";
+import HourlyBalanceTAS from "../../entities/HourlyBalanceTAS";
+import HourlyBalanceTeacher from "../../entities/HourlyBalanceTeacher";
 import {
   HourlyBalanceModel,
   HourlyBalanceTASModel,

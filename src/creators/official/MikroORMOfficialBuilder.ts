@@ -1,7 +1,6 @@
-import ActualHourlyBalanceBuilder from "creators/actual/ActualHourlyBalanceBuilder";
-import Official from "entities/Official";
-import { mikroorm } from "persistence/context/mikroorm/MikroORMDatabase";
-
+import ActualHourlyBalanceBuilder from "../../creators/actual/ActualHourlyBalanceBuilder";
+import Official from "../../entities/Official";
+import { mikroorm } from "../../persistence/context/mikroorm/MikroORMDatabase";
 import OfficialBuilder from "./OfficialBuilder";
 import { OfficialModel } from "./types";
 

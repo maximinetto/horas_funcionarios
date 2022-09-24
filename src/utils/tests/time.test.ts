@@ -1,4 +1,4 @@
-import { secondsToTime, timeToSeconds } from "utils/time";
+import { secondsToTime, timeToSeconds } from "../../utils/time";
 
 test("Time should be converted into seconds", async () => {
   let seconds = timeToSeconds("01:10");

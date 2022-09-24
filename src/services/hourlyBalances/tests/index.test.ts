@@ -1,8 +1,8 @@
 import Decimal from "decimal.js";
-import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
-import HourlyBalanceTeacher from "entities/HourlyBalanceTeacher";
-import { generateRandomUUIDV4 } from "utils/strings";
 
+import HourlyBalanceTAS from "../../../entities/HourlyBalanceTAS";
+import HourlyBalanceTeacher from "../../../entities/HourlyBalanceTeacher";
+import { generateRandomUUIDV4 } from "../../../utils/strings";
 import { removeHourlyBalancesWithZeroBalance } from "../HourlyBalanceRemover";
 
 it("Should remove the hourly balances that start with balance 0", () => {

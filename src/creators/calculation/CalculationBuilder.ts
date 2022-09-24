@@ -1,7 +1,6 @@
-import Calculation from "entities/Calculation";
-import CalculationTAS from "entities/CalculationTAS";
-import CalculationTeacher from "entities/CalculationTeacher";
-
+import Calculation from "../../entities/Calculation";
+import CalculationTAS from "../../entities/CalculationTAS";
+import CalculationTeacher from "../../entities/CalculationTeacher";
 import {
   CalculationModel,
   CalculationTASModel,

@@ -1,12 +1,13 @@
-import Calculations from "collections/Calculations";
-import Calculation from "entities/Calculation";
-import Official from "entities/Official";
-import { Month } from "enums/common";
-import InvalidValueError from "errors/InvalidValueError";
-import UnexpectedValueError from "errors/UnexpectedValueError";
 import { DateTime } from "luxon";
-import { resetDateFromFirstDay } from "utils/date";
-import { getNumberByMonth } from "utils/mapMonths";
+
+import Calculations from "../../../collections/Calculations";
+import Calculation from "../../../entities/Calculation";
+import Official from "../../../entities/Official";
+import { Month } from "../../../enums/common";
+import InvalidValueError from "../../../errors/InvalidValueError";
+import UnexpectedValueError from "../../../errors/UnexpectedValueError";
+import { resetDateFromFirstDay } from "../../../utils/date";
+import { getNumberByMonth } from "../../../utils/mapMonths";
 
 export default class CalculationValidator {
   private year: number = 0;

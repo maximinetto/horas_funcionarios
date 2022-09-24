@@ -1,5 +1,6 @@
 import { Decimal } from "decimal.js";
-import { TYPES_OF_HOURS } from "enums/typeOfHours";
+
+import { TYPES_OF_HOURS } from "../enums/typeOfHours";
 
 export type TypeOfHour = {
   typeOfHour: TYPES_OF_HOURS;

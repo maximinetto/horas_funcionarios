@@ -1,13 +1,12 @@
-import HourlyBalanceTASConverter from "converters/models_to_entities/HourlyBalanceTASConverter";
-import HourlyBalanceTeacherConverter from "converters/models_to_entities/HourlyBalanceTeacher";
-import HourlyBalanceEntity from "entities/HourlyBalance";
-import InvalidValueError from "errors/InvalidValueError";
+import HourlyBalanceTASConverter from "../converters/models_to_entities/HourlyBalanceTASConverter";
+import HourlyBalanceTeacherConverter from "../converters/models_to_entities/HourlyBalanceTeacher";
+import HourlyBalanceEntity from "../entities/HourlyBalance";
+import InvalidValueError from "../errors/InvalidValueError";
 import {
   HourlyBalanceModel,
   HourlyBalanceTAS,
   HourlyBalanceTeacher,
-} from "types/hourlyBalance";
-
+} from "../types/hourlyBalance";
 import Creator from "./Creator";
 
 export default class HourlyBalanceEntityFactoryCreator

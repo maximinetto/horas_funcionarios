@@ -1,18 +1,18 @@
-import ActualHourlyBalanceBuilder from "creators/actual/ActualHourlyBalanceBuilder";
 import { Decimal } from "decimal.js";
-import ActualBalanceEntity from "entities/ActualBalance";
-import ActualBalanceTAS from "entities/ActualBalanceTAS";
-import ActualBalanceTeacher from "entities/ActualBalanceTeacher";
-import NullOfficial from "entities/null_object/NullOfficial";
-import Official from "entities/Official";
-import { TypeOfOfficial } from "enums/officials";
-import UnexpectedValueError from "errors/UnexpectedValueError";
+
+import ActualHourlyBalanceBuilder from "../../creators/actual/ActualHourlyBalanceBuilder";
+import ActualBalanceEntity from "../../entities/ActualBalance";
+import ActualBalanceTAS from "../../entities/ActualBalanceTAS";
+import ActualBalanceTeacher from "../../entities/ActualBalanceTeacher";
+import NullOfficial from "../../entities/null_object/NullOfficial";
+import Official from "../../entities/Official";
+import { TypeOfOfficial } from "../../enums/officials";
+import UnexpectedValueError from "../../errors/UnexpectedValueError";
 import {
   ActualBalanceComplete,
   PartialActualBalance,
-} from "types/actualBalance";
-import { Official as OfficialModel } from "types/officials";
-
+} from "../../types/actualBalance";
+import { Official as OfficialModel } from "../../types/officials";
 import { AbstractConverter } from "./AbstractConverter";
 import CalculationConverter from "./CalculationConverter";
 import HourlyBalanceConverter from "./HourlyBalanceConverter";

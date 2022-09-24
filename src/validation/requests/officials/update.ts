@@ -1,5 +1,6 @@
 import { FastifyRequest } from "fastify";
-import { OfficialWithOptionalId } from "types/officials";
+
+import { OfficialWithOptionalId } from "../../../types/officials";
 
 export default function validate(
   request: FastifyRequest<{

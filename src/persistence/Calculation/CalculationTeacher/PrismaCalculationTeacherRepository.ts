@@ -1,8 +1,9 @@
 import { PrismaClient } from "@prisma/client";
-import CalculationTeacherConverter from "converters/models_to_entities/CalculationTeacherConverter";
-import CalculationTeacher from "entities/CalculationTeacher";
-import CalculationTeacherRepository from "persistence/Calculation/CalculationTeacher/CalculationTeacherRepository";
-import PrismaRepository from "persistence/PrismaRepository";
+
+import CalculationTeacherConverter from "../../../converters/models_to_entities/CalculationTeacherConverter";
+import CalculationTeacher from "../../../entities/CalculationTeacher";
+import CalculationTeacherRepository from "../../Calculation/CalculationTeacher/CalculationTeacherRepository";
+import PrismaRepository from "../../PrismaRepository";
 
 export default class PrismaCalculationTeacherRepository
   extends PrismaRepository<string, CalculationTeacher>

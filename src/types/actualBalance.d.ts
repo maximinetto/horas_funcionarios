@@ -1,7 +1,6 @@
-import ActualBalance from "entities/ActualBalance";
-import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
-import { TypeOfOfficial } from "enums/officials";
-
+import ActualBalance from "../entities/ActualBalance";
+import HourlyBalanceTAS from "../entities/HourlyBalanceTAS";
+import { TypeOfOfficial } from "../enums/officials";
 import { CalculationModel } from "./calculations";
 import { MakeOptional } from "./common";
 import { HourlyBalanceModel, HourlyBalanceTASNonNull } from "./hourlyBalance";

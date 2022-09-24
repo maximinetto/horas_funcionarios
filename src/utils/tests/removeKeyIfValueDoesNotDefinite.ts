@@ -1,4 +1,4 @@
-import removeKeyIfValueDoesNotDefined from "utils/removeKeyIfValueDoesNotDefined";
+import removeKeyIfValueDoesNotDefined from "../../utils/removeKeyIfValueDoesNotDefined";
 
 test("Should remove a key undefined", () => {
   const object = {

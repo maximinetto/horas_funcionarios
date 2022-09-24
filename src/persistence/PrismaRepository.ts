@@ -1,7 +1,8 @@
 import { PrismaClient } from "@prisma/client";
-import Entity from "entities/Entity";
-import Repository from "persistence/Repository";
 import { Optional } from "typescript-optional";
+
+import Entity from "../entities/Entity";
+import Repository from "../persistence/Repository";
 
 export default abstract class PrismaRepository<key, E extends Entity>
   implements Repository<key, E>

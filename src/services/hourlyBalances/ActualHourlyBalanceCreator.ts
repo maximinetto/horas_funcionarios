@@ -1,18 +1,18 @@
-import ActualHourlyBalanceBuilder from "creators/actual/ActualHourlyBalanceBuilder";
-import HourlyBalanceBuilder from "creators/hourlyBalance/HourlyBalanceBuilder";
 import Decimal from "decimal.js";
-import ActualBalance from "entities/ActualBalance";
-import ActualBalanceTAS from "entities/ActualBalanceTAS";
-import ActualBalanceTeacher from "entities/ActualBalanceTeacher";
-import Calculation from "entities/Calculation";
-import HourlyBalance from "entities/HourlyBalance";
-import Official from "entities/Official";
-import { TypeOfOfficial } from "enums/officials";
-import { TYPES_OF_HOURS } from "enums/typeOfHours";
-import UnexpectedValueError from "errors/UnexpectedValueError";
-import { TypeOfHoursByYear } from "types/typeOfHours";
-import { generateRandomUUIDV4 } from "utils/strings";
 
+import ActualHourlyBalanceBuilder from "../../creators/actual/ActualHourlyBalanceBuilder";
+import HourlyBalanceBuilder from "../../creators/hourlyBalance/HourlyBalanceBuilder";
+import ActualBalance from "../../entities/ActualBalance";
+import ActualBalanceTAS from "../../entities/ActualBalanceTAS";
+import ActualBalanceTeacher from "../../entities/ActualBalanceTeacher";
+import Calculation from "../../entities/Calculation";
+import HourlyBalance from "../../entities/HourlyBalance";
+import Official from "../../entities/Official";
+import { TypeOfOfficial } from "../../enums/officials";
+import { TYPES_OF_HOURS } from "../../enums/typeOfHours";
+import UnexpectedValueError from "../../errors/UnexpectedValueError";
+import { TypeOfHoursByYear } from "../../types/typeOfHours";
+import { generateRandomUUIDV4 } from "../../utils/strings";
 import { removeHourlyBalancesWithZeroBalance } from "./HourlyBalanceRemover";
 
 export default class ActualHourlyBalanceCreator {

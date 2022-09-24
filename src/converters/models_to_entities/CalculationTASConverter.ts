@@ -1,9 +1,9 @@
 import { Decimal } from "decimal.js";
-import ActualBalanceTAS from "entities/ActualBalanceTAS";
-import CalculationTASEntity from "entities/CalculationTAS";
-import { NotNullableCalculationWithTAS } from "types/calculations";
-import { generateRandomUUIDV4 } from "utils/strings";
 
+import ActualBalanceTAS from "../../entities/ActualBalanceTAS";
+import CalculationTASEntity from "../../entities/CalculationTAS";
+import { NotNullableCalculationWithTAS } from "../../types/calculations";
+import { generateRandomUUIDV4 } from "../../utils/strings";
 import { AbstractConverter } from "./AbstractConverter";
 
 export default class CalculationTASConverter extends AbstractConverter<

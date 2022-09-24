@@ -1,8 +1,8 @@
 import { Decimal } from "decimal.js";
-import HourlyBalanceEntity from "entities/HourlyBalanceTeacher";
-import { HourlyBalanceTeacher as HourlyBalanceTeacherModel } from "types/hourlyBalance";
-import { generateRandomUUIDV4 } from "utils/strings";
 
+import HourlyBalanceEntity from "../../entities/HourlyBalanceTeacher";
+import { HourlyBalanceTeacher as HourlyBalanceTeacherModel } from "../../types/hourlyBalance";
+import { generateRandomUUIDV4 } from "../../utils/strings";
 import { AbstractConverter } from "./AbstractConverter";
 
 export default class HourlyBalanceTeacherConverter extends AbstractConverter<

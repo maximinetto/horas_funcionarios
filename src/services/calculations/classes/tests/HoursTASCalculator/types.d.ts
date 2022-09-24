@@ -1,7 +1,12 @@
-import ActualBalance from "entities/ActualBalance";
-import CalculationTAS from "entities/CalculationTAS";
-import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
-import Official from "entities/Official";
+import Decimal from "decimal.js";
+
+import Calculations from "../../../../../collections/Calculations";
+import ActualBalance from "../../../../../entities/ActualBalance";
+import CalculationTAS from "../../../../../entities/CalculationTAS";
+import HourlyBalanceTAS from "../../../../../entities/HourlyBalanceTAS";
+import Official from "../../../../../entities/Official";
+import { TYPES_OF_HOURS } from "../../../../../enums/typeOfHours";
+import { TypeOfHour } from "../../../../../types/typeOfHours";
 
 export type Data = {
   calculations: Calculations<CalculationTAS>;
@@ -9,7 +14,7 @@ export type Data = {
   year: number;
 };
 export interface HourlyBalanceTASNotNullable extends HourlyBalanceTAS {
-  hourlyBalanceTAS: NonNullable<HourlyBalanceTAS["hourlyBalanceTAS"]>;
+  hourlyBalanceTAS: NonNullable<HourlyBalanceTAS>;
 }
 
 export interface Result {

@@ -1,13 +1,13 @@
-import Calculations from "collections/Calculations";
-import MikroORMActualBalanceBuilder from "creators/actual/MikroORMActualBalanceBuilder";
 import Decimal from "decimal.js";
-import ActualBalance from "entities/ActualBalance";
-import ActualBalanceTAS from "entities/ActualBalanceTAS";
-import CalculationTAS from "entities/CalculationTAS";
-import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
-import { TypeOfOfficial } from "enums/officials";
-import { generateRandomUUIDV4 } from "utils/strings";
 
+import Calculations from "../../../../../collections/Calculations";
+import MikroORMActualBalanceBuilder from "../../../../../creators/actual/MikroORMActualBalanceBuilder";
+import ActualBalance from "../../../../../entities/ActualBalance";
+import ActualBalanceTAS from "../../../../../entities/ActualBalanceTAS";
+import CalculationTAS from "../../../../../entities/CalculationTAS";
+import HourlyBalanceTAS from "../../../../../entities/HourlyBalanceTAS";
+import { TypeOfOfficial } from "../../../../../enums/officials";
+import { generateRandomUUIDV4 } from "../../../../../utils/strings";
 import subtractHoursFromBalance from "./calculateBalance";
 import { calculate } from "./calculateForMonth";
 import { CalculationDataTAS } from "./HoursTASCalculator.test";

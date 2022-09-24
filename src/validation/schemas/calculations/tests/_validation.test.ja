@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import middleware from "validation/middlewares/validator";
-import { schemas } from "validation/schemas/calculations";
+import middleware from "../../../../validation/middlewares/validator";
+import { schemas } from "../../../../validation/schemas/calculations";
 
 describe("Validate", () => {
   test("middleware create calculations is valid", async () => {

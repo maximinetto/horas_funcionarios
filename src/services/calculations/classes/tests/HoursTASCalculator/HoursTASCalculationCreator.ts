@@ -1,29 +1,30 @@
-import Calculations from "collections/Calculations";
 import Decimal from "decimal.js";
-import CalculationTAS from "entities/CalculationTAS";
-import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
 import { Dictionary } from "lodash";
-import ActualHourlyBalanceRepository from "persistence/ActualBalance/ActualHourlyBalanceRepository";
-import CalculationRepository from "persistence/Calculation/CalculationRepository";
-import { expectCalculationEquals } from "services/calculations/classes/tests/expect";
-import calculation from "services/calculations/classes/tests/HoursTASCalculator/calculate";
-import { CalculationDataTAS } from "services/calculations/classes/tests/HoursTASCalculator/HoursTASCalculator.test";
+
+import Calculations from "../../../../../collections/Calculations";
+import CalculationTAS from "../../../../../entities/CalculationTAS";
+import HourlyBalanceTAS from "../../../../../entities/HourlyBalanceTAS";
+import ActualHourlyBalanceRepository from "../../../../../persistence/ActualBalance/ActualHourlyBalanceRepository";
+import CalculationRepository from "../../../../../persistence/Calculation/CalculationRepository";
+import { expectCalculationEquals } from "../../../../../services/calculations/classes/tests/expect";
+import calculation from "../../../../../services/calculations/classes/tests/HoursTASCalculator/calculate";
+import { CalculationDataTAS } from "../../../../../services/calculations/classes/tests/HoursTASCalculator/HoursTASCalculator.test";
 import {
   actualBalanceSecondTest,
   calculationsSecondTest,
   dateSecondTest,
   yearSecondTest,
-} from "services/calculations/classes/tests/HoursTASCalculator/initialValues";
+} from "../../../../../services/calculations/classes/tests/HoursTASCalculator/initialValues";
 import {
   buildOfficial,
   genRandomCalculations,
-} from "services/calculations/classes/tests/HoursTASCalculator/prepareData";
-import { CalculationData } from "services/calculations/classes/tests/HoursTASCalculator/types";
+} from "../../../../../services/calculations/classes/tests/HoursTASCalculator/prepareData";
+import { CalculationData } from "../../../../../services/calculations/classes/tests/HoursTASCalculator/types";
 import {
   arrayWithoutElementAtIndex,
   hoursToSeconds,
-} from "services/calculations/classes/tests/HoursTASCalculator/util";
-import { generateRandomUUIDV4 } from "utils/strings";
+} from "../../../../../services/calculations/classes/tests/HoursTASCalculator/util";
+import { generateRandomUUIDV4 } from "../../../../../utils/strings";
 
 export default class HoursTASCalculationCreator {
   private calculations: Dictionary<Array<CalculationTAS>> = {};

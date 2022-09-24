@@ -1,20 +1,21 @@
 import Decimal from "decimal.js";
-import ActualBalance from "entities/ActualBalance";
-import ActualBalanceTAS from "entities/ActualBalanceTAS";
-import ActualBalanceTeacher from "entities/ActualBalanceTeacher";
-import Calculation from "entities/Calculation";
-import CalculationTAS from "entities/CalculationTAS";
-import CalculationTeacher from "entities/CalculationTeacher";
-import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
-import HourlyBalanceTeacher from "entities/HourlyBalanceTeacher";
-import Official from "entities/Official";
-import { TYPES_OF_HOURS } from "enums/typeOfHours";
-import UnexpectedValueError from "errors/UnexpectedValueError";
-import { instance as hours } from "services/calculations/classes/typeOfHours";
-import { removeHourlyBalancesWithZeroBalance } from "services/hourlyBalances/HourlyBalanceRemover";
-import sort from "services/hourlyBalances/HourlyBalancesSorter";
-import { TypeOfHoursByYearDecimal } from "types/typeOfHours";
-import { generateRandomUUIDV4 } from "utils/strings";
+
+import ActualBalance from "../../entities/ActualBalance";
+import ActualBalanceTAS from "../../entities/ActualBalanceTAS";
+import ActualBalanceTeacher from "../../entities/ActualBalanceTeacher";
+import Calculation from "../../entities/Calculation";
+import CalculationTAS from "../../entities/CalculationTAS";
+import CalculationTeacher from "../../entities/CalculationTeacher";
+import HourlyBalanceTAS from "../../entities/HourlyBalanceTAS";
+import HourlyBalanceTeacher from "../../entities/HourlyBalanceTeacher";
+import Official from "../../entities/Official";
+import { TYPES_OF_HOURS } from "../../enums/typeOfHours";
+import UnexpectedValueError from "../../errors/UnexpectedValueError";
+import { instance as hours } from "../../services/calculations/classes/typeOfHours";
+import { removeHourlyBalancesWithZeroBalance } from "../../services/hourlyBalances/HourlyBalanceRemover";
+import sort from "../../services/hourlyBalances/HourlyBalancesSorter";
+import { TypeOfHoursByYearDecimal } from "../../types/typeOfHours";
+import { generateRandomUUIDV4 } from "../../utils/strings";
 
 export default class TypeOfYearToBalanceConverter {
   convertToActualBalance({

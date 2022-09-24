@@ -1,17 +1,21 @@
-import Calculations from "collections/Calculations";
 import Decimal from "decimal.js";
-import Calculation from "entities/Calculation";
-import HourlyBalance from "entities/HourlyBalance";
-import ICalculation from "entities/interfaces/ICalculation";
-import Official from "entities/Official";
-import type CalculationRepository from "persistence/Calculation/CalculationRepository";
+
+import Calculations from "../../../collections/Calculations";
+import Calculation from "../../../entities/Calculation";
+import HourlyBalance from "../../../entities/HourlyBalance";
+import ICalculation from "../../../entities/interfaces/ICalculation";
+import Official from "../../../entities/Official";
+import type CalculationRepository from "../../../persistence/Calculation/CalculationRepository";
 import CalculatePerMonth, {
   CalculatePerMonthAlternative,
-} from "services/calculations/classes/CalculatePerMonth";
-import CalculationCreator from "services/calculations/classes/CalculationCreator";
-import CalculationValidator from "services/calculations/classes/CalculationValidator";
-import CalculationSorter from "sorters/CalculationSorter";
-import { CalculationCalculated, CalculationParam } from "types/calculations";
+} from "../../../services/calculations/classes/CalculatePerMonth";
+import CalculationCreator from "../../../services/calculations/classes/CalculationCreator";
+import CalculationValidator from "../../../services/calculations/classes/CalculationValidator";
+import CalculationSorter from "../../../sorters/CalculationSorter";
+import {
+  CalculationCalculated,
+  CalculationParam,
+} from "../../../types/calculations";
 
 export default abstract class HoursCalculator {
   protected calculationRepository: CalculationRepository;

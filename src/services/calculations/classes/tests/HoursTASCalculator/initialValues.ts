@@ -1,10 +1,10 @@
 import faker from "@faker-js/faker";
-import CalculationTAS from "entities/CalculationTAS";
-import { Month } from "enums/common";
-import { TypeOfOfficial } from "enums/officials";
 import { DateTime } from "luxon";
-import { ActualBalanceModel } from "types/actualBalance";
 
+import CalculationTAS from "../../../../../entities/CalculationTAS";
+import { Month } from "../../../../../enums/common";
+import { TypeOfOfficial } from "../../../../../enums/officials";
+import { ActualBalanceModel } from "../../../../../types/actualBalance";
 import { buildCalculation } from "./buildCalculation";
 import { hoursToSeconds } from "./util";
 

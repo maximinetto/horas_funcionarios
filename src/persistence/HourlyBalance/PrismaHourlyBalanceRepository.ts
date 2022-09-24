@@ -1,9 +1,10 @@
 import { PrismaClient } from "@prisma/client";
-import HourlyBalance from "entities/HourlyBalance";
-import HourlyBalanceEntityFactoryCreator from "factories/HourlyBalanceEntityFactoryCreator";
-import HourlyBalanceModelFactoryCreator from "factories/HourlyBalanceModelFactoryCreator";
-import HourlyBalanceRepository from "persistence/HourlyBalance/HourlyBalanceRepository";
-import PrismaRepository from "persistence/PrismaRepository";
+
+import HourlyBalance from "../../entities/HourlyBalance";
+import HourlyBalanceEntityFactoryCreator from "../../factories/HourlyBalanceEntityFactoryCreator";
+import HourlyBalanceModelFactoryCreator from "../../factories/HourlyBalanceModelFactoryCreator";
+import HourlyBalanceRepository from "../HourlyBalance/HourlyBalanceRepository";
+import PrismaRepository from "../PrismaRepository";
 
 // TODO revisar luego el create, update y delete
 export default class PrismaHourlyBalanceRepository

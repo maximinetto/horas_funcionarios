@@ -1,10 +1,9 @@
-import Calculations from "collections/Calculations";
-import ActualBalance from "entities/ActualBalance";
-import CalculationTAS from "entities/CalculationTAS";
-import Official from "entities/Official";
-import sort from "services/hourlyBalances/HourlyBalancesSorter";
-import { CalculationCalculated } from "types/calculations";
-
+import Calculations from "../../../../collections/Calculations";
+import ActualBalance from "../../../../entities/ActualBalance";
+import CalculationTAS from "../../../../entities/CalculationTAS";
+import Official from "../../../../entities/Official";
+import sort from "../../../../services/hourlyBalances/HourlyBalancesSorter";
+import { CalculationCalculated } from "../../../../types/calculations";
 import HoursTASCalculator from "./HoursTASCalculator";
 
 export default class CalculatorRowService {

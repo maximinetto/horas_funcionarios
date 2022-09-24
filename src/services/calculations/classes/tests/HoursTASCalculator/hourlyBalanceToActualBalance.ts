@@ -1,9 +1,10 @@
 import Decimal from "decimal.js";
-import ActualBalance from "entities/ActualBalance";
-import ActualBalanceTAS from "entities/ActualBalanceTAS";
-import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
-import Official from "entities/Official";
-import { generateRandomUUIDV4 } from "utils/strings";
+
+import ActualBalance from "../../../../../entities/ActualBalance";
+import ActualBalanceTAS from "../../../../../entities/ActualBalanceTAS";
+import HourlyBalanceTAS from "../../../../../entities/HourlyBalanceTAS";
+import Official from "../../../../../entities/Official";
+import { generateRandomUUIDV4 } from "../../../../../utils/strings";
 
 export function convert(
   hourlyBalancesTAS: HourlyBalanceTAS[],

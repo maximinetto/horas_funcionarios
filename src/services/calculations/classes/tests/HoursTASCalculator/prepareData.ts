@@ -1,13 +1,13 @@
 import faker from "@faker-js/faker";
-import Calculations from "collections/Calculations";
-import CalculationTAS from "entities/CalculationTAS";
-import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
-import Official from "entities/Official";
-import { Contract, TypeOfOfficial } from "enums/officials";
 import { DateTime } from "luxon";
-import { CalculationTAS as CalculationTASModel } from "types/calculations";
-import { getMonthByNumber } from "utils/mapMonths";
 
+import Calculations from "../../../../../collections/Calculations";
+import CalculationTAS from "../../../../../entities/CalculationTAS";
+import HourlyBalanceTAS from "../../../../../entities/HourlyBalanceTAS";
+import Official from "../../../../../entities/Official";
+import { Contract, TypeOfOfficial } from "../../../../../enums/officials";
+import { CalculationTAS as CalculationTASModel } from "../../../../../types/calculations";
+import { getMonthByNumber } from "../../../../../utils/mapMonths";
 import { buildCalculation, buildHourlyBalance } from "./buildCalculation";
 import { actualBalance } from "./initialValues";
 import { Data, Result } from "./types";

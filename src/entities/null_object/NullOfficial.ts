@@ -1,6 +1,6 @@
-import { Contract, TypeOfOfficial } from "enums/officials";
 import { DateTime } from "luxon";
 
+import { Contract, TypeOfOfficial } from "../../enums/officials";
 import Official from "../Official";
 import Nullable from "./Nullable";
 

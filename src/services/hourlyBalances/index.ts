@@ -1,6 +1,6 @@
-import ActualBalance from "entities/ActualBalance";
-import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
-import ActualHourlyBalanceRepository from "persistence/ActualBalance/ActualHourlyBalanceRepository";
+import ActualBalance from "../../entities/ActualBalance";
+import HourlyBalanceTAS from "../../entities/HourlyBalanceTAS";
+import ActualHourlyBalanceRepository from "../../persistence/ActualBalance/ActualHourlyBalanceRepository";
 
 export default class Balances {
   private actualHourlyBalanceRepository: ActualHourlyBalanceRepository;

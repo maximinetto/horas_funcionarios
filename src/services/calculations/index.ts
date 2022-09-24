@@ -1,21 +1,22 @@
 import { FilterQuery, FindOptions } from "@mikro-orm/core";
-import Calculations from "collections/Calculations";
-import { logger } from "config";
-import CalculationTASConverter from "converters/dtos_to_entities/CalculationTASConverter";
-import ActualBalanceConverter from "converters/models_to_entities/ActualBalanceConverter";
-import CalculationConverter from "converters/models_to_entities/CalculationConverter";
-import CalculationTASDTO from "dto/create/CalculationTASDTO";
-import CalculationTASDTOWithTimeFieldsInString from "dto/create/CalculationTASDTOWithTimeFieldsInString";
-import ActualBalance from "entities/ActualBalance";
-import CalculationTAS from "entities/CalculationTAS";
-import { TypeOfOfficial } from "enums/officials";
-import NotExistsError from "errors/NotExistsError";
-import UnexpectedError from "errors/UnexpectedError";
-import CalculationTASRepository from "persistence/Calculation/CalculationTAS/CalculationTASRepository";
-import OfficialRepository from "persistence/Official/OfficialRepository";
-import { sanitizeCalculationFields } from "sanitizers/calculations";
-import TASCalculator from "services/calculations/TAS";
-import { CalculationCalculated } from "types/calculations";
+
+import Calculations from "../../collections/Calculations";
+import { logger } from "../../config";
+import CalculationTASConverter from "../../converters/dtos_to_entities/CalculationTASConverter";
+import ActualBalanceConverter from "../../converters/models_to_entities/ActualBalanceConverter";
+import CalculationConverter from "../../converters/models_to_entities/CalculationConverter";
+import CalculationTASDTO from "../../dto/create/CalculationTASDTO";
+import CalculationTASDTOWithTimeFieldsInString from "../../dto/create/CalculationTASDTOWithTimeFieldsInString";
+import ActualBalance from "../../entities/ActualBalance";
+import CalculationTAS from "../../entities/CalculationTAS";
+import { TypeOfOfficial } from "../../enums/officials";
+import NotExistsError from "../../errors/NotExistsError";
+import UnexpectedError from "../../errors/UnexpectedError";
+import CalculationTASRepository from "../../persistence/Calculation/CalculationTAS/CalculationTASRepository";
+import OfficialRepository from "../../persistence/Official/OfficialRepository";
+import { sanitizeCalculationFields } from "../../sanitizers/calculations";
+import TASCalculator from "../../services/calculations/TAS";
+import { CalculationCalculated } from "../../types/calculations";
 
 // TODO si el año ya está calculado y existen posteriores lo mejor es mandarlo a una cola
 export default class Calculator {

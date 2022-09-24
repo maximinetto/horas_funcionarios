@@ -1,13 +1,13 @@
-import ActualBalance from "entities/ActualBalance";
-import Calculation from "entities/Calculation";
-import CalculationTAS from "entities/CalculationTAS";
-import CalculationTeacher from "entities/CalculationTeacher";
-import Entity from "entities/Entity";
-import HourlyBalance from "entities/HourlyBalance";
-import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
-import HourlyBalanceTeacher from "entities/HourlyBalanceTeacher";
-import Official from "entities/Official";
-import UnexpectedError from "errors/UnexpectedError";
+import ActualBalance from "../entities/ActualBalance";
+import Calculation from "../entities/Calculation";
+import CalculationTAS from "../entities/CalculationTAS";
+import CalculationTeacher from "../entities/CalculationTeacher";
+import Entity from "../entities/Entity";
+import HourlyBalance from "../entities/HourlyBalance";
+import HourlyBalanceTAS from "../entities/HourlyBalanceTAS";
+import HourlyBalanceTeacher from "../entities/HourlyBalanceTeacher";
+import Official from "../entities/Official";
+import UnexpectedError from "../errors/UnexpectedError";
 
 export type EntityName = string | { new (): Entity };
 

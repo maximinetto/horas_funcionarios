@@ -1,5 +1,9 @@
 import { Decimal } from "decimal.js";
-import { TypeOfHoursByYear, TypeOfHoursByYearDecimal } from "types/typeOfHours";
+
+import {
+  TypeOfHoursByYear,
+  TypeOfHoursByYearDecimal,
+} from "../../types/typeOfHours";
 
 export function enrichBalance(
   balances: TypeOfHoursByYear[]

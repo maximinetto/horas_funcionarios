@@ -1,7 +1,8 @@
-import { baseDir, logger } from "config";
 import { FastifyInstance } from "fastify";
 import fs from "fs/promises";
 import { resolve } from "path";
+
+import { baseDir, logger } from "../config";
 
 const pathRouter = resolve(baseDir, "routes");
 

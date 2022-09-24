@@ -1,6 +1,7 @@
-import { createHours } from "controllers/calculations";
 import { FastifyInstance } from "fastify";
-import { schemas } from "validation/schemas/calculations";
+
+import { createHours } from "../controllers/calculations";
+import { schemas } from "../validation/schemas/calculations";
 
 export default async function routes(fastify: FastifyInstance) {
   fastify.post(

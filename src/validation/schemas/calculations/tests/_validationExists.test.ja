@@ -1,6 +1,6 @@
 import { FastifyRequest } from "fastify";
-import exists from "validation/middlewares/exists";
-import { schemas } from "validation/schemas/calculations";
+import exists from "../../../../validation/middlewares/exists";
+import { schemas } from "../../../../validation/schemas/calculations";
 
 jest.mock("persistence/entity", () => ({
   __esModule: true,

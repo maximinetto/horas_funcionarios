@@ -1,16 +1,17 @@
 import faker from "@faker-js/faker";
-import Calculations from "collections/Calculations";
 import Decimal from "decimal.js";
-import { actualHourlyBalanceBuilder } from "dependencies/container";
-import ActualBalanceTeacher from "entities/ActualBalanceTeacher";
-import CalculationTeacher from "entities/CalculationTeacher";
-import Official from "entities/Official";
-import { Month } from "enums/common";
-import { Contract, TypeOfOfficial } from "enums/officials";
 import { DateTime } from "luxon";
-import { mikroorm } from "persistence/context/mikroorm/MikroORMDatabase";
-import CalculationSorter from "sorters/CalculationSorter";
-import { getNumberByMonth } from "utils/mapMonths";
+
+import Calculations from "../../../../collections/Calculations";
+import { actualHourlyBalanceBuilder } from "../../../../dependencies/container";
+import ActualBalanceTeacher from "../../../../entities/ActualBalanceTeacher";
+import CalculationTeacher from "../../../../entities/CalculationTeacher";
+import Official from "../../../../entities/Official";
+import { Month } from "../../../../enums/common";
+import { Contract, TypeOfOfficial } from "../../../../enums/officials";
+import { mikroorm } from "../../../../persistence/context/mikroorm/MikroORMDatabase";
+import CalculationSorter from "../../../../sorters/CalculationSorter";
+import { getNumberByMonth } from "../../../../utils/mapMonths";
 
 describe("Sorters and getters", () => {
   let calculationsSorter: CalculationSorter;

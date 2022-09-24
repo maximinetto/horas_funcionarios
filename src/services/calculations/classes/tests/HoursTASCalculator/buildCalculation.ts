@@ -1,9 +1,10 @@
 import faker from "@faker-js/faker";
 import { Decimal } from "decimal.js";
-import ActualBalanceTAS from "entities/ActualBalanceTAS";
-import CalculationTAS from "entities/CalculationTAS";
-import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
-import { CalculationTAS as CalculationTASModel } from "types/calculations";
+
+import ActualBalanceTAS from "../../../../../entities/ActualBalanceTAS";
+import CalculationTAS from "../../../../../entities/CalculationTAS";
+import HourlyBalanceTAS from "../../../../../entities/HourlyBalanceTAS";
+import { CalculationTAS as CalculationTASModel } from "../../../../../types/calculations";
 
 export function buildCalculation(
   calculation: Omit<CalculationTASModel, "id" | "calculationId">

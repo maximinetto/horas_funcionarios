@@ -1,6 +1,6 @@
-import ActualBalance from "entities/ActualBalance";
-import ActualHourlyBalanceRepository from "persistence/ActualBalance/ActualHourlyBalanceRepository";
-import { generateRandomUUIDV4 } from "utils/strings";
+import ActualBalance from "../../entities/ActualBalance";
+import ActualHourlyBalanceRepository from "../../persistence/ActualBalance/ActualHourlyBalanceRepository";
+import { generateRandomUUIDV4 } from "../../utils/strings";
 
 export default class ActualHourlyBalanceSaver {
   private _actualHourlyBalanceRepository: ActualHourlyBalanceRepository;

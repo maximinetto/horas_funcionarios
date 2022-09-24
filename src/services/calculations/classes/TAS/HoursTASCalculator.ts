@@ -1,15 +1,15 @@
-import Calculations from "collections/Calculations";
 import { Decimal } from "decimal.js";
-import CalculationTAS from "entities/CalculationTAS";
-import HourlyBalanceTAS from "entities/HourlyBalanceTAS";
-import CalculationRepository from "persistence/Calculation/CalculationRepository";
-import HoursCalculator from "services/calculations/classes/HoursCalculator";
-import BalancesPerYearCalculator from "services/calculations/classes/TAS/YearsCalculator";
-import HoursClass from "services/calculations/classes/typeOfHours";
-import CalculationSorter from "sorters/CalculationSorter";
-import { CalculationCalculated } from "types/calculations";
-import { TypeOfHourDecimal } from "types/typeOfHours";
 
+import Calculations from "../../../../collections/Calculations";
+import CalculationTAS from "../../../../entities/CalculationTAS";
+import HourlyBalanceTAS from "../../../../entities/HourlyBalanceTAS";
+import CalculationRepository from "../../../../persistence/Calculation/CalculationRepository";
+import HoursCalculator from "../../../../services/calculations/classes/HoursCalculator";
+import BalancesPerYearCalculator from "../../../../services/calculations/classes/TAS/YearsCalculator";
+import HoursClass from "../../../../services/calculations/classes/typeOfHours";
+import CalculationSorter from "../../../../sorters/CalculationSorter";
+import { CalculationCalculated } from "../../../../types/calculations";
+import { TypeOfHourDecimal } from "../../../../types/typeOfHours";
 import CalculationValidator from "../CalculationValidator";
 import CalculationTASCreator from "./CalculationTASCreator";
 import { hoursOfYearEnricher } from "./hourEnrich";

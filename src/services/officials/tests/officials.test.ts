@@ -1,16 +1,16 @@
 import { faker } from "@faker-js/faker";
-import OfficialConverter from "converters/models_to_entities/OfficialConverter";
-import MikroORMActualBalanceBuilder from "creators/actual/MikroORMActualBalanceBuilder";
-import MikroORMOfficialBuilder from "creators/official/MikroORMOfficialBuilder";
-import OfficialBuilder from "creators/official/OfficialBuilder";
-import Official from "entities/Official";
-import { Contract, TypeOfOfficial } from "enums/officials";
 import { DateTime } from "luxon";
-import OfficialRepository from "persistence/Official/OfficialRepository";
 import { Optional } from "typescript-optional";
-import { removeUnnecesaryPropertiesOfArray } from "utils/array";
 
-import OfficialService from "..";
+import OfficialConverter from "../../../converters/models_to_entities/OfficialConverter";
+import MikroORMActualBalanceBuilder from "../../../creators/actual/MikroORMActualBalanceBuilder";
+import MikroORMOfficialBuilder from "../../../creators/official/MikroORMOfficialBuilder";
+import OfficialBuilder from "../../../creators/official/OfficialBuilder";
+import Official from "../../../entities/Official";
+import { Contract, TypeOfOfficial } from "../../../enums/officials";
+import OfficialRepository from "../../../persistence/Official/OfficialRepository";
+import { removeUnnecesaryPropertiesOfArray } from "../../../utils/array";
+import OfficialService from "../index";
 
 describe("Officials controller tests", () => {
   let officialService: OfficialService;

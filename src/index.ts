@@ -1,10 +1,11 @@
-import buildApp from "buildApp";
-import { configureDotEnv, logger } from "config";
 import { memoryUsage } from "memory";
+import { debug } from "winston";
+
+import buildApp from "./buildApp";
+import { configureDotEnv, logger } from "./config";
 import DatabaseFactory, {
   TypeOfEngine,
-} from "persistence/context/index.config";
-import { debug } from "winston";
+} from "./persistence/context/index.config";
 
 const main = () => {
   const { OFFICIALS_SCHEDULES_PORT, OFFICIALS_SCHEDULES_HOST } =

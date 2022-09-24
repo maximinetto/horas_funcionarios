@@ -1,4 +1,4 @@
-import { TYPES_OF_HOURS } from "enums/typeOfHours";
+import { TYPES_OF_HOURS } from "../../../enums/typeOfHours";
 
 function getContinuousHour(
   values: TYPES_OF_HOURS[],

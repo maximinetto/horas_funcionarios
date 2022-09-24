@@ -1,9 +1,8 @@
-import buildApp from "buildApp";
 import { FastifyInstance } from "fastify";
 import _omit from "lodash/omit";
 import { DateTime } from "luxon";
-import { unitOfWork } from "setupIntegrationTestEnvironment";
 
+import buildApp from "../../../buildApp";
 import OfficialConverter from "../../../converters/models_to_entities/OfficialConverter";
 import ActualHourlyBalanceBuilder from "../../../creators/actual/ActualHourlyBalanceBuilder";
 import MikroORMActualBalanceBuilder from "../../../creators/actual/MikroORMActualBalanceBuilder";
@@ -17,6 +16,7 @@ import Official from "../../../entities/Official";
 import { Month } from "../../../enums/common";
 import { Contract, TypeOfOfficial } from "../../../enums/officials";
 import OfficialService from "../../../services/officials";
+import { unitOfWork } from "../../../setupIntegrationTestEnvironment";
 import { getMonthByNumber, getNumberByMonth } from "../../../utils/mapMonths";
 import { secondsToTime } from "../../../utils/time";
 import { generateFirstCase, generateSecondCase } from "./preload";

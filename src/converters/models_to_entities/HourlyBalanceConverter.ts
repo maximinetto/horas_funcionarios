@@ -1,7 +1,7 @@
-import HourlyBalanceEntity from "entities/HourlyBalance";
-import HourlyBalanceEntityFactoryCreator from "factories/HourlyBalanceEntityFactoryCreator";
-import HourlyBalanceModelFactoryCreator from "factories/HourlyBalanceModelFactoryCreator";
-import { HourlyBalanceModel } from "types/hourlyBalance";
+import HourlyBalanceEntity from "../../entities/HourlyBalance";
+import HourlyBalanceEntityFactoryCreator from "../../factories/HourlyBalanceEntityFactoryCreator";
+import HourlyBalanceModelFactoryCreator from "../../factories/HourlyBalanceModelFactoryCreator";
+import { HourlyBalanceModel } from "../../types/hourlyBalance";
 
 export default class HourlyBalanceConverter {
   private hourlyBalanceEntityFactoryCreator: HourlyBalanceEntityFactoryCreator;

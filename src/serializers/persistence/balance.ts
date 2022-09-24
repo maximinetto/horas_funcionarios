@@ -1,4 +1,4 @@
-import { ActualBalanceDTO } from "types/actualBalance";
+import { ActualBalanceDTO } from "../../types/actualBalance";
 
 export function serializeBalancesTAS(balances: unknown) {
   if (balances == null || !Array.isArray(balances)) {
