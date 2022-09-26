@@ -3,11 +3,14 @@ import DatabaseFactory, {
 } from "./persistence/context/index.config";
 
 export const setup = async () => {
-  const typeOfEngine = process.env
-    .OFFICIALS_SCHEDULES_TYPE_OF_ENGINE as TypeOfEngine;
+  if (!globalThis.database) {
+    const typeOfEngine = process.env
+      .OFFICIALS_SCHEDULES_TYPE_OF_ENGINE as TypeOfEngine;
 
-  const database = DatabaseFactory.createDatabase(typeOfEngine);
-  await database.init(false);
+    const database = DatabaseFactory.createDatabase(typeOfEngine);
+    await database.init(false);
+    globalThis.database = database;
+  }
 };
 
 setup();

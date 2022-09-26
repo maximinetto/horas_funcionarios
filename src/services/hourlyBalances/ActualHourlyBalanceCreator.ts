@@ -55,9 +55,9 @@ export default class ActualHourlyBalanceCreator {
 
     let hourlyBalances: HourlyBalance[];
     if (ActualBalanceTAS.isActualBalanceTAS(actualBalance)) {
-      hourlyBalances = this.createHourlyBalancesTAS(balances, year);
+      hourlyBalances = this.createHourlyBalancesTAS(balances);
     } else if (ActualBalanceTeacher.isActualBalanceTeacher(actualBalance)) {
-      hourlyBalances = this.createHourlyBalancesTeacher(balances, year);
+      hourlyBalances = this.createHourlyBalancesTeacher(balances);
     } else {
       throw new UnexpectedValueError("Type of hourly balance invalid");
     }
@@ -96,7 +96,7 @@ export default class ActualHourlyBalanceCreator {
     });
   }
 
-  private createHourlyBalancesTAS(balances: TypeOfHoursByYear[], year: number) {
+  private createHourlyBalancesTAS(balances: TypeOfHoursByYear[]) {
     return balances.map((b) => {
       const hourlyBalanceIdTAS = generateRandomUUIDV4();
       const simple = new Decimal(
@@ -117,7 +117,7 @@ export default class ActualHourlyBalanceCreator {
 
       return this._hourlyBalanceBuilder.createTAS({
         id: hourlyBalanceIdTAS,
-        year,
+        year: b.year,
         working,
         nonWorking,
         simple,
@@ -127,10 +127,7 @@ export default class ActualHourlyBalanceCreator {
     });
   }
 
-  private createHourlyBalancesTeacher(
-    balances: TypeOfHoursByYear[],
-    year: number
-  ) {
+  private createHourlyBalancesTeacher(balances: TypeOfHoursByYear[]) {
     return balances.map((b) => {
       const hourlyBalanceIdTeacher = generateRandomUUIDV4();
       const hour = b.hours[0];
@@ -138,7 +135,7 @@ export default class ActualHourlyBalanceCreator {
 
       return this._hourlyBalanceBuilder.createTeacher({
         id: hourlyBalanceIdTeacher,
-        year,
+        year: b.year,
         balance,
         insert: true,
         type: TypeOfOfficial.TEACHER,

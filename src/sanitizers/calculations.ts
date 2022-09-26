@@ -4,7 +4,8 @@ import { getMonthByNumber } from "../utils/mapMonths";
 import { timeToSeconds } from "../utils/time";
 
 export const sanitizeCalculationFields = (
-  calculations: CalculationTASDTOWithTimeFieldsInString[]
+  calculations: CalculationTASDTOWithTimeFieldsInString[],
+  year: number
 ): CalculationTASDTO[] => {
   return calculations.map((calculation) => {
     const surplusBusiness = timeToSeconds(calculation.surplusBusiness);
@@ -27,7 +28,7 @@ export const sanitizeCalculationFields = (
 
     return new CalculationTASDTO({
       id: calculation.id,
-      year: calculation.year,
+      year,
       month,
       observations: calculation.observations,
       actualBalanceId: calculation.actualBalanceId,

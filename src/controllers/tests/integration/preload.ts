@@ -169,7 +169,7 @@ async function second({
         [
           new HourlyBalanceTAS({
             id: generateRandomUUIDV4(),
-            simple: new Decimal(180),
+            simple: new Decimal(8730),
             working: new Decimal(72900),
             nonWorking: new Decimal(14400),
             year: 2021,

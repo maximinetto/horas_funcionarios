@@ -78,6 +78,7 @@ export async function expectCalculationEquals(
     recalculatorService,
     calculatorRowService,
     actualHourlyBalanceRepository,
+    database: globalThis.database,
   });
 
   const response = await tasCalculator.calculate({

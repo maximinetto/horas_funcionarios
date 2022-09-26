@@ -22,6 +22,7 @@ import MikroORMActualHourlyBalanceRepository from "../persistence/ActualBalance/
 import MikroORMCalculationTASRepository from "../persistence/Calculation/CalculationTAS/MikroORMCalculationTASRepository";
 import MikroORMCalculationTeacherRepository from "../persistence/Calculation/CalculationTeacher/MikroORMCalculationTeacherRepository";
 import MikroORMCalculationRepository from "../persistence/Calculation/MikroORMCalculationRepository";
+import { MikroORMDatabase } from "../persistence/context/mikroorm/MikroORMDatabase";
 import OfficialRepository from "../persistence/Official/MikroORMOfficialRepository";
 import Calculator from "../services/calculations";
 import CalculationValidator from "../services/calculations/classes/CalculationValidator";
@@ -89,6 +90,7 @@ container.register({
   typeOfYearToBalanceConverter: asClass(
     TypeOfYearToBalanceConverter
   ).singleton(),
+  database: asClass(MikroORMDatabase).singleton(),
 });
 
 export const officialService = container.resolve(

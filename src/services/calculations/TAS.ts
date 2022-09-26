@@ -5,6 +5,7 @@ import Official from "../../entities/Official";
 import { TypeOfOfficial } from "../../enums/officials";
 import ValueNotProvidedError from "../../errors/ValueNotProvidedError";
 import ActualHourlyBalanceRepository from "../../persistence/ActualBalance/ActualHourlyBalanceRepository";
+import Database from "../../persistence/context/Database";
 import RecalculatorService from "../../services/calculations/classes/TAS/RecalculatorService";
 import Balances, {
   getCurrentActualHourlyBalance,
@@ -30,12 +31,14 @@ export default class TASCalculator {
     actualHourlyBalanceCreator,
     calculatorRowService,
     actualHourlyBalanceRepository,
+    database,
   }: {
     actualHourlyBalanceReplacer: ActualHourlyBalanceReplacer;
     recalculatorService: RecalculatorService;
     actualHourlyBalanceCreator: ActualHourlyBalanceCreator;
     calculatorRowService: CalculatorRowService;
     actualHourlyBalanceRepository: ActualHourlyBalanceRepository;
+    database: Database;
   }) {
     this.actualHourlyBalanceReplacer = actualHourlyBalanceReplacer;
     this.recalculatorService = recalculatorService;
@@ -44,6 +47,7 @@ export default class TASCalculator {
     this.calculatorRowService = calculatorRowService;
     this.actualHourlyBalanceSaver = new ActualHourlyBalanceSaver({
       actualHourlyBalanceRepository,
+      database,
     });
   }
 
@@ -124,8 +128,7 @@ export default class TASCalculator {
       actualHourlyBalancesAfterPreviousYear,
       actualHourlyBalanceCalculated
     );
-    debugger;
-    this.actualHourlyBalanceSaver.save([
+    await this.actualHourlyBalanceSaver.save([
       actualHourlyBalanceCalculated,
       ...others.actualHourlyBalances,
     ]);
@@ -166,14 +169,14 @@ export default class TASCalculator {
     };
   }
 
-  createActualBalance(
+  async createActualBalance(
     dataCalculated: CalculationCalculated,
     nextYear: number,
     official: Official
   ) {
     const actualHourlyBalanceCalculated =
       this.actualHourlyBalanceCreator.create({
-        balances: dataCalculated.balances,
+        balances: dataCalculated.balancesSanitized,
         year: nextYear,
         official,
         total: dataCalculated.totalBalance,
@@ -181,7 +184,7 @@ export default class TASCalculator {
         type: TypeOfOfficial.TAS,
       });
 
-    this.actualHourlyBalanceSaver.save([actualHourlyBalanceCalculated]);
+    await this.actualHourlyBalanceSaver.save([actualHourlyBalanceCalculated]);
 
     return {
       currentYear: dataCalculated,

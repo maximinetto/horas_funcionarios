@@ -1,6 +1,7 @@
 import { MikroORM } from "@mikro-orm/core";
 import { MySqlDriver } from "@mikro-orm/mysql";
 
+import { logger } from "../../../config";
 import UnexpectedError from "../../../errors/UnexpectedError";
 import MikroORMActualHourlyBalanceRepository from "../../ActualBalance/MikroORMActualHourlyBalanceRepository";
 import MikroORMCalculationTASRepository from "../../Calculation/CalculationTAS/MikroORMCalculationTASRepository";
@@ -27,14 +28,18 @@ export class MikroORMDatabase implements Database {
   official!: MikroORMOfficialRepository;
 
   commit(): Promise<void> {
-    this.assert();
-    return this._mikroorm.em.flush();
+    try {
+      this.assert();
+      return this._mikroorm.em.flush();
+    } catch (err) {
+      logger.error(err);
+      throw new UnexpectedError("Something was wrong");
+    }
   }
 
   async init(connect = true): Promise<void> {
     this._mikroorm = await initializeORM(connect);
     mikroorm = this._mikroorm;
-    console.log("jajaja", mikroorm);
     this.calculationTAS = new MikroORMCalculationTASRepository();
     this.calculationTeacher = new MikroORMCalculationTeacherRepository();
     this.calculation = new MikroORMCalculationRepository({

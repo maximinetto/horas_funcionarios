@@ -9,7 +9,6 @@ export default defineConfig({
     root: ".",
     isolate: true,
     clearMocks: true,
-
     setupFiles: "./src/setupTestEnvironment.ts",
   },
 });

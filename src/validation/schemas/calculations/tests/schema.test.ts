@@ -10,7 +10,6 @@ describe("Calculation ", () => {
       const object = {
         calculations: [
           {
-            year: 2019,
             month: 3,
             observations: "",
             surplusBusiness: "00:00",
@@ -24,7 +23,6 @@ describe("Calculation ", () => {
             compensatedNightOvertime: "00:00",
           },
           {
-            year: 2019,
             month: 4,
             observations: "",
             surplusBusiness: "00:00",
@@ -60,7 +58,6 @@ describe("Calculation ", () => {
       assertNotValid(schema, {
         calculations: [
           {
-            year: 2019,
             observations: "",
             surplusBusiness: "00:00",
             surplusNonWorking: "00:00",
@@ -73,7 +70,6 @@ describe("Calculation ", () => {
             compensatedNightOvertime: "00:00",
           },
           {
-            year: 2019,
             observations: "",
             surplusBusiness: "00:00",
             surplusNonWorking: "00:00",
@@ -90,7 +86,6 @@ describe("Calculation ", () => {
       assertNotValid(schema, {
         calculations: [
           {
-            year: 2019,
             month: 3,
             observations: "",
             surplusBusiness: "00:00",
@@ -104,7 +99,6 @@ describe("Calculation ", () => {
             compensatedNightOvertime: "00:00",
           },
           {
-            year: 2019,
             observations: "",
             surplusBusiness: "00:00",
             surplusNonWorking: "00:00",

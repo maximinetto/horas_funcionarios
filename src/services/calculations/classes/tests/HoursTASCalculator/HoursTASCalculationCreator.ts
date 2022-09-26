@@ -146,6 +146,7 @@ export default class HoursTASCalculationCreator {
 
     this.calculations[actualBalanceSecondTest.year] = calculationsModified;
     this.reCalculateBalances();
+
     return {
       result,
       balancesRecalculated: this.balancesRecalculated,

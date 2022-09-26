@@ -66,7 +66,7 @@ export default class Calculator {
     }
 
     const official = officialInstance.get();
-    const calculationsSanitazed = sanitizeCalculationFields(calculations);
+    const calculationsSanitazed = sanitizeCalculationFields(calculations, year);
 
     if (official.type === TypeOfOfficial.TEACHER) {
       this.calculateForTeacher({

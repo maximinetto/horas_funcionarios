@@ -1,5 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 
+import { logger } from "../config";
 import { calculator } from "../dependencies/container";
 import CalculationTASDTOWithTimeFieldsInString from "../dto/create/CalculationTASDTOWithTimeFieldsInString";
 import response from "../utils/response";
@@ -14,13 +15,20 @@ export const createHours = async (
   }>,
   reply: FastifyReply
 ) => {
-  const validatedData = validate(req);
+  try {
+    const validatedData = validate(req);
 
-  const result = await calculator.execute(validatedData);
+    const result = await calculator.execute(validatedData);
 
-  response(reply, {
-    status: 201,
-    data: result,
-    message: "Calculations done successfully",
-  });
+    response(reply, {
+      status: 201,
+      data: result,
+      message: "Calculations done successfully",
+    });
+  } catch (err) {
+    logger.error(err);
+    reply.status(500).send({
+      error: "Something was wrong",
+    });
+  }
 };

@@ -7,7 +7,7 @@ import DatabaseFactory, {
   TypeOfEngine,
 } from "./persistence/context/index.config";
 
-const main = () => {
+const main = async () => {
   const { OFFICIALS_SCHEDULES_PORT, OFFICIALS_SCHEDULES_HOST } =
     configureDotEnv();
   logger.info("\n\nMemory usage:", {
@@ -19,7 +19,7 @@ const main = () => {
 
   const database = DatabaseFactory.createDatabase(typeOfEngine || "mikroorm");
 
-  database.init();
+  await database.init(true);
 
   const app = buildApp();
 

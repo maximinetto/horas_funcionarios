@@ -1,7 +1,6 @@
 import { Options } from "@mikro-orm/core";
 import { MySqlDriver } from "@mikro-orm/mysql";
 
-import { logger } from "../../../config";
 import ActualBalanceSchema from "../../../entities/schemas/ActualBalance";
 import ActualBalanceTASSchema from "../../../entities/schemas/ActualBalanceTAS";
 import ActualBalanceTeacherSchema from "../../../entities/schemas/ActualBalanceTeacher";
@@ -38,7 +37,7 @@ const dbOptions: Options<MySqlDriver> = {
   user: process.env.OFFICIALS_SCHEDULES_DB_USER,
   port: PORT,
   password: process.env.OFFICIALS_SCHEDULES_DB_PASSWORD,
-  logger: (msg) => logger.log("info", msg),
+  // logger: (msg) => logger.log("info", msg),
 };
 
 export default dbOptions;
