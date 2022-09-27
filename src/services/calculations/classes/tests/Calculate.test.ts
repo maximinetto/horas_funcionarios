@@ -10,7 +10,6 @@ import CalculationTeacher from "../../../../entities/CalculationTeacher";
 import Official from "../../../../entities/Official";
 import { Month } from "../../../../enums/common";
 import { Contract, TypeOfOfficial } from "../../../../enums/officials";
-import { mikroorm } from "../../../../persistence/context/mikroorm/MikroORMDatabase";
 import CalculationSorter from "../../../../sorters/CalculationSorter";
 import { getNumberByMonth } from "../../../../utils/mapMonths";
 
@@ -91,7 +90,7 @@ describe("Sorters and getters", () => {
     }[]
   ) {
     return calculations.map((c) => {
-      const official = mikroorm.em.create(Official, {
+      const official = new Official({
         id: 1,
         chargeNumber: 1,
         contract: Contract.PERMANENT,

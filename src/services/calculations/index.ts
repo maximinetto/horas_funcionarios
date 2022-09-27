@@ -95,8 +95,6 @@ export default class Calculator {
     });
   }
 
-  private;
-
   private async setCalculations(calculations: CalculationTASDTO[]) {
     const calculationToUpdate = calculations.filter((c) => !c.insert);
 

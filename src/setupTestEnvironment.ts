@@ -11,6 +11,8 @@ export const setup = async () => {
     await database.init(false);
     globalThis.database = database;
   }
+
+  globalThis.define++;
 };
 
 setup();

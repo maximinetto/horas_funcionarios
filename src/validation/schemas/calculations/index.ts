@@ -8,7 +8,10 @@ const base = {
   id: Joi.string().uuid({ version: "uuidv4" }),
   month: Joi.number().integer().min(1).max(12).required(),
   observations: Joi.string().allow(""),
-  actualBalanceId: Joi.string().uuid({ version: "uuidv4" }),
+  actualBalanceId: Joi.string().uuid({ version: "uuidv4" }).when("id", {
+    is: Joi.string().exist(),
+    then: Joi.string().required(),
+  }),
 };
 
 const tas = {

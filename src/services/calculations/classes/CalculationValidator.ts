@@ -10,8 +10,8 @@ import { resetDateFromFirstDay } from "../../../utils/date";
 import { getNumberByMonth } from "../../../utils/mapMonths";
 
 export default class CalculationValidator {
-  private year: number = 0;
-  private official: Official = Official.default();
+  private year!: number;
+  private official!: Official;
   private calculations: Calculations<Calculation> = new Calculations();
 
   constructor() {}
@@ -43,7 +43,7 @@ export default class CalculationValidator {
     this.tryAllMonthsHaveHours();
   }
 
-  checkCalculationsAreAfterDateOfEntry(): void {
+  private checkCalculationsAreAfterDateOfEntry(): void {
     const { official, year } = this;
     const slowestCalculation = this.calculations.getSmallestCalculation();
 
@@ -60,15 +60,13 @@ export default class CalculationValidator {
     }
   }
 
-  private entryPointIsValid({
-    calculations,
-    official,
-    year,
-  }: {
+  private entryPointIsValid(values: {
     calculations?: Calculations<Calculation>;
     year?: number;
     official?: Official;
   }) {
+    const { calculations, official, year } = values;
+
     if (!calculations || !(calculations instanceof Calculations)) {
       throw new UnexpectedValueError(
         "calculations must be an instance of Calculation"

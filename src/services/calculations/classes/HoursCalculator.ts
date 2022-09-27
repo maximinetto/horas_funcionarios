@@ -72,7 +72,7 @@ export default abstract class HoursCalculator {
     await this.calculationValidator.validate(
       {
         calculations: this.calculations,
-        official: this.official,
+        official: _official,
         year: this.year,
       },
       this.getCalculationsAndTransform

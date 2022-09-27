@@ -7,8 +7,8 @@ export default defineConfig({
     include: ["**/tests/**/*.test.ts"],
     exclude: ["**/tests/**/*.integration.test.ts"],
     root: ".",
-    isolate: true,
     clearMocks: true,
     setupFiles: "./src/setupTestEnvironment.ts",
+    threads: false,
   },
 });

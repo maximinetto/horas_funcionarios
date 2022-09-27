@@ -1,5 +1,4 @@
 import Decimal from "decimal.js";
-import _cloneDeep from "lodash/cloneDeep";
 import _differenceBy from "lodash/differenceBy";
 import _xorBy from "lodash/xorBy";
 
@@ -33,9 +32,9 @@ export default class Calculations<E extends Calculation> {
       throw new Error("calculations must be not empty");
     }
 
-    return _cloneDeep(this.calculations).sort(
-      this.calculationsSorter.sortFromLowestToHighestDate
-    )[0];
+    return this.calculations
+      .slice()
+      .sort(this.calculationsSorter.sortFromLowestToHighestDate)[0];
   }
 
   public calc<T extends Decimal | number>(
