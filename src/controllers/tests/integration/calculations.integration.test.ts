@@ -1,4 +1,5 @@
 import { FastifyInstance } from "fastify";
+import _ from "lodash";
 import _omit from "lodash/omit";
 import { DateTime } from "luxon";
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
@@ -100,14 +101,12 @@ describe("Calculations", () => {
     };
 
     const calculation1 = {
-      year: 2021,
       month: 1,
       observations: "Sabelo flaco",
       ...calculationTAS1,
     };
 
     const calculation2 = {
-      year: 2021,
       month: 2,
       observations: "Sabelo flacazo",
       ...calculationTAS2,
@@ -188,7 +187,6 @@ describe("Calculations", () => {
     const data = {
       calculations: [
         {
-          year: 2021,
           month: 1,
           observations: "Sabelo flaco",
           surplusBusiness: "00:30",
@@ -202,7 +200,6 @@ describe("Calculations", () => {
           compensatedNightOvertime: "00:00",
         },
         {
-          year: 2021,
           month: 2,
           observations: "Sabelo flacazo",
           surplusBusiness: "00:00",
@@ -238,50 +235,52 @@ describe("Calculations", () => {
       unitOfWork,
     });
 
+    const year = 2022;
+
     const [first, second] = currentBalance
       .getCalculations()
       .filter((c) => c.month === Month.JANUARY || c.month === Month.FEBRUARY);
 
-    const calculation1: CalculationTASDTOWithTimeFieldsInString = {
-      year: 2022,
-      month: 1,
-      observations: "Sabelo flaco",
-      id: first.id,
-      surplusSimple: "01:45",
-      surplusBusiness: "00:00",
-      surplusNonWorking: "00:00",
-      compensatedNightOvertime: "00:00",
-      discount: "03:27",
-      nonWorkingNightOvertime: "00:00",
-      nonWorkingOvertime: "00:00",
-      workingNightOvertime: "00:00",
-      workingOvertime: "00:00",
-      actualBalanceId: currentBalance.id,
-    };
+    const calculation1: Omit<CalculationTASDTOWithTimeFieldsInString, "year"> =
+      {
+        month: 1,
+        observations: "Sabelo flaco",
+        id: first.id,
+        surplusSimple: "01:45",
+        surplusBusiness: "00:00",
+        surplusNonWorking: "00:00",
+        compensatedNightOvertime: "00:00",
+        discount: "03:27",
+        nonWorkingNightOvertime: "00:00",
+        nonWorkingOvertime: "00:00",
+        workingNightOvertime: "00:00",
+        workingOvertime: "00:00",
+        actualBalanceId: currentBalance.id,
+      };
 
-    const calculation2 = {
-      year: 2022,
-      month: 2,
-      observations: "Sabelo flacazo",
-      id: second.id,
-      surplusSimple: "00:30",
-      surplusBusiness: "00:00",
-      surplusNonWorking: "00:00",
-      compensatedNightOvertime: "00:00",
-      discount: "01:05",
-      nonWorkingNightOvertime: "00:00",
-      nonWorkingOvertime: "00:00",
-      workingNightOvertime: "00:00",
-      workingOvertime: "00:00",
-      actualBalanceId: currentBalance.id,
-    };
+    const calculation2: Omit<CalculationTASDTOWithTimeFieldsInString, "year"> =
+      {
+        month: 2,
+        observations: "Sabelo flacazo",
+        id: second.id,
+        surplusSimple: "00:30",
+        surplusBusiness: "00:00",
+        surplusNonWorking: "00:00",
+        compensatedNightOvertime: "00:00",
+        discount: "01:05",
+        nonWorkingNightOvertime: "00:00",
+        nonWorkingOvertime: "00:00",
+        workingNightOvertime: "00:00",
+        workingOvertime: "00:00",
+        actualBalanceId: currentBalance.id,
+      };
 
     const data = {
       calculations: [calculation1, calculation2],
     };
 
     const serverReponse = await fastify.inject({
-      url: `/api/v1/calculations/year/2022/officials/${official.id}`,
+      url: `/api/v1/calculations/year/${year}/officials/${official.id}`,
       method: "POST",
       payload: data,
     });
@@ -293,7 +292,8 @@ describe("Calculations", () => {
         { ...calculation1, id: first.id },
         { ...calculation2, id: second.id },
       ],
-      [...(currentBalance.getCalculations().slice(2) as CalculationTAS[])]
+      [...(currentBalance.getCalculations().slice(2) as CalculationTAS[])],
+      year
     );
 
     const calculationsResponse = actualHourlyBalances[0].calculations;
@@ -369,56 +369,56 @@ describe("Calculations", () => {
         [Month.APRIL, Month.MAY, Month.JULY].some((month) => c.month === month)
       );
 
-    const calculation1: CalculationTASDTOWithTimeFieldsInString = {
-      year: first.year,
-      month: getNumberByMonth(first.month),
-      observations: "Complicado la verdad",
-      id: first.id,
-      surplusSimple: "01:05",
-      surplusBusiness: "00:58",
-      surplusNonWorking: "00:00",
-      compensatedNightOvertime: "01:02",
-      discount: "00:41",
-      nonWorkingNightOvertime: "00:00",
-      nonWorkingOvertime: "00:00",
-      workingNightOvertime: "00:00",
-      workingOvertime: "00:20",
-      actualBalanceId: previousActualBalance!.id,
-    };
+    const calculation1: Omit<CalculationTASDTOWithTimeFieldsInString, "year"> =
+      {
+        month: getNumberByMonth(first.month),
+        observations: "Complicado la verdad",
+        id: first.id,
+        surplusSimple: "01:05",
+        surplusBusiness: "00:58",
+        surplusNonWorking: "00:00",
+        compensatedNightOvertime: "01:02",
+        discount: "00:41",
+        nonWorkingNightOvertime: "00:00",
+        nonWorkingOvertime: "00:00",
+        workingNightOvertime: "00:00",
+        workingOvertime: "00:20",
+        actualBalanceId: previousActualBalance!.id,
+      };
 
-    const calculation2 = {
-      year: second.year,
-      month: getNumberByMonth(second.month),
-      observations: "No se sabe nada",
-      id: second.id,
-      surplusSimple: "00:18",
-      surplusBusiness: "00:00",
-      surplusNonWorking: "00:00",
-      compensatedNightOvertime: "00:00",
-      discount: "00:02",
-      nonWorkingNightOvertime: "00:00",
-      nonWorkingOvertime: "00:00",
-      workingNightOvertime: "00:00",
-      workingOvertime: "00:00",
-      actualBalanceId: currentBalance.id,
-    };
+    const calculation2: Omit<CalculationTASDTOWithTimeFieldsInString, "year"> =
+      {
+        month: getNumberByMonth(second.month),
+        observations: "No se sabe nada",
+        id: second.id,
+        surplusSimple: "00:18",
+        surplusBusiness: "00:00",
+        surplusNonWorking: "00:00",
+        compensatedNightOvertime: "00:00",
+        discount: "00:02",
+        nonWorkingNightOvertime: "00:00",
+        nonWorkingOvertime: "00:00",
+        workingNightOvertime: "00:00",
+        workingOvertime: "00:00",
+        actualBalanceId: currentBalance.id,
+      };
 
-    const calculation3 = {
-      year: third.year,
-      month: getNumberByMonth(third.month),
-      observations: "Dificil",
-      id: third.id,
-      surplusSimple: "00:00",
-      surplusBusiness: "00:45",
-      surplusNonWorking: "00:00",
-      compensatedNightOvertime: "00:00",
-      discount: "01:02",
-      nonWorkingNightOvertime: "00:00",
-      nonWorkingOvertime: "00:00",
-      workingNightOvertime: "02:00",
-      workingOvertime: "01:15",
-      actualBalanceId: currentBalance.id,
-    };
+    const calculation3: Omit<CalculationTASDTOWithTimeFieldsInString, "year"> =
+      {
+        month: getNumberByMonth(third.month),
+        observations: "Dificil",
+        id: third.id,
+        surplusSimple: "00:00",
+        surplusBusiness: "00:45",
+        surplusNonWorking: "00:00",
+        compensatedNightOvertime: "00:00",
+        discount: "01:02",
+        nonWorkingNightOvertime: "00:00",
+        nonWorkingOvertime: "00:00",
+        workingNightOvertime: "02:00",
+        workingOvertime: "01:15",
+        actualBalanceId: currentBalance.id,
+      };
 
     const data = {
       calculations: [calculation1, calculation2, calculation3],
@@ -444,7 +444,8 @@ describe("Calculations", () => {
           .filter(
             (c) => ![first.id, second.id, third.id].some((id) => c.id === id)
           ) as CalculationTAS[]),
-      ]
+      ],
+      previousActualBalance.year
     );
 
     const previousActualBalanceResponse = actualHourlyBalances[0];
@@ -477,10 +478,12 @@ describe("Calculations", () => {
             totalSimpleHoursInTimeExpected: "01:17",
             totalWorkingHoursInTimeExpected: "02:35",
             totalNonWorkingHoursInTimeExpected: "00:00",
+            year: previousActualBalance.year,
           },
         ],
         totalBalanceExpected: "13890",
         totalBalanceInTimeExpected: "03:52",
+        year: previousActualBalance.year,
       },
       {
         hourlyBalancesExpected: [
@@ -491,6 +494,7 @@ describe("Calculations", () => {
             totalSimpleHoursInTimeExpected: "00:00",
             totalWorkingHoursInTimeExpected: "00:27",
             totalNonWorkingHoursInTimeExpected: "00:00",
+            year: 2020,
           },
           {
             totalSimpleHoursExpected: "36000",
@@ -499,10 +503,12 @@ describe("Calculations", () => {
             totalSimpleHoursInTimeExpected: "10:00",
             totalWorkingHoursInTimeExpected: "20:15",
             totalNonWorkingHoursInTimeExpected: "04:00",
+            year: 2021,
           },
         ],
         totalBalanceExpected: "124890",
         totalBalanceInTimeExpected: "34:42",
+        year: 2021,
       },
       {
         hourlyBalancesExpected: [
@@ -513,6 +519,7 @@ describe("Calculations", () => {
             totalSimpleHoursInTimeExpected: "03:55",
             totalWorkingHoursInTimeExpected: "20:15",
             totalNonWorkingHoursInTimeExpected: "04:00",
+            year: 2021,
           },
           {
             totalSimpleHoursExpected: "6600",
@@ -521,10 +528,12 @@ describe("Calculations", () => {
             totalSimpleHoursInTimeExpected: "01:50",
             totalWorkingHoursInTimeExpected: "00:30",
             totalNonWorkingHoursInTimeExpected: "00:00",
+            year: 2022,
           },
         ],
         totalBalanceExpected: "109770",
         totalBalanceInTimeExpected: "30:30",
+        year: 2022,
       },
     ]);
   });
@@ -553,11 +562,12 @@ function convert(calculationTAS: any) {
 }
 
 function convert2(
-  data: CalculationTASDTOWithTimeFieldsInString[],
-  calculations: CalculationTAS[]
+  data: Omit<CalculationTASDTOWithTimeFieldsInString, "year">[],
+  calculations: CalculationTAS[],
+  year: number
 ) {
   const firstCollection = data.map((c) => ({
-    year: c.year,
+    year,
     month: getMonthByNumber(c.month),
     observations: c.observations,
     calculationTAS: {
@@ -614,9 +624,11 @@ function assertEquals(
       totalSimpleHoursInTimeExpected: string;
       totalWorkingHoursInTimeExpected: string;
       totalNonWorkingHoursInTimeExpected: string;
+      year: number;
     }[];
     totalBalanceExpected: string;
     totalBalanceInTimeExpected: string;
+    year: number;
   }[]
 ) {
   for (let i = 0; i < actualHourlyBalances.length; i++) {
@@ -624,10 +636,12 @@ function assertEquals(
       hourlyBalancesExpected,
       totalBalanceExpected,
       totalBalanceInTimeExpected,
+      year,
     } = expected[i];
     const actualBalance = actualHourlyBalances[i];
 
     expect(actualBalance.total).toEqual(totalBalanceExpected);
+    expect(actualBalance.year).toBe(year);
     const totalBalanceInTime = secondsToTime(BigInt(totalBalanceExpected));
     expect(totalBalanceInTime).toEqual(totalBalanceInTimeExpected);
 
@@ -639,10 +653,12 @@ function assertEquals(
         totalSimpleHoursInTimeExpected,
         totalWorkingHoursInTimeExpected,
         totalNonWorkingHoursInTimeExpected,
+        year,
       } = hourlyBalancesExpected[j];
 
       const balance = actualBalance.hourlyBalances[j];
 
+      expect(balance.year).toEqual(year);
       expect(balance.hourlyBalanceTAS.simple).toEqual(totalSimpleHoursExpected);
       expect(balance.hourlyBalanceTAS.working).toEqual(
         totalWorkingHoursExpected
@@ -669,4 +685,25 @@ function assertEquals(
       );
     }
   }
+
+  unitOfWork.calculationTAS.getAll().then((values) => {
+    expect(values).toHaveLength(29);
+    const result = _(values)
+      .groupBy("year")
+      .map((value, key) => ({ year: key, calculations: value }))
+      .value();
+
+    const expected = [
+      { year: 2020, length: 12 },
+      { year: 2021, length: 12 },
+      { year: 2022, length: 5 },
+    ];
+    result.forEach((r, index) => {
+      const { year, length } = expected[index];
+      expect(year).toBe(year);
+      expect(r.calculations).toHaveLength(length);
+    });
+
+    expect(result).toHaveLength(3);
+  });
 }

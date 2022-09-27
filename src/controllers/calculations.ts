@@ -3,6 +3,7 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import { logger } from "../config";
 import { calculator } from "../dependencies/container";
 import CalculationTASDTOWithTimeFieldsInString from "../dto/create/CalculationTASDTOWithTimeFieldsInString";
+import CustomError from "../errors/CustomError";
 import response from "../utils/response";
 import validate from "../validation/requests/calculations/create";
 
@@ -27,6 +28,7 @@ export const createHours = async (
     });
   } catch (err) {
     logger.error(err);
+    if (err instanceof CustomError) throw err;
     reply.status(500).send({
       error: "Something was wrong",
     });
